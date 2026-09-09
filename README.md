@@ -69,12 +69,28 @@ gates HWG § 11). It will ask for them rather than guess.
 
 ## Using it outside Claude Code
 
-The skill body and the three reference files are plain markdown with no Claude-specific
-syntax. See [AGENTS.md](AGENTS.md) for load order, per-tool instructions, and the five
-invariants a port must preserve.
+The substance is plain markdown. Only the packaging is Claude-specific.
 
-Claude-specific parts are the packaging only: `.claude-plugin/*.json`, the
-`argument-hint` frontmatter key, and the `evals/**/case.yaml` harness format.
+| Tool | What to use |
+|---|---|
+| **Claude Code** | Install the plugin (above) |
+| **Codex, Cursor, anything reading AGENTS.md** | [AGENTS.md](AGENTS.md) — it names the load order |
+| **Gemini CLI** | [GEMINI.md](GEMINI.md) |
+| **ChatGPT, Gemini web, Claude.ai, any chat** | Upload or paste [`dist/device-claims-review.bundle.md`](dist/device-claims-review.bundle.md) — one self-contained file, skill plus all three statute references, 30 KB |
+| **Anything else** | The four source files in `device-claims/skills/device-claims-review/` |
+
+`GEMINI.md` and the bundle are **generated** from the canonical skill:
+
+```
+python3 scripts/build-portable.py          # rebuild
+python3 tests/check-portable-fresh.py      # fail if stale
+```
+
+Never edit them by hand. The freshness check exists because a drifted bundle would
+have someone reviewing against an older rule while the repo claimed otherwise — the
+exact failure this project is meant to prevent.
+
+[AGENTS.md](AGENTS.md) lists the five invariants any port must preserve.
 
 ## Evals
 
