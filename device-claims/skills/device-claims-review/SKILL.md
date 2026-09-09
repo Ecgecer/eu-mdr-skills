@@ -110,6 +110,19 @@ Ask: is there a **likely** risk associated with use in line with the intended
 purpose that this copy does not surface? "Likely" is the statutory word — not every
 theoretical risk belongs in an ad.
 
+**Name the risk from supplied material, or do not raise (c).** The risk must come from
+the intended purpose, the IFU, the technical documentation, or something the user told
+you. Do **not** infer a likely risk from the device category and then flag the copy for
+omitting it — every benefit-framed advertisement omits some inferable risk, so a (c)
+finding built that way is unfalsifiable and worthless. If you suspect an omission but
+cannot point to the risk in supplied material, raise it as an open question:
+
+> The copy surfaces no limitation. I can't tell from what I have whether the IFU
+> records a likely risk that belongs here. Worth checking against the IFU.
+
+Length is context. Trade-press copy is not expected to carry patient-facing safety
+text; an IFU pointer is usually the proportionate fix where (c) genuinely bites.
+
 ### (d) Suggesting uses beyond the assessed intended purpose
 
 **Not a truthfulness test either.** A true claim breaches (d) if the use it suggests
@@ -188,12 +201,28 @@ For each claim:
 
 ```markdown
 **Claim:** "[exact quote]"
-**Breach:** [MDR Art. 7(a)|(b)|(c)|(d) | HWG § 3 no. X | HWG § 11(1) no. X | UWG § 5(2) no. X | UWG § 6(2) no. X | none]
+**Breach:** [MDR Art. 7(a)|(b)|(c)|(d) | HWG § 3 no. X | HWG § 11(1) no. X | UWG § 5(2) no. X | UWG § 6(2) no. X | **none**]
 **Why:** [one line tying the quote to the provision's operative words]
 **Evidence needed:** [what would substantiate it, or "n/a — cannot be cured by evidence"]
-**Call:** [OK | Needs substantiation | Needs rewording | Cut]
+**Call:** [OK | Verify | Needs substantiation | Needs rewording | Cut]
 **Suggested fix:** "[revised phrasing that keeps the intent]"
 ```
+
+**`Breach: none` with `Call: Verify` is a valid and frequently correct combination.**
+Use it when a claim is not misleading on the material supplied but rests on something
+you have not seen — a duration, a performance figure, a certificate scope. That is an
+open question for the technical file, **not** a breach. Do not promote it to a breach
+to make the review look thorough.
+
+A `Breach:` entry requires a specific provision **and** a specific reason the copy
+conflicts with its operative words. "This might not be substantiated" is not a breach;
+it is `Call: Verify`.
+
+**Do not manufacture findings.** Clean copy exists. Copy that tracks the intended
+purpose, states its limits, and makes no unsubstantiated performance claim should come
+back with no breaches, and saying so is a useful answer. A review that always finds
+something trains the reader to ignore it. If the only honest output is "no breaches
+identified; two items to verify against the technical file", that is the output.
 
 Distinguish the two cure paths. A limb (a) overclaim can often be cured by
 **evidence**. A limb (d) intended-purpose breach usually **cannot** — it is cured by
