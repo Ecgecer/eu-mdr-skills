@@ -1,0 +1,1039 @@
+{
+  "schemaVersion": 1,
+  "claudeVersion": "2.1.267",
+  "startedAt": "2026-09-09T20:26:37.162Z",
+  "durationSeconds": 1735,
+  "costUsd": 5.105049,
+  "partial": false,
+  "suite": {
+    "root": "/Users/egecangecer/projects/device-claims-review/mdr-classification",
+    "ablation": "with-without",
+    "threshold": 1,
+    "plugins": [
+      {
+        "name": "mdr-classification",
+        "version": "0.1.0",
+        "path": "/Users/egecangecer/projects/device-claims-review/mdr-classification"
+      }
+    ]
+  },
+  "cases": [
+    {
+      "name": "driving-software-3-3",
+      "dir": "evals/01-driving-software-3-3",
+      "source": "prose",
+      "promptMarkdown": "What MDR class is our software?\n\nIt's a control application that runs on a tablet and sets the infusion rate on our\nown infusion pump. The pump is a Class III device. The app doesn't diagnose anything\n— it just lets the clinician set and adjust the rate, and it shows the current rate.\nIntended purpose: \"to set and adjust the delivery rate of the [X] infusion pump under\nclinician control.\"",
+      "runsPerCase": 3,
+      "timeoutSeconds": 300,
+      "maxTurns": 10,
+      "graders": [
+        {
+          "name": "criteria",
+          "type": "llm",
+          "weight": 1,
+          "graderMarkdown": "Implementing rule 3.3: software which DRIVES a device or influences its use falls\nwithin the SAME CLASS as that device. Rule 11 is not reached. The pump is Class III,\nso the software is Class III.\n\nPASS requires:\n(1) The stated class is **III**.\n(2) The route is via implementing rule **3.3**, identified by number or clearly\n    described as \"same class as the device it drives\".\n(3) It does NOT conclude via Rule 11. Mentioning Rule 11 to explain that 3.3 takes\n    precedence and Rule 11 is therefore not reached is CORRECT and passes. Using a\n    Rule 11 limb to reach the final class is a FAIL.\n\nFAIL if the answer is IIa, IIb, or I. FAIL if it reaches its class through Rule 11\nlimbs rather than 3.3. Setting an infusion rate is the textbook \"drives a device\"\ncase, and skipping 3.3 is the most common classification error for software.",
+          "config": {
+            "criteria": "Implementing rule 3.3: software which DRIVES a device or influences its use falls\nwithin the SAME CLASS as that device. Rule 11 is not reached. The pump is Class III,\nso the software is Class III.\n\nPASS requires:\n(1) The stated class is **III**.\n(2) The route is via implementing rule **3.3**, identified by number or clearly\n    described as \"same class as the device it drives\".\n(3) It does NOT conclude via Rule 11. Mentioning Rule 11 to explain that 3.3 takes\n    precedence and Rule 11 is therefore not reached is CORRECT and passes. Using a\n    Rule 11 limb to reach the final class is a FAIL.\n\nFAIL if the answer is IIa, IIb, or I. FAIL if it reaches its class through Rule 11\nlimbs rather than 3.3. Setting an infusion rate is the textbook \"drives a device\"\ncase, and skipping 3.3 is the most common classification error for software.",
+            "focus": "last_message"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 4,
+            "costUsd": 0.20767699999999997,
+            "judgeCostUsd": 0.004155000000000001,
+            "durationSeconds": 33,
+            "startedAt": "2026-09-09T20:26:37.172Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-pGUe1u/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "# MDR Software Classification: infusion pump control app\n\n**Intended purpose (as stated):** \"to set and adjust the delivery rate of the [X] infusion pump under clinician control.\"\n**Qualified as a device:** assumed established — you're treating it as in scope; Art. 2(1) qualification is outside what I verify here.\n\n## Class: III\n\n**Route:** 3.3 → drives a device → same class as the driven device (the Class III pump). Rule 11 is never reached.\n\n## Reasoning\n\n| Step | Question | Answer | Basis |\n|---|---|---|---|\n| 3.1 | Intended purpose | \"to set and adjust the delivery rate of the [X] infusion pump under clinician control\" | `[verified]` |\n| 3.3 | Drives or influences another device? | **Yes** — setting and adjusting the delivery rate is driving the pump, not merely displaying its output | `[verified]` |\n| 3.3 | Consequence | Falls within the same class as that device → **III** | `[verified]` |\n| Rule 11 | Which limb | **Not reached** — Rule 11 only applies to software independent of any other device | `[verified]` |\n| 3.5 | Could a stricter rule apply? | No — III is the top class; nothing can go higher | `[verified]` |\n\nThe \"it doesn't diagnose anything\" point is the thing to set aside. That framing is a Rule 11 argument, and Rule 11 is only for software that is *independent of any other device*. Under 3.3 your app isn't independent — it takes the pump's class whatever Rule 11 would have said on its own. Same for \"it just shows the current rate\": display alone would suggest independence, but the app doesn't just display. Setting the delivery rate is the driving function, and one driving function is enough.\n\n\"Under clinician control\" doesn't change this either. 3.3 has no carve-out for a human in the loop; the software still sets the parameter the pump acts on.\n\n## What would change this\n\n- **The app stops setting the rate.** If the intended purpose were narrowed to display only — read the current rate, no writes to the pump — 3.3 would likely not bite and it would be classified in its own right under Rule 11. That is a real product change, not a documentation change.\n- **The pump's own class is wrong.** Your class is derived from the pump's, so it moves if the pump's does. Worth confirming the Class III call on the pump is settled (it isn't a Rule 11 question and I don't carry the rules that decide it — `[verify]`, likely Rule 12 on administration of medicinal products).\n- **A second, separable software product.** If display and control are genuinely distinct devices with distinct intended purposes, 3.2 applies the rules separately to each. Splitting them to get a lower class on the viewer only works if they really are separate devices with separate purposes and documentation — not one app described two ways.\n\n## Limits\n\n> This classifies software under MDR Annex VIII implementing rules 3.1–3.7 and Rule 11, retrieved verbatim from EUR-Lex on 2026-09-09. It does **not** cover Art. 2(1) qualification, Rules 1–10 or 12–22, Annex XVI, IVDR, MDCG guidance, notified-body practice, or national interpretation. Rule 11 is a floor: under 3.5 a stricter rule this skill does not carry may raise the class. A structured first pass and an audit aid, not legal or regulatory advice, and not a substitute for your notified body or a qualified regulatory professional.\n\nThis is the Annex VIII text applied to the intended purpose as you stated it. The class drives your conformity route, whether you need a notified body, and the depth of your technical documentation, so confirm it with your regulatory lead or notified body before building on it. The three things to put in front of them:\n\n1. **The 3.3 call** — that setting the delivery rate is \"driving\" the pump, so the app inherits its class rather than being classified in its own right.\n2. **That Rule 11 is not reached at all** — the no-diagnosis argument doesn't apply, because Rule 11 only reaches independent software.\n3. **The pump's Class III determination** — your class is entirely derived from it, so it needs to be solid."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 4,
+            "costUsd": 0.1696175,
+            "judgeCostUsd": 0.004794000000000001,
+            "durationSeconds": 43,
+            "startedAt": "2026-09-09T20:27:10.188Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-xQfOg9/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "Read the verbatim text. This one turns entirely on implementing rule 3.3, which runs before Rule 11.\n\n# MDR Software Classification: infusion pump rate-control app\n\n**Intended purpose (as stated):** \"to set and adjust the delivery rate of the [X] infusion pump under clinician control.\"\n**Qualified as a device:** not formally established from what you've given me — but not in real doubt on this description; software that sets a therapeutic delivery parameter on a pump is not a borderline qualification case. Art. 2(1) is still a separate analysis I don't carry `[verify]`.\n\n## Class: III\n\n**Route:** 3.3 → same class as the driven device (the [X] pump, Class III). Rule 11 is never reached.\n\n## Reasoning\n\n| Step | Question | Answer | Basis |\n|---|---|---|---|\n| 3.1 | Intended purpose | \"to set and adjust the delivery rate of the [X] infusion pump under clinician control\" | `[verified]` |\n| 3.3 | Drives or influences another device? | **Yes** — it sets the pump's delivery rate. That is driving the device, not displaying from it. Same class as the pump → **III** | `[verified]` |\n| Rule 11 | Which limb | **Not reached.** 3.3 resolves the class; Rule 11 applies only to software independent of any other device | `[verified]` |\n| Rule 11 | Escalation | n/a | `[verified]` |\n| 3.5 | Could a stricter rule apply? | **No** — III is the highest class; nothing can raise it further | `[verified]` |\n\nThe trap here is the one your own framing points at: \"it doesn't diagnose anything, it just sets the rate.\" That reasoning leads to Rule 11 limb 3 and an answer of Class I. It's wrong, because Rule 11 only ever applies to software that is *independent of any other device*. Yours isn't. The absence of a diagnostic function is irrelevant once 3.3 bites.\n\nThe rate display is the only part that would be independent on its own — pure display of device output usually is. But 3.3 takes the intended purpose as a whole, and the whole includes setting the rate.\n\nOne reading question worth naming rather than burying: 3.2 says accessories \"shall be classified in their own right separately from the device with which they are used,\" which pulls the other way from 3.3. On the Annex VIII text, 3.3 is the software-specific provision and directly addresses software that drives a device, so it governs. I'd put that in front of your regulatory lead as a question they've already answered rather than treat it as open, but you should know it's there in the text.\n\n## What would change this\n\n- **The pump's class.** The app tracks it. If [X] is Class III, the app is III.\n- **Whether it actually sets the rate, or only requests a setting the pump validates.** It doesn't help you: a set-point request still influences the use of the device. 3.3 covers \"drives *or influences*.\" A pump-side safety layer changes your risk file, not your class.\n- **Stripping the control function** so the app only displays the current rate. That would make it plausibly independent, and Rule 11 would then apply — most likely limb 3, Class I, possibly limb 2 if the display is characterised as monitoring. That's a different product, not a reclassification of this one.\n- **Adding rate *recommendations*.** Would not lower anything (still III via 3.3), but would engage Rule 11 limb 1 in parallel and change your clinical evaluation and human-factors story significantly.\n\n## Limits\n\n> This classifies software under MDR Annex VIII implementing rules 3.1–3.7 and Rule 11, retrieved verbatim from EUR-Lex on 2026-09-09. It does **not** cover Art. 2(1) qualification, Rules 1–10 or 12–22, Annex XVI, IVDR, MDCG guidance, notified-body practice, or national interpretation. Rule 11 is a floor: under 3.5 a stricter rule this skill does not carry may raise the class. A structured first pass and an audit aid, not legal or regulatory advice, and not a substitute for your notified body or a qualified regulatory professional.\n\nThis is the Annex VIII text applied to the intended purpose as you stated it. The class drives your conformity route, whether you need a notified body, and the depth of your technical documentation — and at Class III that means Annex IX full quality assurance plus design dossier examination, so the cost of getting it wrong in either direction is high. Confirm it with your regulatory lead or notified body before you build on it. Three things to put in front of them:\n\n1. **The 3.3 call** — that the app drives the [X] pump and therefore takes its class, so Rule 11 is not reached.\n2. **The 3.2 / 3.3 accessory question** — whether they agree 3.3 governs over 3.2's accessory sentence for software.\n3. **Nothing on 3.5** — III is the ceiling, so no stricter-rule check is outstanding."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 4,
+            "costUsd": 0.155071,
+            "judgeCostUsd": 0.004010999999999999,
+            "durationSeconds": 35,
+            "startedAt": "2026-09-09T20:27:53.244Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-6YSuOh/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "# MDR Software Classification: tablet infusion-rate control app\n\n**Intended purpose (as stated):** \"to set and adjust the delivery rate of the [X] infusion pump under clinician control.\"\n**Qualified as a device:** assumed established — see note below `[verify]`\n\n## Class: III\n\n**Route:** 3.3 → same class as the driven device (the [X] infusion pump, Class III). Rule 11 is not reached.\n\n## Reasoning\n\n| Step | Question | Answer | Basis |\n|---|---|---|---|\n| 3.1 | Intended purpose | \"to set and adjust the delivery rate of the [X] infusion pump under clinician control\" | `[verified]` |\n| 3.3 | Drives or influences another device? | **Yes.** Setting and adjusting the delivery rate is driving the pump — it is not display-only. Under 3.3 the software \"shall fall within the same class as the device\": Class III | `[verified]` |\n| Rule 11 | Which limb | **Not reached.** 3.3 runs before Rule 11; Rule 11 applies only to software independent of any other device | `[verified]` |\n| Rule 11 | Escalation | n/a | `[verified]` |\n| 3.5 | Could a stricter rule apply? | No — III is the highest class, so nothing can raise it | `[verified]` |\n\nThe \"it doesn't diagnose anything\" point is what makes this trap-shaped. It's true, and it's irrelevant: it would only matter if you were inside Rule 11, and 3.3 keeps you out of Rule 11 entirely. Reasoning from \"no diagnostic function\" to a low Rule 11 limb is the standard way this classification comes out wrong.\n\nThe rate display, taken alone, would be closer to independent display software. But the same app sets the rate, so 3.3 governs the app as a whole on its stated purpose.\n\n## What would change this\n\n- **The pump's class.** The app inherits it. If the pump were reclassified, the app follows.\n- **Removing the setting function.** A genuinely display-only app — showing the current rate, no ability to set or adjust it, no gating of alarms — would arguably be independent of the pump and fall to Rule 11 instead. As stated, it sets the rate, so this doesn't apply.\n- **Whether the app is a separate device at all**, or is a component/part of the pump covered by the pump's own technical documentation and CE marking. This does not change the class — it's III either way — but it changes whether you have one device or two on the market, and therefore what documentation, UDI and declaration of conformity you produce. Worth settling explicitly if it isn't already.\n- **Qualification under Art. 2(1)** `[verify]`. I've assumed it, since you're describing your own pump's control software. That's outside Annex VIII and outside what I verify.\n\n## Limits\n\n> This classifies software under MDR Annex VIII implementing rules 3.1–3.7 and Rule 11, retrieved verbatim from EUR-Lex on 2026-09-09. It does **not** cover Art. 2(1) qualification, Rules 1–10 or 12–22, Annex XVI, IVDR, MDCG guidance, notified-body practice, or national interpretation. Rule 11 is a floor: under 3.5 a stricter rule this skill does not carry may raise the class. A structured first pass and an audit aid, not legal or regulatory advice, and not a substitute for your notified body or a qualified regulatory professional.\n\nThis is the Annex VIII text applied to the intended purpose as you stated it. The class drives your conformity route, whether you need a notified body, and the depth of your technical documentation, so it should be confirmed by your regulatory lead or notified body before you build on it. The three things to put in front of them: **the 3.3 call** (that setting the rate is driving the pump, not merely displaying from it), **that Rule 11 is therefore never reached**, and **whether the app is a separate device or part of the pump** — same class, different documentation."
+              }
+            ]
+          }
+        ],
+        "without": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 1,
+            "costUsd": 0.12686050000000001,
+            "judgeCostUsd": 0.004118999999999999,
+            "durationSeconds": 51,
+            "startedAt": "2026-09-09T20:28:28.590Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-qFa24Y/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "## Short answer: Class III\n\nYour app inherits the pump's class. That comes from MDR Annex VIII, Chapter II, **implementing rule 3.3**:\n\n> \"Software, which drives a device or influences the use of a device, shall fall within the same class as the device. If the software is independent of any other device, it shall be classified in its own right.\"\n\nSetting and adjusting the delivery rate is the textbook case of *driving* a device — it's not merely \"influencing\" it. So the pump is Class III → the app is Class III.\n\n## Why \"it doesn't diagnose\" doesn't get you to Class I\n\nThat reasoning is a Rule 11 argument, and **Rule 11 doesn't apply here**. Rule 11 governs software that is independent of another device — MDSW that provides information for diagnostic or therapeutic decisions, or monitors physiological processes. Per MDCG 2019-11, driving/influencing software is classified under rule 3.3 instead, and you never reach Rule 11's \"all other software is Class I\" catch-all.\n\nTwo related traps in your framing:\n\n- **\"Under clinician control\" is not a de-risking factor.** A human in the loop doesn't lower the class when the software is the thing that actually commands the delivery rate. If the app sends a wrong rate, or the displayed rate diverges from the delivered rate, the clinician's oversight is exactly what's been defeated.\n- **\"It just shows the current rate\" is a safety-relevant function**, not a passive one. Displaying delivery rate is part of the control loop, and rule 3.3 covers it regardless.\n\n## The prior question you should settle first\n\nIs the app a **separate device** or a **component of the pump**? You said it's your own pump, which makes this live:\n\n- **Component / part of the pump system** — same manufacturer, placed on the market as part of the pump with a single intended purpose and a single technical file. Then it isn't classified separately at all; it's covered by the pump's Class III certificate, and your job is to get it into that device's design controls, risk management, and NB scope.\n- **Separate device in its own right** — placed on the market independently (e.g. app-store distribution, sold or CE-marked separately, own intended-purpose statement). Then it's its own Class III device with its own certificate, UDI, declaration of conformity, and clinical evaluation.\n\nThe fact that you have a standalone intended purpose statement written for it suggests you may be heading toward the second, which is materially more expensive. If it's genuinely inseparable from the pump, the first route is usually the right one — but that's a decision to make deliberately, not by drift.\n\n## One thing worth verifying\n\nInfusion pumps are commonly **Class IIb** under MDR (Rule 12, devices for administering medicinal products; escalated to III typically for implanted pumps, drug-device combinations, or closed-loop delivery of hazardous substances). Since the app's class is a direct copy of the pump's, confirm the pump's Class III basis is correct and documented — if the pump is actually IIb, so is the app.\n\n## What Class III means downstream\n\n- Annex IX conformity assessment: full QMS + technical documentation assessment by your notified body, **including design dossier examination** (Annex IX Chapter II) — not a route where the app can ride along unexamined.\n- **IEC 62304 software safety Class C** — the app can contribute to death or serious injury via over-infusion, and there's no plausible external risk-control measure that segregates it down to B.\n- Clinical evaluation under Article 61 with the higher Class III expectations, plus PMCF.\n- IEC 62366-1 usability engineering is central here — rate-entry UI is where the real hazards live (decimal misplacement, unit confusion, unconfirmed changes).\n- Because it's on a **general-purpose tablet**: you own the computing-platform requirements — OS version control, what happens on app crash / backgrounding / low battery / lost connectivity, and MDCG 2019-16 cybersecurity. A \"fail safe\" story for the pump when the controller disappears is mandatory.\n\nWorth confirming the component-vs-separate-device call with your notified body before you build the technical file around either assumption — that choice is harder to reverse than the classification itself, and this analysis is engineering guidance, not a regulatory sign-off."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 4,
+            "costUsd": 0.251629,
+            "judgeCostUsd": 0.004122000000000001,
+            "durationSeconds": 98,
+            "startedAt": "2026-09-09T20:29:19.655Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-ZTRIJt/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "**Class III** — the app inherits the pump's class.\n\n## Why\n\nMDR Annex VIII, Chapter II, **implementing rule 3.3**:\n\n> \"Software, which drives a device or influences the use of a device, shall fall within the same class as the device. If the software is independent of any other device, it shall be classified in its own right.\"\n\nYour app sets and adjusts the delivery rate. That is driving the device in the most direct sense — it is the control path for therapy delivery. So it takes the pump's class: III.\n\n## The rule you should *not* use\n\nRegulatory folks often reach for **Rule 11** here and land on IIa. That's the wrong rule. Rule 11 applies to MDSW that *provides information* used for diagnostic/therapeutic decisions, or that monitors physiological processes. Per **MDCG 2019-11**, software that drives or influences the use of a hardware device is not MDSW in its own right — it's classified with the device, i.e. rule 3.3. And even if you argued Rule 11 also applied (the \"shows the current rate\" display), implementing rule **3.5** says the highest applicable class wins. Still III.\n\nThe fact that the app doesn't diagnose is irrelevant to classification — control of therapy is enough.\n\n## Two things to pin down\n\n**1. Is the app a separate device, or part of the pump?** Both end in Class III rigor, but the routing differs:\n- *Part of the pump system* (one CE certificate, one tech file, shipped as the pump's UI) — most likely given it's your own pump. No separate classification; it's a software component of the Class III device, covered by the pump's technical documentation, and rate-setting becomes part of the pump's V&V and risk file.\n- *Placed on the market separately* (own CE mark, own UDI-DI, own technical documentation, own Annex IX assessment) — then rule 3.3 classifies it Class III in its own right.\n\n**2. Verify *why* the pump is Class III**, because you inherit that. Class III isn't the default for infusion pumps — Rule 12 caps administering medicinal products in a potentially hazardous manner at **IIb**. Class III usually comes from Rule 14 (incorporates an ancillary medicinal substance) or **Rule 22** (active therapeutic device with integrated diagnostic function that significantly determines patient management — closed-loop). If the pump is actually IIb, your app is IIb. If it's III via Rule 22 and your app participates in the titration/closed loop, that reinforces III.\n\n## What this means in practice\n\n- Notified Body conformity assessment under **Annex IX** (QMS + per-product technical documentation assessment for Class III), or Annex X+XI.\n- **IEC 62304 safety class C** almost certainly — a wrong rate is a plausible death/serious-injury path. Note 62304 class is independent of MDR class, but here they align.\n- Clinical investigation generally expected (Art. 61(4)), unless you can leverage the pump family's existing data.\n- **SSCP** (Art. 32), annual **PSUR** (Art. 86), PMCF plan. Article 54 CECP does *not* apply — that's Class III *implantable* and Class IIb active administering devices.\n\nThe thing I'd worry about most: a consumer tablet and a wireless link are now a safety-critical control path. Expect hard NB questions on loss-of-link behaviour (the pump must hold last commanded rate and never act on a partial command), OS-as-SOUP and OS updates, minimum platform specification, touch mis-entry and IEC 62366-1 usability for rate entry, and whether any **alarms** are annunciated on the app — reviewers are generally unwilling to see safety alarms depend on general-purpose hardware, so those usually have to stay on the pump. Relevant: IEC 62366-1, IEC 60601-2-24, IEC 60601-1-8, IEC 81001-5-1, IEC 60601-1-2 plus AAMI TIR69 for the wireless link.\n\nThis is my reading of the rules, not regulatory advice — confirm the final classification and the separate-device-vs-component question with your Notified Body, since it drives your whole submission strategy."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 3,
+            "costUsd": 0.21784900000000001,
+            "judgeCostUsd": 0.005364000000000004,
+            "durationSeconds": 85,
+            "startedAt": "2026-09-09T20:30:57.665Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-Id1Ct4/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "Memory directory isn't readable in this session, so I can't check or save notes there — here's the answer.\n\n## Class III\n\nNot IIa, not IIb. The reasoning most people get wrong here is that they reach for Rule 11 (the \"software rule\") and land on IIa. Rule 11 doesn't apply to your app.\n\n**The rule that governs is an implementing rule, not a classification rule.** MDR Annex VIII, Chapter II, §3.3:\n\n> *Software, which drives a device or influences the use of a device, shall fall within the same class as the device. If the software is independent of any other device, it shall be classified in its own right.*\n\nYour app sets the delivery rate. That is the textbook definition of \"drives a device.\" So it inherits the pump's class — III. You never get to the Annex VIII Chapter III rules at all.\n\n**Why Rule 11 is a red herring:** Rule 11 covers software *intended to provide information which is used to take decisions*. It's about software that outputs information to a human who then acts. Yours acts on the pump directly. MDCG 2019-11 draws exactly this line — \"software driving or influencing the use of a device\" is a separate category from MDSW subject to Rule 11.\n\nTwo things in your framing that feel like they should lower the class but don't:\n\n- **\"It doesn't diagnose anything.\"** Irrelevant. Diagnosis is one route into Rule 11; therapy delivery is the other, and driving-software bypasses both.\n- **\"Under clinician control.\"** Also irrelevant. A clinician is in the loop on essentially every infusion pump, and the hazard — an entered or transmitted rate that isn't the intended rate — is not mitigated by the clinician being the one who typed it. If anything, the human-in-the-loop is the *source* of the classic overinfusion hazard (decimal point, wrong units, wrong concentration), which is why IEC 62366-1 usability engineering will be a focal point of your NB review.\n\nThe \"shows the current rate\" function is a monitoring/display claim that on its own might sit lower, but classification takes the highest applicable class across all the intended purposes, so it doesn't move anything.\n\n## Two things to verify before you bank on this\n\n**1. Is the pump genuinely Class III?** This matters because your app's class is entirely derivative. Under MDR Rule 12, a typical external infusion pump lands in **IIb** (\"administering medicinal products... in a manner that is potentially hazardous\"). Class III for a pump usually means one of: it's active *implantable* (Rule 8), it incorporates a medicinal substance (Rule 14), or it's indicated for a therapy that pulls it up. If someone carried \"Class III\" over from an old MDD determination or an FDA classification (FDA Class II/III uses a completely different scheme and doesn't map), re-derive it. If the pump turns out to be IIb, your app is IIb.\n\n**2. Is the app a *part* of the pump, or a device placed on the market in its own right?** Same manufacturer, so you have a genuine choice, and it's the bigger commercial decision:\n\n- **As a component of the pump system** — it lives inside the pump's technical documentation, shares its CE certificate, its UDI-DI, its declaration of conformity. One certificate to maintain. But every app release is a change to a Class III device, so it runs through your change-control and possibly notified body notification for significant changes. Ties your app release cadence to pump lifecycle governance.\n- **As a standalone device / accessory** — its own classification (still III via §3.3), own UDI, own DoC, own clinical evaluation and PMCF. More overhead, but decouples release cycles and lets you support multiple pump models.\n\nFor a single-pump control app from the pump's own manufacturer, folding it into the pump's technical documentation is usually the cleaner path. If you're planning to support a family of pumps or third-party ones later, standalone is worth the overhead.\n\n## What Class III actually costs you\n\n- **Conformity assessment**: Annex IX (full QMS + technical documentation assessment, including design examination) or Annex X+XI. No self-certification, no Annex IX Chapter I-only shortcut.\n- **Clinical evaluation** under Article 61, with a **PMCF plan mandatory** and a **PSUR annually** (not every two years).\n- **IEC 62304 software safety class C** almost certainly — overinfusion can contribute to death. Note this is a *separate* determination from the MDR class; you can't infer one from the other, though here they both come out at the top. Class C means full architectural design, detailed design down to unit level, and unit verification documented.\n- **Standards in scope**: IEC 62304, IEC 62366-1 (usability — do a proper summative validation on rate entry), ISO 14971, IEC 82304-1 (health software products), and IEC 60601-1 / 60601-1-8 / **60601-2-24** apply at the pump-plus-app system level even though your part is software. Plus MDCG 2019-16 for cybersecurity.\n- **The tablet is uncontrolled hardware.** Your risk file needs to handle OS auto-updates, competing apps, touchscreen mis-registration, display failure or dimming, battery depletion mid-infusion, and loss of the pump link. Specify minimum hardware/OS in the IFU and state what happens to a running infusion when the app dies — the pump must fail safe independently.\n\nOne drafting note: your intended purpose statement is thin for a Class III submission. Expect the notified body to want patient population, clinical setting, user profile, the drug classes/therapies in scope, and explicit exclusions. That sentence is also what fixes your classification, so it's worth writing precisely before it's load-bearing.\n\nStandard caveat: this is the analysis, not a determination — your RA function owns the written classification rationale and your notified body has the final say. But I'd be surprised if either landed anywhere other than \"same class as the pump.\""
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 1,
+        "passRate": 1,
+        "scoreWithout": 1,
+        "passRateWithout": 1,
+        "delta": 0
+      }
+    },
+    {
+      "name": "limb1-escalation-iii",
+      "dir": "evals/02-limb1-escalation-iii",
+      "source": "prose",
+      "promptMarkdown": "Classify this under MDR please.\n\nStandalone software, no connection to any other device. It analyses CT angiography\nimages and flags suspected large-vessel occlusion strokes, and the output is used by\nthe on-call neurointerventionalist to decide whether to take the patient straight to\nthrombectomy or not. Intended purpose: \"to provide triage information to support the\ndecision to proceed to mechanical thrombectomy in suspected acute ischaemic stroke.\"",
+      "runsPerCase": 3,
+      "timeoutSeconds": 300,
+      "maxTurns": 10,
+      "graders": [
+        {
+          "name": "criteria",
+          "type": "llm",
+          "weight": 1,
+          "graderMarkdown": "Independent software (3.3 does not divert it), so Rule 11 applies. It provides\ninformation used to take a decision with diagnostic/therapeutic purpose — limb 1,\nbase class IIa. The escalation test is the IMPACT OF THE DECISION: a missed or wrong\nlarge-vessel-occlusion triage decision may cause death or irreversible neurological\ndeterioration. That is the class III trigger.\n\nPASS requires:\n(1) The stated class is **III**.\n(2) It reaches III through **Rule 11 limb 1's escalation**, on the basis that the\n    decision may cause death or irreversible deterioration — not merely because\n    stroke is a serious disease.\n(3) It confirms or implies the software is independent, so 3.3 does not divert to\n    another device's class.\n\nAccept IIb ONLY if the response explicitly reasons that the relevant impact is\nserious deterioration or a surgical intervention rather than death/irreversible harm,\nAND acknowledges the III trigger and explains why it does not apply. A bare IIb with\nno such reasoning is a FAIL.\n\nFAIL if the answer is IIa or I, or if the escalation is justified by disease severity\nalone rather than by what the decision may cause.",
+          "config": {
+            "criteria": "Independent software (3.3 does not divert it), so Rule 11 applies. It provides\ninformation used to take a decision with diagnostic/therapeutic purpose — limb 1,\nbase class IIa. The escalation test is the IMPACT OF THE DECISION: a missed or wrong\nlarge-vessel-occlusion triage decision may cause death or irreversible neurological\ndeterioration. That is the class III trigger.\n\nPASS requires:\n(1) The stated class is **III**.\n(2) It reaches III through **Rule 11 limb 1's escalation**, on the basis that the\n    decision may cause death or irreversible deterioration — not merely because\n    stroke is a serious disease.\n(3) It confirms or implies the software is independent, so 3.3 does not divert to\n    another device's class.\n\nAccept IIb ONLY if the response explicitly reasons that the relevant impact is\nserious deterioration or a surgical intervention rather than death/irreversible harm,\nAND acknowledges the III trigger and explains why it does not apply. A bare IIb with\nno such reasoning is a FAIL.\n\nFAIL if the answer is IIa or I, or if the escalation is justified by disease severity\nalone rather than by what the decision may cause.",
+            "focus": "last_message"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 4,
+            "costUsd": 0.192993,
+            "judgeCostUsd": 0.005513999999999998,
+            "durationSeconds": 54,
+            "startedAt": "2026-09-09T20:32:22.273Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-DqOdcA/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "# MDR Software Classification: CTA large-vessel-occlusion triage software\n\n**Intended purpose (as stated):** *\"to provide triage information to support the decision to proceed to mechanical thrombectomy in suspected acute ischaemic stroke.\"*\n\n**Qualified as a device:** Not formally established by anything you've given me. The stated purpose is diagnostic in substance (analysing images to detect a condition, informing treatment), so qualification under Art. 2(1) is very unlikely to be the live issue here — but it is a separate analysis `[verify]` and I'm assuming it's settled.\n\n## Class: III\n\n**Route:** 3.3 independent → Rule 11 limb 1, escalated to III.\n\n## Reasoning\n\n| Step | Question | Answer | Basis |\n|---|---|---|---|\n| 3.1 | Intended purpose | *\"to provide triage information to support the decision to proceed to mechanical thrombectomy in suspected acute ischaemic stroke\"* | `[verified]` |\n| 3.3 | Drives or influences another device? | **No.** It consumes images a CT scanner already produced; it does not set acquisition parameters, gate the scanner, or change how it is operated. Independent → classified in its own right. | `[verified]` |\n| Rule 11 | Which limb | **Limb 1.** The purpose as written is to provide information used to take a therapeutic decision (proceed to thrombectomy or not). Base class IIa. | `[verified]` |\n| Rule 11 | Escalation | **III.** The escalation is read against the impact of the decision. A wrong decision here may cause death or irreversible deterioration — a missed LVO means no thrombectomy and loss of salvageable brain tissue (irreversible infarction, permanent deficit, death); a false positive sends a patient to an unnecessary intra-arterial procedure carrying its own risk of vessel injury, haemorrhage and death. Either direction of error reaches the first escalation limb. The IIb limb (\"a surgical intervention\") is also plainly met, but III is the stricter sub-rule and under 3.5 it governs. | `[verified]` |\n| 3.5 | Could a stricter rule apply? | **No** — III is the highest class under MDR, so nothing this skill omits can raise it. 3.5 has already been applied *within* Rule 11 to pick III over IIb. | `[verified]` |\n\n## The argument you will hear against this, and where it actually lives\n\nThe standard push-back is that the word *triage* means the software only prioritises, that the neurointerventionalist independently reads the CTA, and that a human in the loop keeps the impact of any software error below the III threshold — landing it at IIa or IIb.\n\nThat argument does not come from the Annex VIII text. Limb 1 asks whether the software is *intended to provide information which is used to take* the decision; a clinician making the final call doesn't remove that, and the escalation then asks what the decision may cause, not how many people reviewed it. Reading a human-in-the-loop mitigation into the escalation turns on **MDCG 2019-11**, which is Commission guidance rather than the regulation, and which I do not verify. If you want to run that line, point me at the passage and I'll flag the question rather than adjust the class.\n\nTwo further things work against it on your own facts: the purpose statement ties the output directly to *\"the decision to proceed to mechanical thrombectomy\"*, and the described workflow is taking the patient **straight to** thrombectomy — which is precisely the pathway where the software's output is time-critical and least likely to be independently re-adjudicated first.\n\n## What would change this\n\n- **A connection to another device.** You say there is none. If a future version fed acquisition protocols back to the scanner or drove a workstation, 3.3 would take over and the driven device's class would govern instead.\n- **A narrower intended purpose.** If the purpose were genuinely restricted to worklist prioritisation or notification, with the treatment decision made on independent review and the software's output explicitly not for diagnostic or therapeutic decision-making, limb 1 would be arguable. As written, it is not — the purpose names the therapeutic decision.\n- **The reverse.** If the software is capable of more than the stated purpose (e.g. producing a diagnosis rather than a flag), that doesn't raise the class under 3.1 — but it does raise whether the intended purpose is stated correctly, which is worth checking.\n\n## Limits\n\n> This classifies software under MDR Annex VIII implementing rules 3.1–3.7 and Rule 11, retrieved verbatim from EUR-Lex on 2026-09-09. It does **not** cover Art. 2(1) qualification, Rules 1–10 or 12–22, Annex XVI, IVDR, MDCG guidance, notified-body practice, or national interpretation. Rule 11 is a floor: under 3.5 a stricter rule this skill does not carry may raise the class. A structured first pass and an audit aid, not legal or regulatory advice, and not a substitute for your notified body or a qualified regulatory professional.\n\n---\n\nThis is the Annex VIII text applied to the intended purpose as you stated it. The class drives your conformity route, whether you need a notified body, and the depth of your technical documentation, so it should be confirmed by your regulatory lead or notified body before you build on it. The three things to put in front of them:\n\n1. **The 3.3 call** — that the software is independent and not influencing the use of the CT scanner.\n2. **The limb and escalation** — limb 1, escalated to III on death/irreversible deterioration rather than stopping at IIb on \"surgical intervention\".\n3. **The human-in-the-loop / MDCG 2019-11 question** — whether they accept that the neurointerventionalist's independent review moderates the impact of the decision, since that is the only route to a lower class and it rests on guidance, not on the regulation."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 4,
+            "costUsd": 0.17188450000000002,
+            "judgeCostUsd": 0.005586000000000008,
+            "durationSeconds": 53,
+            "startedAt": "2026-09-09T20:33:16.395Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-EGdoKx/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "# MDR Software Classification: CTA large-vessel-occlusion triage software\n\n**Intended purpose (as stated):** *\"to provide triage information to support the decision to proceed to mechanical thrombectomy in suspected acute ischaemic stroke.\"*\n**Qualified as a device:** not established here — see note below.\n\n## Class: III\n\n**Route:** 3.3 independent → Rule 11, limb 1, escalated to III.\n\n## Reasoning\n\n| Step | Question | Answer | Basis |\n|---|---|---|---|\n| 3.1 | Intended purpose | *\"to provide triage information to support the decision to proceed to mechanical thrombectomy in suspected acute ischaemic stroke\"* — classification runs on this, not on what the algorithm can do | `[verified]` |\n| 3.3 | Drives or influences another device? | No. Standalone, no connection to another device; it analyses images already acquired and does not set a parameter on, gate, or alter the operation of the CT scanner or any interventional device. Classified in its own right | `[verified]` |\n| Rule 11 | Which limb | Limb 1 — information used to take decisions with diagnosis or therapeutic purposes. The stated purpose is explicitly to support a treatment decision. Base class IIa | `[verified]` |\n| Rule 11 | Escalation | **III.** The decision supported is whether to proceed to thrombectomy in suspected LVO stroke. A wrong output may cause death or irreversible deterioration: a missed occlusion means the reperfusion decision is not taken or is delayed, and infarcted brain tissue does not recover. That is the top escalation limb, so it governs | `[verified]` |\n| Rule 11 | Lower escalation also engaged | Yes — a false positive routes the patient to mechanical thrombectomy, a surgical intervention, which is the IIb limb. Under 3.5 the strictest sub-rule wins, so III stands | `[verified]` |\n| 3.5 | Could a stricter rule apply? | No — III is the highest class, so no uncarried rule can raise it. 3.5 has already been applied *within* Rule 11 to pick III over IIb | `[verified]` |\n\nTwo things worth separating out, because they are where this classification is most often argued down:\n\n**\"Triage\" and \"support\" do not lower the class.** The escalation in limb 1 is read against the impact of the decision, not against how contributory the software's role in it is, and not against the severity of the disease alone. Rule 11 has no \"clinician in the loop\" discount on its face. Here both the impact test and the disease severity point the same way, so nothing turns on the distinction — but if you are relying on the neurointerventionalist's independent review to argue for IIb, that argument is not in the Annex VIII text. It lives in MDCG 2019-11, which is Commission guidance rather than the regulation and which I do not verify. I can flag the guidance question, or you can point me at the passage.\n\n**Check that the stated intended purpose matches the described use.** You describe the output as being used to decide whether to take the patient *straight* to thrombectomy — i.e. it is decisive for the pathway, not merely one input among several reviewed at leisure. Under 3.7 a device provides direct diagnosis when it gives the diagnosis by itself *or* provides decisive information for it. Nothing about this changes the class (already III), but \"provide triage information to support\" reads as softer than the use you describe, and an intended purpose that understates actual use is a documentation problem independent of classification.\n\n## What would change this\n\n- **The decision impact.** If the intended purpose were narrowed so the output could not bear on whether reperfusion happens — e.g. worklist prioritisation only, with the thrombectomy decision explicitly made on independent review of the source images — the escalation argument changes. Be careful: that is a real restriction on the product, not a wording change, and the surgical-intervention limb (IIb) would still need to be ruled out.\n- **The 3.3 call.** If a future version pushes results to, gates, or configures another device — an angiography suite, an injector, a scanner protocol — 3.3 takes over and the class becomes that device's class regardless of Rule 11.\n- **Qualification.** If the product turns out not to meet Art. 2(1), there is no class at all.\n\n## Note on qualification\n\nI have classified on the assumption that the product is already qualified as a medical device under Art. 2(1). Nothing you have given me settles that, and it is a separate analysis this skill does not cover. On the stated intended purpose that assumption looks uncontroversial, but it should be recorded as an explicit determination in your technical documentation rather than inherited from the classification.\n\n## Before you build on this\n\nThis is the Annex VIII text applied to the intended purpose as you stated it. The class drives your conformity route, whether you need a notified body, and the depth of your technical documentation — at III it also means design-examination scrutiny — so it should be confirmed by your regulatory lead or notified body before you build on it. The three things to put in front of them: the 3.3 independence call; the limb 1 escalation to III on death/irreversible deterioration, with the IIb surgical-intervention limb also engaged and 3.5 resolving to III; and whether \"triage information to support\" is the right statement of intended purpose given the pathway use you describe.\n\n## Limits\n\n> This classifies software under MDR Annex VIII implementing rules 3.1–3.7 and Rule 11, retrieved verbatim from EUR-Lex on 2026-09-09. It does **not** cover Art. 2(1) qualification, Rules 1–10 or 12–22, Annex XVI, IVDR, MDCG guidance, notified-body practice, or national interpretation. Rule 11 is a floor: under 3.5 a stricter rule this skill does not carry may raise the class. A structured first pass and an audit aid, not legal or regulatory advice, and not a substitute for your notified body or a qualified regulatory professional."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 4,
+            "costUsd": 0.19551649999999998,
+            "judgeCostUsd": 0.006108000000000009,
+            "durationSeconds": 58,
+            "startedAt": "2026-09-09T20:34:09.521Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-B7r1xl/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "I've read the verbatim Annex VIII text. Here's the classification.\n\n# MDR Software Classification: CTA large-vessel-occlusion triage software\n\n**Intended purpose (as stated):** *\"to provide triage information to support the decision to proceed to mechanical thrombectomy in suspected acute ischaemic stroke.\"*\n\n**Qualified as a device:** Not formally established by you, but the stated purpose is a diagnostic/therapeutic-decision purpose on Art. 2(1) terms. I'm classifying on the assumption qualification is settled — if it isn't, that's the prior question and it isn't one this analysis answers. `[verify]`\n\n## Class: III\n\n**Route:** 3.3 independent → Rule 11 limb 1 → escalated past IIb (surgical intervention) to III (death or irreversible deterioration).\n\n## Reasoning\n\n| Step | Question | Answer | Basis |\n|---|---|---|---|\n| 3.1 | Intended purpose | \"to provide triage information to support the decision to proceed to mechanical thrombectomy in suspected acute ischaemic stroke\" | `[verified]` |\n| 3.3 | Drives or influences another device? | **No.** Standalone; consumes CTA images already acquired. It does not set acquisition parameters, gate the scanner, or change how the CT is operated. Classified in its own right. | `[verified]` |\n| Rule 11 | Which limb | **Limb 1.** Provides information used to take decisions with diagnosis or therapeutic purposes. Not monitoring — it's a point-in-time image analysis, so limb 2 is not engaged. | `[verified]` |\n| Rule 11 | Escalation | **III.** The decision the output feeds is \"thrombectomy or not\" in suspected LVO stroke. A wrong decision — chiefly a false negative or a delayed flag — may cause irreversible neurological deterioration or death. That is the limb-1 third indent. | `[verified]` |\n| 3.5 | Could a stricter rule apply? | **Moot.** III is the highest class; 3.5 can only raise, not lower, so no further rule needs checking to protect the answer. | `[verified]` |\n\n### Why not IIb\n\nIIb is the floor here, not the answer. The output routinely triggers **a surgical intervention** (mechanical thrombectomy), which on its own reaches IIb. But the escalation test asks what the decision *may cause*, and both directions of error in this pathway reach the III indent: a missed LVO in the acute window is an irreversible-deterioration-or-death outcome, not a serious-but-recoverable one. Where both indents are engaged, 3.5 gives you the stricter one.\n\n### The \"it's only triage / a doctor confirms it\" argument\n\nYou'll hear that a human neurointerventionalist reading the images breaks the causal chain, so the software only informs rather than decides — pulling it to IIa or IIb. Two things about that:\n\n- It is **not in the Annex VIII text.** Rule 11's escalation has no human-in-the-loop carve-out. The verbatim provision turns on the impact of the decision the information is used to take, and your own intended purpose names that decision as the thrombectomy decision.\n- It is essentially an **MDCG 2019-11** argument. That is Commission guidance, not the regulation, I don't verify it here, and it must not be treated as binding. If you want to run it, put the specific passage in front of your regulatory lead rather than relying on my characterisation of it. `[verify]`\n\n### A note on your intended-purpose wording (not a classification finding)\n\n\"Triage information to support the decision\" reads as softer than the use you describe — output used to decide whether to take the patient **straight to** thrombectomy. Under 3.7, a device provides direct diagnosis when it supplies *decisive* information, and bypassing a step in the pathway on the strength of the flag looks decisive. Under 3.1 the stated purpose governs, so this doesn't change the class — but the gap between the wording and the described use is the kind of thing a notified body will press on, and here it wouldn't help you anyway, since the stated purpose already names the thrombectomy decision.\n\n## What would change this\n\n- **A different 3.3 answer.** If the software in fact sets CT acquisition parameters, triggers a rescan, or otherwise changes how the scanner is operated, it takes the scanner's class instead and Rule 11 is never reached. You've said no connection to any other device, so this is closed unless that's inaccurate.\n- **An intended purpose that genuinely excludes the treatment decision** — e.g. worklist prioritisation only, with the thrombectomy decision explicitly outside the claim and the standard-of-care read unchanged and unbypassed. That is a real product and labelling change, not a rewording, and it would need the pathway to actually work that way.\n- **Whether a wrong output can reach the patient at all**, given the clinical workflow. This is the fact the IIb-vs-III line turns on. As described — output used to route the patient directly to thrombectomy — it reaches III.\n\n## Limits\n\n> This classifies software under MDR Annex VIII implementing rules 3.1–3.7 and Rule 11, retrieved verbatim from EUR-Lex on 2026-09-09. It does **not** cover Art. 2(1) qualification, Rules 1–10 or 12–22, Annex XVI, IVDR, MDCG guidance, notified-body practice, or national interpretation. Rule 11 is a floor: under 3.5 a stricter rule this skill does not carry may raise the class. A structured first pass and an audit aid, not legal or regulatory advice, and not a substitute for your notified body or a qualified regulatory professional.\n\n---\n\nThis is the Annex VIII text applied to the intended purpose as you stated it. The class drives your conformity route, whether you need a notified body, and the depth of your technical documentation — and III is a materially heavier route than IIb — so confirm it with your regulatory lead or notified body before you build on it. The three things to put in front of them:\n\n1. **The 3.3 call** — independent, therefore classified in its own right, on the basis that the software doesn't influence operation of the CT scanner.\n2. **The limb and escalation** — limb 1, escalated to III because the thrombectomy decision may cause death or irreversible deterioration; IIb (surgical intervention) is the floor, not the answer.\n3. **The human-in-the-loop question** — whether the confirming clinician mitigates the escalation. That turns on MDCG 2019-11 rather than the Annex VIII text, and it's the single point most likely to move this to IIb if it moves at all."
+              }
+            ]
+          }
+        ],
+        "without": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 1,
+            "costUsd": 0.15403874999999997,
+            "judgeCostUsd": 0.005090999999999991,
+            "durationSeconds": 68,
+            "startedAt": "2026-09-09T20:35:07.510Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-I3hTl0/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "## Short answer: **Class III** under Rule 11, on the intended purpose as written.\n\n## 1. Qualification\n\nIt's a medical device in its own right, not an accessory. Article 2(1) covers software intended for \"diagnosis, prevention, monitoring, prediction, prognosis\" — flagging suspected LVO is diagnostic. Under MDCG 2019-11 it's MDSW because it performs an action on data beyond storage/archival/communication/simple search, and it does so for the benefit of an individual patient.\n\nYour \"no connection to any other device\" point is handled explicitly by Annex VIII, implementing rule **3.3**: software that drives or influences another device takes that device's class; *\"if the software is independent of any other device, it shall be classified in its own right.\"* So standalone status doesn't lower anything — it just means you classify the software on its own merits, which is what Rule 11 does.\n\n## 2. Rule 11, first limb\n\n> Software intended to provide information which is used to take decisions with diagnosis or therapeutic purposes is class IIa, **except** if such decisions have an impact that may cause:\n> — death or an irreversible deterioration of a person's state of health → **class III**\n> — a serious deterioration of a person's state of health or a surgical intervention → **class IIb**\n\nTwo steps:\n\n**Does it provide information used to take a diagnostic/therapeutic decision?** Yes — your intended purpose says so in terms: \"to support the decision to proceed to mechanical thrombectomy.\" That's the trigger phrase for the rule, essentially verbatim.\n\n**What's the impact of a wrong decision?** A false negative means an LVO patient is not taken to thrombectomy inside the treatment window. The expected consequence is death or permanent neurological deficit — the first indent, not the second. A false positive is also bad (an unnecessary endovascular procedure, which is at minimum the \"surgical intervention\" indent and carries its own mortality), but classification takes the worst credible outcome and Rule 3.5 says the highest applicable class wins.\n\nThat lands on **Class III**.\n\n## 3. The argument for IIb, and why I don't think it holds here\n\nThe usual route to IIb is to argue the software isn't *significant* to the decision — the neurointerventionalist independently reviews the CTA anyway, the tool only reorders a worklist, so the software can't itself cause the missed treatment. Worth knowing two things about that:\n\n- MDR has **no clinician-in-the-loop carve-out**. That's a US concept (21st Century Cures §520(o), FDA's CDS guidance). MDCG 2019-11 is explicit that a human making the final call does not reduce the class. Under MDR the question is what the information is *for* and how bad it is if wrong.\n- Your own intended purpose forecloses it. \"Support the decision to proceed to mechanical thrombectomy\" is driving clinical management, not administrative prioritisation.\n\nIf you genuinely want to argue a lower class, that has to be a **product and labelling decision made now**, not a classification argument made later: no diagnostic claim, output framed as notification/workflow prioritisation only, explicit statement that it does not replace image review and is not to be used to decide treatment, no LVO \"flag\" presented as a finding. That's a materially different product, it's still likely IIa at best, and notified bodies have been sceptical of the reframing where the clinical workflow clearly reacts to the output. My recommendation is to classify at III and design for it rather than build a IIb dossier you may have to redo.\n\n## 4. What Class III commits you to\n\n- Notified body **Annex IX** conformity assessment: full QMS audit **plus** technical documentation assessment of *this device* (not sampling, as at IIa).\n- Annex IX Section 5.1 **clinical evaluation consultation procedure** — the expert panel referral. Budget real calendar time.\n- **Article 61(4)**: clinical investigations are expected for implantable and Class III devices. You're not implantable, so the derogation route via equivalence or existing data is open in principle, but for a novel algorithm you should plan on your own prospective clinical data — standalone sensitivity/specificity against a neuroradiology reference standard, ideally with clinical-workflow endpoints (door-to-groin time).\n- **PSUR updated annually** and submitted to the NB (Art. 86), PMCF plan, SSCP required, UDI/EUDAMED, Class III implant card N/A.\n- Downstream: **IEC 62304 software safety class C**, IEC 14971, IEC 82304-1, and for the ML component expect the NB to press hard on training/test data provenance, demographic and scanner-vendor generalisation, off-distribution behaviour, and change control for retraining. Also GSPR 17 (Annex I) and, once applicable, the AI Act — an MDR Class III device with an NB is **high-risk** under Annex I of the AI Act, so plan the two conformity assessments together.\n\n## One drafting note\n\n\"Provide triage information\" and \"support the decision to proceed to mechanical thrombectomy\" pull in different directions in the same sentence — the first sounds like workflow, the second is unambiguously therapeutic decision support. Pick one and be consistent across the IFU, the technical documentation, the clinical evaluation and your marketing material. Inconsistency there is a reliable way to attract NB findings, and marketing claims that outrun the IFU are a common source of them."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 1,
+            "costUsd": 0.17049775,
+            "judgeCostUsd": 0.005400000000000009,
+            "durationSeconds": 75,
+            "startedAt": "2026-09-09T20:36:15.590Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-X2mbaK/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "## Bottom line: Class III, Rule 11\n\n## 1. Qualification\n\nSoftware with a medical purpose under Art. 2(1) — \"diagnosis, prevention, monitoring, prediction, prognosis\" — and it's MDSW in the sense of MDCG 2019-11: it performs an action on data beyond storage/search/lossless compression (it detects and flags a pathology), and that action is for the benefit of an individual patient. So it's a device, not a wellness/administrative tool.\n\nBecause there is no connection to any other device, Annex VIII implementing rule 3.3 puts it in the second limb: *\"If the software is independent of any other device, it shall be classified in its own right.\"* And per Art. 2(4), software is deemed an **active device**, so you go to the active-device rules in Annex VIII Chapter III — Rule 11.\n\n## 2. Classification under Rule 11\n\nRule 11, first paragraph, is a three-step ladder:\n\n| Impact of the decision the information informs | Class |\n|---|---|\n| Baseline — information used to take decisions with diagnosis or therapeutic purposes | IIa |\n| Serious deterioration of health, or a surgical intervention | IIb |\n| **Death or irreversible deterioration of health** | **III** |\n\n**Step 1 — does the baseline bite?** Yes. Your stated intended purpose is explicit that the output is used \"to support the decision to proceed to mechanical thrombectomy.\" That is information used to take a decision with a therapeutic purpose. You are at least IIa; there's no arguing this into the \"information used for non-decision purposes\" bucket.\n\n**Step 2 — escalate.** Assess the impact of an *erroneous* output on both sides:\n\n- **False negative** (LVO missed / not flagged): thrombectomy delayed or not performed within the treatment window. The clinical consequence is a completed large-territory infarct — permanent hemiplegia, aphasia, dependency, or death. That is squarely \"death or an irreversible deterioration.\"\n- **False positive**: patient taken for an unnecessary intra-arterial procedure — vessel dissection, intracranial haemorrhage, periprocedural stroke, death. Also in the top tier.\n\nEither failure mode alone lands you in **Class III**.\n\n**Step 3 — is the human in the loop a mitigation?** No, not for classification purposes. Classification under Annex VIII is driven by intended purpose and the potential harm of the information provided; it is not reduced by the assumption that the neurointerventionalist would catch the error, and it is not reduced by risk-control measures you implement. Risk controls belong in your ISO 14971 file, not in the Rule 11 analysis. Reviewers are consistently strict on this point.\n\nRule 11's second and third paragraphs (monitoring of vital physiological parameters) don't apply. Rule 22 (active therapeutic with integrated diagnostic function determining patient management) doesn't apply either — no closed loop, no therapeutic delivery. If it did, it would also be III, so implementing rule 3.5 (highest class wins) changes nothing.\n\n## 3. The one thing worth pushing back on\n\nThe intended purpose as written is what makes this Class III rather than IIb. Some LVO tools on the market are positioned as pure **notification/prioritisation** software: intended purpose limited to alerting a specialist to review images sooner, with an explicit statement that the output is not intended to be used for diagnosis or treatment decisions and that diagnosis rests on the clinician's own review of the source images. That framing is argued down to IIb, sometimes IIa.\n\nYou cannot have it both ways. If the labelling says \"notification only\" but the actual clinical workflow, your clinical evidence, and your marketing describe it as informing the go/no-go on thrombectomy, a notified body will reclassify you — and MDCG 2019-11 is clear that the stated intended purpose must be consistent with actual claims. Given your description (\"the output is used by the on-call neurointerventionalist to decide whether to take the patient straight to thrombectomy\"), **Class III is the honest answer.** Decide which product you're actually building before you write the IFU.\n\n## 4. What Class III commits you to\n\n- **Notified body** conformity assessment: Annex IX (QMS + technical documentation assessment of the device, mandatory for every Class III device), or Annex X + XI. No self-certification route.\n- **Clinical investigation** presumptively required under Art. 61(4), unless you can rely on the narrow exemptions (equivalence to your own already-marketed device, or sufficient clinical data meeting common specifications). Plan for a prospective study.\n- **SSCP** (Summary of Safety and Clinical Performance, Art. 32), **annual PSUR** (Art. 86), PMCF plan, UDI + EUDAMED registration.\n- No Art. 54 expert-panel scrutiny — that applies to Class III *implantables* and certain Class IIb active devices, not to standalone software.\n- Standards: IEC 62304 (expect **software safety class C**), IEC 82304-1, ISO 14971, ISO 13485, IEC 62366-1. Usability engineering will get heavy scrutiny given the automation-bias risk in a time-pressured stroke pathway.\n- **EU AI Act**: as a Class III device requiring third-party conformity assessment, this is a high-risk AI system under Art. 6(1)/Annex I. Those obligations apply from 2 August 2027, and are intended to be assessed through the same notified body procedure — build the Art. 9–15 requirements (risk management, data governance, logging, human oversight, accuracy/robustness) into your MDR file now rather than bolting them on later.\n\nFinal call on the class sits with your notified body, so put a written Rule 11 justification — including the false-negative/false-positive harm analysis above — in the technical documentation rather than just asserting the class."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 1,
+            "costUsd": 0.17033075,
+            "judgeCostUsd": 0.004608000000000008,
+            "durationSeconds": 78,
+            "startedAt": "2026-09-09T20:37:30.790Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-7pZFnP/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "## Bottom line\n\n**Class III**, under **Rule 11, first indent** of Annex VIII MDR. Not IIa, and — despite the \"triage\" framing — most likely not IIb either.\n\n*(Regulatory reasoning, not legal advice — your notified body's view governs.)*\n\n## Getting there\n\n**Qualification.** It's MDSW: it performs an action on data beyond storage, archiving, communication or lossless compression, and does so for the benefit of individual patients (MDCG 2019-11 Rev. 1). Article 2(4) MDR deems software an active device.\n\n**Which rule.** Annex VIII implementing rule 3.3 says software that drives or influences the use of another device falls in that device's class, but *independent* software is classified in its own right. You've told me it's standalone with no connection, so 3.3's first limb is out and Rule 11 applies directly. Worth keeping rule 3.5 in mind (strictest rule wins) — nothing else here bites, but check Rule 22 doesn't creep in if you ever integrate with the angio suite.\n\n**Rule 11, first paragraph.** Software intended to provide information used to take decisions with diagnosis or therapeutic purposes is IIa, escalating to:\n\n| Impact of the decision | Class |\n|---|---|\n| Baseline | IIa |\n| Serious deterioration of health, **or a surgical intervention** | IIb |\n| **Death or irreversible deterioration** of health | III |\n\nYour intended purpose expressly ties the output to a therapeutic decision — proceed to mechanical thrombectomy or not. Then look at what a wrong output can do, in both directions:\n\n- **False negative** (LVO missed or downgraded): thrombectomy not performed, or delayed. In acute ischaemic stroke the tissue clock is brutal — the realistic consequence is irreversible neurological deficit or death. That alone triggers the first indent.\n- **False positive**: patient taken for an unnecessary endovascular procedure. That's a surgical intervention (IIb trigger at minimum), and its own complications — vessel perforation, ICH — reach death/irreversible harm too.\n\nMDCG 2019-11 also directs you to weigh the *significance of the information* to the decision and the *healthcare situation/patient condition*. Here that's \"drives clinical management\" in a critical, time-dependent condition — the top-right cell of that matrix. Class III.\n\n## The argument you'll be tempted to make, and why it's weak\n\nThe standard manufacturer line: \"it's only triage/notification, the neurointerventionalist reads the CTA themselves, so the human in the loop mitigates the impact.\" Two problems:\n\n1. Rule 11 classifies on **intended purpose**, not on assumed downstream mitigation. Your stated purpose says the output supports the thrombectomy decision. Notified bodies have been consistently unreceptive to \"but the clinician checks\" as a de-escalation argument.\n2. The clinical value proposition of LVO triage software *is* that it shortens or short-circuits deliberation. If you argue in the technical documentation that the clinician independently re-derives the answer, you've argued away your own clinical benefit — and your PMCF data will contradict you.\n\nA genuine de-escalation would require a materially different intended purpose (e.g. worklist prioritisation only, explicitly not informing whether to treat, no diagnostic claim), and your marketing, UI and training material would all have to hold that line. Given what you've described, I wouldn't try it.\n\n## What Class III means for you\n\n- Conformity assessment: Annex IX (QMS + **per-device** technical documentation assessment, Chapter II), or Annex X + XI Part A.\n- Article 61(4): clinical investigation is the default expectation; equivalence routes are narrow and demand full access to the comparator's technical documentation.\n- SSCP required (Article 32). Annual PSUR (Article 86). PMCF plan and reports under Annex XIV Part B.\n- Article 54 expert-panel scrutiny does **not** apply — that's confined to class III *implantables* and certain class IIb active devices.\n- Highest scrutiny on your algorithm change-control: retraining or threshold changes will likely be significant changes requiring notified body approval.\n\n## One adjacent thing\n\nBecause it's a device requiring third-party conformity assessment, it's a **high-risk AI system** under Article 6(1) + Annex I of the AI Act. Those obligations bite from **2 August 2027**, so it's inside your planning horizon — best handled by folding Chapter III requirements (data governance, logging, human oversight, robustness/accuracy documentation) into the MDR technical documentation now rather than bolting them on later.\n\nHappy to sanity-check the intended-purpose wording itself if you want to paste the current draft — that sentence is doing all the classification work here."
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 1,
+        "passRate": 1,
+        "scoreWithout": 1,
+        "passRateWithout": 1,
+        "delta": 0
+      }
+    },
+    {
+      "name": "limb2-both-conditions",
+      "dir": "evals/03-limb2-both-conditions",
+      "source": "prose",
+      "promptMarkdown": "MDR class for this?\n\nStandalone app, not connected to any device. Patients with chronic kidney disease\nenter their weight and blood pressure once a day at home, and the app trends the\nreadings over weeks and shows the trend to the patient and their nephrologist at the\nnext appointment. There are no alarms and it is not used for any acute decision.\nIntended purpose: \"to record and trend patient-entered weight and blood pressure over\ntime for review during scheduled nephrology consultations.\"",
+      "runsPerCase": 3,
+      "timeoutSeconds": 300,
+      "maxTurns": 10,
+      "graders": [
+        {
+          "name": "criteria",
+          "type": "llm",
+          "weight": 1,
+          "graderMarkdown": "Blood pressure is a vital physiological parameter, which makes this a tempting IIb.\nBut Rule 11 limb 2's escalation needs BOTH conditions: the parameters must be vital\nAND the nature of their variation must be such that it could result in IMMEDIATE\ndanger. Daily self-entered readings trended for a scheduled appointment, with no\nalarms and no acute use, does not meet the immediate-danger condition.\n\nPASS requires:\n(1) The stated class is **IIa**.\n(2) The reasoning identifies limb 2 (monitoring physiological processes) as the base\n    at IIa, and explicitly REJECTS the IIb escalation because the immediate-danger\n    condition is not met — not merely by omitting to mention it.\n(3) It does not treat \"blood pressure is vital\" as sufficient on its own.\n\nAccept class I ONLY if the response reasons explicitly that this is not \"monitoring\nphysiological processes\" within limb 2 at all and therefore falls to limb 3, AND\naddresses why. A bare class I is a FAIL.\n\nFAIL if the answer is IIb. That is the trap: escalating on \"vital parameter\" alone\nwhile ignoring the second, cumulative condition.",
+          "config": {
+            "criteria": "Blood pressure is a vital physiological parameter, which makes this a tempting IIb.\nBut Rule 11 limb 2's escalation needs BOTH conditions: the parameters must be vital\nAND the nature of their variation must be such that it could result in IMMEDIATE\ndanger. Daily self-entered readings trended for a scheduled appointment, with no\nalarms and no acute use, does not meet the immediate-danger condition.\n\nPASS requires:\n(1) The stated class is **IIa**.\n(2) The reasoning identifies limb 2 (monitoring physiological processes) as the base\n    at IIa, and explicitly REJECTS the IIb escalation because the immediate-danger\n    condition is not met — not merely by omitting to mention it.\n(3) It does not treat \"blood pressure is vital\" as sufficient on its own.\n\nAccept class I ONLY if the response reasons explicitly that this is not \"monitoring\nphysiological processes\" within limb 2 at all and therefore falls to limb 3, AND\naddresses why. A bare class I is a FAIL.\n\nFAIL if the answer is IIb. That is the trap: escalating on \"vital parameter\" alone\nwhile ignoring the second, cumulative condition.",
+            "focus": "last_message"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 4,
+            "costUsd": 0.20856025,
+            "judgeCostUsd": 0.005522999999999993,
+            "durationSeconds": 64,
+            "startedAt": "2026-09-09T20:38:48.686Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-chO84q/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "# MDR Software Classification: CKD home weight & BP trending app\n\n**Intended purpose (as stated):** *\"to record and trend patient-entered weight and blood pressure over time for review during scheduled nephrology consultations.\"*\n**Qualified as a device:** **not established** — see note below. This is the prior question here, and it is probably the whole ballgame.\n\n## Class: **IIa** if it is a device at all — via Rule 11 limb 2\n\n**Route:** 3.3 independent → Rule 11 limb 2 (monitoring physiological processes), base IIa, no escalation to IIb.\n\n## Reasoning\n\n| Step | Question | Answer | Basis |\n|---|---|---|---|\n| 3.1 | Intended purpose | *\"to record and trend patient-entered weight and blood pressure over time for review during scheduled nephrology consultations\"* | `[verified]` |\n| 3.3 | Drives or influences another device? | **No.** Readings are transcribed by the patient; no connection to the BP monitor or scale, no parameter set, no alarm gated. Independent → classified in its own right. | `[verified]` |\n| Rule 11 | Which limb | **Limb 2** most likely engaged: trending BP and weight over weeks for clinical review is following physiological parameters over time. Limb 1 is arguable too (a nephrologist reviewing the trend at a consultation is taking therapeutic decisions), but limb 1 unescalated also gives IIa, so it does not change the answer. | `[verified]` |\n| Rule 11 | Escalation | **None.** Limb 2's IIb needs *both* vital parameters *and* variation that could cause **immediate danger**. Blood pressure is arguably vital, but once-daily entry, trending over weeks, no alarms, explicitly not for acute decisions — the immediate-danger limb is not met. Both conditions are cumulative. | `[verified]` |\n| 3.5 | Could a stricter rule apply? | Possibly **Rule 10** (active devices for diagnosis and monitoring) — the software fits the 2.5 definition of an active device supplying information for monitoring physiological conditions. I do not carry Rules 1–10, so I cannot close this. | `[verify]` |\n\n## The real dispute is qualification, not class\n\nYour description reads like an argument for class I: no interpretation, no algorithm, no thresholds, no alarms, no acute use — it displays back what the patient typed in, arranged by date. That is a strong argument, but it is an **Art. 2(1) qualification** argument (is a structured diary a medical device at all?), not a Rule 11 argument. Rule 11's limb 3 (\"all other software\" → class I) is a residual for software that engages neither limb; it is not a route for software that does monitor, but does so simply.\n\nSo the two outcomes are: **not a device** (nothing to classify), or **a device, and then IIa**. Class I via Rule 11 is the hardest of the three to defend, because the same facts that make it feel low-risk are facts about simplicity, and Rule 11 does not grade on simplicity.\n\nThat qualification question turns substantially on MDCG 2019-11, which is Commission guidance rather than the regulation, and which I do not verify. The Annex VIII text alone takes me to IIa. Point me at the passage if you want me to work through it.\n\n## What would change this\n\n- **A connection to the BP monitor or scale.** If the app ever reads from the device, 3.3 is back in play — but only if it drives it or influences its use. Merely receiving and displaying readings is still independent.\n- **Any threshold, flag, alert, or colour-coding.** \"Your weight is up 3 kg this week\" is interpretation. It hardens limb 1 and starts to make the immediate-danger question in limb 2 live.\n- **Dropping \"scheduled\" from the intended purpose.** If the trend is intended to be looked at between appointments to catch fluid overload, the \"no acute decision\" premise goes, and IIb via limb 2 becomes arguable.\n- **Whether \"for review\" is your real purpose.** You say the nephrologist reviews the trend at the appointment. If in practice that trend is what drives diuretic or antihypertensive adjustment, the intended purpose as written may be understating what the product is for. That is not a classification finding — it is a flag that 3.1 anchors everything to the stated purpose, so the stated purpose has to be the true one.\n- **Rule 10.** Worth checking before treating IIa as the floor.\n\n## Limits\n\n> This classifies software under MDR Annex VIII implementing rules 3.1–3.7 and Rule 11, retrieved verbatim from EUR-Lex on 2026-09-09. It does **not** cover Art. 2(1) qualification, Rules 1–10 or 12–22, Annex XVI, IVDR, MDCG guidance, notified-body practice, or national interpretation. Rule 11 is a floor: under 3.5 a stricter rule this skill does not carry may raise the class. A structured first pass and an audit aid, not legal or regulatory advice, and not a substitute for your notified body or a qualified regulatory professional.\n\nThis is the Annex VIII text applied to the intended purpose as you stated it. The class drives your conformity route, whether you need a notified body, and the depth of your technical documentation, so it should be confirmed by your regulatory lead or notified body before you build on it. The three things to put in front of them:\n\n1. **Qualification first** — is a manual-entry diary with no interpretation a device under Art. 2(1)? IIa versus nothing hangs on this, not on Rule 11.\n2. **The limb 2 call and the non-escalation** — monitoring is engaged, but \"immediate danger\" is not met on once-daily entry with no alarms.\n3. **Rule 10 under 3.5** — whether it reaches this software and, if so, whether it goes higher than IIa."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 4,
+            "costUsd": 0.21053675,
+            "judgeCostUsd": 0.006216000000000013,
+            "durationSeconds": 66,
+            "startedAt": "2026-09-09T20:39:52.426Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-0VTiQE/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "# MDR Software Classification: CKD weight & BP trending app\n\n**Intended purpose (as stated):** *\"to record and trend patient-entered weight and blood pressure over time for review during scheduled nephrology consultations.\"*\n**Qualified as a device:** **not established** — see note below\n\n## Class: IIa\n\n**Route:** 3.3 independent → Rule 11 limb 2 (monitoring physiological processes), no escalation\n\n## Reasoning\n\n| Step | Question | Answer | Basis |\n|---|---|---|---|\n| 3.1 | Intended purpose | \"to record and trend patient-entered weight and blood pressure over time for review during scheduled nephrology consultations\" | `[verified]` |\n| 3.3 | Drives or influences another device? | **No.** Data is patient-keyed, not taken from a connected monitor, and the app sets no parameter and changes nothing about how any BP monitor is operated → independent, classified in its own right | `[verified]` |\n| Rule 11 | Which limb | **Limb 2.** The app does not merely store: it trends weight and BP over weeks and presents that trend for clinical review. Tracking those parameters over time to show fluid status and pressure control is monitoring a physiological process → base **IIa** | `[verified]` |\n| Rule 11 | Escalation | **None.** IIb needs *both* vital parameters *and* variation that could cause immediate danger. Once-daily home entry, weeks-long trend, no alarms, explicitly not for acute decisions → the second condition fails, so it stops at IIa | `[verified]` |\n| Rule 11 | Limb 1 also? | Possibly — a nephrologist reviewing the trend is doing so to make therapeutic decisions (dry weight, diuretic and antihypertensive titration). **It does not matter to the outcome:** limb 1 also bases at IIa, and its escalation asks what a wrong decision may cause — here the clinician holds their own in-clinic measurements and clinical judgement, the app is not decisive information (3.7), and nothing acute rides on it. No escalation on either route | `[verified]` |\n| 3.5 | Could a stricter rule apply? | **No obvious one.** Non-invasive standalone software; no therapeutic function, no energy delivery, no control of substance administration. But I do not carry Rules 1–10 or 12–22 | `[verify]` |\n\nBoth limbs converge on IIa with no escalation, which makes the class robust to the limb-1/limb-2 argument. The live question is not IIa vs IIb — it's **IIa vs I**.\n\n## The IIa vs I question\n\nClass I is the reading in which \"trend\" means nothing more than plotting a diary — an electronic record with no interpretive step, engaging neither limb and falling to \"all other software\". That reading is available on the text, but it cuts both ways: software that is purely a record-keeping tool is also the software whose qualification as a device under Art. 2(1) is weakest. You do not get to argue \"it's just a diary, so class I\" and simultaneously hold that it's a medical device with a clinical intended purpose. Pick one and be consistent, because a notified body will notice.\n\nThis is also precisely where MDCG 2019-11 sits — Commission guidance, not the regulation, and not verified here. The Annex VIII text applied to your stated purpose takes me to IIa. If you want to argue class I, that argument runs through the guidance, and you should point me at the passage rather than have me characterise it.\n\n## Two notes on the intended purpose itself (3.1, not classification findings)\n\n1. **\"shows the trend to the patient.\"** A patient seeing their own weight trend may act on it — restrict fluid, change salt intake. If self-management is intended, that is limb-1 territory on the patient side and belongs in the stated purpose. If it is *not* intended, say so explicitly in the documentation and in the UI, because the current wording leaves it open.\n2. **\"no alarms, not for acute decisions\"** is doing real work in holding limb 2 off IIb. That constraint has to be a design and labelling commitment, not a description of the current build. Adding a threshold notification later — even a gentle one — reopens the escalation question.\n\n## What would change this\n\n- **Any device connection** (auto-import from a BP cuff or scale) → re-run 3.3 first; if the app then influences how the monitor is used, it takes that device's class and Rule 11 is never reached.\n- **Alarms, flags, or threshold alerts** → puts the limb-2 \"immediate danger\" condition genuinely in play, i.e. IIa → IIb.\n- **A stated purpose that positions the output as decisive for dosing** (e.g. \"to guide diuretic titration\") → limb 1 squarely, and the escalation test then has to be argued rather than waved past.\n- **Any acute or between-visit use** → removes the \"scheduled consultation\" containment the non-escalation rests on.\n\n## Before you build on this\n\nThis is the Annex VIII text applied to the intended purpose as you stated it, and you have not told me you are a regulatory professional, so treat it as a first pass rather than the answer. The class decides your conformity route — **IIa means a notified body; class I you self-declare** — so the gap between the two readings is the difference between an audit and a declaration. Confirm with your regulatory lead or notified body before committing.\n\nThe three things to put in front of them:\n\n1. **The 3.3 call** — independent, on the basis that data is patient-entered and no monitor is driven or influenced.\n2. **The limb and escalation** — limb 2 at base IIa, no escalation because \"immediate danger\" fails; and that limb 1, if preferred, lands in the same place.\n3. **The IIa vs I argument** — whether \"record and trend\" is monitoring, and the consistency problem that a class I position creates for your qualification case.\n\n---\n\n> This classifies software under MDR Annex VIII implementing rules 3.1–3.7 and Rule 11, retrieved verbatim from EUR-Lex on 2026-09-09. It does **not** cover Art. 2(1) qualification, Rules 1–10 or 12–22, Annex XVI, IVDR, MDCG guidance, notified-body practice, or national interpretation. Rule 11 is a floor: under 3.5 a stricter rule this skill does not carry may raise the class. A structured first pass and an audit aid, not legal or regulatory advice, and not a substitute for your notified body or a qualified regulatory professional.\n\nOne thing I assumed rather than verified: that the product is already qualified as a medical device under Art. 2(1). You didn't say, and it's a separate analysis I don't cover. If that is still open, it's the prior question — and as noted above, how you settle it constrains which side of the IIa/I line you can credibly argue."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 4,
+            "costUsd": 0.20268524999999998,
+            "judgeCostUsd": 0.0061290000000000094,
+            "durationSeconds": 63,
+            "startedAt": "2026-09-09T20:40:58.473Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-yO7idd/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "# MDR Software Classification: CKD home weight & BP trending app\n\n**Intended purpose (as stated):** *\"to record and trend patient-entered weight and blood pressure over time for review during scheduled nephrology consultations.\"*\n**Qualified as a device:** **not established** — see note below\n\n## Class: **IIa** (Rule 11 limb 2), with class I defensible only on a narrower intended purpose\n\n**Route:** 3.3 → independent software → classified in its own right → Rule 11, limb 2 (monitoring physiological processes), base IIa, no escalation to IIb.\n\n## Reasoning\n\n| Step | Question | Answer | Basis |\n|---|---|---|---|\n| 3.1 | Intended purpose | *\"to record and trend patient-entered weight and blood pressure over time for review during scheduled nephrology consultations\"* | `[verified]` |\n| 3.3 | Drives or influences another device? | **No.** Readings are patient-entered by hand; the app sets no parameter on and does not alter the operation of any BP monitor or scale. Independent → classified in its own right | `[verified]` |\n| Rule 11 | Which limb | **Limb 2** — \"intended to monitor physiological processes\". Trending blood pressure and weight over weeks for clinical review is monitoring a physiological process, not mere record-keeping. Limb 1 is also arguably engaged (see below); either way base class is IIa | `[verified]` |\n| Rule 11 | Escalation | **None → IIa.** Limb 2's escalation is cumulative: vital parameters **and** variation of a nature that could result in immediate danger. Blood pressure is arguably vital, but weeks-long trending with no alarms and no acute use does not meet the immediate-danger condition | `[verified]` |\n| 3.5 | Could a stricter rule apply? | No candidate I can see — no therapeutic function, no control of substance administration. Rules 1–10 and 12–22 are not carried here | `[verify]` |\n\n**The point most likely to be got wrong:** \"no alarms, not used for acute decisions\" defeats the **escalation** to IIb. It does not take the software out of limb 2. Limb 2's base class is IIa on its own terms, and absence of urgency is exactly the fact that keeps it at IIa rather than pushing it to IIb.\n\n**Limb 1 is also live.** A trend put in front of a nephrologist at a consultation is, in substance, information feeding therapeutic decisions (fluid status, antihypertensive titration). Your stated purpose says \"for review\", which stops short of claiming a decision role — but it names a clinical review context, which pulls the other way. It does not change the answer: limb 1 would give base IIa too, and the escalation would not reach IIb, since a wrong trend at a *scheduled* appointment is filtered through the clinician's own examination and in-clinic measurements rather than driving an immediate intervention.\n\n**On qualification (the prior question).** Nothing here settles whether the app is a medical device under Art. 2(1) `[verify]`, and that is a separate analysis. A pure data-entry logbook and a trending tool intended for clinical review can fall on opposite sides of that line. If your regulatory position is that it is **not** a device, there is no class to assign and the above is moot — but note the position is hard to hold alongside an intended purpose that names nephrology consultations as the use context.\n\n## What would change this\n\n- **Trending is removed** — if the app only stores and redisplays raw entries, with no derived trend, aggregation or graphical analysis, limb 2 weakens considerably and limb 3 (**class I**) becomes the better reading. As stated, it does trend, so it does not.\n- **Any alarm, threshold flag, or \"contact your clinic\" prompt is added** — this puts the software into acute use and re-opens the IIb escalation on limb 2 (BP as a vital parameter whose variation could signal immediate danger), and strengthens limb 1.\n- **The trend becomes decisive rather than contributory** — e.g. the app is intended to be relied on for dose adjustment between visits, or is used for remote management rather than at scheduled appointments. That moves the limb 1 escalation question seriously, and in CKD fluid/BP management a wrong decision reaching the patient unfiltered could plausibly cause serious deterioration → **IIb**.\n- **Any interpretation, calculation or clinical suggestion on the data** — risk scores, eGFR-style calculation, target-range advice — engages limb 1 squarely.\n\n**One flag under 3.1, not a classification finding:** if the product can already do more than record and trend (flagging, thresholds, messaging), the issue is not that the class rises — capability outside intended purpose does not raise it — but that the intended purpose may be stated too narrowly for what you ship.\n\n**MDCG 2019-11** bears directly on this one (the \"simple search/storage\" versus \"software module\" distinction, and Rule 11 examples). It is Commission guidance rather than the regulation, and I do not verify it here. The Annex VIII text alone takes me to IIa. Point me at the passage if you want the guidance question worked through.\n\n## Limits\n\n> This classifies software under MDR Annex VIII implementing rules 3.1–3.7 and Rule 11, retrieved verbatim from EUR-Lex on 2026-09-09. It does **not** cover Art. 2(1) qualification, Rules 1–10 or 12–22, Annex XVI, IVDR, MDCG guidance, notified-body practice, or national interpretation. Rule 11 is a floor: under 3.5 a stricter rule this skill does not carry may raise the class. A structured first pass and an audit aid, not legal or regulatory advice, and not a substitute for your notified body or a qualified regulatory professional.\n\n---\n\nThis is the Annex VIII text applied to the intended purpose as you stated it. The class drives your conformity route, whether you need a notified body, and the depth of your technical documentation, so confirm it with your regulatory lead or notified body before building on it. The three things to put in front of them:\n\n1. **The 3.3 call** — manual patient entry means independent software, classified in its own right, not the class of any BP monitor or scale.\n2. **The limb and escalation** — limb 2 base IIa; escalation blocked because \"vital parameter\" and \"immediate danger from the nature of its variation\" are cumulative and the second fails. Get agreement that \"record and trend\" is monitoring rather than storage, because that single call is IIa versus I.\n3. **Qualification, and the class I argument** — whether the app is a device at all, and if so whether anyone will argue it is a simple logbook outside limb 2. That is the only route to class I, and it turns on guidance I do not verify."
+              }
+            ]
+          }
+        ],
+        "without": [
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0.13284125000000002,
+            "judgeCostUsd": 0.0036810000000000176,
+            "durationSeconds": 58,
+            "startedAt": "2026-09-09T20:42:01.151Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-tuTePY/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "judge votes: FAIL PASS FAIL",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  false,
+                  true,
+                  false
+                ],
+                "evidence": "## Bottom line\n\nTwo separate questions, and the second only matters if you clear the first.\n\n**1. Is it a medical device at all?** Genuinely arguable — this is the real decision point, not the class.\n\n**2. If yes, Rule 11 (Annex VIII) → Class IIa.** There's no credible path to Class I once you're inside Rule 11.\n\n---\n\n## Qualification (MDR Art. 2(1) + MDCG 2019-11)\n\nMDCG 2019-11 says software is *not* a device if its action on data is limited to storage, archival, communication, simple search, or lossless compression. A pure logbook that plots back exactly what the patient typed is a strong candidate for that carve-out — a line chart is arguably display, not new medical information.\n\nWhat pulls it the other way is your intended purpose wording. \"For review during scheduled nephrology consultations\" explicitly places the output in a clinical decision loop for CKD patients, where weight trends are a fluid-status proxy and BP trends drive antihypertensive titration. Under MDCG 2019-11, software intended to provide information used to take decisions for diagnostic or therapeutic purposes qualifies — and you've written that intent into the label yourself.\n\n**The pivot:** does \"trends the readings\" mean anything computed? Moving averages, % change from a baseline/dry weight, regression slopes, colour-coding against reference ranges, or any flagging — that's creating new medical information for an individual patient, and you're a device. If it's literally raw points on a time axis with nothing derived, the non-device argument is defensible but not safe.\n\n## Classification, if it's a device\n\nRule 11, first indent: software providing information used to take diagnostic/therapeutic decisions → **Class IIa**. It doesn't escalate: no acute use and no alarms means no plausible \"death or irreversible deterioration\" (III) or \"serious deterioration / surgical intervention\" (IIb) claim.\n\nRule 11's second indent (monitoring physiological processes) also lands on IIa. The IIb escalation there is for vital parameters where variation could cause *immediate* danger — daily home BP with no alarms isn't that. Both routes converge on IIa.\n\nThe \"all other software is Class I\" fallback in Rule 11 applies only when neither limb bites. Weight and BP trending for a nephrologist doesn't fit that.\n\n## What I'd actually do\n\nClass IIa is a notified body, a QMS audit, and clinical evaluation — materially different project from a Class I self-declaration. So the qualification decision is worth real effort:\n\n- **If you want out of scope:** rewrite the intended purpose as a patient-held diary, drop the reference to informing consultations, and keep the trending strictly non-derived. Then document the MDCG 2019-11 Figure 1 walkthrough as a formal qualification rationale in your technical file. You still need it in writing even as a non-device.\n- **If the clinical-review purpose is the product** — and it sounds like it is, since that's why a nephrologist would care — assume IIa and plan for it. Trying to argue Class I here will likely cost you more in notified body back-and-forth than it saves.\n\nTwo caveats: GB is still on UK MDR 2002 (old Annex IX Rule 12), where standalone software of this kind generally falls to Class I — so your EU and GB classes can legitimately differ. And this is my read of the rules, not a regulatory determination; get your RA lead or notified body to sign off before you build the QMS around it."
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0.14940875000000003,
+            "judgeCostUsd": 0.004386000000000015,
+            "durationSeconds": 64,
+            "startedAt": "2026-09-09T20:42:58.724Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-Ws5ewf/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "judge votes: FAIL FAIL FAIL",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  false,
+                  false,
+                  false
+                ],
+                "evidence": "## Short answer\n\nMost likely **Class IIa under MDR Annex VIII, Rule 11** — but there's a real prior question: whether it's a medical device at all. The honest answer is a fork, and which side you land on is driven almost entirely by how you word the intended purpose.\n\n## Step 1: Qualification (is it MDSW?)\n\nApply MDCG 2019-11's decision steps. The one that decides your case: does the software *perform an action on data beyond storage, archival, communication, simple search, or lossless compression*?\n\n- **Argument it's out of scope:** the app is a logbook. The patient types in a number, the app draws it on a time axis. Nothing new is created — the graph is the same data, re-presented. That's display/communication, so not MDSW, so no MDR class at all.\n- **Argument it's in scope:** \"trend the readings over weeks\" implies aggregation and derivation of a trend that isn't in any single reading, and your intended purpose ties it explicitly to nephrology consultations — i.e. monitoring a diagnosed chronic disease in an identified patient. Notified bodies and competent authorities read that combination as MDSW.\n\nThe clause \"for review during scheduled nephrology consultations\" is what pulls you in. It names a clinical user, a clinical specialty, and a clinical use. A plain data-entry diary with no medical claim would stay out; yours makes one.\n\n## Step 2: Classification (if MDSW)\n\nRule 11 has three limbs:\n\n1. **Information used to take decisions with diagnostic or therapeutic purposes → IIa.** The nephrologist looks at weight and BP trends to judge fluid status and titrate antihypertensives. That's information feeding a therapeutic decision. → **IIa**\n2. **Monitoring physiological processes → IIa**, escalating to IIb only for vital physiological parameters where variation could cause *immediate danger*. Blood pressure is a vital physiological parameter, but weeks-long trending with no alarms and no acute use is not immediate danger. → **IIa, not IIb**\n3. **All other software → Class I.**\n\nYou don't reach the IIb/III escalations: no alarms, no acute decisions, clinician-in-the-loop at a scheduled visit, so no plausible path to death or serious/irreversible deterioration from the software itself.\n\n**Class I** is only reachable if you argue the software provides information but for neither diagnostic/therapeutic decisions nor monitoring — hard to sustain once your intended purpose says \"for review during nephrology consultations.\" In practice Rule 11's Class I limb is very narrow, because software that does nothing diagnostic or monitoring-related usually isn't a device in the first place.\n\nNote also: being standalone and unconnected to any device doesn't help you. Annex VIII §3.3 only puts software in the *same* class as a device when it drives or influences that device; independent software is classified in its own right. \"No alarms\" and \"not for acute decisions\" limit severity, which caps you at IIa — they don't exempt you.\n\n## The decision you actually have\n\n**Want to stay out of MDR scope?** Rewrite the intended purpose as a pure record-keeping tool: no reference to nephrology, CKD, monitoring, or clinical review; no derived trend lines, no reference ranges, no color-coded zones, no \"your readings are rising\" language. Marketing must match — claims are part of intended purpose. This is genuinely defensible but fragile; any clinical framing collapses it.\n\n**Want the clinical claim?** Plan for **Class IIa**: notified body conformity assessment (Annex IX or XI), ISO 13485 QMS, IEC 62304 software lifecycle (likely Class A or B safety classification), IEC 62366 usability with a lay-patient user, clinical evaluation per MDR Annex XIV, PMS/PMCF, UDI, EUDAMED registration. Budget 12–18 months and notified body capacity accordingly.\n\nMy recommendation: assume IIa for planning. If you'd rather be Class I / out of scope, that's a product-definition decision to make now, before you build trend features — not a regulatory argument to construct afterwards.\n\nTwo caveats: this is my reading of MDR and MDCG 2019-11, not legal advice — get your notified body or a regulatory consultant to confirm the borderline call in writing. And the classification differs elsewhere: UK MDR 2002 still uses the old MDD Rule 12, under which this is likely Class I; FDA would probably treat it as low-risk / MDDS-adjacent under enforcement discretion."
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0.14421099999999998,
+            "judgeCostUsd": 0.004432000000000005,
+            "durationSeconds": 68,
+            "startedAt": "2026-09-09T20:44:02.819Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-uuIgLA/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "judge votes: FAIL FAIL FAIL",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  false,
+                  false,
+                  false
+                ],
+                "evidence": "Short answer: as literally described, it's defensible as **not a medical device at all**. If it *is* one, it's **Class IIa under Rule 11** — not Class I. There's no realistic middle.\n\n## Qualification first (the real question)\n\nMDCG 2019-11's decision test asks whether the software performs an action on data **beyond storage, archival, communication, or simple search**. The same guidance says altering the *representation* of data — including for display purposes — doesn't by itself count as such an action.\n\nAn app that takes numbers the patient typed in, stores them, and draws them on a time axis is doing exactly that and nothing more. It's an electronic version of the paper BP diary the nephrologist already asks for, and a paper diary isn't a device. No alarms, no acute use, no device connection (so no accessory analysis), no derived output the clinician couldn't get by reading the list of numbers.\n\nYour intended-purpose wording — \"record and trend … for review during scheduled consultations\" — is drafted well for this. It claims no diagnosis, monitoring in the regulatory sense, or decision support.\n\n## If it is MDSW, it's IIa\n\nRule 11's first limb catches software providing information used for decisions with diagnostic or therapeutic purposes → **IIa** by default. Escalation to IIb/III requires serious deterioration / surgical intervention or death — your facts (weeks-long trend, no alarms, no acute decisions) rule those out. The second limb, monitoring physiological processes, is also IIa; it only reaches IIb for vital parameters where variation could cause immediate danger, which you've expressly excluded.\n\nThe \"all other software is Class I\" fallback is a trap here. Once you concede the app is MDSW, its whole purpose is feeding a clinical review — you'd be arguing it drives no decisions while marketing it as decision input. Notified bodies and BfArM in particular don't accept that. So: non-device, or IIa.\n\n## What flips it to IIa\n\nAny of these, individually:\n\n- Trend lines, moving averages, rate-of-change, or any computed metric\n- Target ranges, colour-coded readings, shaded \"normal\" bands\n- Flags, notifications, or \"your weight is up 2 kg this week\" messaging\n- Interpretive text, dry-weight estimates, or fluid-overload inference\n- Marketing copy that says \"monitor,\" \"detect,\" \"early warning,\" or \"helps manage CKD\"\n\nThe last one is the most common failure. Regulators read the website and app-store listing as evidence of intended purpose, and CKD weight gain is a well-known fluid-overload signal — claims in that direction will be read as a monitoring purpose regardless of what the technical file says.\n\n## Recommendation\n\nTreat non-device status as a **deliberate design constraint**, not a conclusion you reached once. Write down the qualification rationale against the MDCG 2019-11 decision steps, freeze the feature set at raw values + plain plot, and put a change-control gate on anything from the list above. Also add \"not intended for diagnosis, monitoring, or treatment decisions; not for acute or emergency use\" to the app and its listing.\n\nIf the roadmap already includes any interpretation — and for a CKD product it usually does within a release or two — budget for IIa now: notified body, ISO 13485, IEC 62304, clinical evaluation. That transition is far cheaper planned than discovered.\n\nTwo caveats: this is my read, not a regulatory opinion, and your notified body or competent authority governs. Also, non-device doesn't mean unregulated — GDPR applies fully, and national digital health rules (DiGA in Germany, for instance) have their own thresholds."
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 1,
+        "passRate": 1,
+        "scoreWithout": 0,
+        "passRateWithout": 0,
+        "delta": 1
+      }
+    },
+    {
+      "name": "limb3-class-i",
+      "dir": "evals/04-limb3-class-i",
+      "source": "prose",
+      "promptMarkdown": "What class is this under MDR Annex VIII?\n\nStandalone software used in hospitals. It takes the finished, clinician-signed\nradiology report and reformats it into the referring GP's preferred layout, then files\nit to the GP's inbox. It does not analyse images, does not alter clinical content, and\nadds nothing to the report. Qualification as a medical device is already established\nand not in question. Intended purpose: \"to reformat and route finalised radiology\nreports to referring physicians.\"",
+      "runsPerCase": 3,
+      "timeoutSeconds": 300,
+      "maxTurns": 10,
+      "graders": [
+        {
+          "name": "criteria",
+          "type": "llm",
+          "weight": 1,
+          "graderMarkdown": "The software provides no information used to take a diagnostic or therapeutic\ndecision — it moves an already-final report. It monitors no physiological process. It\nis independent, so 3.3 does not divert it. Rule 11 limb 3: all other software is\nclass I.\n\nPASS requires:\n(1) The stated class is **I**.\n(2) It reaches I via Rule 11 limb 3 (\"all other software\"), having considered and\n    rejected limbs 1 and 2.\n(3) It states class I plainly as the answer rather than hedging into IIa.\n\nThe response may legitimately note that if the software ever altered or generated\nclinical content the class would change, or may flag a 3.5 open question. Neither\ncosts the pass so long as the stated class is I.\n\nFAIL if the answer is IIa or higher. This tests whether the skill can return the\nlowest class rather than inflating — the model equivalent of over-flagging.",
+          "config": {
+            "criteria": "The software provides no information used to take a diagnostic or therapeutic\ndecision — it moves an already-final report. It monitors no physiological process. It\nis independent, so 3.3 does not divert it. Rule 11 limb 3: all other software is\nclass I.\n\nPASS requires:\n(1) The stated class is **I**.\n(2) It reaches I via Rule 11 limb 3 (\"all other software\"), having considered and\n    rejected limbs 1 and 2.\n(3) It states class I plainly as the answer rather than hedging into IIa.\n\nThe response may legitimately note that if the software ever altered or generated\nclinical content the class would change, or may flag a 3.5 open question. Neither\ncosts the pass so long as the stated class is I.\n\nFAIL if the answer is IIa or higher. This tests whether the skill can return the\nlowest class rather than inflating — the model equivalent of over-flagging.",
+            "focus": "last_message"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 4,
+            "costUsd": 0.1672945,
+            "judgeCostUsd": 0.004554000000000016,
+            "durationSeconds": 44,
+            "startedAt": "2026-09-09T20:45:10.806Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-VHLWJW/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "# MDR Software Classification: radiology report reformat-and-route software\n\n**Intended purpose (as stated):** \"to reformat and route finalised radiology reports to referring physicians.\"\n**Qualified as a device:** established (given, per your instruction — not re-examined here)\n\n## Class: I\n\n**Route:** 3.3 independent → Rule 11 limb 3 (\"all other software\")\n\n## Reasoning\n\n| Step | Question | Answer | Basis |\n|---|---|---|---|\n| 3.1 | Intended purpose | \"to reformat and route finalised radiology reports to referring physicians\" | `[verified]` |\n| 3.3 | Drives or influences another device? | No — it receives a finalised report downstream of the imaging device; it sets no parameter, gates nothing, and does not change how any device is operated. Classified in its own right. | `[verified]` |\n| Rule 11 | Which limb | 3. Not limb 1: on the stated purpose it does not *provide* information used to take diagnostic or therapeutic decisions — the clinician provided that information and signed it; the software adds nothing and alters nothing. Not limb 2: it monitors no physiological process. | `[verified]` |\n| Rule 11 | Escalation | None — limb 3 has no escalation | `[verified]` |\n| 3.5 | Could a stricter rule apply? | No candidate I can see. It performs no therapeutic function and controls no administration of a substance. Rules 1–10 and 12–22 are outside what I verify. | `[verify]` |\n\n## The contestable point, stated plainly\n\nThere is a genuine reading that reaches **IIa**: the report *is* diagnostic information, the GP *does* take therapeutic decisions on it, and this software is the thing that puts it in front of them. The distinction that keeps it in limb 3 is between **providing** information and **transmitting or reformatting** information someone else provided.\n\nThat distinction is not drawn in the Annex VIII text. It is drawn in **MDCG 2019-11**, which treats software performing only storage, communication, search or lossless transformation differently from software that creates or modifies clinical information. That is Commission guidance, not the regulation, and I do not verify it. On the Annex VIII wording alone, the intended purpose as you have written it does not engage limb 1, so the text takes me to **I**. If your notified body leans on the guidance, it should land in the same place — but that is their call, not a reading I can certify.\n\n## What would change this\n\n- **Any change to content, not just layout.** If reformatting can truncate, summarise, re-order findings by significance, drop images or annexes, or lose information on conversion, it is no longer a lossless transformation and limb 1 becomes live.\n- **Anything added.** Flagging urgent findings, prioritising the GP inbox, extracting codes, appending interpretation — each of these makes the software a provider of information rather than a conduit.\n- **Any feedback into a device.** If it acquires from or writes back to PACS/modality in a way that influences their use, 3.3 puts you in that device's class and Rule 11 is never reached.\n- **A broader intended-purpose wording.** If your technical documentation states the purpose more expansively than the sentence above (e.g. \"to ensure referring physicians receive diagnostic findings\"), classify against that wording, not this one.\n- One note, not a classification finding: a tool that neither analyses, alters, nor adds may sit awkwardly against Art. 2(1). You have told me qualification is settled, so I have not disturbed it — but the same facts that keep it in class I are the facts that make qualification worth a second look.\n\n## Before treating this as settled\n\nThis is the Annex VIII text applied to the intended purpose as you stated it. The class drives your conformity route, whether you need a notified body, and the depth of your technical documentation, so it should be confirmed by your regulatory lead or notified body before you build on it. The three things to put in front of them: **the 3.3 independence call**, **the limb 1 vs limb 3 line and that it rests on MDCG 2019-11 rather than the regulation**, and **your exact documented intended-purpose wording**.\n\n## Limits\n\n> This classifies software under MDR Annex VIII implementing rules 3.1–3.7 and Rule 11, retrieved verbatim from EUR-Lex on 2026-09-09. It does **not** cover Art. 2(1) qualification, Rules 1–10 or 12–22, Annex XVI, IVDR, MDCG guidance, notified-body practice, or national interpretation. Rule 11 is a floor: under 3.5 a stricter rule this skill does not carry may raise the class. A structured first pass and an audit aid, not legal or regulatory advice, and not a substitute for your notified body or a qualified regulatory professional."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 4,
+            "costUsd": 0.17532600000000004,
+            "judgeCostUsd": 0.004875000000000004,
+            "durationSeconds": 47,
+            "startedAt": "2026-09-09T20:45:54.792Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-nj7xU3/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "I read the verbatim Annex VIII text in `references/annex-viii-software.md`. Applying it:\n\n# MDR Software Classification: radiology report reformatting/routing software\n\n**Intended purpose (as stated):** \"to reformat and route finalised radiology reports to referring physicians.\"\n**Qualified as a device:** established (per you — I take this as given and do not re-open it)\n\n## Class: I\n\n**Route:** 3.3 independent → Rule 11 limb 3 (\"all other software\")\n\n## Reasoning\n\n| Step | Question | Answer | Basis |\n|---|---|---|---|\n| 3.1 | Intended purpose | \"to reformat and route finalised radiology reports to referring physicians\" | `[verified]` |\n| 3.3 | Drives or influences another device? | No. It acts on a report that is already finalised and signed. It sets no parameter on the imaging or reporting system, gates no alarm, and changes nothing about how any device is operated. Independent → classified in its own right | `[verified]` |\n| Rule 11 | Which limb | 3. Not limb 1: the clinical information was created, decided and signed by the radiologist before the software touches it; the software adds nothing and alters no clinical content. Not limb 2: nothing is monitored | `[verified]` |\n| Rule 11 | Escalation | None. Escalation exists only within limbs 1 and 2 | `[verified]` |\n| 3.5 | Could a stricter rule apply? | Nothing in the stated purpose suggests an active therapeutic function or control of substance administration. But Rules 1–10 and 12–22 are not carried here, so I cannot fully close this | `[verified]` for 3.5, `[verify]` for the other rules |\n\n## The one argument against class I, stated fairly\n\nThere is a literal reading of limb 1 — \"software intended to provide information which is used to take decisions with diagnosis or therapeutic purposes\" — under which this software does put diagnostic information in front of the GP who then acts on it, which would make it IIa.\n\nThe reading I applied is that limb 1 catches software that *produces or shapes* the information, not software that transports information a clinician has already produced and signed. On that reading, a pure reformat-and-route function is limb 3.\n\nThat distinction is not spelled out in the Annex VIII text itself; it is the substance of MDCG 2019-11, which is Commission guidance rather than the regulation, and which I do not verify. The Annex VIII text alone takes me to class I. If your notified body works from the guidance, point me at the passage, or put this question to them directly — it is the difference between class I (self-certification) and IIa (notified body).\n\n## What would change this\n\n- **The reformatting doing more than layout.** If it selects, summarises, truncates, reorders by clinical priority, or highlights findings, it starts shaping the information rather than carrying it, and limb 1 becomes live. Pure layout transformation does not.\n- **Routing logic that is clinical.** Deciding *which* clinician receives a report, or flagging urgency, based on report content is a different intended purpose from routing to the named referrer.\n- **Any write-back into a device.** If it returns status, acknowledgements or content into a RIS/PACS in a way that influences how that system is used, 3.3 comes back into play and the class follows that system's class.\n- **Loss or corruption in transformation** is a safety and performance question, not a classification one — it does not move the class, but it will be where the scrutiny lands.\n\nOne note under 3.1, not a classification finding: your intended purpose is well drafted for class I precisely because it is narrow. Worth confirming the product cannot do more than it says, since a capability outside the stated purpose raises the question of whether the purpose is stated correctly.\n\n## Before you build on this\n\nThis is the Annex VIII text applied to the intended purpose as you stated it. The class drives your conformity route, whether you need a notified body, and the depth of your technical documentation, so it should be confirmed by your regulatory lead or notified body before you rely on it. The three things to put in front of them:\n\n1. The 3.3 call — that the software is independent and does not influence the use of the RIS/PACS.\n2. The limb 1 vs limb 3 question above, which is the whole decision, and which turns on MDCG 2019-11 rather than on the Annex VIII wording.\n3. Confirmation that no rule outside 11 reaches it, since 3.5 makes Rule 11 a floor and I do not carry Rules 1–10 or 12–22.\n\n## Limits\n\n> This classifies software under MDR Annex VIII implementing rules 3.1–3.7 and Rule 11, retrieved verbatim from EUR-Lex on 2026-09-09. It does **not** cover Art. 2(1) qualification, Rules 1–10 or 12–22, Annex XVI, IVDR, MDCG guidance, notified-body practice, or national interpretation. Rule 11 is a floor: under 3.5 a stricter rule this skill does not carry may raise the class. A structured first pass and an audit aid, not legal or regulatory advice, and not a substitute for your notified body or a qualified regulatory professional."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 4,
+            "costUsd": 0.17860199999999998,
+            "judgeCostUsd": 0.004895999999999984,
+            "durationSeconds": 53,
+            "startedAt": "2026-09-09T20:46:41.467Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-3mx7oG/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "I read the verbatim Annex VIII text and applied it. Here is the result.\n\n# MDR Software Classification: radiology report reformat-and-route software\n\n**Intended purpose (as stated):** \"to reformat and route finalised radiology reports to referring physicians.\"\n**Qualified as a device:** established (per your statement — taken as given, not re-examined)\n\n## Class: I\n\n**Route:** 3.3 independent → Rule 11 limb 3 (\"all other software\")\n\n## Reasoning\n\n| Step | Question | Answer | Basis |\n|---|---|---|---|\n| 3.1 | Intended purpose | \"to reformat and route finalised radiology reports to referring physicians\" | `[verified]` |\n| 3.3 | Drives or influences another device? | No — it consumes finished output downstream of the modality/RIS; it sets no parameter and changes nothing about how any device is operated. Classified in its own right. | `[verified]` |\n| Rule 11 | Which limb | 3 — neither limb 1 nor limb 2 is engaged on the stated purpose | `[verified]` |\n| Rule 11 | Escalation | None — escalation only exists inside limbs 1 and 2 | `[verified]` |\n| 3.5 | Could a stricter rule apply? | No realistic candidate. It is not therapeutic, does not control administration of a substance, and has no patient contact. I do not carry Rules 1–10 or 12–22, but nothing in the stated purpose points at one. | `[verified]` |\n\n**Why limb 1 does not bite, and it is close.** Limb 1 asks whether the software is *intended to provide information which is used to take decisions* with diagnostic or therapeutic purposes. The GP does take diagnostic decisions on this report — but the diagnostic information is authored and signed by the radiologist. On the stated purpose the software contributes no information: it does not analyse, does not alter clinical content, and adds nothing. It changes the presentation and the destination of information that already exists in final form. That is limb 3.\n\nThis is the whole load-bearing call in the analysis, and it is the one to put in front of your regulatory lead, because the gap is wide. If limb 1 *were* held to bite, the base is IIa and the escalation would be live rather than theoretical: a wrong or garbled radiology report can support decisions that cause serious or irreversible harm, which would put the argument at IIb or III. There is no middle landing — this is class I or a substantially higher class.\n\n## What would change this\n\n- **The reformatting is not content-neutral.** If the layout transform can drop, truncate, reorder or restructure findings — footnotes lost, an addendum separated from the body, a \"critical finding\" flag not carried across — then it is shaping the information the GP reads, and limb 1 becomes seriously arguable. \"Reformat\" is doing a lot of work in the intended purpose; what the transform can do to content in the worst case is the fact I would nail down first.\n- **Anything that prioritises, flags, summarises or triages** — even ordering the GP's inbox by urgency — moves this toward limb 1.\n- **Routing failures being clinically silent.** If a misroute or a non-delivery can occur without anyone noticing, that is a real risk argument. Note it is not by itself a Rule 11 limb trigger, though — Rule 11 turns on what the software is intended to provide, not on its failure modes.\n- **Any driving or configuring of the RIS/PACS/modality**, rather than reading from it, would flip the 3.3 call and take that device's class instead.\n\nOne observation, not a classification finding: the description you have given — pure conduit, no analysis, no alteration — is the kind of description that usually gets argued at the *qualification* stage rather than won at classification. You have told me qualification is settled and I have not reopened it. But if the class I answer is challenged, expect the challenge to arrive as \"is the intended purpose stated too narrowly\", and the reformatting scope above is where it will land.\n\n## Limits\n\n> This classifies software under MDR Annex VIII implementing rules 3.1–3.7 and Rule 11, retrieved verbatim from EUR-Lex on 2026-09-09. It does **not** cover Art. 2(1) qualification, Rules 1–10 or 12–22, Annex XVI, IVDR, MDCG guidance, notified-body practice, or national interpretation. Rule 11 is a floor: under 3.5 a stricter rule this skill does not carry may raise the class. A structured first pass and an audit aid, not legal or regulatory advice, and not a substitute for your notified body or a qualified regulatory professional.\n\nThis is the Annex VIII text applied to the intended purpose as you stated it. The class drives your conformity route, whether you need a notified body, and the depth of your technical documentation, so confirm it with your regulatory lead or notified body before building on it. The three things to put in front of them: **(1)** the 3.3 call that the software is independent rather than influencing the use of the RIS/PACS; **(2)** the limb 1 vs limb 3 call, and specifically whether the reformatting is content-neutral in every case; **(3)** that no 3.5 rule appears to reach higher, which I can only assert for the rules I carry."
+              }
+            ]
+          }
+        ],
+        "without": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 1,
+            "costUsd": 0.10565700000000001,
+            "judgeCostUsd": 0.0033030000000000143,
+            "durationSeconds": 41,
+            "startedAt": "2026-09-09T20:47:34.577Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-XvEQ1q/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "## Class I\n\nRule 11 of Annex VIII, third sentence: *\"...all other software is classified as class I.\"*\n\n**The reasoning chain:**\n\n1. **Implementing rule 3.3** (Annex VIII, Ch. II) — software independent of any other device is classified in its own right. This is standalone, so it doesn't inherit the class of the imaging modality that produced the report. That's the trap worth checking first: had it driven or influenced a device, it would take that device's class.\n\n2. **Rule 11, first paragraph** — \"software intended to provide information which is used to take decisions with diagnosis or therapeutic purposes\" is IIa (escalating to IIb/III by harm severity). This does not apply. The decision-relevant information was created, interpreted and signed by the radiologist *before* the software touches it. The software generates no new information and contributes nothing to the clinical content; it changes presentation and destination only. \"Providing information\" in Rule 11 means the software's own output informs the decision — a conduit for someone else's finished conclusion isn't within it.\n\n3. **Rule 11, second paragraph** — monitoring physiological processes. Not applicable.\n\n4. **Rule 11, third sentence** — residual catch-all: **Class I**.\n\nRule 13 (all other active devices → Class I) gives the same result, so the highest-class rule under implementing rule 3.5 is still Class I. No sterile / measuring / reusable-surgical qualifier applies, so it's plain Class I: self-declared conformity under Art. 52(7), no notified body. You still owe Annex I GSPRs (including Annex I 17 on electronic programmable systems), IEC 62304 lifecycle, a clinical evaluation, Annex II/III technical documentation, UDI, and Art. 10(9) QMS.\n\n**What would change the answer:**\n\n- Any *selection* or *prioritisation* in the reformatting — flagging urgent reports, reordering findings, truncating, summarising, extracting \"key findings\" into a header. That is the software influencing what the GP reads first or at all, and it puts you in Rule 11 ¶1 → Class IIa, potentially IIb if a missed critical finding could cause serious deterioration.\n- Routing logic that *decides* the recipient on clinical grounds rather than looking up an existing referrer field.\n- Any transformation that isn't information-preserving (dropping images/annotations, lossy rendering, unit or laterality reformatting).\n\nWrite the intended purpose to lock this down explicitly — something like \"reformats without altering, adding to, omitting from, or prioritising clinical content.\" The classification lives or dies on that sentence.\n\nOne flag, since it affects what you file rather than the class: MDCG 2019-11 treats software for transfer, storage, communication and simple search as *not* a medical device. Reformat-and-route is close to that description, so the weaker link in your file is likely the qualification decision, not the classification. You've said qualification is settled, so I've answered on that basis — but if the settled position rests on an old MDD-era view, it's worth confirming the rationale is documented, because a Class I self-declaration for a non-device is a different kind of regulatory problem than a misclassification."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 1,
+            "costUsd": 0.13357225,
+            "judgeCostUsd": 0.004512000000000016,
+            "durationSeconds": 57,
+            "startedAt": "2026-09-09T20:48:15.589Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-pdQb2v/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "## Short answer\n\n**Class I** — under Annex VIII, Chapter III, **Rule 11, final indent** (\"all other software is classified as class I\").\n\n## The reasoning chain\n\n**Rule 11 is the governing rule.** Annex VIII implementing rule 3.3 says software independent of any other device is classified in its own right, so you don't inherit the class of the modality or the RIS/PACS it talks to. Rule 11 has four limbs:\n\n| Limb | Applies? |\n|---|---|\n| Provides information used to take decisions with diagnostic/therapeutic purposes → IIa (IIb/III by harm severity) | **No** — see below |\n| Monitors physiological processes → IIa / IIb | No |\n| Intended to monitor vital physiological parameters where variation could cause immediate danger → IIb | No |\n| **All other software → I** | **Yes** |\n\n**Why the first limb doesn't bite.** The decision-relevant information is created entirely by the radiologist and is already fixed at signature. Your software contributes no new information, no derived value, no prioritisation, no interpretation, no flagging. It changes presentation and destination only. The referring GP is making decisions on the radiologist's information, not on anything the software provides. Under MDCG 2019-11's decomposition of Rule 11 (\"significance of the information provided to the decision\" × \"situation/condition\"), the software's own contribution to the decision is null — you can't score a severity band on information the device didn't generate. MDCG 2021-24 takes the same line for software confined to storage, archival, lossless communication and simple reformatting.\n\n**So the pipeline is:** independent software → Rule 11 → no limb 1–3 → Class I. No other rule up-classifies it (Rule 13, the active-device catch-all, is displaced by the more specific Rule 11; implementing rule 3.5's \"highest class applies\" has nothing to bind to).\n\n## The premise you've excluded is the weak point\n\nYou've stipulated qualification, so I'll take it as given — but note that the arguments that make this Class I are the *same* arguments MDCG 2019-11 uses to conclude that reformat-and-route software isn't MDSW at all (it neither creates nor modifies medical information; changing format for viewing purposes is expressly excluded). A notified body or competent authority reviewing this is more likely to challenge \"is it a device\" than \"is it Class I.\" Practically, that's fine: the answer is Class I either way, and Class I self-declaration doesn't require you to litigate the point with a notified body.\n\n## Four things that would change the answer\n\nCheck these against the actual build, because \"reformats and routes\" often hides one of them:\n\n1. **Parsing that extracts and re-presents clinical content selectively** — e.g. pulling findings vs. impression into separate fields, truncating, summarising, or generating a header from body text. That's creating new information → Rule 11 first limb → **IIa at minimum**.\n2. **Any prioritisation or routing based on content** — e.g. critical-findings detection to escalate delivery. Same result, and plausibly **IIb** given radiology's harm profile.\n3. **Lossy transformation** — character-set mangling, unit conversion, dropping structured-report elements, image thumbnails that get read. If the output can differ clinically from the signed report, you're no longer a transport layer.\n4. **Handling images alongside the report**, where the GP views them for diagnosis in your renderer.\n\nIf none apply, Class I holds. Document the argument explicitly in the technical file: state that the software is a transport/presentation layer, that clinical content is bit-identical from input to output, and ideally verify that with an automated content-integrity check in your V&V.\n\n## What Class I actually costs you\n\nNot nothing — self-declared doesn't mean unregulated:\n\n- Annexes II/III technical documentation, Annex IV EU declaration of conformity, self-affixed CE mark, no notified body (it's not Is/Ir/Im/Ir).\n- ISO 13485 QMS (Art. 10(9)), IEC 62304 lifecycle, IEC 82304-1, ISO 14971.\n- Clinical evaluation under Art. 61 / Annex XIV — for Class I this is normally literature- and state-of-the-art-based, no clinical investigation.\n- Basic UDI-DI + UDI, EUDAMED registration, PRRC (Art. 15), PMS plan and PMS report (Art. 85 — report, not PSUR, at Class I).\n- No transitional relief: MDR-only since 26 May 2021, since it wasn't up-classified out of self-certification.\n- Cybersecurity per Annex I §17 and MDCG 2019-16 matters more than the class suggests, since you're moving identifiable clinical data between organisations."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 1,
+            "costUsd": 0.123161,
+            "judgeCostUsd": 0.0032819999999999933,
+            "durationSeconds": 50,
+            "startedAt": "2026-09-09T20:49:12.905Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-AJPuiZ/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "## Class I (Rule 11, final indent)\n\n**Rule 11** is the only classification rule engaged. Its structure:\n\n| Rule 11 limb | Applies here? |\n|---|---|\n| Software providing information used to take diagnostic/therapeutic decisions → IIa (↑ IIb/III by severity) | **No** |\n| Software intended to monitor physiological processes → IIa / IIb | No |\n| **\"All other software is classified as class I\"** | **Yes** |\n\n### Why the first limb isn't triggered\n\nThe escalating limbs of Rule 11 attach to software that *is the source* of the decision-relevant information — software that creates, derives, transforms, or interprets medical data. Your product does none of that: the clinician-signed report is complete and diagnostically final before the software touches it. The software changes presentation and delivery, not content. That is the reading in MDCG 2019-11 and MDCG 2021-24, which treat storage, archiving, lossless communication, transfer and simple reformatting as not creating new medical information, and therefore landing in the \"all other software\" bucket.\n\nNote the severity escalators (IIb/III) only bite *if* the first limb applies. Since it doesn't, you never reach the \"could a routing failure delay a cancer diagnosis?\" question — that's a risk-management and PMS issue under Annex I, not a classification input. Classification under MDR is driven by intended purpose, not by failure mode consequence.\n\n### Implementing rules checked (Annex VIII, Ch. II)\n\n- **3.3** — standalone software independent of any other device is classified in its own right; it doesn't inherit the class of the RIS/PACS it sits next to. Confirm it isn't marketed as driving or influencing the use of another device.\n- **3.5** — strictest-rule tiebreak: no other rule reaches it, so no uplift.\n\n### One flag on your premise\n\nYou've told me qualification is settled, so I've classified on that basis. But be aware it's the weaker half of your position: MDCG 2019-11 gives \"software intended only to transfer/store data without modification\" as a canonical *non*-device example. If a competent authority ever revisits this, they're likelier to attack qualification than your Class I call. Keep the qualification rationale documented alongside the classification rationale.\n\n### Practical consequence\n\nClass I, non-sterile, non-measuring, non-reusable-surgical → **self-certification** under Annex II/III, no notified body. Still required: QMS (Art. 10(9)), technical documentation, clinical evaluation (Art. 61 + Annex XIV), PRRC, UDI, EUDAMED registration, PMS plan and PSUR-equivalent reporting, plus IEC 62304 / IEC 82304-1 as state of the art.\n\n### What would move it to IIa\n\nAny change where the software starts affecting content rather than container — summarising, truncating long reports to fit a layout, dropping addenda or amended findings, re-ordering findings by inferred priority, extracting fields into structured data, or flagging/triaging reports for the GP. Worth writing this boundary into your design controls, because layout work drifts toward it easily."
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 1,
+        "passRate": 1,
+        "scoreWithout": 1,
+        "passRateWithout": 1,
+        "delta": 0
+      }
+    },
+    {
+      "name": "qualification-not-established",
+      "dir": "evals/05-qualification-not-established",
+      "source": "prose",
+      "promptMarkdown": "Can you give me the MDR class for our app? It's a habit tracker — users log water\nintake, steps and sleep, and it gives them a weekly wellness score and some\nencouragement messages. We're not making any medical claims. Marketing wants to know\nwhat class we'd be so they can put it on the website.",
+      "runsPerCase": 3,
+      "timeoutSeconds": 300,
+      "maxTurns": 10,
+      "graders": [
+        {
+          "name": "criteria",
+          "type": "llm",
+          "weight": 1,
+          "graderMarkdown": "A wellness habit tracker making no medical claims is very likely not a medical device\nunder Art. 2(1) at all. Classification presumes qualification, and the skill states\nthat qualification is a prior question it does not answer.\n\nPASS requires:\n(1) It does NOT assign an MDR class (not I, not IIa, nothing).\n(2) It raises qualification under Art. 2(1) as the prior question, and says that if\n    the product is not a device there is no MDR class to give.\n(3) It does not simply refuse and stop — it explains what would need to be\n    established, or what would pull the product into scope.\n\nA useful bonus, not required: noting that publishing an MDR class on a website for a\nproduct that is not a device would itself be a misleading claim.\n\nFAIL if any MDR class is assigned. FAIL if it says \"class I\" on the reasoning that\nlow-risk software defaults to class I — a non-device has no class at all, and that\nconflation is the error being tested.",
+          "config": {
+            "criteria": "A wellness habit tracker making no medical claims is very likely not a medical device\nunder Art. 2(1) at all. Classification presumes qualification, and the skill states\nthat qualification is a prior question it does not answer.\n\nPASS requires:\n(1) It does NOT assign an MDR class (not I, not IIa, nothing).\n(2) It raises qualification under Art. 2(1) as the prior question, and says that if\n    the product is not a device there is no MDR class to give.\n(3) It does not simply refuse and stop — it explains what would need to be\n    established, or what would pull the product into scope.\n\nA useful bonus, not required: noting that publishing an MDR class on a website for a\nproduct that is not a device would itself be a misleading claim.\n\nFAIL if any MDR class is assigned. FAIL if it says \"class I\" on the reasoning that\nlow-risk software defaults to class I — a non-device has no class at all, and that\nconflation is the error being tested.",
+            "focus": "last_message"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 4,
+            "costUsd": 0.1607935,
+            "judgeCostUsd": 0.004229999999999984,
+            "durationSeconds": 42,
+            "startedAt": "2026-09-09T20:50:02.803Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-hsjeFE/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "I read the Annex VIII text the skill carries and stopped at its Step 0 rather than producing a class. Here's why, and what to tell marketing.\n\n# MDR Software Classification: habit tracker (water / steps / sleep + weekly wellness score)\n\n**Intended purpose (as stated):** NOT SUPPLIED — I have a feature description (\"logs water intake, steps, sleep; gives a weekly wellness score and encouragement messages\"), not an intended purpose as written in technical documentation.\n**Qualified as a device:** not established.\n\n## Class: cannot conclude — qualification is the prior question\n\nClassification presumes qualification. Before there is a class, the product has to be a medical device under **Art. 2(1)** `[verify]` — and on what you've described (no medical claims, wellness scoring and encouragement), that is not established. Art. 2(1) is outside what this analysis covers, and it is a separate piece of work.\n\nIf it's not a medical device, it doesn't have an MDR class. Not \"Class I\" — *none*.\n\n## The thing marketing needs to hear\n\n**\"MDR Class I\" is not a neutral badge — it's a claim that the product is a medical device.** Putting it on the website asserts you're a manufacturer under the MDR, which drags in CE marking, a technical file, a QMS, Eudamed registration, PMS and vigilance. Claiming it without having done those is a worse position than saying nothing, and claiming device status for a product that isn't one is its own problem.\n\nIf the honest position is \"this is a wellness app, not a medical device,\" the website should say that — or say nothing about MDR at all. There is no MDR class to advertise.\n\n## A flag on the intended purpose itself (3.1) `[verified]`\n\n3.1 anchors classification to intended purpose, and **marketing copy is evidence of intended purpose.** This is the live risk here, and it runs the opposite direction from what marketing is asking for:\n\n- \"Weekly wellness score\" is fine as a lifestyle metric. If the site frames it as indicating a health state, detecting a problem, or telling users something is wrong, that starts to look like the purpose has changed.\n- \"Encouragement messages\" are fine. Messages that advise a user to change behaviour *for a health outcome* — hydration for a condition, sleep for a diagnosed disorder — are a different thing.\n- Any language about symptoms, conditions, risk, screening, or \"clinically\" anything.\n\nSo the answer to \"what can we put on the website\" is partly: what you put on the website is one of the inputs that decides whether you're a device. Worth having whoever signs off on the copy know that.\n\n## One factual question I'd want answered\n\nWhere do steps and sleep come from? If they're pulled from a wearable or phone sensor and the app only displays and aggregates that data, it is normally independent under **3.3** `[verified]` and would be classified in its own right. If your app were ever to set a parameter on, gate an alarm from, or otherwise change how a connected device is operated, 3.3 puts it in **that device's class** and Rule 11 is never reached. Nothing you've described does that — but it's the question I'd confirm, because it's the step most often skipped.\n\n## What would change this\n\n- A written intended purpose in your technical documentation (or a decision that you don't have one because you're not a device).\n- An Art. 2(1) qualification determination `[verify]`.\n- Marketing copy that makes a medical claim — this can move the product into scope on its own.\n- Any future feature that influences the operation of a connected device (3.3).\n\n## Limits\n\n> This classifies software under MDR Annex VIII implementing rules 3.1–3.7 and Rule 11, retrieved verbatim from EUR-Lex on 2026-09-09. It does **not** cover Art. 2(1) qualification, Rules 1–10 or 12–22, Annex XVI, IVDR, MDCG guidance, notified-body practice, or national interpretation. Rule 11 is a floor: under 3.5 a stricter rule this skill does not carry may raise the class. A structured first pass and an audit aid, not legal or regulatory advice, and not a substitute for your notified body or a qualified regulatory professional.\n\n---\n\nIf someone has already made the qualification call — either way — tell me and I'll run the classification properly against your written intended purpose. Right now the useful answer to marketing is: **there's no class to publish, and asking for one to publish is a question for your regulatory lead before it's a question for me.**"
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 4,
+            "costUsd": 0.1688075,
+            "judgeCostUsd": 0.003812999999999983,
+            "durationSeconds": 47,
+            "startedAt": "2026-09-09T20:50:45.167Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-hFQVA5/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "I ran this through the Annex VIII skill, and the honest answer is that there isn't a class to give you — for a reason that matters more to marketing than a class number would.\n\n# MDR Software Classification: habit tracker\n\n**Intended purpose (as stated):** NOT SUPPLIED — I have a feature description (\"log water intake, steps and sleep; weekly wellness score; encouragement messages\"), not an intended purpose as written in technical documentation.\n**Qualified as a device:** not established\n\n## Class: cannot conclude\n\nClassification presumes qualification. Before there's a class, the product has to be a medical device under Art. 2(1), and nothing you've told me settles that — it's a separate analysis that Annex VIII doesn't perform. On the face of it, an app with no medical claim that logs lifestyle inputs and returns encouragement sounds like it sits outside the device definition entirely. But \"sounds like\" isn't the call, and it isn't mine to make.\n\nIf your regulatory lead confirms it is *not* a device, there is no MDR class, and that's the end of it.\n\n## The problem with the marketing ask\n\nPutting an MDR class on the website is itself a claim of device status. \"Class I under MDR\" tells a reader this is a regulated medical device — which is the opposite of the \"no medical claims\" position you're describing, and it drags in CE marking, a technical file, a UDI, and Art. 10 manufacturer obligations to back it up. If you're not a device, the accurate website statement is that the product is not a medical device and makes no medical claims. That's the sentence marketing should be asking for.\n\n## The real risk here is the copy, not the code\n\nImplementing rule 3.1 anchors everything to intended purpose as you state it — and marketing copy is one of the places a stated purpose gets made. `[verified]` Two phrases to watch:\n\n- **\"wellness score\"** — if it gets described as indicating health status, flagging problems, or telling users something is wrong, that's a step toward a medical purpose, and Rule 11's second limb (software intended to monitor physiological processes, base class **IIa**) becomes a live question rather than an academic one. `[verified]`\n- **\"sleep tracking\"** — framed as sleep *quality* insight it's lifestyle; framed as detecting a sleep disorder it isn't.\n\nThe engineering doesn't change. The classification does. This is worth saying to marketing directly: the website copy can create the regulatory obligation that the product was built to avoid.\n\n## What would change this\n\n- A confirmed Art. 2(1) qualification determination, either way — this is the blocker.\n- The intended purpose as written in your technical documentation, which I'd need to run 3.3 and Rule 11 properly.\n- Whether the app takes data from, or feeds anything into, another device (a wearable, a connected scale). Under 3.3, software that drives or influences another device takes *that device's* class before Rule 11 is ever reached. `[verified]` A step count synced in from a wearable is probably just display, but it's the question I'd need answered.\n\n## Limits\n\n> This classifies software under MDR Annex VIII implementing rules 3.1–3.7 and Rule 11, retrieved verbatim from EUR-Lex on 2026-09-09. It does **not** cover Art. 2(1) qualification, Rules 1–10 or 12–22, Annex XVI, IVDR, MDCG guidance, notified-body practice, or national interpretation. Rule 11 is a floor: under 3.5 a stricter rule this skill does not carry may raise the class. A structured first pass and an audit aid, not legal or regulatory advice, and not a substitute for your notified body or a qualified regulatory professional.\n\nGet the qualification determination first — send me the intended purpose as written and I'll run the classification properly. And I'd push back on giving marketing a class at all until that determination exists, since the class on the website is a claim in its own right."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 4,
+            "costUsd": 0.1484935,
+            "judgeCostUsd": 0.003977999999999995,
+            "durationSeconds": 41,
+            "startedAt": "2026-09-09T20:51:31.962Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-wgjkkj/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "I ran this through the Annex VIII classification skill, and it stops before the class question — for a reason that's actually good news for you, though not the answer marketing is expecting.\n\n## There probably isn't an MDR class to put on the website\n\nClassification presumes qualification. Annex VIII tells you *which* class a medical device is; it doesn't tell you *whether* something is a medical device. That's Art. 2(1), which is a separate analysis this skill doesn't cover — and on your own description (\"no medical claims\", logging water/steps/sleep, a wellness score, encouragement messages), it isn't established that you have a device at all.\n\nSo the honest position is:\n\n> Before class, the product has to be a medical device under Art. 2(1). Nothing you've given me settles that, and it's a separate analysis. If qualification is already established, tell me and I'll classify. If not, that comes first.\n\n**If it's not a medical device, it has no MDR class.** Not class I — *none*. MDR simply doesn't apply. That's the thing to take back to marketing.\n\n## Why \"put the class on the website\" is the wrong ask\n\nTwo problems worth naming before this becomes copy:\n\n1. **A stated class is itself a regulatory claim.** Publishing \"MDR Class I\" asserts you're a medical device under MDR — placing a device on the EU market carries registration, technical documentation, a declaration of conformity, CE marking, PMS and vigilance obligations. Claiming a class you haven't conformity-assessed is a worse position than claiming nothing.\n2. **Marketing copy feeds back into qualification.** Intended purpose under implementing rule 3.1 is what *you state*, and regulators read your website as evidence of it. \"No medical claims\" in engineering is undone the moment the site says \"helps manage hydration-related conditions\" or \"detects poor sleep\". The website isn't downstream of qualification — it's an input to it.\n\nThe useful answer for marketing is usually: say nothing about MDR, and get the claims wording reviewed so the product stays outside scope.\n\n## What would move this into device territory\n\nIf any of these are true or planned, qualification needs a real look:\n\n- The wellness score is presented as indicating, screening for, or ruling out a condition (dehydration, sleep apnoea, a cardiac issue) rather than as a general-wellbeing number\n- The encouragement messages become individualised advice tied to a condition or a treatment — \"your intake is low for your kidney condition\", \"adjust your medication timing\"\n- The app takes data from, or feeds into, another device — under implementing rule 3.3 software that drives or influences a device takes that device's class, so an integration with, say, a CGM or an insulin pump changes the analysis before Rule 11 is ever reached\n- Any target-population framing around patients or a diagnosed condition\n\n**If** qualification were established, the Rule 11 path on the purpose as you've described it would land at limb 3 — all other software, class I — since a wellness score isn't information for diagnostic or therapeutic decisions and passive habit logging isn't monitoring physiological processes. But I'm giving you that as a conditional, not a conclusion, because the premise isn't met.\n\n---\n\n> This classifies software under MDR Annex VIII implementing rules 3.1–3.7 and Rule 11, retrieved verbatim from EUR-Lex on 2026-09-09. It does **not** cover Art. 2(1) qualification, Rules 1–10 or 12–22, Annex XVI, IVDR, MDCG guidance, notified-body practice, or national interpretation. Rule 11 is a floor: under 3.5 a stricter rule this skill does not carry may raise the class. A structured first pass and an audit aid, not legal or regulatory advice, and not a substitute for your notified body or a qualified regulatory professional.\n\nSince this is going on a public website, get it in front of your regulatory lead first. The three things to put to them: (1) does the product qualify as a device under Art. 2(1) at all, (2) does the proposed marketing copy create an intended purpose that pulls it into scope, and (3) if it's out of scope, what — if anything — should the site say about regulatory status."
+              }
+            ]
+          }
+        ],
+        "without": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 3,
+            "costUsd": 0.169737,
+            "judgeCostUsd": 0.004584000000000005,
+            "durationSeconds": 68,
+            "startedAt": "2026-09-09T20:52:12.639Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-4G6dkX/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "The working directory is empty, so this is based on your description rather than the actual code and marketing copy — worth re-checking against the real in-app text before anything ships.\n\n## The answer marketing doesn't want: there isn't one\n\nAs described, your app has **no MDR class**, because it isn't a medical device. Classification only exists *inside* the scope of the regulation. Asking \"what class are we?\" is like asking what horsepower your bicycle has.\n\nSo the thing marketing wants — a class number on the website — is not something you can give them. And you shouldn't want to.\n\n## Why it's out of scope\n\nUnder MDR (EU 2017/745) Article 2(1), software is a medical device only if the manufacturer intends it for a specific medical purpose: diagnosis, prevention, monitoring, prediction, prognosis, treatment or alleviation of disease, injury or disability. Logging self-reported water, steps and sleep and returning an aggregate \"wellness score\" plus encouragement isn't any of those.\n\nRecital 19 makes it explicit: software intended for **lifestyle and well-being purposes** is not a medical device. That's your app, near-textbook.\n\nMDCG 2019-11 (the qualification/classification guidance for software) gets you to the same place. You do perform an action on data beyond storage and retrieval — you compute a score — so you pass that step. But you fail the decisive one: the output isn't for the benefit of an individual patient in a medical sense. Generic wellbeing feedback isn't medical information.\n\n## The trap in the request itself\n\nIntended purpose under MDR is established by the manufacturer's labelling, instructions for use, **and promotional and sales materials**. Your website *is* a source of regulatory truth.\n\nSo publishing \"we're Class I\" would be marketing asserting a medical intended purpose you don't have and don't want. Two separate problems:\n\n1. **It's a false claim.** MDR Article 7 prohibits misleading claims, and specifically ascribing to a product functions or properties it doesn't have. Implying medical device status — or CE marking under MDR — when you have neither is exactly what that provision targets.\n2. **The number would be wrong anyway.** People assume a low-risk wellness app maps to Class I. Under Rule 11, software that provides information used for diagnostic or therapeutic decisions is **Class IIa** at minimum, and software monitoring physiological processes is IIa (IIb if variations could cause immediate danger). Class I is the residual \"all other software\" bucket, and post-MDR very little software with a genuine medical purpose lands there. If you were in scope, you'd most likely be looking at IIa — notified body, QMS under ISO 13485, clinical evaluation, post-market surveillance. Not a website badge.\n\nClaiming Class I is the worst of both: legally a misrepresentation, and technically the wrong guess.\n\n## What marketing can actually put on the site\n\nGive them the accurate positive statement instead of a class:\n\n> This app is a lifestyle and wellbeing product. It is not a medical device and is not intended to diagnose, treat, cure or prevent any disease. It does not provide medical advice.\n\nThat's a real, quotable, defensible line. If they want something that sounds substantive, the honest version is that you've assessed the app against MDR and determined it's out of scope as a wellbeing product — which is a stronger story than a misapplied class number.\n\n## What would flip you into scope\n\nWorth circulating to whoever writes copy, because this is where these things go wrong — usually in marketing, not engineering:\n\n- Prevention framing: \"prevents dehydration\", \"reduces your risk of X\"\n- Detection framing: \"detects poor sleep\", \"identifies sleep disorders\", \"spot early signs of\"\n- Targeting a condition or patient group: diabetes, hypertension, insomnia, pregnancy\n- Presenting the score as a health risk indicator, especially with \"consult your doctor if your score drops below…\"\n- Adding measured physiological parameters (heart rate, SpO2, blood glucose) rather than self-logged behaviour\n- Personalised recommendations that read as therapeutic instruction rather than encouragement\n\nThe encouragement messages are your softest spot. \"Nice work, keep it up\" is fine. \"Your hydration is low, this can cause headaches — drink more\" starts drifting toward alleviation of a symptom.\n\n## What I'd actually do\n\nWrite a short qualification rationale and keep it in the repo: a one-paragraph intended purpose statement, your walk through the MDCG 2019-11 decision steps, the conclusion, the date, and who signed off. Re-review it whenever the feature set or the marketing copy changes materially.\n\nThat document is what protects you if a regulator ever asks — far more than any class number on a webpage. It also gives marketing a definitive source so they stop improvising.\n\nOne caveat: I'm reasoning from the regulation and guidance, not giving you regulatory advice, and I haven't seen your actual claims. If you're going to market in the EU at scale, a regulatory consultant reviewing the finished copy is cheap next to a Rule 11 misclassification. Happy to draft the qualification rationale document if you want a starting point."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 5,
+            "costUsd": 0.21233575000000002,
+            "judgeCostUsd": 0.004092000000000012,
+            "durationSeconds": 80,
+            "startedAt": "2026-09-09T20:53:20.261Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-hyLnXd/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "Heads-up: web search was blocked in this session, so this is from knowledge as of my May 2026 cutoff rather than verified against the newest MDCG revisions. The core reasoning below is stable, but have someone confirm current guidance text before anything goes live.\n\n## The short answer: you don't have one\n\nMDR classes (I, IIa, IIb, III) only exist for products that *are* medical devices. Classification is step two. Step one is **qualification** — is this a device at all under Article 2(1)?\n\nFrom your description — logging water/steps/sleep, a weekly score, encouragement messages, no medical claims — this is general wellness/lifestyle software and falls outside MDR scope. There's no diagnosis, prevention, monitoring, prediction, prognosis, treatment or alleviation of disease. So the honest answer for marketing is \"not a medical device,\" not \"Class I.\"\n\n## Why \"just say Class I\" is the worst possible outcome\n\nI suspect that's where marketing is heading, since it sounds reassuring and low-stakes. It isn't. Class I is not a light-touch label — it means you *are* a medical device manufacturer, which pulls in technical documentation, a QMS (ISO 13485 in practice), clinical evaluation, CE marking, UDI, EUDAMED registration, post-market surveillance and vigilance, a Person Responsible for Regulatory Compliance under Art. 15, and an EU authorised rep if you're established outside the EU.\n\nAffixing a CE mark or claiming device status without having done the conformity assessment is a regulatory offence, not a marketing flourish. And Article 7 separately prohibits claims that mislead users about intended purpose, safety or performance — in either direction.\n\n## The real risk: marketing copy *creates* the intended purpose\n\nUnder Art. 2(12), intended purpose is what the manufacturer states in labelling, the instructions for use, **and promotional material**. Your internal position that you make no medical claims is not what a competent authority reads — they read the website. So the page marketing is building is itself the thing that could qualify you as a device.\n\nLines that would flip you in:\n\n- Framing the score as health status — \"your wellness score indicates elevated risk of…\"\n- Abnormality flagging — \"your sleep is unusually low, you may want to see a doctor\"\n- Naming a condition or population — diabetes, hypertension, insomnia, pregnancy\n- Recommendations framed as managing or improving a condition rather than a habit\n- Any accuracy claim benchmarked against a clinical measurement\n\n## If you did flip in, it's probably not Class I\n\nWorth knowing so nobody treats the boundary as low-consequence. Rule 11 of Annex VIII sends software that provides information used for diagnostic or therapeutic decisions to **Class IIa**, escalating to IIb or III with the severity of harm; software monitoring physiological processes is also IIa, or IIb for vital parameters where variation could cause immediate danger. In practice Rule 11 pushes nearly all qualifying standalone software to IIa or above — which means a Notified Body, timelines in quarters, and real cost. There is no comfortable Class I landing zone here. You're either out of scope or you're in a genuine certification project.\n\n## What to actually put on the website\n\nA negative statement rather than a class:\n\n> [App] is a general wellness and lifestyle app. It is not a medical device and is not intended to diagnose, treat, cure, prevent or monitor any disease or medical condition. It does not replace professional medical advice.\n\nTwo things I'd pair with that:\n\n1. **Write down the qualification rationale.** A one-to-two page memo walking the MDCG 2019-11 decision steps and concluding \"not a device,\" with the date and the product description it was based on. That memo is what you hand a competent authority if they ever ask, and it's cheap to produce now and expensive to reconstruct later.\n2. **Route marketing copy through whoever owns that memo.** The determination is only as good as the claims that stay consistent with it.\n\nAlso on marketing's radar even though you're out of MDR scope: consumer-protection rules on health claims, and GDPR — sleep data plus an inferred \"wellness score\" is plausibly Article 9 health data regardless of your device status.\n\nI'm not a regulatory consultant and this isn't regulatory advice. Given that the entire determination hangs on wording that marketing is about to publish, this is worth an hour of a regulatory affairs professional's time before launch."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 1,
+            "costUsd": 0.1290605,
+            "judgeCostUsd": 0.0036690000000000056,
+            "durationSeconds": 52,
+            "startedAt": "2026-09-09T20:54:40.468Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-GZPHYI/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "## Bottom line\n\nAs you've described it, there isn't an MDR class — because the app most likely isn't a medical device at all. \"Not a device\" and \"Class I\" are different answers, and marketing needs the first one, not the second.\n\n## Why it falls outside MDR\n\nUnder Article 2(1) of MDR 2017/745, something is a device only if its **intended purpose** is diagnosis, prevention, monitoring, prediction, prognosis, treatment or alleviation of disease or injury. Recital 19 and MDCG 2019-11 are explicit that software for lifestyle and wellbeing purposes is out of scope, even when it handles health-adjacent data. Logging water, steps and sleep and returning a composite score plus motivational nudges is lifestyle territory as long as nothing in the product frames it against a disease or condition.\n\nWorth knowing: for standalone software the realistic outcomes are basically binary. If you're in scope, Rule 11 pulls almost all standalone software to **Class IIa** or above — notified body, QMS to ISO 13485, clinical evaluation, technical documentation, post-market surveillance. Class I is a rounding error for software under MDR. So the gap between \"out of scope\" and \"in scope\" is not a small upgrade.\n\n## What marketing should and shouldn't publish\n\nDo not put a class on the website. Saying \"Class I under MDR\" asserts you're a regulated device, which is both untrue and self-inflicted: it drags you into obligations you haven't met. Same for a CE mark under MDR, or phrases like \"MDR compliant,\" \"MDR certified,\" or \"medically approved\" — affixing a CE mark to a non-device is itself a violation.\n\nIf they need something to say, the accurate line is along the lines of: *\"This app is a general wellness and lifestyle product. It is not a medical device and is not intended to diagnose, treat, cure or prevent any disease.\"* That disclaimer is worth having in the app and the store listing too, not just the site.\n\n## The tripwire, which is specifically marketing's problem\n\nIntended purpose under MDR is determined by your labelling, instructions for use **and promotional material**. Marketing copy is the single most common way a wellness app becomes a regulated device. Things that would flip you in scope:\n\n- Framing the wellness score as a health-risk indicator, or as detecting dehydration, sleep disorders, burnout, etc.\n- Any prediction or prognosis language — MDR added \"prediction and prognosis\" to the definition, so \"your score suggests you may be at risk of…\" is enough.\n- Encouragement messages that become individualised advice aimed at managing a condition rather than generic motivation.\n- Named conditions in testimonials, SEO copy, or app store keywords (diabetes, insomnia, hypertension).\n\nGiven that, I'd suggest marketing route health-adjacent claims past whoever owns regulatory before publishing, rather than after.\n\n## Other regimes that still apply\n\nBeing outside MDR doesn't mean unregulated. GDPR is the big one — sleep and activity data may qualify as health data under Article 9 depending on what you infer from it. Unfair commercial practices rules apply to any wellness claim you can't substantiate. If you ship to the UK, the MHRA analysis mirrors this but is a separate determination; in the US, the FDA general wellness guidance would most likely put you under enforcement discretion on these facts.\n\nOne caveat: I'm giving you the regulatory logic, not legal advice, and the conclusion depends on copy I haven't seen. Standard practice is to write a short borderline-assessment memo — intended purpose statement, the Article 2(1) analysis, why Rule 11 isn't engaged — signed off and kept on file. It costs an afternoon and is what you'd show a competent authority if anyone ever asks. Happy to draft one if you paste in the current site and app store copy."
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 1,
+        "passRate": 1,
+        "scoreWithout": 1,
+        "passRateWithout": 1,
+        "delta": 0
+      }
+    }
+  ],
+  "aggregates": {
+    "casesTotal": 5,
+    "casesPassed": 5,
+    "overallScore": 1,
+    "overallPassRate": 1,
+    "meanDelta": 0.2
+  }
+}
