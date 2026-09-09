@@ -67,6 +67,15 @@ The skill establishes two anchors before reviewing: the **intended purpose as as
 (the reference point for Art. 7(d)) and the **audience** (Fachkreise vs. Publikum, which
 gates HWG § 11). It will ask for them rather than guess.
 
+## Using it outside Claude Code
+
+The skill body and the three reference files are plain markdown with no Claude-specific
+syntax. See [AGENTS.md](AGENTS.md) for load order, per-tool instructions, and the five
+invariants a port must preserve.
+
+Claude-specific parts are the packaging only: `.claude-plugin/*.json`, the
+`argument-hint` frontmatter key, and the `evals/**/case.yaml` harness format.
+
 ## Evals
 
 Seven cases in [`device-claims/evals/`](device-claims/evals/), including three
