@@ -23,8 +23,17 @@ Three layers apply, and they are cumulative. Copy must clear all three:
 | DE | **HWG** § 3, § 11 | When advertising targets the German market |
 | DE | **UWG** § 5, § 6 | Enforcement vehicle; § 6 governs comparisons independently |
 
-Verbatim statute text is in `references/`. Every finding must cite a provision
-that appears there.
+Verbatim statute text, with source URL and retrieval date, is in:
+
+- `references/mdr-ivdr-art7.md` — MDR Art. 7 and IVDR Art. 7
+- `references/hwg.md` — HWG § 1(1) no. 1a, § 3, § 3a, § 11
+- `references/uwg.md` — UWG § 5, § 6
+
+**Read `references/mdr-ivdr-art7.md` before the claim-by-claim pass.** It carries
+the operative text of the four limbs and the limb-by-limb mapping table. Read the
+German files when the copy targets the German market.
+
+Every finding must cite a provision that appears in these files.
 
 ---
 
@@ -68,6 +77,8 @@ assumption that produces the most under-flagging.
 ---
 
 ## The review spine: four Art. 7 limbs
+
+Operative text and the mapping table: `references/mdr-ivdr-art7.md`.
 
 Classify every finding under the limb it breaches. A finding that maps to no limb
 and no HWG/UWG provision is not a finding — drop it or mark it as a drafting note.
