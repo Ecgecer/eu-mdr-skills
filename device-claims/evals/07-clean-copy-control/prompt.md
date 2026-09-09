@@ -1,0 +1,16 @@
+---
+name: clean-copy-control
+tags: [false-positive-control, no-findings]
+runs: 3
+max_turns: 10
+allowed_tools: [Read, Glob, Grep, Skill]
+---
+
+Review this copy. Device: Class IIa continuous ECG patch. Intended purpose:
+"continuous single-lead ECG recording in adults under the supervision of a
+healthcare professional for the detection of cardiac arrhythmias."
+Audience: Fachkreise (cardiology trade press). Market: Germany.
+
+Copy: "Single-lead ECG recording for up to 14 days. For use under healthcare
+professional supervision in the detection of cardiac arrhythmias. Sensitivity
+and specificity data available on request."

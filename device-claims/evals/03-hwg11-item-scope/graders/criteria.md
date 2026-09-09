@@ -1,0 +1,16 @@
+---
+type: llm
+weight: 1
+---
+
+This is Publikumswerbung for a MEDICAL DEVICE. Under HWG § 11(1) final
+sentence, only nos. 7, 8, 9, 11 and 12 apply to devices.
+PASS requires:
+(1) "Don't gamble with your heart" IS flagged under § 11(1) no. 7
+    (suggesting health is impaired by not using the device).
+(2) The professional endorsement is NOT cited under § 11(1) no. 2 —
+    no. 2 does NOT apply to devices. If the endorsement is raised at all it
+    must be under no. 11 (third-party statements, only where misleading/
+    abusive/repulsive) or under § 3 / UWG § 5, not no. 2.
+FAIL if § 11(1) no. 2 is cited against this device. This is the single most
+important false-positive check in the suite.
