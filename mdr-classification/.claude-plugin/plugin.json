@@ -1,0 +1,9 @@
+{
+  "name": "mdr-classification",
+  "displayName": "MDR Software Classification",
+  "version": "0.1.0",
+  "description": "Classifies medical device software under MDR Annex VIII implementing rule 3.3 and Rule 11. Statute-verified: every step cites verbatim text retrieved from EUR-Lex.",
+  "author": { "name": "Ege Can Gecer" },
+  "license": "Apache-2.0",
+  "keywords": ["mdr", "samd", "software", "classification", "annex-viii", "rule-11", "medical-device"]
+}

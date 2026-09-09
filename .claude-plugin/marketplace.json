@@ -1,15 +1,29 @@
 {
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
   "name": "device-claims-review",
-  "description": "Statute-verified claims review for medical devices and IVDs under EU and German advertising law.",
-  "owner": { "name": "Ege Can Gecer" },
+  "description": "Statute-verified skills for EU medical device regulation. Every finding cites verbatim text retrieved from EUR-Lex or gesetze-im-internet, and every skill ships an eval suite measured against a no-plugin baseline.",
+  "owner": {
+    "name": "Ege Can Gecer"
+  },
   "plugins": [
     {
       "name": "device-claims",
       "displayName": "Device Claims Review",
       "source": "./device-claims",
-      "description": "Reviews device and IVD marketing copy against MDR/IVDR Art. 7, HWG § 3 and § 11, and UWG § 5 and § 6.",
-      "author": { "name": "Ege Can Gecer" },
+      "description": "Reviews device and IVD marketing copy against MDR/IVDR Art. 7, HWG \u00a7 3 and \u00a7 11, and UWG \u00a7 5 and \u00a7 6.",
+      "author": {
+        "name": "Ege Can Gecer"
+      },
+      "license": "Apache-2.0"
+    },
+    {
+      "name": "mdr-classification",
+      "displayName": "MDR Software Classification",
+      "source": "./mdr-classification",
+      "description": "Classifies medical device software under MDR Annex VIII implementing rule 3.3 and Rule 11.",
+      "author": {
+        "name": "Ege Can Gecer"
+      },
       "license": "Apache-2.0"
     }
   ]
