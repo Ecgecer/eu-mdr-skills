@@ -36,43 +36,49 @@ apply and the restriction lives in a single sentence at the end of a long list.
 
 ## Results
 
-Measured by `claude plugin eval . --ablation with-without`, 3 runs per case per arm.
-42 runs, $10.56, 2026-09-09, commit 8ca1576.
+`claude plugin eval . --ablation with-without`, 3 runs per case per arm.
+Six cases measured 2026-09-09 at commit 8ca1576; four re-measured at 0a520dd after
+two grader fixes and three new cases.
 
-| Case | with | without | delta |
-|---|---|---|---|
-| `clean-copy-control` | 1.00 | **0.00** | **+1.00** |
-| `hwg11-item-scope` | **0.67** | 0.00 | +0.67 |
-| `no-case-law-supplement` | 1.00 | 0.33 | +0.67 |
-| `hwg11-wrong-audience` | 1.00 | 0.67 | +0.33 |
-| `limb-d-intended-purpose-drift` | 1.00 | 1.00 | **0.00** |
-| `limb-c-omission` | 1.00 | 1.00 | **0.00** |
-| `uwg6-comparison` | **0.67** | 0.67 | **0.00** |
+| Case | with | without | delta | kind |
+|---|---|---|---|---|
+| `clean-copy-control` | 1.00 | 0.00 | **+1.00** | restraint |
+| `hwg11-item-scope` | 1.00 | 0.00 | **+1.00** | scoping |
+| `no-case-law-supplement` | 1.00 | 0.33 | +0.67 | refusal |
+| `non-german-eu-market` | 1.00 | 0.33 | +0.67 | scoping |
+| `hwg3a-arzneimittel-only` | 1.00 | 0.33 | +0.67 | scoping |
+| `hwg11-wrong-audience` | 1.00 | 0.67 | +0.33 | scoping |
+| `puffery-restraint` | 1.00 | 0.67 | +0.33 | restraint |
+| `limb-d-intended-purpose-drift` | 1.00 | 1.00 | 0.00 | detection |
+| `limb-c-omission` | 1.00 | 1.00 | 0.00 | detection |
+| `uwg6-comparison` | 1.00 | 1.00 | 0.00 | detection |
 
-**Mean delta +0.38.**
+**Mean delta +0.47. All ten score 1.00 with the skill.**
 
-### Read this honestly
+### The pattern is clean, and it is one-sided
 
-**Two cases fail one run in three even with the skill.** `hwg11-item-scope` and
-`uwg6-comparison` score 0.67. An earlier hand-run pass of one run each reported 7/7;
-that was one lucky run apiece. The real figure is 5 of 7 at 1.00.
+Every case with a positive delta is a false-positive control, a scoping test, or a
+refusal test. Every case with zero delta asks the model to FIND something.
 
-**Half the skill earns nothing.** Both MDR Art. 7 limb cases measure delta 0.00. The
-baseline finds intended-purpose drift and the omission unaided.
+A competent model already reads MDR Art. 7 and UWG § 6 at ceiling. What it cannot do
+unaided is stop: it cites HWG § 11(1) no. 2 against a medical device in 3 of 3 runs,
+applies German law to a French-market asset in 2 of 3, applies HWG § 3a to a device
+in 2 of 3, and manufactures findings on clean copy in 3 of 3.
 
-**The value is restraint and German scoping.** The baseline scores 0.00 on clean copy
-across all three runs, so it manufactures findings every time. It cannot keep HWG § 11
-off a Fachkreise audience, cannot keep § 11(1) no. 2 off a device, and states BGH
-holdings as fact.
+So this skill does not make a model better at reading the regulation. It stops it
+over-applying provisions to products, markets and audiences they do not reach.
 
-The accurate claim is narrow: this stops a model inventing German provisions and
-inventing findings. It does not improve Art. 7 reading.
+### Two earlier results were wrong, both mine
 
-### Where it still fails
+`hwg11-item-scope` and `uwg6-comparison` first measured 0.67 because the graders
+punished correct reasoning. One could not tell "§ 11(1) no. 2 does not apply to
+Medizinprodukte" from citing no. 2 against a device. The other demanded an explicit
+affirmation that lawful comparisons exist, which a correct analysis of three
+defective claims never has occasion to make. Fixed; `hwg11-item-scope` then measured
++1.00 rather than +0.67.
 
-`uwg6-comparison` is weakest, 0.67 with delta 0.00, so the § 6 guidance is not carrying
-its weight. `hwg11-item-scope` at 0.67 means the most important false-positive guard
-fires only two runs in three.
+An earlier hand-run pass reported 7/7 from one run per case. Three runs found
+nondeterminism it could not. Single runs are not evidence.
 
 ### The case 03 baseline — the decisive one
 

@@ -5,20 +5,38 @@ Claims review for **medical devices and IVDs** under EU and German advertising l
 Reviews marketing copy against **MDR Art. 7**, **IVDR Art. 7**, **HWG § 3 / § 11**,
 and **UWG § 5 / § 6**, and cites the provision behind every finding.
 
-## Why this exists
+## Scope, stated up front
 
-Generic marketing-claims review is built on consumer-advertising law (FTC, NAD, UDAP)
-and misses the two failure modes specific to devices:
+**Covers:** medical devices and IVDs placed on the **EU** market, plus **German**
+national advertising law. Four instruments, all verbatim in `references/`:
+MDR Art. 7, IVDR Art. 7, HWG (§ 1(1) no. 1a, § 3, § 3a, § 11), UWG (§ 5, § 6).
+
+**Does not cover:** case law, MDCG guidance, notified-body practice, national
+enforcement decisions, any market outside the EU and Germany, and every other part of
+MDR — qualification, classification, conformity assessment, technical documentation,
+clinical evaluation, vigilance. This reviews advertising claims and nothing else.
+
+**Not legal advice.** A drafting and risk-triage aid. Not a substitute for a
+Fachanwalt für Medizinrecht or Wettbewerbsrecht.
+
+## What it is for
+
+Generic marketing-claims review is built on consumer-advertising law and misses two
+things specific to devices:
 
 - **Intended-purpose drift** (MDR Art. 7(d)). A claim can be entirely true and still
   breach Art. 7 if it suggests a use outside the intended purpose the conformity
-  assessment covered. This is not a truthfulness test and evidence does not cure it.
+  assessment covered. Evidence does not cure it.
 - **Omission** (MDR Art. 7(c)). Copy containing nothing false can breach Art. 7 by
   failing to surface a likely risk.
 
-And in Germany the enforcement path is an **Abmahnung** from a competitor under UWG,
-not a regulator's letter — which makes verifiability, not just accuracy, the operative
-standard.
+In Germany the enforcement path is an **Abmahnung** from a competitor under UWG rather
+than a regulator's letter, which makes verifiability — not just accuracy — the
+operative standard.
+
+Measured behaviour, including where the skill adds nothing, is in
+[`device-claims/evals/README.md`](device-claims/evals/README.md). Numbers live there,
+dated and tied to a commit, because they change.
 
 ## What makes it verifiable
 
