@@ -27,44 +27,43 @@ apply and the restriction lives in a single sentence at the end of a long list.
 
 ## Results
 
-Run manually against fresh agents (the native harness is early-access gated), 1 run
-per case, 2026-09-09, commit `02c0276`.
+Measured by `claude plugin eval . --ablation with-without`, 3 runs per case per arm.
+42 runs, $10.56, 2026-09-09, commit 8ca1576.
 
-| Case | Result | Note |
-|---|---|---|
-| `01-limb-d-intended-purpose-drift` | **PASS** | Art. 7(d) named; not treated as curable by evidence |
-| `02-hwg11-wrong-audience` | **PASS** | § 11 declared inapplicable (Fachkreise); § 3 / § 5 analysis retained |
-| `03-hwg11-item-scope` | **PASS** | Caught § 11(1) no. 7; correctly declined to cite no. 2 against a device |
-| `04-limb-c-omission` | **PASS** | Art. 7(c) raised from the intended purpose's own rapid-change caveat |
-| `05-uwg6-comparison` | **PASS** | § 6(1) recognised without a named competitor; not treated as banned |
-| `06-no-case-law-supplement` | **PASS** | Refused to state a BGH holding; kept the statutory analysis |
-| `07-clean-copy-control` | **PASS** (after fix) | Failed on first run — see below |
+| Case | with | without | delta |
+|---|---|---|---|
+| `clean-copy-control` | 1.00 | **0.00** | **+1.00** |
+| `hwg11-item-scope` | **0.67** | 0.00 | +0.67 |
+| `no-case-law-supplement` | 1.00 | 0.33 | +0.67 |
+| `hwg11-wrong-audience` | 1.00 | 0.67 | +0.33 |
+| `limb-d-intended-purpose-drift` | 1.00 | 1.00 | **0.00** |
+| `limb-c-omission` | 1.00 | 1.00 | **0.00** |
+| `uwg6-comparison` | **0.67** | 0.67 | **0.00** |
 
-**7/7, one run each.** One run is not three; the harness default is 3 and would catch
-nondeterminism this does not.
+**Mean delta +0.38.**
 
-## Ablation: what the skill actually causes
+### Read this honestly
 
-Case 01 was also run with **no skill and no reference files**, same prompt.
+**Two cases fail one run in three even with the skill.** `hwg11-item-scope` and
+`uwg6-comparison` score 0.67. An earlier hand-run pass of one run each reported 7/7;
+that was one lucky run apiece. The real figure is 5 of 7 at 1.00.
 
-The baseline **found the Art. 7(d) intended-purpose drift correctly** and quoted the
-limb accurately. On the headline catch there is **no delta** — a competent model does
-not need this skill to notice that selling a clinical ECG patch to athletes is a
-problem.
+**Half the skill earns nothing.** Both MDR Art. 7 limb cases measure delta 0.00. The
+baseline finds intended-purpose drift and the omission unaided.
 
-The delta is citation integrity. The baseline asserted:
+**The value is restraint and German scoping.** The baseline scores 0.00 on clean copy
+across all three runs, so it manufactures findings every time. It cannot keep HWG § 11
+off a Fachkreise audience, cannot keep § 11(1) no. 2 off a device, and states BGH
+holdings as fact.
 
-> "**Heilmittelwerbegesetz (HWG) §11 Abs. 1 Nr. 11**, which prohibits advertising that
-> could give the impression that consulting a doctor/healthcare professional is
-> unnecessary"
+The accurate claim is narrow: this stops a model inventing German provisions and
+inventing findings. It does not improve Art. 7 reading.
 
-HWG § 11(1) no. 11 is **third-party testimonials** (*Äußerungen Dritter*, Dank-,
-Anerkennungs- oder Empfehlungsschreiben). The content the baseline attributed to it
-does not appear anywhere in § 11. It also sprawled into MDR Art. 61, Annex I, Art. 20,
-Art. 10(6), Art. 95/97 and the UCPD without marking any of it unverified.
+### Where it still fails
 
-**So the value is not finding more. It is not inventing provisions, and saying plainly
-where the line is.** That is the claim the repo makes, and this is the evidence for it.
+`uwg6-comparison` is weakest, 0.67 with delta 0.00, so the § 6 guidance is not carrying
+its weight. `hwg11-item-scope` at 0.67 means the most important false-positive guard
+fires only two runs in three.
 
 ### The case 03 baseline — the decisive one
 
