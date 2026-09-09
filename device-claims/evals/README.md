@@ -18,6 +18,15 @@ skill manually rather than through the harness — see the repo README.
 To run one manually: give a fresh agent the SKILL.md plus the three reference files,
 paste the case `prompt`, and check the output against that case's grader text.
 
+### Two harness gotchas
+
+`--case` matches the **frontmatter `name`**, not the directory. `--case '03*'` finds
+nothing; `--case 'hwg11-item-scope'` works.
+
+`--case` is **not repeatable**. Passing it twice silently runs only the last one —
+a run given `--case 'hwg11-item-scope' --case 'uwg6-comparison'` reported
+`1 case(s)`. Use a glob that covers both, or run the whole suite.
+
 ## The case that matters most
 
 `03-hwg11-item-scope`. HWG § 11(1)'s closing sentence limits devices to nos. 7, 8, 9,
