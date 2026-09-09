@@ -66,8 +66,45 @@ Art. 10(6), Art. 95/97 and the UCPD without marking any of it unverified.
 **So the value is not finding more. It is not inventing provisions, and saying plainly
 where the line is.** That is the claim the repo makes, and this is the evidence for it.
 
-One baseline arm on one case is weak evidence. Treat it as directional until the
-harness can run a real ablation across the suite.
+### The case 03 baseline — the decisive one
+
+Case 03 was also run with no skill and no references. It produced the exact error the
+case exists to catch, with no hedging:
+
+> "**§ 11 Abs. 1 Satz 1 Nr. 2 HWG** [...] This is one of the most frequently enforced
+> provisions of the HWG and **applies with full force here** precisely because there is
+> no professional gate."
+
+HWG § 11(1) sentence 2 reads: *"Für Medizinprodukte gilt Satz 1 **Nr. 7 bis 9, 11 und
+12** entsprechend."* No. 2 is not among them. It does not apply to medical devices.
+
+The consequence is not academic. Acting on that advice means pulling a lawful
+professional endorsement off a product page because a model cited a provision that does
+not reach the product.
+
+The same baseline also placed the fear-appeal prohibition under no. 11 (it is no. 7;
+no. 11 is third-party testimonials), while noting the numbering "should be checked" —
+hedged, but still wrong. And it introduced § 27 MBO-Ä, § 3a UWG and § 12 HWG without
+marking any as unverified.
+
+The skill-equipped run on the identical prompt cited **no. 7** for the fear appeal,
+explicitly declined to cite no. 2, and routed the endorsement to no. 11 with its
+*missbräuchlich / abstoßend / irreführend* qualifier intact.
+
+### What the ablation shows
+
+| | Baseline (no skill) | With skill |
+|---|---|---|
+| Finds the substantive problem | **Yes** — both cases | Yes |
+| Cites provisions that exist and reach the product | **No** — 1 hard error, 1 misnumbering across 2 cases | Yes |
+| Marks unverified sources | No | Yes |
+| Declines case law | No — asserted MBO-Ä, § 3a UWG, Art. 61, Art. 95/97 | Yes |
+
+The skill does not make the model smarter about advertising. It stops it inventing
+German provisions and stops it applying real ones to products they do not cover.
+
+Two baseline arms, one run each. Directional, not conclusive, until the harness can run
+a real ablation across the suite.
 
 ### What case 07 caught
 
