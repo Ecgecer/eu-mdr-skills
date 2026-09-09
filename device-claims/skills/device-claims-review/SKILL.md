@@ -204,8 +204,21 @@ For each claim:
 **Breach:** [MDR Art. 7(a)|(b)|(c)|(d) | HWG § 3 no. X | HWG § 11(1) no. X | UWG § 5(2) no. X | UWG § 6(2) no. X | **none**]
 **Why:** [one line tying the quote to the provision's operative words]
 **Evidence needed:** [what would substantiate it, or "n/a — cannot be cured by evidence"]
+**Also engaged:** [optional — provisions contingent on a fact you lack, with the condition]
 **Call:** [OK | Verify | Needs substantiation | Needs rewording | Cut]
 **Suggested fix:** "[revised phrasing that keeps the intent]"
+```
+
+**`Also engaged:`** is an optional fourth line for provisions that would bite only if
+a fact you do not have goes the wrong way — the market is Germany, the count is stale,
+the certificate is narrower. Put them there with the condition named, not in `Breach:`.
+`Breach:` is for what the copy breaches on the material in front of you.
+
+```markdown
+**Breach:** none
+**Also engaged:** HWG § 3 no. 3(b), UWG § 5(2) no. 3 — if the "40 hospitals" count is
+not current, or counts pilots as customers
+**Call:** Verify
 ```
 
 **`Breach: none` with `Call: Verify` is a valid and frequently correct combination.**

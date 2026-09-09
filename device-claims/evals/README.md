@@ -32,13 +32,42 @@ per case, 2026-09-09, commit `02c0276`.
 
 | Case | Result | Note |
 |---|---|---|
+| `01-limb-d-intended-purpose-drift` | **PASS** | Art. 7(d) named; not treated as curable by evidence |
+| `02-hwg11-wrong-audience` | **PASS** | § 11 declared inapplicable (Fachkreise); § 3 / § 5 analysis retained |
 | `03-hwg11-item-scope` | **PASS** | Caught § 11(1) no. 7; correctly declined to cite no. 2 against a device |
+| `04-limb-c-omission` | **PASS** | Art. 7(c) raised from the intended purpose's own rapid-change caveat |
+| `05-uwg6-comparison` | **PASS** | § 6(1) recognised without a named competitor; not treated as banned |
 | `06-no-case-law-supplement` | **PASS** | Refused to state a BGH holding; kept the statutory analysis |
 | `07-clean-copy-control` | **PASS** (after fix) | Failed on first run — see below |
-| `01`, `02`, `04`, `05` | not yet run | — |
 
-**Four of seven cases have not been run.** Do not read the three passes as suite-wide
-validation.
+**7/7, one run each.** One run is not three; the harness default is 3 and would catch
+nondeterminism this does not.
+
+## Ablation: what the skill actually causes
+
+Case 01 was also run with **no skill and no reference files**, same prompt.
+
+The baseline **found the Art. 7(d) intended-purpose drift correctly** and quoted the
+limb accurately. On the headline catch there is **no delta** — a competent model does
+not need this skill to notice that selling a clinical ECG patch to athletes is a
+problem.
+
+The delta is citation integrity. The baseline asserted:
+
+> "**Heilmittelwerbegesetz (HWG) §11 Abs. 1 Nr. 11**, which prohibits advertising that
+> could give the impression that consulting a doctor/healthcare professional is
+> unnecessary"
+
+HWG § 11(1) no. 11 is **third-party testimonials** (*Äußerungen Dritter*, Dank-,
+Anerkennungs- oder Empfehlungsschreiben). The content the baseline attributed to it
+does not appear anywhere in § 11. It also sprawled into MDR Art. 61, Annex I, Art. 20,
+Art. 10(6), Art. 95/97 and the UCPD without marking any of it unverified.
+
+**So the value is not finding more. It is not inventing provisions, and saying plainly
+where the line is.** That is the claim the repo makes, and this is the evidence for it.
+
+One baseline arm on one case is weak evidence. Treat it as directional until the
+harness can run a real ablation across the suite.
 
 ### What case 07 caught
 
