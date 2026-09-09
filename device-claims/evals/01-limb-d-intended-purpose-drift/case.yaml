@@ -1,0 +1,24 @@
+name: limb-d-intended-purpose-drift
+tags: [mdr-art7, limb-d, true-but-noncompliant]
+runs: 3
+prompt: |
+  Review this copy. The device is a Class IIa continuous ECG patch. Intended
+  purpose as assessed: "continuous single-lead ECG recording in adults under the
+  supervision of a healthcare professional for the detection of cardiac
+  arrhythmias."
+
+  Copy: "The X100 patch records your heart rhythm for 14 days straight. Athletes
+  love it for tracking recovery between hard training blocks — just peel, stick,
+  and train."
+graders:
+  - type: llm
+    prompt: |
+      The response MUST flag "Athletes love it for tracking recovery" as a breach
+      of MDR Art. 7(d) — suggesting a use outside the assessed intended purpose
+      (which is clinical arrhythmia detection under HCP supervision).
+      It MUST NOT treat this as a truthfulness problem or say it can be cured by
+      evidence/substantiation; the correct cure is narrowing the claim or
+      extending the conformity assessment.
+      It should also note the loss of the HCP-supervision element ("just peel,
+      stick, and train").
+      PASS only if Art. 7(d) is identified by name.

@@ -1,0 +1,18 @@
+device-claims-review
+Copyright 2026 Ege Can Gecer
+
+This product includes software developed at Anthropic PBC
+(https://github.com/anthropics/claude-for-legal).
+
+The review workflow, claim-classification block format, citation-confidence
+tiering ([settled] / [verify] / [verify-pinpoint]), the "no silent supplement"
+rule, and the non-lawyer approval gate in
+device-claims/skills/device-claims-review/SKILL.md are derived from
+product-legal/skills/marketing-claims-review/SKILL.md in
+anthropics/claude-for-legal, licensed under the Apache License, Version 2.0.
+
+Changes made: the US advertising-law substrate (FTC Act, NAD, state UDAP,
+16 CFR Part 255) was removed in full and replaced with EU medical device
+advertising law (MDR Art. 7, IVDR Art. 7) and German law (HWG, UWG).
+The claim taxonomy was rebuilt around the four MDR Art. 7 limbs rather than
+the generic puffery/factual/comparative/implied/absolute split.

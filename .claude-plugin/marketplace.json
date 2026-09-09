@@ -1,0 +1,16 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "device-claims-review",
+  "description": "Statute-verified claims review for medical devices and IVDs under EU and German advertising law.",
+  "owner": { "name": "Ege Can Gecer" },
+  "plugins": [
+    {
+      "name": "device-claims",
+      "displayName": "Device Claims Review",
+      "source": "./device-claims",
+      "description": "Reviews device and IVD marketing copy against MDR/IVDR Art. 7, HWG § 3 and § 11, and UWG § 5 and § 6.",
+      "author": { "name": "Ege Can Gecer" },
+      "license": "Apache-2.0"
+    }
+  ]
+}

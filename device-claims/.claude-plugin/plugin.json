@@ -1,0 +1,9 @@
+{
+  "name": "device-claims",
+  "displayName": "Device Claims Review",
+  "version": "0.1.0",
+  "description": "Reviews medical device and IVD marketing copy against MDR Art. 7, IVDR Art. 7, HWG, and UWG §§ 5/6. Statute-verified: every finding cites verbatim text retrieved from EUR-Lex and gesetze-im-internet.",
+  "author": { "name": "Ege Can Gecer" },
+  "license": "Apache-2.0",
+  "keywords": ["mdr", "ivdr", "medical-device", "hwg", "uwg", "advertising", "compliance", "abmahnung"]
+}
