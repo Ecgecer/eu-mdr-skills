@@ -34,10 +34,22 @@ carry, and stop rather than conclude past their own boundary.
 | `scope-statement` | Bounds any compliance claim — what was checked, what wasn't, what it doesn't establish | [3 cases, Δ +0.33](scope-statement/evals/README.md) |
 
 Every skill ships an eval suite measured against a no-plugin baseline, and every suite
-reports the cases where the skill adds **nothing**. Across 20 cases in three domains:
-positive delta wherever the model would over-apply, over-conclude, invent an authority
-or reach for boilerplate; zero wherever it already had what it needed. These skills do
-not add knowledge. They add the discipline to stop.
+reports the cases where the skill adds **nothing** — roughly half of them do.
+
+The pattern across the measured cases: positive delta wherever the model would
+over-apply, over-conclude, invent an authority or reach for boilerplate; zero wherever it
+already had what it needed. **These skills do not add knowledge. They add the discipline
+to stop.**
+
+> **Numbers are being re-measured (2026-09-10).** An adversarial review of all 25 graders
+> found defects in both directions — graders failing correct answers, and graders that
+> would pass wrong ones — plus three prompts that reused worked examples from the very
+> reference files the with-skill arm loads. One published claim was false: the
+> classification suite described a baseline failure that the stored runs show never
+> happened, and that suite's only earning case is a grader artifact. Graders and prompts
+> are fixed; the tables above will change when they re-run. What was wrong, and why, is
+> written into each suite's eval README rather than quietly corrected. See
+> [CORRECTIONS.md](CORRECTIONS.md).
 
 **Not legal advice.** Drafting and risk-triage aids, not a substitute for a regulatory
 professional or a Fachanwalt.
