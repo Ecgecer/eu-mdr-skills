@@ -1,42 +1,30 @@
-# device-claims-review
+# eu-mdr-skills
 
-Claims review for **medical devices and IVDs** under EU and German advertising law.
+Agent skills for EU medical device regulation that **say where the rules stop.**
 
-Reviews marketing copy against **MDR Art. 7**, **IVDR Art. 7**, **HWG § 3 / § 11**,
-and **UWG § 5 / § 6**, and cites the provision behind every finding.
+Claude already knows MDR. Measured across 17 cases, it recalls implementing rule 3.3
+verbatim, applies Rule 11's escalations correctly, and refuses to classify a non-device.
+Knowledge is not the gap.
 
-## Scope, stated up front
+The gap is **confident over-reach.** In those same measurements it cited a German
+advertising provision against a medical device that provision does not reach, in 3 of 3
+runs. It applied German law to a French-market asset in 2 of 3. It escalated a device
+class on half of a two-part condition in 3 of 3. It answered *"Class IIa, plan for a
+notified body"* to a question the rule it cited does not settle.
 
-**Covers:** medical devices and IVDs placed on the **EU** market, plus **German**
-national advertising law. Four instruments, all verbatim in `references/`:
-MDR Art. 7, IVDR Art. 7, HWG (§ 1(1) no. 1a, § 3, § 3a, § 11), UWG (§ 5, § 6).
+Every one of those is plausible, well-reasoned, and wrong in a way you cannot see from
+the answer. Not a hallucinated rule — a real rule applied one step past where it reaches.
 
-**Does not cover:** case law, MDCG guidance, notified-body practice, national
-enforcement decisions, any market outside the EU and Germany, and every other part of
-MDR — qualification, classification, conformity assessment, technical documentation,
-clinical evaluation, vigilance. This reviews advertising claims and nothing else.
+These skills pin every finding to verbatim statute text, state what they do **not**
+carry, and stop rather than conclude past their own boundary.
 
-**Not legal advice.** A drafting and risk-triage aid. Not a substitute for a
-Fachanwalt für Medizinrecht or Wettbewerbsrecht.
+| Skill | Does | Instruments |
+|---|---|---|
+| `device-claims` | Reviews device and IVD marketing copy | MDR Art. 7, IVDR Art. 7, HWG, UWG |
+| `mdr-classification` | Classifies software under Annex VIII | Implementing rules 3.1–3.7, Rule 11 |
 
-## What it is for
-
-Generic marketing-claims review is built on consumer-advertising law and misses two
-things specific to devices:
-
-- **Intended-purpose drift** (MDR Art. 7(d)). A claim can be entirely true and still
-  breach Art. 7 if it suggests a use outside the intended purpose the conformity
-  assessment covered. Evidence does not cure it.
-- **Omission** (MDR Art. 7(c)). Copy containing nothing false can breach Art. 7 by
-  failing to surface a likely risk.
-
-In Germany the enforcement path is an **Abmahnung** from a competitor under UWG rather
-than a regulator's letter, which makes verifiability — not just accuracy — the
-operative standard.
-
-Measured behaviour, including where the skill adds nothing, is in
-[`device-claims/evals/README.md`](device-claims/evals/README.md). Numbers live there,
-dated and tied to a commit, because they change.
+**Not legal advice.** Drafting and risk-triage aids, not a substitute for a regulatory
+professional or a Fachanwalt.
 
 ## See it before you install it
 
@@ -118,15 +106,16 @@ Fachanwalt für Medizinrecht or Wettbewerbsrecht.
 ## Install
 
 ```
-claude plugin marketplace add <owner>/device-claims-review
-claude plugin install device-claims@device-claims-review
+claude plugin marketplace add Ecgecer/eu-mdr-skills
+claude plugin install device-claims@eu-mdr-skills          # advertising claims
+claude plugin install mdr-classification@eu-mdr-skills     # software classification
 ```
 
 ## Use
 
 ```
-/device-claims:device-claims-review
-[paste copy]
+/device-claims:device-claims-review     # review advertising copy
+/mdr-classification:software-classification   # classify software under Annex VIII
 ```
 
 The skill establishes two anchors before reviewing: the **intended purpose as assessed**

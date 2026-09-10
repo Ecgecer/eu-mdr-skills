@@ -1,6 +1,6 @@
 {
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
-  "name": "device-claims-review",
+  "name": "eu-mdr-skills",
   "description": "Statute-verified skills for EU medical device regulation. Every finding cites verbatim text retrieved from EUR-Lex or gesetze-im-internet, and every skill ships an eval suite measured against a no-plugin baseline.",
   "owner": {
     "name": "Ege Can Gecer"
