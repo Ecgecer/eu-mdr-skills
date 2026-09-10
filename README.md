@@ -26,15 +26,25 @@ the answer. Not a hallucinated rule — a real rule applied one step past where 
 These skills pin every finding to verbatim statute text, state what they do **not**
 carry, and stop rather than conclude past their own boundary.
 
-| Skill | Does | Measured |
+| Skill | Answers | Carries |
 |---|---|---|
-| `device-claims` | Reviews device and IVD marketing copy against MDR Art. 7, IVDR Art. 7, HWG, UWG | [10 cases, Δ +0.47](device-claims/evals/README.md) |
-| `mdr-classification` | Classifies software under Annex VIII implementing rules and Rule 11 | [7 cases, Δ +0.29](mdr-classification/evals/README.md) |
-| `mpdg-germany` | What Germany adds on top of MDR — language, DMIDS notifications, vigilance | [5 cases](mpdg-germany/evals/README.md) |
-| `scope-statement` | Bounds any compliance claim — what was checked, what wasn't, what it doesn't establish | [3 cases, Δ +0.33](scope-statement/evals/README.md) |
+| `device-claims` | "Can we say this in our copy?" | MDR Art. 7, IVDR Art. 7, HWG, UWG |
+| `mdr-classification` | "What class is our software?" | Annex VIII impl. rules 3.1–3.7, Rule 11 |
+| `mdr-transition` | "How long can we still sell this legacy device?" | Art. 120(3)–(3d) as amended by 2023/607 |
+| `mpdg-germany` | "Does Germany want more than MDR?" | MPDG §§ 4, 8, 73 |
+| `scope-statement` | "What should this report say it didn't check?" | nothing — domain-general |
 
-Every skill ships an eval suite measured against a no-plugin baseline, and every suite
-reports the cases where the skill adds **nothing** — roughly half of them do.
+Every skill ships an eval suite measured against a **no-plugin baseline**, and every suite
+publishes the cases where the skill adds **nothing** — roughly half of them do.
+
+**Measured numbers are deliberately not on this page.** They live in each suite's eval
+README, generated from the stored run data by `scripts/report-evals.py`, because
+hand-typed figures on a front page are how this repo published three wrong ones. See
+[device-claims](device-claims/evals/README.md) ·
+[mdr-classification](mdr-classification/evals/README.md) ·
+[mdr-transition](mdr-transition/evals/README.md) ·
+[mpdg-germany](mpdg-germany/evals/README.md) ·
+[scope-statement](scope-statement/evals/README.md).
 
 The pattern across the measured cases: positive delta wherever the model would
 over-apply, over-conclude, invent an authority or reach for boilerplate; zero wherever it
