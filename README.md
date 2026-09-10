@@ -94,7 +94,7 @@ The substance is plain markdown. Only the packaging is Claude-specific.
 | **Claude Code** | Install the plugin (above) |
 | **Codex, Cursor, anything reading AGENTS.md** | [AGENTS.md](AGENTS.md) — it names the load order |
 | **Gemini CLI** | [GEMINI.md](GEMINI.md) |
-| **ChatGPT, Gemini web, Claude.ai, any chat** | Upload or paste [`dist/device-claims-review.bundle.md`](dist/device-claims-review.bundle.md) — one self-contained file, skill plus all three statute references, 30 KB |
+| **ChatGPT, Gemini web, Claude.ai, any chat** | Upload or paste the matching file in [`dist/`](dist/) — each bundles one skill with all its references |
 | **Anything else** | The four source files in `device-claims/skills/device-claims-review/` |
 
 `GEMINI.md` and the bundle are **generated** from the canonical skill:
