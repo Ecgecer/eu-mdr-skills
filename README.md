@@ -38,6 +38,21 @@ Measured behaviour, including where the skill adds nothing, is in
 [`device-claims/evals/README.md`](device-claims/evals/README.md). Numbers live there,
 dated and tied to a commit, because they change.
 
+## See it before you install it
+
+[**A worked example.**](examples/) One prompt, run with the skill and without it, both
+outputs verbatim from the harness.
+
+The short version: asked to review consumer copy for a Class IIa blood-pressure
+monitor, the model without the skill cites **HWG § 11(1) Nr. 2** against the physician
+endorsement. That provision is real and it described it accurately — but the closing
+sentence of § 11(1) gives medical devices only **nos. 7, 8, 9, 11 and 12.** No. 2 does
+not reach devices.
+
+Act on it and you pull a lawful endorsement off a product page. Nothing in the answer
+signals it is wrong. That happened in **3 of 3 runs**; with the skill, the correct
+answer happened in 3 of 3.
+
 ## Verify the claim yourself, in one command
 
 Every provision these skills apply is stored **verbatim**, with its source URL and
