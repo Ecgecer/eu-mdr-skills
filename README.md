@@ -48,6 +48,19 @@ Act on it and you pull a lawful endorsement off a product page. Nothing in the a
 signals it is wrong. That happened in **3 of 3 runs**; with the skill, the correct
 answer happened in 3 of 3.
 
+## The method, if you want to copy it
+
+[**METHOD.md**](METHOD.md) is how to build a regulatory skill worth trusting, for any
+regulation. Measure before you build; pin the text and publish its edges; let the skill
+refuse; test against a baseline or you are measuring the model; publish the cases where
+you added nothing; make the claim executable.
+
+It also lists every trap we walked into — graders that punish correct reasoning, a
+freshness guard that could not see drift because it had been told what to look at, and
+a confident prediction that measurement destroyed.
+
+[CONTRIBUTING.md](CONTRIBUTING.md) turns that into what a new skill has to ship.
+
 ## Verify the claim yourself, in one command
 
 Every provision these skills apply is stored **verbatim**, with its source URL and
