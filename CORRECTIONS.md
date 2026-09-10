@@ -93,6 +93,26 @@ pass over all 25 graders and found five more.
 
 ---
 
+## 2026-09-11 — "a frontier model" from a sample of one
+
+**Published:** the benchmark and README described the measured baseline as "a frontier
+model", and the finding as "models over-apply".
+
+**Actually:** every number in this repo comes from **Claude**, run through Claude Code
+2.1.266/267. GPT, Gemini, Llama and everything else are untested. The results files do
+not even record which Claude model, only the CLI version.
+
+Generalising from one model to "frontier models" is precisely the defect these skills
+measure — a claim applied one step past where the evidence reaches. Caught by the repo's
+owner asking whether we were assuming other models know what Claude knows.
+
+**Fix:** every claim narrowed to Claude, with the untested scope stated and results from
+other models invited. It is also plausible that a model with less European regulatory
+text in training would fail the *knowledge* cases too, in which case the reference files
+would earn more rather than less. Nobody has measured it, and the file now says so.
+
+---
+
 ## What these have in common
 
 Every one is the same failure: **a claim asserted from something other than the thing it

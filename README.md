@@ -73,13 +73,17 @@ or tool, not just this one:
 > Does it apply EU medical device regulation to products, markets and audiences the
 > provision it cites does not reach?
 
-**12 of the 30 cases are ones a frontier model failed in every run** with no reference
-material — telling a manufacturer to translate a Declaration of Conformity its member
+**12 of the 30 cases are ones Claude failed in every run** with no reference material
+and no web access — telling a manufacturer to translate a Declaration of Conformity its member
 state accepts in English, citing a German advertising item that does not reach devices,
 applying German law to a French-market asset, manufacturing findings on clean copy.
 
 The 13 cases a baseline already passes are published too, because a benchmark that hides
 its easy cases overstates itself.
+
+**Only Claude has been tested.** GPT, Gemini and everything else are untested, and the
+benchmark says so rather than generalising from one model — which would be the exact
+failure it measures. Results from another model are welcome as a PR.
 
 ## See it before you install it
 

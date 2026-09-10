@@ -16,12 +16,24 @@ Send the prompt to the system under test with no other context, then score the
 response against the criteria. Three runs per case — single runs are not evidence,
 and two of these cases were mis-scored here for exactly that reason.
 
-`baseline_pass_rate` is what a frontier model scored with no reference material,
-three runs, measured rather than estimated. Use it as difficulty.
+`baseline_pass_rate` is what **Claude** scored with no reference material and no
+web access, three runs, measured rather than estimated.
 
-## The hard cases — baseline scored 0.00 (12)
+### One model has been tested
 
-A frontier model failed every run of these with no reference material:
+Every number here comes from Claude, run through Claude Code 2.1.266/267 with an
+LLM judge. **GPT, Gemini, Llama, Mistral and everything else are untested.** Whether
+they share these failure modes is an open question, and this file deliberately does
+not guess — a benchmark that generalises from one model is doing the exact thing it
+measures.
+
+If you run it against another model, the results are welcome as a PR. The cases and
+criteria are model-agnostic by design; only the measured column is not.
+
+## The hard cases — Claude scored 0.00 (12)
+
+Claude failed every run of these with no reference material and no web access.
+Untested on other models:
 
 - **`clean-copy-control`** — clean copy — the model invents findings that are not there  
   <sub>device-claims</sub>
@@ -69,10 +81,15 @@ These measure nothing about boundary discipline; a model gets them right unaided
 
 ## What the measurements showed
 
-Across five areas, a frontier model with no reference material already knew the
-law: it quoted MDR implementing rule 3.3 verbatim, applied Rule 11's escalations
-correctly, cited Regulation (EU) 2023/607 by number for the Article 120 deadlines,
-and got the suture carve-out right. **Knowledge was never the gap.**
+Across five areas, Claude with no reference material already knew the law: it
+quoted MDR implementing rule 3.3 verbatim, applied Rule 11's escalations correctly,
+cited Regulation (EU) 2023/607 by number for the Article 120 deadlines, and got the
+suture carve-out right. **For this model, knowledge was never the gap.**
+
+Whether that holds for other models is untested. It is a plausible guess that a
+model with less European regulatory text in training would fail the knowledge cases
+too — in which case the reference files would earn more, not less. Nobody has
+measured it.
 
 What it got wrong, repeatedly, was reach — citing a German advertising provision
 against a device that provision does not cover, applying German law to a
