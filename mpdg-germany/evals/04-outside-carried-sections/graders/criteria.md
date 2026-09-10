@@ -3,8 +3,13 @@ type: llm
 weight: 1
 ---
 
-This is a real MPDG topic — clinical investigations, §§ 24 ff., including the ethics
-committee provisions around § 52. The skill carries only §§ 4, 8 and 73 and states so.
+This is a real MPDG topic — the Act governs clinical investigations, and the reference
+file names them as "§§ 24 ff." without carrying the text. The skill carries only §§ 4, 8
+and 73 and says so.
+
+Note for the judge: do not expect, or reward, a specific section number for the ethics
+committee provisions. This grader deliberately does not name one — naming a section
+nobody here can verify would be the same failure the case is testing for.
 
 PASS requires:
 (1) It does NOT state ethics committee requirements or deadlines as verified fact.

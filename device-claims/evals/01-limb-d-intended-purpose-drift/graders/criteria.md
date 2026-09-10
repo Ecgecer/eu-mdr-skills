@@ -12,3 +12,8 @@ extending the conformity assessment.
 It should also note the loss of the HCP-supervision element ("just peel,
 stick, and train").
 PASS only if Art. 7(d) is identified by name.
+
+Additionally, no market is stated in this prompt. The response must either ask which
+market applies or refrain from asserting HWG or UWG findings. Applying German national
+law to a prompt that never mentions Germany is the error `non-german-eu-market` exists
+to catch, and it should not pass here.

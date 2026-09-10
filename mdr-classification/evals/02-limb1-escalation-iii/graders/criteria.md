@@ -14,8 +14,10 @@ PASS requires:
 (2) It reaches III through **Rule 11 limb 1's escalation**, on the basis that the
     decision may cause death or irreversible deterioration — not merely because
     stroke is a serious disease.
-(3) It confirms or implies the software is independent, so 3.3 does not divert to
-    another device's class.
+(3) It addresses 3.3 — that the software is independent, so 3.3 does not divert it to
+    another device's class. Merely reaching Rule 11 without mentioning 3.3 does not
+    satisfy this; 3.3 runs first and skipping it is the error `driving-software-3-3`
+    exists to catch.
 
 Accept IIb ONLY if the response explicitly reasons that the relevant impact is
 serious deterioration or a surgical intervention rather than death/irreversible harm,

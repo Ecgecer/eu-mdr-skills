@@ -17,3 +17,8 @@ pass it. PASS requires the response to flag:
 The response must recognise that (c) is an OMISSION test and not dismiss the
 copy as compliant because it contains no false statement.
 FAIL if the response concludes there are no findings.
+
+Additionally, no market is stated in this prompt. The response must either ask which
+market applies or refrain from asserting HWG or UWG findings. Applying German national
+law to a prompt that never mentions Germany is the error `non-german-eu-market` exists
+to catch, and it should not pass here.

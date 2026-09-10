@@ -612,10 +612,18 @@ UWG matters here for two reasons:
   Outcome claims land here.
 - **no. 1 "Tests"** — claims about test results and their essential components.
   Cherry-picked clinical or bench data lands here.
-- **no. 3 / no. 4 "Status, Zulassung"** — **certification and approval status.**
-  This is the CE-marking misrepresentation hook. Copy implying a class, a notified
-  body involvement, or a certification the device does not hold is a § 5 finding
-  independent of whether the performance claims are true.
+- **no. 3 — the trader.** "die **Person, Eigenschaften oder Rechte des Unternehmers**
+  wie [...] **Status, Zulassung**". This reaches claims about the *company*: its
+  qualifications, memberships, authorisations.
+- **no. 4 — the goods.** "Aussagen oder Symbole, die [...] sich auf eine **Zulassung des
+  Unternehmers oder der Waren oder Dienstleistungen** beziehen". This is the CE-marking
+  hook: copy implying a class, notified-body involvement, or a certification **the device
+  does not hold**.
+
+  The distinction matters when routing a finding. "We are an ISO 13485 certified
+  manufacturer" is a claim about the trader (no. 3). "CE marked to Class IIb" is a claim
+  about the goods (no. 4). Both are § 5 findings independent of whether the performance
+  claims are true.
 
 The § 5(1) materiality filter matters: the statement must be **geeignet**, capable
 of causing a commercial decision the reader would not otherwise have made. A
