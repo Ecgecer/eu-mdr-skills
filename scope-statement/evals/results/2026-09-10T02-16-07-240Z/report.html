@@ -1,0 +1,889 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Eval report — scope-statement v0.1.0</title>
+</head>
+<body>
+<style>
+:root{--plane:#f9f9f7;--surface:#fcfcfb;--ink:#0b0b0b;--ink-2:#52514e;--ink-3:#6b6a64;--hairline:rgba(11,11,11,.10);--grid:#e1e0d9;--inset:rgba(11,11,11,.04);--accent:#2a78d6;--base-fill:#6b6a64;--delta-good:#006300;--good:#067d06;--warning:#8a6100;--critical:#d03b3b;
+  color-scheme:light dark;
+}
+@media (prefers-color-scheme:dark){:root{--plane:#0d0d0d;--surface:#1a1a19;--ink:#ffffff;--ink-2:#c3c2b7;--ink-3:#898781;--hairline:rgba(255,255,255,.10);--grid:#2c2c2a;--inset:rgba(255,255,255,.05);--accent:#3987e5;--base-fill:#898781;--delta-good:#0ca30c;--good:#0ca30c;--warning:#fab219;--critical:#e06c6c;color-scheme:dark}}
+:root[data-theme="dark"]{--plane:#0d0d0d;--surface:#1a1a19;--ink:#ffffff;--ink-2:#c3c2b7;--ink-3:#898781;--hairline:rgba(255,255,255,.10);--grid:#2c2c2a;--inset:rgba(255,255,255,.05);--accent:#3987e5;--base-fill:#898781;--delta-good:#0ca30c;--good:#0ca30c;--warning:#fab219;--critical:#e06c6c;color-scheme:dark}
+:root[data-theme="light"]{--plane:#f9f9f7;--surface:#fcfcfb;--ink:#0b0b0b;--ink-2:#52514e;--ink-3:#6b6a64;--hairline:rgba(11,11,11,.10);--grid:#e1e0d9;--inset:rgba(11,11,11,.04);--accent:#2a78d6;--base-fill:#6b6a64;--delta-good:#006300;--good:#067d06;--warning:#8a6100;--critical:#d03b3b;color-scheme:light}
+*{box-sizing:border-box}
+body{margin:0;background:var(--plane);color:var(--ink);
+  font:14px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif;
+  -webkit-text-size-adjust:100%}
+.wrap{max-width:880px;margin:0 auto;padding:40px 24px 64px;display:flex;flex-direction:column;gap:20px}
+.eyebrow{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
+header h1{margin:2px 0 0;font-size:24px;font-weight:600;line-height:1.25;text-wrap:balance}
+.meta{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:8px;color:var(--ink-2);font-size:13px}
+.meta .num{font-variant-numeric:tabular-nums lining-nums}
+.banner{display:flex;align-items:center;gap:8px;padding:10px 14px;border-radius:8px;
+  border:1px solid var(--hairline);background:var(--surface);font-size:13px}
+.banner .chip-warn{color:var(--warning);font-weight:600}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.tile{background:var(--surface);border:1px solid var(--hairline);border-radius:10px;padding:14px 16px;
+  display:flex;flex-direction:column;gap:4px}
+.tile .label{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3)}
+.tile .value{font-size:26px;font-weight:600;font-variant-numeric:tabular-nums lining-nums;line-height:1.1}
+.tile.hero .value{font-family:Georgia,"Times New Roman",serif;font-weight:400;font-size:48px}
+.tile .sub{font-size:12px;color:var(--ink-2);font-variant-numeric:tabular-nums}
+.tile .value.delta-pos{color:var(--delta-good)}
+.tile .value.delta-neg{color:var(--critical)}
+.toolbar{display:flex;gap:8px;justify-content:flex-end}
+.toolbar button{font:12px system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--ink-2);
+  background:var(--surface);border:1px solid var(--hairline);border-radius:6px;padding:4px 10px;cursor:pointer}
+.toolbar button:hover{color:var(--ink)}
+.toolbar button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.case{background:var(--surface);border:1px solid var(--hairline);border-radius:10px;padding:18px 20px;
+  display:flex;flex-direction:column;gap:10px}
+.case-regressed{border-left:3px solid var(--critical)}
+.verdict{margin:6px 0 0;font-size:15px}
+.verdict .delta{font-size:15px}
+.flag{font-size:11px;font-weight:600;color:var(--warning);white-space:nowrap}
+.star{color:var(--warning);font-size:.45em;vertical-align:super;line-height:0;cursor:help}
+.legend summary{cursor:pointer;font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-2)}
+.legend-list{margin:8px 0 0;padding-left:20px;display:flex;flex-direction:column;gap:5px;font-size:13px;color:var(--ink-2)}
+.case-head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.case-head h2{margin:0;font-size:16px;font-weight:600}
+.case-head .spacer{flex:1}
+.case-score{font-size:15px;font-weight:600}
+.mono{font:12px "SF Mono",ui-monospace,Menlo,Consolas,monospace}
+.num{font-variant-numeric:tabular-nums lining-nums}
+.muted{color:var(--ink-3);font-size:12px}
+.meter{display:inline-block;position:relative;width:120px;height:6px;border-radius:4px;background:var(--grid);
+  vertical-align:middle}
+.meter>span{display:block;height:100%;border-radius:4px;max-width:100%}
+.meter .tick{position:absolute;top:-2px;bottom:-2px;width:2px;background:var(--ink-3);border-radius:1px}
+.m-accent>span{background:var(--accent)}
+.m-base>span{background:var(--base-fill)}
+.delta{font-size:12px;font-weight:600;font-variant-numeric:tabular-nums}
+.delta-pos{color:var(--delta-good)}
+.delta-neg{color:var(--critical)}
+.delta-zero{color:var(--ink-3)}
+details.section{border-top:1px solid var(--grid);padding-top:10px}
+details.section>summary{cursor:pointer;font-size:12px;font-weight:600;letter-spacing:.04em;
+  text-transform:uppercase;color:var(--ink-2);list-style-position:outside;margin-left:2px}
+details.section>summary:hover{color:var(--ink)}
+details.section[open]>summary{margin-bottom:8px}
+.md{display:flex;flex-direction:column;gap:8px;background:var(--inset);border-radius:8px;
+  padding:12px 14px;overflow-wrap:break-word}
+.md>:first-child{margin-top:0}
+.md h1,.md h2,.md h3,.md h4,.md h5,.md h6{margin:4px 0 0;font-size:1em;font-weight:600;line-height:1.3}
+.md p,.md ul,.md ol,.md blockquote,.md table,.md pre,.md hr{margin:0}
+.md ul,.md ol{display:flex;flex-direction:column;gap:4px;padding-left:20px}
+.md blockquote{border-left:2px solid var(--hairline);padding-left:10px;color:var(--ink-2)}
+.md :not(pre)>code{background:var(--inset);padding:1px 4px;border-radius:4px;
+  font:.92em "SF Mono",ui-monospace,Menlo,Consolas,monospace}
+.md pre{background:var(--inset);border:1px solid var(--hairline);padding:10px 12px;border-radius:6px;
+  overflow-x:auto;font:12px/1.5 "SF Mono",ui-monospace,Menlo,Consolas,monospace}
+.md pre code{background:none;padding:0;font:inherit}
+.md table{width:100%;border-collapse:collapse}
+.md th,.md td{padding:5px 8px;text-align:left;vertical-align:top;border-bottom:1px solid var(--grid)}
+.md th{font-weight:600;color:var(--ink-2)}
+.md a{color:var(--accent);text-decoration:none}
+.md a:hover{text-decoration:underline}
+.grader-def{display:flex;flex-direction:column;gap:6px;padding:8px 0}
+.grader-def+.grader-def{border-top:1px solid var(--grid)}
+.grader-def-head{display:flex;align-items:baseline;gap:8px}
+.grader-name{font:13px "SF Mono",ui-monospace,Menlo,Consolas,monospace;font-weight:600}
+.badge{font-size:10px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-2);
+  border:1px solid var(--hairline);border-radius:999px;padding:1px 8px}
+.config{display:flex;flex-direction:column;gap:2px;background:var(--inset);border-radius:8px;padding:10px 14px}
+.config code{font:12px "SF Mono",ui-monospace,Menlo,Consolas,monospace;overflow-wrap:anywhere}
+.arm{display:flex;flex-direction:column;gap:8px;padding:6px 0}
+.arm+.arm{border-top:1px dashed var(--grid);margin-top:4px;padding-top:12px}
+.arm-head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.arm-label{font-size:13px;font-weight:600}
+.run{border:1px solid var(--grid);border-radius:8px;padding:10px 12px;display:flex;flex-direction:column;gap:8px}
+.run-head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.run-title{font-size:12px;font-weight:600;color:var(--ink-2)}
+.run-error .explanation{color:var(--ink-2)}
+.note{font-size:12px;color:var(--ink-2)}
+.graders{display:flex;flex-direction:column;gap:4px}
+details.grader{border-radius:6px}
+details.grader>summary{cursor:pointer;display:flex;align-items:baseline;gap:8px;padding:3px 4px;
+  border-radius:6px;list-style:none}
+details.grader>summary::-webkit-details-marker{display:none}
+details.grader>summary::before{content:'▸';font-size:10px;color:var(--ink-3);flex:none;
+  transition:transform .12s ease}
+details.grader[open]>summary::before{transform:rotate(90deg)}
+details.grader>summary:hover{background:var(--inset)}
+details.grader>summary:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.grader-body{padding:6px 8px 8px 24px;display:flex;flex-direction:column;gap:6px}
+.chip{font-size:11px;font-weight:600;border-radius:999px;padding:1px 8px;white-space:nowrap}
+.chip-pass{color:var(--good);border:1px solid currentColor}
+.chip-fail{color:var(--critical);border:1px solid currentColor}
+.chip.chip-warn{color:var(--warning);border:1px solid currentColor}
+.explanation{margin:0;font-size:13px;color:var(--ink-2);white-space:pre-wrap;overflow-wrap:break-word}
+.kv{display:flex;gap:8px;font-size:12px;color:var(--ink-3)}
+.votes{font-variant-numeric:tabular-nums;letter-spacing:.1em}
+pre.evidence{margin:0;background:var(--inset);border:1px solid var(--hairline);border-radius:6px;
+  padding:8px 10px;overflow-x:auto;max-height:320px;
+  font:12px/1.5 "SF Mono",ui-monospace,Menlo,Consolas,monospace;white-space:pre-wrap;overflow-wrap:break-word}
+footer{color:var(--ink-3);font-size:12px;text-align:center;padding-top:8px}
+@media (prefers-reduced-motion:no-preference){
+  details.grader>summary,.toolbar button{transition:background .12s ease,color .12s ease}
+}
+@media (prefers-reduced-motion:reduce){
+  details.grader>summary::before{transition:none}
+}
+@media print{
+  :root,:root[data-theme="dark"],:root[data-theme="light"]{--plane:#f9f9f7;--surface:#fcfcfb;--ink:#0b0b0b;--ink-2:#52514e;--ink-3:#6b6a64;--hairline:rgba(11,11,11,.10);--grid:#e1e0d9;--inset:rgba(11,11,11,.04);--accent:#2a78d6;--base-fill:#6b6a64;--delta-good:#006300;--good:#067d06;--warning:#8a6100;--critical:#d03b3b;color-scheme:light}
+  body{background:#fff}
+  .toolbar{display:none}
+  .case,.run,.grader-def{break-inside:avoid}
+  pre.evidence{max-height:none}
+}
+</style>
+<div class="wrap">
+<header>
+<div class="eyebrow">Plugin eval report</div>
+<h1>scope-statement v0.1.0</h1>
+<p class="verdict">Plugin effect: <span class="delta delta-neg">↓ -11.1 pts</span> vs baseline — improved 0 · flat 2 · regressed 1 of 3 cases.</p>
+<div class="meta">
+<span class="mono">.</span>
+<span>Claude Code v2.1.267</span>
+<span class="num">2026-09-10 02:16 UTC</span>
+<span class="num">3m 54s</span>
+<span class="num">$0.69</span>
+<span class="num">18 runs</span>
+
+
+<span>judge default</span>
+<span class="num">threshold 100%</span>
+
+</div>
+</header>
+<div class="banner"><span class="chip-warn">⚠ Averages include non-judgments</span><span>12 runs errored — their scores count toward the averages shown without a complete judgment.</span></div>
+<section class="tiles">
+<div class="tile hero"><span class="label">Suite score · with plugin</span><span class="value">22.2%<span class="star" title="Includes runs that errored or hit the cost ceiling — see “How to read this report”">*</span></span><span class="sub">mean of per-case scores · * includes 6 runs without a complete judgment</span></div>
+<div class="tile"><span class="label">Ablation Δ</span><span class="value num delta-neg">↓ -11.1</span><span class="sub">score points vs baseline, 3 of 3 cases</span></div>
+<div class="tile"><span class="label">Baseline score</span><span class="value num">33.3%</span><span class="sub">without the plugin</span></div>
+<div class="tile"><span class="label">Cases</span><span class="value num">3</span><span class="sub">0 of 3 ≥ 100% threshold</span></div>
+<div class="tile"><span class="label">Perfect runs</span><span class="value num">22.2%</span><span class="sub">runs where every grader passed</span></div>
+</section>
+<details class="section legend">
+<summary>How to read this report</summary>
+<ul class="legend-list">
+<li>A run's score is the weighted fraction of its graders that passed; a "perfect" run passed every grader.</li>
+<li>A case's score is the mean of its runs; a case passes when its score is at or above the 100% threshold (the tick on each case bar).</li>
+<li>The suite score is the mean of the per-case scores.</li>
+<li>Judge votes are independent samples of the LLM judge; the majority decides pass or fail.</li>
+<li>"With plugin" and "Baseline" runs are identical except for the plugin being loaded; Δ is the with-plugin score minus the baseline score.</li>
+<li>Scores marked with * include runs that errored or hit the cost ceiling (LLM graders force-failed); those runs count toward the means without a complete judgment.</li>
+</ul>
+</details>
+<div class="toolbar"><button type="button" data-act="expand">Expand all</button><button type="button" data-act="collapse">Collapse all</button></div>
+<article class="case case-regressed" id="case-1">
+<div class="case-head">
+<h2>readiness-claim</h2>
+<span class="muted mono">evals/01-readiness-claim</span>
+<span class="spacer"></span>
+
+<span class="delta delta-neg">↓ -33.3 pts</span>
+<span class="muted">with plugin</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:66.7%"></span><i class="tick" style="left:100.0%"></i></span>
+<span class="num case-score">66.7%</span>
+</div>
+
+<details class="section" open>
+<summary>Results</summary>
+<section class="arm">
+<div class="arm-head">
+<span class="arm-label">With plugin</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:66.7%"></span></span>
+<span class="num">66.7%</span>
+<span class="muted num">66.7% of runs perfect</span>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 1</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">3 turns · $0.18 · 02:16:07 UTC</span>
+</div>
+
+<div class="graders"><details class="grader">
+<summary><span class="chip chip-pass">✓ pass</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: PASS PASS PASS</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✓ ✓ ✓</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">Two blanks I can&apos;t fill without you: the EUDAMED schema version/date your mandatory-field list is derived from, and the EMDN nomenclature version behind the proposals. Both are marked `[…]` below — pinning them is most of what makes the &quot;Against&quot; line worth reading. Everything else is written from what you described.
+
+## Scope of this check
+
+**Checked:** Every column in your uploaded catalogue was mapped to a EUDAMED device field; every field the schema flags as mandatory was confirmed present and non-empty; dates, UDI-DI check digits and country codes were confirmed well-formed. An EMDN code was proposed for each device.
+
+**Against:** The EUDAMED device data schema, version `[…]`, retrieved `[…]`, and the EMDN nomenclature version `[…]`. Mandatory-field coverage is exactly the set the schema flags as mandatory — no other requirement was applied. The EMDN proposals are this tool&apos;s inference, not a published mapping; no authority stands behind them.
+
+**Not checked:**
+- **Whether any value is true.** A well-formed date, a valid country code and a check-digit-passing UDI-DI are still unverified against your actual device. A wrong date that is a real date passes here.
+- **Whether the column mapping is right.** If two of your columns were mapped to each other&apos;s fields and both contain well-formed data, this check passes and the submission is wrong.
+- **Conditional and combination requirements.** Only the schema&apos;s own mandatory flags were enforced. Fields required because of device class, implantable status, system/procedure-pack composition or the values in other fields were not derived or enforced.
+- **That the UDI-DI is yours.** The check digit proves the number is structurally valid, not that it was issued to you by an issuing entity or that it corresponds to this device.
+- **Whether the catalogue is complete.** Only the rows you uploaded were examined. Devices absent from the spreadsheet, duplicate rows and retired entries were not detected.
+- **The EMDN proposals themselves.** They are unreviewed input to a human decision. This banner does not reflect whether that review has happened or what it concluded.
+- Clinical evidence, technical documentation, labelling and IFU, declaration of conformity, notified body certification, actor registration and SRN status — none of these were looked at.
+- EUDAMED&apos;s own validation at submission, which applies business rules beyond the schema and may reject a file that passes here.
+
+**This does not establish:** That your submission will be accepted. That your device data is accurate. That your devices are registrable, or that your organisation is compliant with the MDR. It establishes that the file is filled in and well-formed.
+
+**Valid as of:** `[report date]`, for the file as uploaded. It is invalidated by any edit to the catalogue, by a change to the EUDAMED schema or EMDN nomenclature, and by any change to a device&apos;s intended purpose or classification.
+
+---
+
+One thing outside what you asked for, worth a minute: the banner is doing more damage than the missing scope statement. &quot;Ready to submit&quot; is a claim about an outcome the tool has no visibility into, and the block above spends most of its length walking it back. `Catalogue passes structural checks` — or anything that names *format* rather than *readiness* — would leave the scope statement confirming the banner instead of contradicting it.</pre>
+</div>
+</details></div>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 2</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">3 turns · $0.12 · 02:16:45 UTC</span>
+</div>
+
+<div class="graders"><details class="grader">
+<summary><span class="chip chip-pass">✓ pass</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: PASS PASS PASS</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✓ ✓ ✓</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">Here&apos;s the block. Two things need your input to pin properly — flagged below it.
+
+## Scope of this check
+
+**Checked:** That your spreadsheet columns were mapped to EUDAMED fields; that every field the schema marks mandatory was present and non-empty in every device row; that values in format-constrained fields are well-formed (dates parse, UDI-DI check digits compute correctly, country codes are valid ISO entries). An EMDN code was proposed for each device.
+
+**Against:** The EUDAMED [DTX/schema version] field definitions and mandatory-field flags, retrieved [date]. Format rules are from the schema and the referenced standards (ISO 3166 country codes, the issuing agency&apos;s check-digit algorithm for each UDI-DI). The EMDN proposals are this tool&apos;s suggestion, not a schema output — they carry no authority until your reviewer accepts them.
+
+**Not checked:**
+- **Whether any value is true.** A UDI-DI with a valid check digit is well-formed, not verified as yours or as this device&apos;s. Same for manufacturer names, dates placed on market, risk class, and every other field — the check confirms the box is filled and structurally valid, nothing about the content.
+- **Whether the column mapping is semantically right.** If your &quot;Model&quot; column was mapped to a field expecting something else, every downstream check still passes.
+- Clinical evidence, technical documentation, labelling and IFU, GSPR conformity, conformity assessment route or notified body certificate status.
+- Relationships between records: Basic UDI-DI to UDI-DI groupings, duplicates, devices already registered in EUDAMED, consistency with your registered actor data (SRN).
+- Validations EUDAMED applies at upload that are not in the field schema — business rules, cross-field logic, and the accuracy of data held on the EUDAMED side.
+- Language and translation requirements for text fields.
+
+**This does not establish:** That your submission will be accepted. That your device data is correct. That your device is compliant with the MDR, or eligible for registration. A catalogue can pass every check here and be rejected, or be accepted while carrying wrong data into the EU database.
+
+**Valid as of:** [date of run], for the file as submitted to this tool. It is invalidated by any edit to the spreadsheet after this run, by a change to the EUDAMED schema or its mandatory-field set, by a change to the device (class, intended purpose, manufacturer), and — for the EMDN codes — until a human reviewer has accepted each proposal.
+
+---
+
+Two things to fill in, and one recommendation:
+
+1. **Schema version and retrieval date.** I&apos;ve left them bracketed. &quot;The current schema&quot; isn&apos;t pinnable — a reader needs to know whether the check predates the last EUDAMED update.
+2. **Conditional mandatory fields.** EUDAMED marks some fields mandatory only in combination (depending on device class, implantable status, etc.). If your tool only reads the flat `mandatory` flag and doesn&apos;t evaluate conditional requirements, that belongs in **Not checked** as its own bullet — it&apos;s exactly the assumption a reader makes. If it does evaluate them, say so under **Checked** instead; it&apos;s a strength worth claiming.
+3. **The banner.** The scope statement is doing repair work on a claim the banner shouldn&apos;t make. &quot;Ready to submit&quot; asserts a readiness the tool has no basis for. Consider &quot;No blocking issues found — [n] fields checked across [m] devices&quot;, with the scope block beneath it. Then the block bounds an accurate claim rather than walking back an overreaching one.</pre>
+</div>
+</details></div>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 3</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:0.0%"></span></span>
+<span class="num">0%</span>
+<span class="muted num">3 turns · $0.11 · 02:17:23 UTC</span>
+</div>
+
+<div class="graders"><details class="grader" open>
+<summary><span class="chip chip-fail">✗ fail</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: FAIL FAIL PASS</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✗ ✗ ✓</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">Here&apos;s the block. One line I&apos;ve marked as needing a value from you — flagged below.
+
+```markdown
+## Scope of this check
+
+**Checked:** Your uploaded catalogue file, row by row. For each device we mapped your
+spreadsheet columns to EUDAMED fields, confirmed that every field the schema marks
+mandatory was present and non-empty, and checked that dates, UDI-DI check digits and
+country codes are correctly formed. We also proposed an EMDN code per device for your
+reviewer to accept or change.
+
+**Against:** The EUDAMED device data schema, version [X], retrieved [date] — field list,
+mandatory flags and format rules. Two parts are not from that schema and are the tool&apos;s
+own inference: the mapping of your column headings to EUDAMED fields, and the proposed
+EMDN codes.
+
+**Not checked:**
+- Whether any value is *true*. A well-formed date that is the wrong date passes. A
+  valid-format UDI-DI that belongs to a different device passes. A recognised country
+  code that is not where the device is manufactured passes.
+- Whether the column mapping is right. If we mapped the wrong column to a field, the
+  field is present, well-formed, and wrong — and it passed.
+- Whether the UDI-DIs are real: check-digit arithmetic is not registration with an
+  issuing agency.
+- The EMDN codes. They are machine proposals. Nothing here indicates a proposal is
+  correct, and this result does not change if your reviewer has not yet looked at them.
+- Whether the catalogue is complete — that every device you place on the EU market has
+  a row here. We validated the rows you gave us.
+- Clinical evidence, technical documentation, labelling and IFU, classification, and
+  conformity assessment status. None of these were read.
+
+**This does not establish:** that your submission will be accepted. It does not
+establish that your device data is accurate, that your EMDN coding is correct, or that
+you are compliant with the MDR/IVDR. It establishes one thing: the fields EUDAMED
+requires are filled in and the formats parse.
+
+**Valid as of:** [run date], for the file as uploaded. It is invalidated by any edit to
+the catalogue, by a change to the EUDAMED schema version above, and by any change to a
+device&apos;s classification or intended purpose.
+```
+
+**You need to fill in:** the schema version and retrieval date. Don&apos;t ship this with &quot;the current schema&quot; — pinning to an unverified authority is exactly the failure the block exists to prevent.
+
+**Two things worth raising separately:**
+
+1. **The banner is the bigger problem.** &quot;Ready to submit&quot; is a claim the check can&apos;t support — no amount of scope text below it fully undoes a green banner. Something like &quot;Field checks passed&quot; or &quot;No format or completeness errors found&quot; says the same true thing without the inference. The scope statement is much easier to write honestly under an accurate banner.
+
+2. **Conditionally mandatory fields.** I wrote &quot;every field the schema marks mandatory&quot; because that&apos;s how you described it. If EUDAMED has fields that become mandatory depending on device class or on another field&apos;s value, and the tool only reads the static mandatory flag, then &quot;all mandatory fields present&quot; is narrower than it sounds and belongs in **Not checked**. Worth confirming — I didn&apos;t want to assert either way.</pre>
+</div>
+</details></div>
+</div>
+</section><section class="arm">
+<div class="arm-head">
+<span class="arm-label">Baseline (no plugin)</span>
+<span class="meter m-base" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">100% of runs perfect</span>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 1</span>
+<span class="meter m-base" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">1 turns · $0.09 · 02:17:57 UTC</span>
+</div>
+
+<div class="graders"><details class="grader">
+<summary><span class="chip chip-pass">✓ pass</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: PASS PASS PASS</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✓ ✓ ✓</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">Two things — the statement itself, and a note on the banner it sits under.
+
+## Scope statement
+
+&gt; **What this check covers**
+&gt;
+&gt; This report is a check on the *form* of your catalogue data, not its substance. We verified that:
+&gt;
+&gt; - each spreadsheet column was mapped to a EUDAMED field, and the mapping is recorded above
+&gt; - every field the EUDAMED schema marks mandatory is present and non-empty
+&gt; - dates, UDI-DI check digits, and country codes are correctly formatted
+&gt; - an EMDN code has been proposed for each device
+&gt;
+&gt; EMDN codes are **proposals for your review**, not validated classifications. An unreviewed proposal is an unchecked field.
+&gt;
+&gt; **What this check does not cover**
+&gt;
+&gt; We have not examined, and this report says nothing about:
+&gt;
+&gt; - **whether your data is true.** A correctly formatted date can be the wrong date; a UDI-DI with a valid check digit can belong to a different device; a valid country code can be the wrong country. We cannot detect any of this.
+&gt; - clinical evidence, technical documentation, or labelling
+&gt; - conformity with MDR/IVDR, or the outcome of conformity assessment
+&gt; - anything a notified body or competent authority may ask of you beyond the schema&apos;s mandatory flags
+&gt;
+&gt; **What this means**
+&gt;
+&gt; A green result means we found no missing mandatory fields and no malformed values. It is not an assurance that your submission will be accepted, that your data is correct, or that your devices are compliant. Responsibility for the accuracy and completeness of what you submit to EUDAMED remains entirely with you as the manufacturer.
+
+## On the banner
+
+The scope statement is doing damage control for a claim the banner shouldn&apos;t be making. &quot;Ready to submit&quot; asserts a conclusion the tool has no basis for — it has seen fields, not devices. Someone skimming reads the banner and closes the report; a regulatory user under deadline pressure is exactly the person who won&apos;t read the small print under a green tick.
+
+I&apos;d change the banner to something the tool can actually stand behind:
+
+- **&quot;Field checks passed&quot;** — most accurate, hardest to over-read
+- **&quot;No formatting or completeness issues found&quot;** — same, and explicitly states the finding as an absence
+- **&quot;Ready for your review&quot;** — if you want to keep forward momentum in the wording, this puts the next step on the human rather than on EUDAMED
+
+Any of these makes the scope statement a clarification rather than a retraction. If the banner has to stay as-is for product reasons, I&apos;d at least pull the &quot;not an assurance...&quot; sentence up into the banner itself so it can&apos;t be skipped.</pre>
+</div>
+</details></div>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 2</span>
+<span class="meter m-base" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">1 turns · $0.10 · 02:18:26 UTC</span>
+</div>
+
+<div class="graders"><details class="grader">
+<summary><span class="chip chip-pass">✓ pass</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: PASS PASS PASS</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✓ ✓ ✓</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">One flag before the copy: &quot;Ready to submit&quot; is doing more work than your checks support — it reads as a regulatory verdict when the tool only certifies structural fitness. The scope statement below is written to absorb that gap, but it&apos;s carrying weight the banner shouldn&apos;t have created. Suggested rewording at the end.
+
+## Scope statement
+
+&gt; **What this check covers**
+&gt;
+&gt; We compared your catalogue against the EUDAMED device schema (version `[X]`) and confirmed that your columns map to the fields we expect, that every field the schema marks mandatory is present and non-empty, and that dates, country codes, and UDI-DI check digits are well-formed.
+&gt;
+&gt; **What it does not cover**
+&gt;
+&gt; We did not review your clinical evidence, technical documentation, labelling, or IFU, and we have not checked whether any value is factually true. A device passes these checks with a well-formed but incorrect Basic UDI-DI, a lapsed authorised representative, a wrong risk class, or specifications that don&apos;t match the device on the line. Format validity is not accuracy.
+&gt;
+&gt; EMDN codes in this report are **proposals generated by this tool**. Each one requires a human reviewer&apos;s decision; this report does not confirm that review happened.
+&gt;
+&gt; **What &quot;ready to submit&quot; means here**
+&gt;
+&gt; Your file is structurally fit for EUDAMED to accept — not that the registration is correct or complete under the MDR/IVDR, and not that EUDAMED will accept it. EUDAMED applies its own validation and business rules, which can reject data that passes here. Responsibility for the accuracy and completeness of what you submit remains with the manufacturer and its PRRC.
+
+## Compact variant
+
+If the banner area is tight:
+
+&gt; Checks completeness and format only: mandatory fields present, dates/country codes/UDI-DI check digits well-formed, columns mapped. Does **not** check whether the data is true, or review clinical evidence, technical documentation, or labelling. EMDN codes are proposals for your reviewer to confirm. EUDAMED runs its own validation and may still reject. Accuracy of the submission remains the manufacturer&apos;s responsibility.
+
+## On the banner
+
+&quot;Ready to submit&quot; is a conclusion about their regulatory readiness; the tool only supports a conclusion about their file. **&quot;All checks passed&quot;** or **&quot;No blocking issues found&quot;** says exactly what you verified and leaves the scope statement to explain rather than to walk back. Keep it green — passing is genuinely good news, it&apos;s just narrower news.
+
+Two things to fill in or tell me about:
+
+- **Schema version** — worth printing literally, since a pass against last quarter&apos;s schema isn&apos;t a pass today.
+- **EMDN review state** — if the tool knows whether a human actually accepted each proposed code, the banner shouldn&apos;t go green with unreviewed codes outstanding; it should say so and count them. If it doesn&apos;t track that, the paragraph above is the right hedge, but tracking it would be a stronger fix.</pre>
+</div>
+</details></div>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 3</span>
+<span class="meter m-base" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">1 turns · $0.09 · 02:19:02 UTC</span>
+</div>
+
+<div class="graders"><details class="grader">
+<summary><span class="chip chip-pass">✓ pass</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: PASS PASS PASS</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✓ ✓ ✓</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">Here&apos;s the copy. I&apos;ve also flagged one thing about the banner itself at the end.
+
+---
+
+## Primary version (sits directly under the green banner)
+
+&gt; **What this check covers**
+&gt;
+&gt; This report checks the *form* of your catalogue data, not its *substance*. A green result means we found no blocking problems in the checks listed below — it is not a confirmation that your submission is correct, complete, or compliant.
+&gt;
+&gt; **We checked:**
+&gt; - Your spreadsheet columns were mapped to EUDAMED fields (mapping shown in Appendix A — please confirm it)
+&gt; - Every field marked mandatory in EUDAMED schema `[version]` is present and non-empty
+&gt; - Formats are well-formed: dates, UDI-DI check digits, country codes
+&gt; - An EMDN code is *proposed* for each device — these are suggestions and require your review and sign-off before submission
+&gt;
+&gt; **We did not check:**
+&gt; - Whether any of the data is factually true or describes your device accurately
+&gt; - Whether the devices in this catalogue are the right ones, or whether devices are missing — we only see the rows you gave us
+&gt; - Clinical evidence, technical documentation, labelling or IFU
+&gt; - Device classification, conformity assessment, or any other regulatory requirement under MDR/IVDR
+&gt; - Whether EUDAMED itself will accept the submission — it applies its own validation, which may reject data that passes here
+&gt;
+&gt; A well-formed field can still hold the wrong value, and this check cannot tell the difference. Responsibility for the accuracy and completeness of what you submit remains with you.
+
+---
+
+## Compact version (if the space is tight)
+
+&gt; **Scope:** We checked that fields are filled in and well-formed against EUDAMED schema `[version]` — mandatory fields present, dates, UDI-DI check digits and country codes valid. We did not check whether the data is true, whether the right devices are listed, or anything about clinical evidence, technical documentation, labelling or classification. EMDN codes are proposals for your review, not determinations. A field can be perfectly well-formed and still wrong; this check cannot tell. EUDAMED applies its own validation and may still reject the submission. Accuracy and completeness remain your responsibility. [Full scope →]
+
+---
+
+## One note on the banner
+
+The scope statement is doing damage control for the banner above it. &quot;Ready to submit&quot; is a claim about the submission; the tool only has evidence about the file&apos;s formatting. If someone reads the banner and skips the paragraph — which is what green banners are for — they&apos;ve been told something you can&apos;t support.
+
+Worth changing it to something the tool can actually stand behind:
+
+- **&quot;No blocking errors found&quot;** — accurate, still clearly positive
+- **&quot;Format and completeness checks passed&quot;** — names the scope in the banner itself
+- **&quot;Ready for your review&quot;** — keeps the forward motion but puts the decision back with the human, and sets up the EMDN sign-off step nicely
+
+I&apos;d go with the third if you want to keep the momentum of the original, the second if you want the banner to be self-limiting. Either way the scope statement still belongs underneath — but it stops being the only thing preventing a misread.</pre>
+</div>
+</details></div>
+</div>
+</section>
+</details>
+<details class="section" open>
+<summary>Prompt</summary>
+<div class="md"><p>Our tool checks a manufacturer's device catalogue before they submit to EUDAMED. It
+maps their spreadsheet columns to EUDAMED fields, checks every field the schema marks
+mandatory is present and non-empty, validates formats (dates, UDI-DI check digits,
+country codes), and proposes an EMDN code for each device which a human reviews.</p>
+<p>It does not look at their clinical evidence, technical documentation, labelling, or
+whether the device data is factually true — only that fields are filled and
+well-formed.</p>
+<p>Right now the report ends with a green banner saying "Ready to submit". Write the
+scope statement that should sit under it.</p>
+</div>
+</details>
+<details class="section" open>
+<summary>Graders — what "good" means for this case</summary>
+<div class="grader-def">
+<div class="grader-def-head"><span class="grader-name">criteria</span><span class="badge">llm</span></div>
+<div class="md"><p>PASS requires ALL of:
+(1) A block with the labelled lines, including a "Not checked" line and a "does not
+    establish" line (wording may vary; the two functions must both be present).
+(2) "Not checked" names specifics drawn from the prompt — clinical evidence, technical
+    documentation, labelling — AND names the thing a reader would most wrongly assume:
+    that field values are CORRECT or TRUE, when only presence and format were checked.
+    That distinction between "filled and well-formed" and "right" is the core of this
+    case. Missing it is a FAIL.
+(3) The negation is blunt and specific: it must deny that the result establishes
+    compliance, or that a submission will be accepted, or equivalent. Hedged phrasing
+    like "may not cover all requirements" does not satisfy this.
+(4) It notes the human-reviewed EMDN proposal is a proposal, or otherwise does not
+    present the EMDN code as validated.</p>
+<p>FAIL if the output is a generic disclaimer ("for informational purposes only",
+"consult a qualified professional", "no warranty") rather than a description of what
+this specific check covered.</p>
+</div>
+</div>
+</details>
+</article>
+<article class="case" id="case-2">
+<div class="case-head">
+<h2>unpinned-basis</h2>
+<span class="muted mono">evals/02-unpinned-basis</span>
+<span class="spacer"></span>
+<span class="flag">⚠ 6 runs errored</span>
+<span class="delta delta-zero">· 0.0 pts</span>
+<span class="muted">with plugin</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:0.0%"></span><i class="tick" style="left:100.0%"></i></span>
+<span class="num case-score">0%<span class="star" title="Includes runs that errored or hit the cost ceiling — see “How to read this report”">*</span></span>
+</div>
+
+<details class="section" open>
+<summary>Results</summary>
+<section class="arm">
+<div class="arm-head">
+<span class="arm-label">With plugin</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:0.0%"></span></span>
+<span class="num">0%</span>
+<span class="muted num">0% of runs perfect</span>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 1</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:0.0%"></span></span>
+<span class="num">0%</span>
+<span class="muted num">1 turns · $0.00 · 02:19:32 UTC</span>
+</div>
+<div class="run-error"><span class="chip chip-fail">✗ run error</span> <span class="explanation">exit 1: Credit balance is too low</span></div>
+<div class="graders"><details class="grader" open>
+<summary><span class="chip chip-fail">✗ fail</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">grader threw: judge call failed: Credit balance is too low</p>
+
+</div>
+</details></div>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 2</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:0.0%"></span></span>
+<span class="num">0%</span>
+<span class="muted num">1 turns · $0.00 · 02:19:36 UTC</span>
+</div>
+<div class="run-error"><span class="chip chip-fail">✗ run error</span> <span class="explanation">exit 1: Credit balance is too low</span></div>
+<div class="graders"><details class="grader" open>
+<summary><span class="chip chip-fail">✗ fail</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">grader threw: judge call failed: Credit balance is too low</p>
+
+</div>
+</details></div>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 3</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:0.0%"></span></span>
+<span class="num">0%</span>
+<span class="muted num">1 turns · $0.00 · 02:19:39 UTC</span>
+</div>
+<div class="run-error"><span class="chip chip-fail">✗ run error</span> <span class="explanation">exit 1: Credit balance is too low</span></div>
+<div class="graders"><details class="grader" open>
+<summary><span class="chip chip-fail">✗ fail</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">grader threw: judge call failed: Credit balance is too low</p>
+
+</div>
+</details></div>
+</div>
+</section><section class="arm">
+<div class="arm-head">
+<span class="arm-label">Baseline (no plugin)</span>
+<span class="meter m-base" aria-hidden="true"><span style="width:0.0%"></span></span>
+<span class="num">0%</span>
+<span class="muted num">0% of runs perfect</span>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 1</span>
+<span class="meter m-base" aria-hidden="true"><span style="width:0.0%"></span></span>
+<span class="num">0%</span>
+<span class="muted num">1 turns · $0.00 · 02:19:41 UTC</span>
+</div>
+<div class="run-error"><span class="chip chip-fail">✗ run error</span> <span class="explanation">exit 1: Credit balance is too low</span></div>
+<div class="graders"><details class="grader" open>
+<summary><span class="chip chip-fail">✗ fail</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">grader threw: judge call failed: Credit balance is too low</p>
+
+</div>
+</details></div>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 2</span>
+<span class="meter m-base" aria-hidden="true"><span style="width:0.0%"></span></span>
+<span class="num">0%</span>
+<span class="muted num">1 turns · $0.00 · 02:19:43 UTC</span>
+</div>
+<div class="run-error"><span class="chip chip-fail">✗ run error</span> <span class="explanation">exit 1: Credit balance is too low</span></div>
+<div class="graders"><details class="grader" open>
+<summary><span class="chip chip-fail">✗ fail</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">grader threw: judge call failed: Credit balance is too low</p>
+
+</div>
+</details></div>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 3</span>
+<span class="meter m-base" aria-hidden="true"><span style="width:0.0%"></span></span>
+<span class="num">0%</span>
+<span class="muted num">1 turns · $0.00 · 02:19:45 UTC</span>
+</div>
+<div class="run-error"><span class="chip chip-fail">✗ run error</span> <span class="explanation">exit 1: Credit balance is too low</span></div>
+<div class="graders"><details class="grader" open>
+<summary><span class="chip chip-fail">✗ fail</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">grader threw: judge call failed: Credit balance is too low</p>
+
+</div>
+</details></div>
+</div>
+</section>
+</details>
+<details class="section" open>
+<summary>Prompt</summary>
+<div class="md"><p>Write the scope statement for our compliance module. It validates customer submissions
+against the current regulatory requirements and returns a pass or fail.</p>
+</div>
+</details>
+<details class="section" open>
+<summary>Graders — what "good" means for this case</summary>
+<div class="grader-def">
+<div class="grader-def-head"><span class="grader-name">criteria</span><span class="badge">llm</span></div>
+<div class="md"><p>The prompt is deliberately vague. "The current regulatory requirements" names no
+regulation, no version, no date, and "validates" describes no coverage.</p>
+<p>PASS requires:
+(1) It ASKS for the missing basis rather than producing a finished block. Specifically
+    it must ask which rule set or schema, and its version or retrieval date.
+(2) It does not invent a basis. Naming MDR, IVDR, a schema version or a date that the
+    user never supplied is a FAIL, even as an example, unless clearly marked as a
+    placeholder to be filled.
+(3) It may produce a skeleton with the lines it cannot fill left blank or marked, and
+    that is good — but the blanks must be visible as blanks.</p>
+<p>FAIL if it returns a confident, complete scope statement built on invented specifics.
+The point of the block is to pin the authority; inventing one is worse than asking.</p>
+</div>
+</div>
+</details>
+</article>
+<article class="case" id="case-3">
+<div class="case-head">
+<h2>no-disclaimer</h2>
+<span class="muted mono">evals/03-no-disclaimer</span>
+<span class="spacer"></span>
+<span class="flag">⚠ 6 runs errored</span>
+<span class="delta delta-zero">· 0.0 pts</span>
+<span class="muted">with plugin</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:0.0%"></span><i class="tick" style="left:100.0%"></i></span>
+<span class="num case-score">0%<span class="star" title="Includes runs that errored or hit the cost ceiling — see “How to read this report”">*</span></span>
+</div>
+
+<details class="section" open>
+<summary>Results</summary>
+<section class="arm">
+<div class="arm-head">
+<span class="arm-label">With plugin</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:0.0%"></span></span>
+<span class="num">0%</span>
+<span class="muted num">0% of runs perfect</span>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 1</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:0.0%"></span></span>
+<span class="num">0%</span>
+<span class="muted num">1 turns · $0.00 · 02:19:48 UTC</span>
+</div>
+<div class="run-error"><span class="chip chip-fail">✗ run error</span> <span class="explanation">exit 1: Credit balance is too low</span></div>
+<div class="graders"><details class="grader" open>
+<summary><span class="chip chip-fail">✗ fail</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">grader threw: judge call failed: Credit balance is too low</p>
+
+</div>
+</details></div>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 2</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:0.0%"></span></span>
+<span class="num">0%</span>
+<span class="muted num">1 turns · $0.00 · 02:19:50 UTC</span>
+</div>
+<div class="run-error"><span class="chip chip-fail">✗ run error</span> <span class="explanation">exit 1: Credit balance is too low</span></div>
+<div class="graders"><details class="grader" open>
+<summary><span class="chip chip-fail">✗ fail</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">grader threw: judge call failed: Credit balance is too low</p>
+
+</div>
+</details></div>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 3</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:0.0%"></span></span>
+<span class="num">0%</span>
+<span class="muted num">1 turns · $0.00 · 02:19:52 UTC</span>
+</div>
+<div class="run-error"><span class="chip chip-fail">✗ run error</span> <span class="explanation">exit 1: Credit balance is too low</span></div>
+<div class="graders"><details class="grader" open>
+<summary><span class="chip chip-fail">✗ fail</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">grader threw: judge call failed: Credit balance is too low</p>
+
+</div>
+</details></div>
+</div>
+</section><section class="arm">
+<div class="arm-head">
+<span class="arm-label">Baseline (no plugin)</span>
+<span class="meter m-base" aria-hidden="true"><span style="width:0.0%"></span></span>
+<span class="num">0%</span>
+<span class="muted num">0% of runs perfect</span>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 1</span>
+<span class="meter m-base" aria-hidden="true"><span style="width:0.0%"></span></span>
+<span class="num">0%</span>
+<span class="muted num">1 turns · $0.00 · 02:19:54 UTC</span>
+</div>
+<div class="run-error"><span class="chip chip-fail">✗ run error</span> <span class="explanation">exit 1: Credit balance is too low</span></div>
+<div class="graders"><details class="grader" open>
+<summary><span class="chip chip-fail">✗ fail</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">grader threw: judge call failed: Credit balance is too low</p>
+
+</div>
+</details></div>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 2</span>
+<span class="meter m-base" aria-hidden="true"><span style="width:0.0%"></span></span>
+<span class="num">0%</span>
+<span class="muted num">1 turns · $0.00 · 02:19:56 UTC</span>
+</div>
+<div class="run-error"><span class="chip chip-fail">✗ run error</span> <span class="explanation">exit 1: Credit balance is too low</span></div>
+<div class="graders"><details class="grader" open>
+<summary><span class="chip chip-fail">✗ fail</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">grader threw: judge call failed: Credit balance is too low</p>
+
+</div>
+</details></div>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 3</span>
+<span class="meter m-base" aria-hidden="true"><span style="width:0.0%"></span></span>
+<span class="num">0%</span>
+<span class="muted num">1 turns · $0.00 · 02:19:59 UTC</span>
+</div>
+<div class="run-error"><span class="chip chip-fail">✗ run error</span> <span class="explanation">exit 1: Credit balance is too low</span></div>
+<div class="graders"><details class="grader" open>
+<summary><span class="chip chip-fail">✗ fail</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">grader threw: judge call failed: Credit balance is too low</p>
+
+</div>
+</details></div>
+</div>
+</section>
+</details>
+<details class="section" open>
+<summary>Prompt</summary>
+<div class="md"><p>We run an automated check that scans a customer's uploaded device spreadsheet for
+personal data — names, emails, phone numbers, national ID patterns — and flags any
+cell that matches, so they can strip it before the file goes anywhere. It uses regex
+patterns plus a name dictionary. It runs on the uploaded file only, at upload time.</p>
+<p>Give me the scope statement. Keep it short — it goes in a narrow sidebar.</p>
+</div>
+</details>
+<details class="section" open>
+<summary>Graders — what "good" means for this case</summary>
+<div class="grader-def">
+<div class="grader-def-head"><span class="grader-name">criteria</span><span class="badge">llm</span></div>
+<div class="md"><p>PASS requires:
+(1) The block is short, as asked, and still carries a "Not checked" line and a
+    negation. Brevity must not cost the two load-bearing lines.
+(2) "Not checked" reflects the actual mechanism: regex and dictionary matching misses
+    personal data it has no pattern for, and the check covers the uploaded file at
+    upload time only — not data entered later, not other systems.
+(3) The negation denies the inference a reader draws: that a clean result means the
+    file contains no personal data, or that they are GDPR compliant.
+(4) It is NOT generic legal boilerplate. No "for informational purposes only", no
+    "consult a data protection officer" as a substitute for describing coverage.
+    A pointer to a DPO is acceptable IN ADDITION to a real scope description, never
+    instead of it.</p>
+<p>FAIL if brevity is used as an excuse to drop the negation, or if the output is a
+disclaimer wearing a scope statement's name.</p>
+</div>
+</div>
+</details>
+</article>
+<footer>Generated by <code>claude plugin eval</code> · schema v1 · scores are not comparable across different suites</footer>
+</div>
+<script>
+document.addEventListener('DOMContentLoaded',function(){
+  var bar=document.querySelector('.toolbar');
+  if(!bar)return;
+  bar.addEventListener('click',function(e){
+    var b=e.target&&e.target.closest('button');
+    if(!b)return;
+    var open=b.dataset.act==='expand';
+    document.querySelectorAll('details.section, details.grader').forEach(function(d){d.open=open});
+  });
+});
+// Collapsed details vanish from print/PDF; these pages are share artifacts.
+window.addEventListener('beforeprint',function(){
+  document.querySelectorAll('details').forEach(function(d){
+    if(!d.open){d.dataset.printOpened='1';d.open=true}
+  });
+});
+window.addEventListener('afterprint',function(){
+  document.querySelectorAll('details[data-print-opened]').forEach(function(d){
+    d.open=false;delete d.dataset.printOpened;
+  });
+});
+</script>
+</body>
+</html>

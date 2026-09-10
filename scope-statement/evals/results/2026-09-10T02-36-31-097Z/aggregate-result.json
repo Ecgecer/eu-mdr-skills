@@ -1,0 +1,86 @@
+{
+  "schemaVersion": 1,
+  "claudeVersion": "2.1.267",
+  "startedAt": "2026-09-10T02:36:31.097Z",
+  "durationSeconds": 38,
+  "costUsd": 0.17281975,
+  "partial": false,
+  "suite": {
+    "root": "/Users/egecangecer/projects/eu-mdr-skills/scope-statement",
+    "ablation": "none",
+    "caseFilter": "readiness-claim",
+    "threshold": 1,
+    "plugins": [
+      {
+        "name": "scope-statement",
+        "version": "0.1.0",
+        "path": "/Users/egecangecer/projects/eu-mdr-skills/scope-statement"
+      }
+    ]
+  },
+  "cases": [
+    {
+      "name": "readiness-claim",
+      "dir": "evals/01-readiness-claim",
+      "source": "prose",
+      "promptMarkdown": "Our tool checks a manufacturer's device catalogue before they submit to EUDAMED. It\nmaps their spreadsheet columns to EUDAMED fields, checks every field the schema marks\nmandatory is present and non-empty, validates formats (dates, UDI-DI check digits,\ncountry codes), and proposes an EMDN code for each device which a human reviews.\n\nIt does not look at their clinical evidence, technical documentation, labelling, or\nwhether the device data is factually true — only that fields are filled and\nwell-formed.\n\nRight now the report ends with a green banner saying \"Ready to submit\". Write the\nscope statement that should sit under it.",
+      "runsPerCase": 3,
+      "timeoutSeconds": 300,
+      "maxTurns": 10,
+      "graders": [
+        {
+          "name": "criteria",
+          "type": "llm",
+          "weight": 1,
+          "graderMarkdown": "PASS requires ALL of:\n(1) A block with the labelled lines, including a \"Not checked\" line and a \"does not\n    establish\" line (wording may vary; the two functions must both be present).\n(2) \"Not checked\" names specifics drawn from the prompt — clinical evidence, technical\n    documentation, labelling — AND names the thing a reader would most wrongly assume:\n    that field values are CORRECT or TRUE, when only presence and format were checked.\n    That distinction between \"filled and well-formed\" and \"right\" is the core of this\n    case. Missing it is a FAIL.\n(3) The negation is blunt and specific: it must deny that the result establishes\n    compliance, or that a submission will be accepted, or equivalent. Hedged phrasing\n    like \"may not cover all requirements\" does not satisfy this.\n(4) It notes the human-reviewed EMDN proposal is a proposal, or otherwise does not\n    present the EMDN code as validated.\n\nFAIL if the output is a generic disclaimer (\"for informational purposes only\",\n\"consult a qualified professional\", \"no warranty\") rather than a description of what\nthis specific check covered.",
+          "config": {
+            "criteria": "PASS requires ALL of:\n(1) A block with the labelled lines, including a \"Not checked\" line and a \"does not\n    establish\" line (wording may vary; the two functions must both be present).\n(2) \"Not checked\" names specifics drawn from the prompt — clinical evidence, technical\n    documentation, labelling — AND names the thing a reader would most wrongly assume:\n    that field values are CORRECT or TRUE, when only presence and format were checked.\n    That distinction between \"filled and well-formed\" and \"right\" is the core of this\n    case. Missing it is a FAIL.\n(3) The negation is blunt and specific: it must deny that the result establishes\n    compliance, or that a submission will be accepted, or equivalent. Hedged phrasing\n    like \"may not cover all requirements\" does not satisfy this.\n(4) It notes the human-reviewed EMDN proposal is a proposal, or otherwise does not\n    present the EMDN code as validated.\n\nFAIL if the output is a generic disclaimer (\"for informational purposes only\",\n\"consult a qualified professional\", \"no warranty\") rather than a description of what\nthis specific check covered.",
+            "focus": "last_message"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 3,
+            "costUsd": 0.17281975,
+            "judgeCostUsd": 0.003555,
+            "durationSeconds": 38,
+            "startedAt": "2026-09-10T02:36:31.104Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-LjBDGL/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "Here's the block. One thing I couldn't fill from what you've told me is the schema version — flagged below.\n\n## Scope of this check\n\n**Checked:** Your catalogue spreadsheet, mapped column-by-column onto EUDAMED device fields. For every device row we confirmed that each field the schema marks mandatory is present and non-empty, and that formats parse: dates, UDI-DI check digits, ISO country codes. We also proposed an EMDN code per device for your reviewer to accept or replace.\n\n**Against:** The EUDAMED device data schema, version `[X.Y]`, retrieved `[date]`. Format rules are taken from that schema's own field definitions. **The EMDN proposals are not from the schema** — they are this tool's suggestion based on your device descriptions, and carry no authority until your reviewer confirms them.\n\n**Not checked:**\n\n- **Whether the values are true.** A present, well-formed field is not a correct one. A valid check digit means the UDI-DI is arithmetically consistent, not that it is the right UDI-DI for that device or that it is registered with an issuing entity.\n- **Conditionally mandatory fields.** We enforce what the schema flags as mandatory outright. Fields that become mandatory depending on risk class, device type, or your answers elsewhere are not derived — a row can pass here and still be incomplete for that device.\n- **Any EMDN code your reviewer has not yet accepted.** Unreviewed proposals are drafts, not validated data.\n- **Your SRN / Actor registration status**, and whether these UDI-DIs are already registered.\n- **Risk classification** under MDR Annex VIII, and whether the class you declared is right.\n- **Clinical evidence, technical documentation, labelling and IFU** — not read, not assessed.\n- **Conformity assessment**: notified body certificate scope or validity, declaration of conformity, PMS/PSUR obligations.\n- **Whether every device you market is in this file.** We validated the rows you gave us; we cannot see omissions.\n\n**This does not establish:**\n\n1. This does not establish that EUDAMED will accept your submission. EUDAMED applies its own server-side and business-rule validation, including checks this tool cannot perform.\n2. This does not establish that your device data is accurate.\n3. This does not establish compliance with Regulation (EU) 2017/745. It establishes that your spreadsheet is structurally fit to be submitted.\n\n**Valid as of:** `[run date]`, for the file as submitted. Invalidated by any edit to the catalogue, by a change to the EUDAMED schema, or by a change in a device's intended purpose or classification. Re-run before submitting.\n\n---\n\nTwo notes on the surrounding UI:\n\n**Fill in the schema version.** I've left `[X.Y]` and the retrieval date as placeholders rather than guess. Pinning to \"the current schema\" is exactly the failure this block exists to prevent — if the tool doesn't already record which schema version a run validated against, that's worth capturing at run time and interpolating here.\n\n**The banner is doing damage the block then has to undo.** \"Ready to submit\" is the sentence a user quotes to their regulatory lead. Something like \"Structural checks passed\" or \"No format or completeness errors found\" says the same true thing and doesn't require the scope statement to walk it back. If the banner stays as-is, at minimum consider putting negation #1 directly under it rather than at the bottom of the report."
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 1,
+        "passRate": 1
+      }
+    }
+  ],
+  "aggregates": {
+    "casesTotal": 1,
+    "casesPassed": 1,
+    "overallScore": 1,
+    "overallPassRate": 1
+  }
+}

@@ -70,11 +70,17 @@ for. A verifier that reported success for a source it never fetched would be the
 defect these skills exist to prevent.
 
 **Why the text is pinned locally at all.** EUR-Lex is not a dependable read-through
-source. Over one afternoon of ordinary use it returned an HTTP 202 stub to scripted
-clients, then a 403, and after repeated browser requests began redirecting every
-document URL — including ones that had served fine an hour earlier — to the Official
-Journal index. A skill that fetches the law when asked inherits all of that. A skill
-carrying the text, dated, with a command to re-check it, does not.
+source. Over one afternoon it returned an HTTP 202 stub to scripted clients, then a
+403, and then began redirecting every document URL — including ones that had served
+the full text an hour earlier — to the Official Journal index, where it displays:
+
+> EUR-Lex is temporarily not fully available.
+
+That is an outage, not a block on any particular client, which is rather the point: the
+authority can be unavailable for reasons that have nothing to do with you, at a moment
+you did not choose. A skill that fetches the law when asked inherits that. A skill
+carrying the text, dated, with a command to re-check it when the source returns, does
+not.
 
 If a quote drifts, it says where:
 
