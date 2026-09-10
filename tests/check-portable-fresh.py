@@ -40,4 +40,44 @@ if missing:
 else:
     print(f"  emphasis declared in every reference that adds it")
 
+# 3. graders must not quote text that is not in their prompt
+#
+# Three eval prompts were rewritten to remove answer leakage. One grader kept quoting the
+# OLD copy -- "just peel, stick, and train" -- so a judge looked for wording the response
+# could not contain and failed correct answers for three runs. Invisible until someone
+# read a transcript.
+#
+# Heuristic: a quoted phrase of four or more words in a grader should appear in its own
+# prompt, or in a skill or reference file (graders legitimately quote statute). Anything
+# else is probably stale.
+import glob as _glob
+stale = []
+for grader in sorted(_glob.glob(str(ROOT / "*/evals/*/graders/*.md"))):
+    case_dir = Path(grader).parent.parent
+    prompt_f = case_dir / "prompt.md"
+    if not prompt_f.exists():
+        continue
+    corpus = prompt_f.read_text()
+    plugin = case_dir.parent.parent
+    for extra in list(plugin.glob("skills/*/SKILL.md")) + list(plugin.glob("skills/*/references/*.md")):
+        corpus += extra.read_text()
+    corpus_n = re.sub(r"\s+", " ", corpus)
+    for phrase in re.findall(r'"([^"\n]{20,120})"', open(grader).read()):
+        if len(phrase.split()) < 4:
+            continue
+        if re.sub(r"\s+", " ", phrase) not in corpus_n:
+            stale.append((str(Path(grader).relative_to(ROOT)), phrase))
+if stale:
+    # Advisory, not a gate. Graders legitimately quote model answers and illustrative
+    # phrasing, and no heuristic separates those from a stale prompt quote. Printing is
+    # enough -- the point is that a human sees the list when a prompt changes.
+    print(f"\n  NOTE: {len(stale)} grader quote(s) not found in the prompt or skill.")
+    print("  Usually illustrative model answers, which is fine. But if you just rewrote a")
+    print("  prompt, check these -- a stale quote makes judges look for wording the")
+    print("  response cannot contain, and fails correct answers silently.")
+    for g, ph in stale[:8]:
+        print(f'    {g.split("/evals/")[-1]:<44} "{ph[:52]}"')
+else:
+    print("  every grader quote traces to its prompt or the skill")
+
 sys.exit(failed)

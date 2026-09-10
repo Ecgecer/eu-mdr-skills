@@ -1,0 +1,86 @@
+{
+  "schemaVersion": 1,
+  "claudeVersion": "2.1.267",
+  "startedAt": "2026-09-10T19:47:53.533Z",
+  "durationSeconds": 26,
+  "costUsd": 0.19153599999999998,
+  "partial": false,
+  "suite": {
+    "root": "/Users/egecangecer/projects/eu-mdr-skills/mdr-transition",
+    "ablation": "none",
+    "caseFilter": "superseded-deadline",
+    "threshold": 1,
+    "plugins": [
+      {
+        "name": "mdr-transition",
+        "version": "0.1.0",
+        "path": "/Users/egecangecer/projects/eu-mdr-skills/mdr-transition"
+      }
+    ]
+  },
+  "cases": [
+    {
+      "name": "superseded-deadline",
+      "dir": "evals/01-superseded-deadline",
+      "source": "prose",
+      "promptMarkdown": "We have a Class III implantable device with a valid MDD certificate issued under\n93/42/EEC. We're still selling it. How long can we keep placing it on the EU market\nbefore we have to be fully MDR certified?",
+      "runsPerCase": 3,
+      "timeoutSeconds": 300,
+      "maxTurns": 10,
+      "graders": [
+        {
+          "name": "criteria",
+          "type": "llm",
+          "weight": 1,
+          "graderMarkdown": "MDR Art. 120(3a)(a), as amended by Regulation (EU) 2023/607, gives class III devices\nuntil **31 December 2027**. The original 2017 text said 26 May 2024; that is superseded\nas a market deadline.\n\nPASS requires:\n(1) The stated deadline is **31 December 2027**.\n(2) It does NOT present 26 May 2024 as the date by which the device must leave the\n    market.\n(3) It notes the extension is conditional on Art. 120(3c) — at minimum that conditions\n    exist and were required, not that 2027 is automatic.\n\nMentioning 26 May 2024 in its CORRECT role — the deadline for the QMS and for lodging the\nnotified-body application under 3c(d) and 3c(e) — is right and expected. Judge how the\ndate is used, not whether it appears.\n\nFAIL if the answer is 26 May 2024, or any 2024 date, as the market deadline. That is the\nsuperseded text and the specific failure this case tests.",
+          "config": {
+            "criteria": "MDR Art. 120(3a)(a), as amended by Regulation (EU) 2023/607, gives class III devices\nuntil **31 December 2027**. The original 2017 text said 26 May 2024; that is superseded\nas a market deadline.\n\nPASS requires:\n(1) The stated deadline is **31 December 2027**.\n(2) It does NOT present 26 May 2024 as the date by which the device must leave the\n    market.\n(3) It notes the extension is conditional on Art. 120(3c) — at minimum that conditions\n    exist and were required, not that 2027 is automatic.\n\nMentioning 26 May 2024 in its CORRECT role — the deadline for the QMS and for lodging the\nnotified-body application under 3c(d) and 3c(e) — is right and expected. Judge how the\ndate is used, not whether it appears.\n\nFAIL if the answer is 26 May 2024, or any 2024 date, as the market deadline. That is the\nsuperseded text and the specific failure this case tests.",
+            "focus": "last_message"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 4,
+            "costUsd": 0.19153599999999998,
+            "judgeCostUsd": 0.0037230000000000006,
+            "durationSeconds": 26,
+            "startedAt": "2026-09-10T19:47:53.541Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-RtTW3W/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "## Class III implantable device, MDD certificate under 93/42/EEC\n\n**Class:** III (as stated)\n**Route:** Article 120(3a) — notified-body certificate issued under 93/42/EEC\n**Deadline:** **31 December 2027** — conditional on 120(3c)\n\n| Question | Answer | Basis |\n|---|---|---|\n| Which paragraph applies | 120(3a), via a certificate issued under 93/42/EEC and valid by virtue of 120(2) | `[verified]` |\n| Class-dependent date | 31 Dec 2027 — 3a(a) covers *all* class III devices | `[verified]` |\n| 3c conditions met? | **Not established — you need to confirm this** | `[verified]` (text of conditions) |\n\n### The 2027 date is conditional, not automatic\n\nOn class alone your device runs to 31 December 2027. But 120(3c) is cumulative — **all five** conditions must have been met:\n\n1. Continued compliance with 93/42/EEC;\n2. **No significant changes in design and intended purpose**;\n3. No unacceptable risk to health or safety;\n4. **QMS under Article 10(9) in place no later than 26 May 2024**;\n5. **Formal application lodged with a notified body no later than 26 May 2024**, and the **written agreement signed no later than 26 September 2024**.\n\nIf any of those was missed, the extension was never available to you and the answer is different. Since all of those dates are now in the past, this is a matter of record rather than planning — please confirm the application and the signed agreement.\n\n### On 26 May 2024\n\nYou may recall 26 May 2024 as the hard market deadline. That was the original 2017 text and it is superseded by Regulation (EU) 2023/607 — it is no longer the date the device must leave the market. It has not disappeared, though: it is now the date by which the QMS and the notified-body application had to be in place, with 26 September 2024 for the signed agreement. Those are the conditions the 2027 date depends on.\n\n### Also applicable now, not in 2027\n\nUnder 120(3d), MDR's requirements on post-market surveillance, market surveillance, vigilance, and registration of economic operators and devices already apply to your device **in place of** the corresponding 93/42/EEC requirements. A legacy device is not living entirely under the old regime during the transition.\n\n**What would change this:** a failure to meet any 3c condition (most commonly the 26 May 2024 application or the QMS) removes the extension entirely. Separately, a significant change to design or intended purpose under 3c(b) would end it — what counts as \"significant\" is dealt with in MDCG guidance, which this reference does not carry, so if your question turns on a specific change I can't resolve it here.\n\n## Limits\n\n> This covers MDR Article 120(3) and (3a)–(3d) as amended by Regulation (EU) 2023/607, retrieved verbatim from the Official Journal on 2026-09-10. It does **not** cover Article 120's other paragraphs, **IVDR Article 110** (the parallel IVD transition, whose dates differ), MDCG guidance including on what counts as a significant change, Annex VII, or national practice. The transition is conditional and fact-specific; this is a first-pass aid, not legal or regulatory advice, and not a substitute for your notified body or a qualified regulatory professional."
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 1,
+        "passRate": 1
+      }
+    }
+  ],
+  "aggregates": {
+    "casesTotal": 1,
+    "casesPassed": 1,
+    "overallScore": 1,
+    "overallPassRate": 1
+  }
+}

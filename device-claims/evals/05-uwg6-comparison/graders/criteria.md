@@ -22,8 +22,17 @@ PASS requires ALL of:
     failing the "nachprüfbar" requirement — the reader cannot check it, and the
     comparator is undefined.
 (4) "The spreadsheet-and-email crowd still find their errors after submission" is
-    examined and routed to a § 6(2) limb. Both
-    no. 2 (not objective, not nachprüfbar) and no. 5 (Herabsetzung) are acceptable —
-    the skill and its reference teach nos. 1 and 2 and do not carry no. 5, so requiring
-    no. 5 would test the model rather than the skill. FAIL only if the line is ignored.
+    EXAMINED and a reasoned conclusion reached. Several are acceptable:
+      - routed to § 6(2) no. 2 (not objective, not nachprüfbar);
+      - routed to § 6(2) no. 5 (Herabsetzung);
+      - concluding that no carried provision reaches it, on the ground that it
+        characterises *prospects* or a working method rather than an identifiable
+        competitor — that is a precise reading and PASSES;
+      - raised under `Also engaged:` conditional on whether a competitor is erkennbar.
+    FAIL only if the line is ignored entirely, or if a conclusion is asserted with no
+    reasoning.
+
+Note for the judge: do not require a particular provision. The skill carries nos. 1 and
+2 only, and a response that examines the line and explains why nothing carried reaches
+it is doing boundary discipline, which is the property under test.
 FAIL if comparative advertising is described as banned or per se unlawful.
