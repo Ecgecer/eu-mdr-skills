@@ -1,0 +1,1448 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Eval report — mpdg-germany v0.1.0</title>
+</head>
+<body>
+<style>
+:root{--plane:#f9f9f7;--surface:#fcfcfb;--ink:#0b0b0b;--ink-2:#52514e;--ink-3:#6b6a64;--hairline:rgba(11,11,11,.10);--grid:#e1e0d9;--inset:rgba(11,11,11,.04);--accent:#2a78d6;--base-fill:#6b6a64;--delta-good:#006300;--good:#067d06;--warning:#8a6100;--critical:#d03b3b;
+  color-scheme:light dark;
+}
+@media (prefers-color-scheme:dark){:root{--plane:#0d0d0d;--surface:#1a1a19;--ink:#ffffff;--ink-2:#c3c2b7;--ink-3:#898781;--hairline:rgba(255,255,255,.10);--grid:#2c2c2a;--inset:rgba(255,255,255,.05);--accent:#3987e5;--base-fill:#898781;--delta-good:#0ca30c;--good:#0ca30c;--warning:#fab219;--critical:#e06c6c;color-scheme:dark}}
+:root[data-theme="dark"]{--plane:#0d0d0d;--surface:#1a1a19;--ink:#ffffff;--ink-2:#c3c2b7;--ink-3:#898781;--hairline:rgba(255,255,255,.10);--grid:#2c2c2a;--inset:rgba(255,255,255,.05);--accent:#3987e5;--base-fill:#898781;--delta-good:#0ca30c;--good:#0ca30c;--warning:#fab219;--critical:#e06c6c;color-scheme:dark}
+:root[data-theme="light"]{--plane:#f9f9f7;--surface:#fcfcfb;--ink:#0b0b0b;--ink-2:#52514e;--ink-3:#6b6a64;--hairline:rgba(11,11,11,.10);--grid:#e1e0d9;--inset:rgba(11,11,11,.04);--accent:#2a78d6;--base-fill:#6b6a64;--delta-good:#006300;--good:#067d06;--warning:#8a6100;--critical:#d03b3b;color-scheme:light}
+*{box-sizing:border-box}
+body{margin:0;background:var(--plane);color:var(--ink);
+  font:14px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif;
+  -webkit-text-size-adjust:100%}
+.wrap{max-width:880px;margin:0 auto;padding:40px 24px 64px;display:flex;flex-direction:column;gap:20px}
+.eyebrow{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
+header h1{margin:2px 0 0;font-size:24px;font-weight:600;line-height:1.25;text-wrap:balance}
+.meta{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:8px;color:var(--ink-2);font-size:13px}
+.meta .num{font-variant-numeric:tabular-nums lining-nums}
+.banner{display:flex;align-items:center;gap:8px;padding:10px 14px;border-radius:8px;
+  border:1px solid var(--hairline);background:var(--surface);font-size:13px}
+.banner .chip-warn{color:var(--warning);font-weight:600}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.tile{background:var(--surface);border:1px solid var(--hairline);border-radius:10px;padding:14px 16px;
+  display:flex;flex-direction:column;gap:4px}
+.tile .label{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3)}
+.tile .value{font-size:26px;font-weight:600;font-variant-numeric:tabular-nums lining-nums;line-height:1.1}
+.tile.hero .value{font-family:Georgia,"Times New Roman",serif;font-weight:400;font-size:48px}
+.tile .sub{font-size:12px;color:var(--ink-2);font-variant-numeric:tabular-nums}
+.tile .value.delta-pos{color:var(--delta-good)}
+.tile .value.delta-neg{color:var(--critical)}
+.toolbar{display:flex;gap:8px;justify-content:flex-end}
+.toolbar button{font:12px system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--ink-2);
+  background:var(--surface);border:1px solid var(--hairline);border-radius:6px;padding:4px 10px;cursor:pointer}
+.toolbar button:hover{color:var(--ink)}
+.toolbar button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.case{background:var(--surface);border:1px solid var(--hairline);border-radius:10px;padding:18px 20px;
+  display:flex;flex-direction:column;gap:10px}
+.case-regressed{border-left:3px solid var(--critical)}
+.verdict{margin:6px 0 0;font-size:15px}
+.verdict .delta{font-size:15px}
+.flag{font-size:11px;font-weight:600;color:var(--warning);white-space:nowrap}
+.star{color:var(--warning);font-size:.45em;vertical-align:super;line-height:0;cursor:help}
+.legend summary{cursor:pointer;font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-2)}
+.legend-list{margin:8px 0 0;padding-left:20px;display:flex;flex-direction:column;gap:5px;font-size:13px;color:var(--ink-2)}
+.case-head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.case-head h2{margin:0;font-size:16px;font-weight:600}
+.case-head .spacer{flex:1}
+.case-score{font-size:15px;font-weight:600}
+.mono{font:12px "SF Mono",ui-monospace,Menlo,Consolas,monospace}
+.num{font-variant-numeric:tabular-nums lining-nums}
+.muted{color:var(--ink-3);font-size:12px}
+.meter{display:inline-block;position:relative;width:120px;height:6px;border-radius:4px;background:var(--grid);
+  vertical-align:middle}
+.meter>span{display:block;height:100%;border-radius:4px;max-width:100%}
+.meter .tick{position:absolute;top:-2px;bottom:-2px;width:2px;background:var(--ink-3);border-radius:1px}
+.m-accent>span{background:var(--accent)}
+.m-base>span{background:var(--base-fill)}
+.delta{font-size:12px;font-weight:600;font-variant-numeric:tabular-nums}
+.delta-pos{color:var(--delta-good)}
+.delta-neg{color:var(--critical)}
+.delta-zero{color:var(--ink-3)}
+details.section{border-top:1px solid var(--grid);padding-top:10px}
+details.section>summary{cursor:pointer;font-size:12px;font-weight:600;letter-spacing:.04em;
+  text-transform:uppercase;color:var(--ink-2);list-style-position:outside;margin-left:2px}
+details.section>summary:hover{color:var(--ink)}
+details.section[open]>summary{margin-bottom:8px}
+.md{display:flex;flex-direction:column;gap:8px;background:var(--inset);border-radius:8px;
+  padding:12px 14px;overflow-wrap:break-word}
+.md>:first-child{margin-top:0}
+.md h1,.md h2,.md h3,.md h4,.md h5,.md h6{margin:4px 0 0;font-size:1em;font-weight:600;line-height:1.3}
+.md p,.md ul,.md ol,.md blockquote,.md table,.md pre,.md hr{margin:0}
+.md ul,.md ol{display:flex;flex-direction:column;gap:4px;padding-left:20px}
+.md blockquote{border-left:2px solid var(--hairline);padding-left:10px;color:var(--ink-2)}
+.md :not(pre)>code{background:var(--inset);padding:1px 4px;border-radius:4px;
+  font:.92em "SF Mono",ui-monospace,Menlo,Consolas,monospace}
+.md pre{background:var(--inset);border:1px solid var(--hairline);padding:10px 12px;border-radius:6px;
+  overflow-x:auto;font:12px/1.5 "SF Mono",ui-monospace,Menlo,Consolas,monospace}
+.md pre code{background:none;padding:0;font:inherit}
+.md table{width:100%;border-collapse:collapse}
+.md th,.md td{padding:5px 8px;text-align:left;vertical-align:top;border-bottom:1px solid var(--grid)}
+.md th{font-weight:600;color:var(--ink-2)}
+.md a{color:var(--accent);text-decoration:none}
+.md a:hover{text-decoration:underline}
+.grader-def{display:flex;flex-direction:column;gap:6px;padding:8px 0}
+.grader-def+.grader-def{border-top:1px solid var(--grid)}
+.grader-def-head{display:flex;align-items:baseline;gap:8px}
+.grader-name{font:13px "SF Mono",ui-monospace,Menlo,Consolas,monospace;font-weight:600}
+.badge{font-size:10px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-2);
+  border:1px solid var(--hairline);border-radius:999px;padding:1px 8px}
+.config{display:flex;flex-direction:column;gap:2px;background:var(--inset);border-radius:8px;padding:10px 14px}
+.config code{font:12px "SF Mono",ui-monospace,Menlo,Consolas,monospace;overflow-wrap:anywhere}
+.arm{display:flex;flex-direction:column;gap:8px;padding:6px 0}
+.arm+.arm{border-top:1px dashed var(--grid);margin-top:4px;padding-top:12px}
+.arm-head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.arm-label{font-size:13px;font-weight:600}
+.run{border:1px solid var(--grid);border-radius:8px;padding:10px 12px;display:flex;flex-direction:column;gap:8px}
+.run-head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.run-title{font-size:12px;font-weight:600;color:var(--ink-2)}
+.run-error .explanation{color:var(--ink-2)}
+.note{font-size:12px;color:var(--ink-2)}
+.graders{display:flex;flex-direction:column;gap:4px}
+details.grader{border-radius:6px}
+details.grader>summary{cursor:pointer;display:flex;align-items:baseline;gap:8px;padding:3px 4px;
+  border-radius:6px;list-style:none}
+details.grader>summary::-webkit-details-marker{display:none}
+details.grader>summary::before{content:'▸';font-size:10px;color:var(--ink-3);flex:none;
+  transition:transform .12s ease}
+details.grader[open]>summary::before{transform:rotate(90deg)}
+details.grader>summary:hover{background:var(--inset)}
+details.grader>summary:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.grader-body{padding:6px 8px 8px 24px;display:flex;flex-direction:column;gap:6px}
+.chip{font-size:11px;font-weight:600;border-radius:999px;padding:1px 8px;white-space:nowrap}
+.chip-pass{color:var(--good);border:1px solid currentColor}
+.chip-fail{color:var(--critical);border:1px solid currentColor}
+.chip.chip-warn{color:var(--warning);border:1px solid currentColor}
+.explanation{margin:0;font-size:13px;color:var(--ink-2);white-space:pre-wrap;overflow-wrap:break-word}
+.kv{display:flex;gap:8px;font-size:12px;color:var(--ink-3)}
+.votes{font-variant-numeric:tabular-nums;letter-spacing:.1em}
+pre.evidence{margin:0;background:var(--inset);border:1px solid var(--hairline);border-radius:6px;
+  padding:8px 10px;overflow-x:auto;max-height:320px;
+  font:12px/1.5 "SF Mono",ui-monospace,Menlo,Consolas,monospace;white-space:pre-wrap;overflow-wrap:break-word}
+footer{color:var(--ink-3);font-size:12px;text-align:center;padding-top:8px}
+@media (prefers-reduced-motion:no-preference){
+  details.grader>summary,.toolbar button{transition:background .12s ease,color .12s ease}
+}
+@media (prefers-reduced-motion:reduce){
+  details.grader>summary::before{transition:none}
+}
+@media print{
+  :root,:root[data-theme="dark"],:root[data-theme="light"]{--plane:#f9f9f7;--surface:#fcfcfb;--ink:#0b0b0b;--ink-2:#52514e;--ink-3:#6b6a64;--hairline:rgba(11,11,11,.10);--grid:#e1e0d9;--inset:rgba(11,11,11,.04);--accent:#2a78d6;--base-fill:#6b6a64;--delta-good:#006300;--good:#067d06;--warning:#8a6100;--critical:#d03b3b;color-scheme:light}
+  body{background:#fff}
+  .toolbar{display:none}
+  .case,.run,.grader-def{break-inside:avoid}
+  pre.evidence{max-height:none}
+}
+</style>
+<div class="wrap">
+<header>
+<div class="eyebrow">Plugin eval report</div>
+<h1>mpdg-germany v0.1.0</h1>
+<p class="verdict">Plugin effect: <span class="delta delta-pos">↑ +33.3 pts</span> vs baseline — improved 2 · flat 3 · regressed 0 of 5 cases.</p>
+<div class="meta">
+<span class="mono">.</span>
+<span>Claude Code v2.1.267</span>
+<span class="num">2026-09-10 04:37 UTC</span>
+<span class="num">14m 30s</span>
+<span class="num">$2.39</span>
+<span class="num">30 runs</span>
+
+
+<span>judge default</span>
+<span class="num">threshold 100%</span>
+
+</div>
+</header>
+<div class="banner"><span class="chip-warn">⚠ Averages include non-judgments</span><span>17 runs errored — their scores count toward the averages shown without a complete judgment.</span></div>
+<section class="tiles">
+<div class="tile hero"><span class="label">Suite score · with plugin</span><span class="value">40%<span class="star" title="Includes runs that errored or hit the cost ceiling — see “How to read this report”">*</span></span><span class="sub">mean of per-case scores · * includes 7 runs without a complete judgment</span></div>
+<div class="tile"><span class="label">Ablation Δ</span><span class="value num delta-pos">↑ +33.3</span><span class="sub">score points vs baseline, 5 of 5 cases</span></div>
+<div class="tile"><span class="label">Baseline score</span><span class="value num">6.7%</span><span class="sub">without the plugin</span></div>
+<div class="tile"><span class="label">Cases</span><span class="value num">5</span><span class="sub">2 of 5 ≥ 100% threshold</span></div>
+<div class="tile"><span class="label">Perfect runs</span><span class="value num">40%</span><span class="sub">runs where every grader passed</span></div>
+</section>
+<details class="section legend">
+<summary>How to read this report</summary>
+<ul class="legend-list">
+<li>A run's score is the weighted fraction of its graders that passed; a "perfect" run passed every grader.</li>
+<li>A case's score is the mean of its runs; a case passes when its score is at or above the 100% threshold (the tick on each case bar).</li>
+<li>The suite score is the mean of the per-case scores.</li>
+<li>Judge votes are independent samples of the LLM judge; the majority decides pass or fail.</li>
+<li>"With plugin" and "Baseline" runs are identical except for the plugin being loaded; Δ is the with-plugin score minus the baseline score.</li>
+<li>Scores marked with * include runs that errored or hit the cost ceiling (LLM graders force-failed); those runs count toward the means without a complete judgment.</li>
+</ul>
+</details>
+<div class="toolbar"><button type="button" data-act="expand">Expand all</button><button type="button" data-act="collapse">Collapse all</button></div>
+<article class="case" id="case-1">
+<div class="case-head">
+<h2>doc-english-sufficient</h2>
+<span class="muted mono">evals/01-doc-english-sufficient</span>
+<span class="spacer"></span>
+<span class="flag">⚠ 1 run errored</span>
+<span class="delta delta-pos">↑ +100.0 pts</span>
+<span class="muted">with plugin</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:100.0%"></span><i class="tick" style="left:100.0%"></i></span>
+<span class="num case-score">100%</span>
+</div>
+
+<details class="section" open>
+<summary>Results</summary>
+<section class="arm">
+<div class="arm-head">
+<span class="arm-label">With plugin</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">100% of runs perfect</span>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 1</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">4 turns · $0.14 · 04:37:14 UTC</span>
+</div>
+
+<div class="graders"><details class="grader">
+<summary><span class="chip chip-pass">✓ pass</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: PASS PASS PASS</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✓ ✓ ✓</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">## Does the EU Declaration of Conformity need to be in German?
+
+**German market:** confirmed — device is made available in Germany, so MPDG applies
+**Answer:** No. The EU Declaration of Conformity may be provided in German **or** English — English alone is compliant. Your distributor is over-applying the rule to the DoC.
+
+MPDG § 8(1) `[verified]`, verbatim: the manufacturer must make the EU Declaration of Conformity under Art. 19(1) MDR available *&quot;in deutscher oder in englischer Sprache&quot;*. That is an explicit either/or, and it is the one document Germany deliberately does not require in German.
+
+Your distributor is right about the general direction, though, just not about this document. The rule is asymmetric:
+
+| Item | MDR requires | Germany adds | Basis |
+|---|---|---|---|
+| EU Declaration of Conformity | not carried here | German **or English** — no translation duty | MPDG § 8(1) `[verified]` |
+| Information for users and patients (IFU, labelling) | not carried here | **German**, and it is a condition of supply — the device may only be handed over to users/patients if this is met | MPDG § 8(2) sentence 1 `[verified]` |
+| Same, where users are exclusively professionals | not carried here | English or another easily understood language permitted, but only *in begründeten Fällen* **and** exclusively professional users **and** safety-related information still in German or the user&apos;s language — all three, cumulatively | MPDG § 8(2) sentence 2 `[verified]` |
+| Implant information under Art. 18(1) MDR | not carried here | **German**. No professional-user exception reaches it | MPDG § 8(3) `[verified]` |
+
+So: keep the English DoC, and check instead whether your IFU and user-facing information are in German. That is where a Class IIa device sold to lay users actually gets caught, and § 8(2) makes it a precondition for handing the product over, not just a paperwork defect.
+
+One adjacent point worth having on file: if you ever take a field safety corrective action in Germany, the Field Safety Notice must be written in German — MPDG § 73(1) `[verified]`. That attaches to the action being taken in Germany, not to where you are established, so it reaches you as a Dutch manufacturer. The § 73(2) duties to document the FSCA, review its effectiveness, and notify completion apply to manufacturers, authorised representatives and importers *established in Germany*, so on the facts as you have given them they fall on your German-established importer rather than on you `[verified]`.
+
+**What would change this:** nothing about the DoC — the either/or in § 8(1) does not turn on class, on where the manufacturer sits, or on who the user is. What does change is the § 8(2) analysis: whether your device goes to lay users or exclusively to professionals, and whether it is implantable (§ 8(3)).
+
+## Limits
+
+This covers MPDG §§ 4, 8 and 73 only, retrieved verbatim from gesetze-im-internet on 2026-09-10. It does **not** cover the rest of MPDG, MDR or IVDR themselves, MDCG guidance, BfArM practice, or any other member state&apos;s implementing law — an obligation here is German and says nothing about France, Italy or elsewhere, and your other markets will each have their own language rules. A first-pass aid for spotting German-specific duties, not legal advice, and not a substitute for a regulatory professional or a Fachanwalt für Medizinrecht.</pre>
+</div>
+</details></div>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 2</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">4 turns · $0.13 · 04:37:46 UTC</span>
+</div>
+
+<div class="graders"><details class="grader">
+<summary><span class="chip chip-pass">✓ pass</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: PASS PASS PASS</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✓ ✓ ✓</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">## Does the EU Declaration of Conformity need to be translated into German?
+
+**German market:** confirmed — product is made available in Germany, so MPDG applies
+**Answer:** No. For the DoC, MPDG § 8(1) expressly permits **German *or* English** — English alone is compliant, and your distributor is over-applying the rule on this point. But they are right about the *user-facing* information, which is a separate rule.
+
+| Item | MDR requires | Germany adds | Basis |
+|---|---|---|---|
+| EU Declaration of Conformity (Art. 19(1) MDR) | not carried here | Must be made available in **German or English** — no translation duty | MPDG § 8(1) `[verified]` |
+| Information for users and patients (IFU, labelling) | not carried here | Must be in **German**, and it is a *condition of supply*: the product may only be handed over to users/patients if this is met | MPDG § 8(2) sentence 1 `[verified]` |
+| Same, where information is *exclusively* for professional users | not carried here | English or another easily understood language allowed — but only in a *begründeter Fall*, **and** exclusively professional users, **and** safety-related information still in German or the user&apos;s language. All three, cumulatively | MPDG § 8(2) sentence 2 `[verified]` |
+| Implant information (Art. 18(1) MDR), if applicable | not carried here | **German**, no professional-user exception | MPDG § 8(3) `[verified]` |
+| Field Safety Notice, if you ever run an FSCA in Germany | not carried here | Must be **written in German** | MPDG § 73(1) `[verified]` |
+
+Your being established in the Netherlands doesn&apos;t change any of this — § 8 attaches to products made available in Germany, not to where the manufacturer sits.
+
+**What would change this:** If your distributor&apos;s &quot;everything&quot; actually means the IFU and labelling rather than the DoC, they have a point and the answer flips for those items. Worth pinning down which documents they mean. The professional-user exception is the other pivot — if your Class IIa device goes only to professional users and you have a justified case, the IFU could stay in English, but safety-related content still has to be in German, so it is rarely a clean escape from translating.
+
+One thing to check separately: § 8(2) is a condition of *Abgabe* (handing over to users/patients). A distributor pushing for German IFU is protecting a step they are closer to than you are.
+
+## Limits
+
+&gt; This covers MPDG §§ 4, 8 and 73 only, retrieved verbatim from gesetze-im-internet on 2026-09-10. It does **not** cover the rest of MPDG, MDR or IVDR themselves, MDCG guidance, BfArM practice, or any other member state&apos;s implementing law — an obligation here is German and says nothing about France, Italy or elsewhere. A first-pass aid for spotting German-specific duties, not legal advice, and not a substitute for a regulatory professional or a Fachanwalt für Medizinrecht.</pre>
+</div>
+</details></div>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 3</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">4 turns · $0.14 · 04:38:17 UTC</span>
+</div>
+
+<div class="graders"><details class="grader">
+<summary><span class="chip chip-pass">✓ pass</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: PASS PASS PASS</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✓ ✓ ✓</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">## Does the EU Declaration of Conformity need to be translated into German?
+
+**German market:** confirmed — product made available in Germany, so MPDG applies alongside MDR.
+**Answer:** No. For the DoC specifically, MPDG § 8(1) expressly permits **German *or* English** — English alone is compliant. Your distributor is over-applying the rule.
+
+The relevant words of § 8(1) are that the manufacturer must make the EU Declaration of Conformity under Art. 19(1) MDR available *&quot;in deutscher oder in englischer Sprache&quot;*. That is a disjunction, and it is the only language provision in MPDG that offers a choice.
+
+| Item | MDR requires | Germany adds (MPDG) | Basis |
+|---|---|---|---|
+| EU Declaration of Conformity | Art. 19(1); translation into languages required by member states where device is made available `[verify]` | German **or English** — no obligation to translate | MPDG § 8(1) `[verified]` |
+| Information for users and patients (IFU, labelling) | not carried here | **German**, and it is a *condition of supply* — the device may only be handed over if this is met | MPDG § 8(2) sent. 1 `[verified]` |
+| Same, where recipients are exclusively professional users | not carried here | English or another easily understood language, but only in a *justified case* (*begründeter Fall*) **and** exclusively professional users **and** safety-related information still in German or the user&apos;s language — all three, cumulatively | MPDG § 8(2) sent. 2 `[verified]` |
+| Implant information under Art. 18(1) MDR, if your device is implantable | not carried here | **German**, no professional-user exception | MPDG § 8(3) `[verified]` |
+| Field Safety Notice, if you ever take an FSCA in Germany | Art. 89(8) `[verify]` | Must be **written in German** | MPDG § 73(1) `[verified]` |
+
+**Where your distributor has a point:** their blanket claim is wrong for the DoC, but right for the user-facing information. If your German IFU/labelling is currently English-only, that is the actual exposure — § 8(2) makes German a precondition of handing the product over, not a formality. Whether the professional-user exception rescues you turns on all three conditions holding at once; for a Class IIa device supplied to lay users it will not.
+
+**What would change this:** nothing on the DoC — § 8(1) is unconditional as to class, risk, and user type. On the rest: whether your device is implantable (pulls in § 8(3)), and whether its information is *exclusively* for professional users (the only route into the § 8(2) exception).
+
+One practical note that is commercial rather than legal: a distributor may want a German DoC for their own onward-supply paperwork or customer expectations. That is a contractual matter between you and them, not a requirement of German law, and worth separating in the conversation.
+
+## Limits
+
+This covers MPDG §§ 4, 8 and 73 only, retrieved verbatim from gesetze-im-internet on 2026-09-10. It does **not** cover the rest of MPDG, MDR or IVDR themselves, MDCG guidance, BfArM practice, or any other member state&apos;s implementing law — an obligation here is German and says nothing about France, Italy or elsewhere, and your other markets will each have their own language rules. A first-pass aid for spotting German-specific duties, not legal advice, and not a substitute for a regulatory professional or a Fachanwalt für Medizinrecht.</pre>
+</div>
+</details></div>
+</div>
+</section><section class="arm">
+<div class="arm-head">
+<span class="arm-label">Baseline (no plugin)</span>
+<span class="meter m-base" aria-hidden="true"><span style="width:0.0%"></span></span>
+<span class="num">0%</span>
+<span class="muted num">0% of runs perfect</span>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 1</span>
+<span class="meter m-base" aria-hidden="true"><span style="width:0.0%"></span></span>
+<span class="num">0%</span>
+<span class="muted num">4 turns · $0.21 · 04:38:54 UTC</span>
+</div>
+
+<div class="graders"><details class="grader" open>
+<summary><span class="chip chip-fail">✗ fail</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: FAIL FAIL FAIL</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✗ ✗ ✗</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">Web search is blocked in this session, so this is from knowledge of the MDR text — I&apos;ve flagged the one point you should verify against the current German national law.
+
+## Short answer
+
+**Yes for the DoC — but no, not &quot;everything.&quot;** Your distributor is right about the Declaration of Conformity and overreaching on the rest.
+
+## The DoC specifically
+
+MDR (EU) 2017/745, **Article 19(1)**, last sentence:
+
+&gt; &quot;It shall contain, as a minimum, the information set out in Annex IV and **shall be translated into an official Union language or languages required by the Member State(s) in which the device is made available**.&quot;
+
+So the DoC language isn&apos;t your choice — it&apos;s set by each destination Member State. Germany requires German for medical device information under the MPDG (Medizinprodukterecht-Durchführungsgesetz), so a German DoC is the defensible position. English-only for the German market is not.
+
+Two practical notes:
+
+- **Make it bilingual, one document.** A two-column EN/DE DoC keeps a single version-controlled artifact. The most common audit finding here isn&apos;t a missing translation — it&apos;s a German DoC that&apos;s a revision behind the English one after a scope or standards change. Article 19(1) also requires you to *continuously update* the DoC, and that obligation applies to every language version.
+- **You own the translation, not the distributor.** Article 16(2) lets a distributor translate the *information supplied with the device* (IFU, labelling) without becoming a manufacturer — but only if they meet the Article 16(3)/(4) conditions (QMS covering the translation, 28 days&apos; advance notice to you and the competent authority). The DoC isn&apos;t &quot;information supplied with the device&quot; at all, so that carve-out doesn&apos;t apply. Keep the German DoC as your document, issued and signed by you.
+
+## Where your distributor is overreaching
+
+| Document | German required? |
+|---|---|
+| Label, IFU, packaging | **Yes** — Annex I §23.1(f) leaves language to the Member State; Germany requires German |
+| EU Declaration of Conformity | **Yes** — Art. 19(1) |
+| Technical documentation (Annexes II/III) | **No** — English is standard and agreed with your notified body |
+| Clinical evaluation report, risk file, PMS/PSUR | **No** — these are tech doc |
+| SSCP | **N/A** — Art. 32 only applies to implantable and Class III |
+
+The one caveat on tech doc: **Article 10(14)** says that on a reasoned request from a competent authority, you must provide the documentation demonstrating conformity &quot;in an official Union language determined by the Member State concerned.&quot; So BfArM or the ZLG *could* ask for German. That&apos;s a reactive, on-request obligation — it is not a reason to pre-translate your technical file, and no one should let a distributor turn it into one.
+
+Worth checking whether the distributor&apos;s demand is actually a regulatory reading or a commercial/liability-comfort ask dressed up as one. Under Article 14(2)(a) their verification duty is just that a DoC *has been drawn up* — they aren&apos;t the arbiter of your documentation set.
+
+## What I&apos;d do
+
+1. Issue a bilingual EN/DE DoC now — it&apos;s a one-page Annex IV document, cheaper to translate than to argue about.
+2. Add the German version to your change-control so it re-issues whenever the English does.
+3. Confirm your German IFU and labelling are complete (that&apos;s the requirement with real enforcement exposure).
+4. Push back in writing on the technical documentation, citing Art. 10(14) as request-based.
+
+**One thing to verify:** the exact MPDG provision setting German as the required language — I believe it&apos;s the §8 *Sprachenregelungen* area, but I couldn&apos;t confirm the section number or its precise scope for the DoC without web access. Have your RA lead or German regulatory counsel check the current MPDG text and the Commission&apos;s Member State language-requirements overview. Note the MPDG has a narrow allowance for English IFUs for professional-user-only devices — if your Class IIa device is professional-use-only, that may be worth checking too, though it wouldn&apos;t extend to the DoC.</pre>
+</div>
+</details></div>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 2</span>
+<span class="meter m-base" aria-hidden="true"><span style="width:0.0%"></span></span>
+<span class="num">0%</span>
+<span class="muted num">4 turns · $0.10 · 04:40:09 UTC</span>
+</div>
+<div class="run-error"><span class="chip chip-fail">✗ run error</span> <span class="explanation">exit 1: API Error: Repeated 529 Overloaded errors. The API is at capacity — this is usually temporary. Try again in a moment. If it persists, check https://status.claude.com.</span></div>
+<div class="graders"><details class="grader" open>
+<summary><span class="chip chip-fail">✗ fail</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: FAIL FAIL FAIL</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✗ ✗ ✗</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">API Error: Repeated 529 Overloaded errors. The API is at capacity — this is usually temporary. Try again in a moment. If it persists, check https://status.claude.com.</pre>
+</div>
+</details></div>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 3</span>
+<span class="meter m-base" aria-hidden="true"><span style="width:0.0%"></span></span>
+<span class="num">0%</span>
+<span class="muted num">4 turns · $0.21 · 04:41:02 UTC</span>
+</div>
+
+<div class="graders"><details class="grader" open>
+<summary><span class="chip chip-fail">✗ fail</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: FAIL FAIL FAIL</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✗ ✗ ✗</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">Short answer: not because &quot;everything must be translated&quot; — that&apos;s too broad — but Germany is one of the markets where you should just do it. Here&apos;s the actual legal chain.
+
+## What the MDR says
+
+Article 19(1) MDR, last sentence: the EU declaration of conformity &quot;shall be translated into an official Union language or languages **required by the Member State(s) in which the device is made available on the market**.&quot;
+
+So the MDR itself doesn&apos;t mandate translation. It delegates the question to each Member State. That means the answer is per-market, and for Germany it lives in the **MPDG** (Medizinprodukterecht-Durchführungsgesetz), in its language provision (Sprachenanforderungen — around § 8; verify the current section numbering, I can&apos;t browse from this session to confirm the cite).
+
+My understanding of the German position is that the explicit German-language mandate targets the Annex I Section 23 information — label, IFU, safety information — and that German authorities accept an English DoC. But that is exactly the point you should have someone confirm against the current MPDG text or ask your Benannte Stelle / the competent Land authority, rather than take from me, because it&apos;s a national-law detail and the consequence of being wrong is a market-access argument with your distributor.
+
+## Where your distributor is wrong, and where they have a point
+
+Wrong: &quot;everything has to be translated.&quot; Technical documentation, your QMS, your clinical evaluation, your PMS plan — none of that goes into German for the German market. Authorities can request documentation and will generally accept English (and can require German if they insist, but that&apos;s on request, not a placing-on-the-market condition).
+
+Right in substance, though: under Article 14(2)(b) a distributor must **verify** that the EU DoC has been drawn up before making the device available. A German distributor who can&apos;t read the document has a plausible reason to want one they can. Add German public procurement and hospital tenders, which routinely demand German-language documentation regardless of what the regulation requires, and you&apos;ll meet this request repeatedly.
+
+## What I&apos;d actually do
+
+Translate it. Annex IV is roughly ten data fields on one page — manufacturer name and SRN, Basic UDI-DI, device description, risk class, conformity assessment route, notified body name and NB number, the standards applied, place and date, signatory. The translation cost is trivial against the friction of arguing about it in every tender.
+
+Practical handling:
+- Keep **English as the master version** and mark the German one &quot;Übersetzung der Originalfassung&quot; / translation of the original.
+- Control it as a QMS document (ISO 13485 § 4.2.4). Article 19(1) requires the DoC to be **continuously updated** — every update to the master must trigger the translation, or you&apos;ll ship a German DoC citing a superseded NB certificate.
+- Bilingual single-document format (EN/DE in parallel columns) is common and avoids version drift between two files entirely. I&apos;d recommend that over separate files.
+
+## What genuinely must be in German
+
+Don&apos;t let the DoC question distract from the things that are hard requirements: label, IFU, and safety information under Annex I Section 23, plus field safety notices to German users, and correspondence with BfArM. Note that Germany permits English IFU for some devices supplied exclusively to professional users under conditions — but if your Class IIa device reaches lay users at all, that door is closed, and most manufacturers translate anyway.
+
+Finally: run this same question for your other markets rather than settling it once. Several Member States do require a national-language DoC, and the set isn&apos;t the same as the set requiring national-language IFU. A small per-market language matrix — DoC / label / IFU / FSN columns — is the artifact you want, and your distributors are the cheapest source for filling it in.
+
+I&apos;ve given you the MDR chain with confidence; treat the specific German MPDG conclusion as needing one confirmation step before you rely on it in writing to the distributor.</pre>
+</div>
+</details></div>
+</div>
+</section>
+</details>
+<details class="section" open>
+<summary>Prompt</summary>
+<div class="md"><p>We're a Dutch manufacturer, Class IIa device, selling into Germany among other markets.
+Our EU Declaration of Conformity is in English only. Our distributor says everything
+has to be translated into German for the German market. Do we need to translate the
+Declaration of Conformity?</p>
+</div>
+</details>
+<details class="section" open>
+<summary>Graders — what "good" means for this case</summary>
+<div class="grader-def">
+<div class="grader-def-head"><span class="grader-name">criteria</span><span class="badge">llm</span></div>
+<div class="md"><p>MPDG § 8(1): the manufacturer must make the EU Declaration of Conformity available "in
+deutscher oder in englischer Sprache" — German OR English. English alone is compliant.
+The distributor is wrong about the DoC specifically.</p>
+<p>PASS requires:
+(1) The answer is NO, the Declaration of Conformity does not need translating —
+    English alone satisfies § 8(1).
+(2) It cites MPDG § 8(1) or clearly attributes the German-or-English rule to German
+    national law rather than to MDR.
+(3) It distinguishes the DoC from information for users and patients, which under
+    § 8(2) does default to German. Saying "the DoC is fine in English, but your user
+    information is a different question" is the ideal answer.</p>
+<p>FAIL if it says the DoC must be translated into German. FAIL if it agrees with the
+distributor wholesale, or answers "everything must be in German" — that is the
+over-application this case exists to catch, and it is the more common error.</p>
+<p>Not required: naming other markets, or MDR Art. 19 itself.</p>
+</div>
+</div>
+</details>
+</article>
+<article class="case" id="case-2">
+<div class="case-head">
+<h2>professional-user-exception</h2>
+<span class="muted mono">evals/02-professional-user-exception</span>
+<span class="spacer"></span>
+
+<span class="delta delta-pos">↑ +66.7 pts</span>
+<span class="muted">with plugin</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:100.0%"></span><i class="tick" style="left:100.0%"></i></span>
+<span class="num case-score">100%</span>
+</div>
+
+<details class="section" open>
+<summary>Results</summary>
+<section class="arm">
+<div class="arm-head">
+<span class="arm-label">With plugin</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">100% of runs perfect</span>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 1</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">4 turns · $0.15 · 04:42:30 UTC</span>
+</div>
+
+<div class="graders"><details class="grader">
+<summary><span class="chip chip-pass">✓ pass</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: PASS PASS PASS</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✓ ✓ ✓</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">## Can the IFU for a lab-only benchtop analyser be English-only in Germany?
+
+**German market:** confirmed — sold to hospital laboratories in Germany
+**Answer:** No, not English-*only*. You can put the bulk of the IFU in English under the § 8(2) sentence 2 exception, but the safety-related information must still be provided in German (or the user&apos;s language), and you must be able to justify the case.
+
+| Item | MDR/IVDR requires | Germany adds | Basis |
+|---|---|---|---|
+| Instructions for use (information for users) | not carried here | German by default — and it is a **condition of supply**: products may only be handed over if German information is provided | MPDG § 8(2) sentence 1 `[verified]` |
+| Same, where users are exclusively professionals | not carried here | English (or another easily understood language) permitted, but only **in begründeten Fällen** | MPDG § 8(2) sentence 2 `[verified]` |
+| Safety-related information within that IFU | not carried here | **German** (or the user&apos;s language) even when the exception applies | MPDG § 8(2) sentence 2, final clause `[verified]` |
+| EU Declaration of Conformity | not carried here | German **or English** — English alone is fine, no translation needed | MPDG § 8(1) `[verified]` |
+
+The exception is cumulative — three conditions, all required:
+
+1. **Justified case** (*begründeter Fall*) — MPDG does not define this, and I can&apos;t tell you how BfArM reads it. &quot;Our users read English&quot; is the argument you&apos;d have to make and document; it is not automatic.
+2. **Exclusively professional users** — your facts look clean here: hospital labs only, never patients, never home users. Note this is about who the *information* is intended for, so keep it that way in your IFU, labelling and marketing; a patient-facing or self-test variant would break it.
+3. **Safety-related information also in German** — this is the one that defeats &quot;English only&quot;. Warnings, cautions, contraindications, biological/electrical/mechanical hazard information, disposal of infectious material, and the like need German alongside. MPDG doesn&apos;t enumerate what counts as *sicherheitsbezogen*, so scope that conservatively with your regulatory function.
+
+Practically: a German IFU is the low-risk route. If you want the English-language IFU, the shippable shape is English IFU + German safety content (either bilingual in the safety sections or a German safety supplement in the box), plus a documented justification in your technical file.
+
+On the competitor: what another manufacturer ships is not a legal basis, and you can&apos;t see their justification file or whether they carry German safety content you haven&apos;t noticed. Don&apos;t build your position on it.
+
+**What would change this:** any patient- or lay-user route to the device (self-test, near-patient use outside a lab, patient-facing outputs) removes the exception entirely and the whole IFU must be German. Conversely, nothing here obliges you to translate the DoC.
+
+## Limits
+
+&gt; This covers MPDG §§ 4, 8 and 73 only, retrieved verbatim from gesetze-im-internet on 2026-09-10. It does **not** cover the rest of MPDG, MDR or IVDR themselves (including IVDR Annex I labelling requirements, which apply independently), MDCG guidance, BfArM practice, or any other member state&apos;s implementing law — an obligation here is German and says nothing about France, Italy or elsewhere. A first-pass aid for spotting German-specific duties, not legal advice, and not a substitute for a regulatory professional or a Fachanwalt für Medizinrecht.
+
+Two adjacent German duties worth knowing about since you&apos;re placing an IVD on this market: if you ever run a field safety corrective action in Germany, the Field Safety Notice must be written in German (§ 73(1)) — so an English-only documentation set will need German capability eventually anyway. § 4&apos;s DMIDS notifications don&apos;t appear to touch you (they cover reprocessing and class III custom-made implantables).</pre>
+</div>
+</details></div>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 2</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">4 turns · $0.14 · 04:43:05 UTC</span>
+</div>
+
+<div class="graders"><details class="grader">
+<summary><span class="chip chip-pass">✓ pass</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: PASS PASS PASS</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✓ ✓ ✓</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">## Can we ship the IFU in English only? (benchtop IVD analyser, German hospital labs)
+
+**German market:** confirmed — sold to hospital laboratories in Germany, so MPDG applies.
+**Answer:** Almost, but not as stated — English-only is available to you under the professional-user exception, *except* that the safety-related information must still be provided in German (or the user&apos;s language). So the IFU is a mixed-language document, not an English-only one.
+
+### The rule, § 8(2)
+
+Sentence 1 is the default: products may only be handed over to users and patients in Germany if the information intended for them is provided **in German**. That is a condition of supply, not a labelling nicety.
+
+Sentence 2 gives your exception, and it is **cumulative** — all three must hold:
+
+| Condition | Your situation |
+|---|---|
+| A justified case (*begründeter Fall*) | You need to be able to state one; &quot;all our users are lab professionals&quot; is the shape of the argument, but it is your file to build. |
+| Information intended **exclusively** for professional users | Holds, on your facts — hospital labs only, never patients or home users. |
+| **Safety-related information also in German** or the user&apos;s language | This is the one that defeats &quot;English only&quot;. |
+
+### MDR/IVDR vs. the German delta
+
+| Item | MDR/IVDR requires | Germany adds | Basis |
+|---|---|---|---|
+| Instructions for use, professional users | Not carried here | German by default; English permitted only in a justified case, for exclusively professional users, **and** with safety-related information still in German | MPDG § 8(2) `[verified]` |
+| Safety-related information in the IFU | Not carried here | German (or the user&apos;s language) regardless of the professional-user exception | MPDG § 8(2) sentence 2, final clause `[verified]` |
+| EU Declaration of Conformity | Not carried here | German **or** English — English alone is fine; translating it is over-application | MPDG § 8(1), which names IVDR Art. 17(1) explicitly `[verified]` |
+
+**Practical shape:** an English IFU with the safety-related content — warnings, precautions, contraindications, biohazard and handling cautions, anything whose misreading creates risk — rendered in German as well. Where the line falls between &quot;safety-related&quot; and merely instructional is a judgment call the Act does not draw for you, and it is the part worth having a regulatory professional sign off on. Erring wide costs translation; erring narrow puts the supply condition in § 8(2) sentence 1 in play.
+
+**What would change this:** if any of the information is intended for anyone other than professional users, or reaches patients, the exception falls away entirely and sentence 1&apos;s German requirement applies to all of it.
+
+On the competitor: what another manufacturer does is not a legal basis, and you cannot see their file. They may have a justified case documented and German safety sections you have not noticed, or they may be non-compliant and unchallenged. Either way it does not transfer.
+
+## Limits
+
+This covers MPDG §§ 4, 8 and 73 only, retrieved verbatim from gesetze-im-internet on 2026-09-10. It does **not** cover the rest of MPDG, MDR or IVDR themselves, MDCG guidance, BfArM practice, or any other member state&apos;s implementing law — an obligation here is German and says nothing about France, Italy or elsewhere. A first-pass aid for spotting German-specific duties, not legal advice, and not a substitute for a regulatory professional or a Fachanwalt für Medizinrecht.</pre>
+</div>
+</details></div>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 3</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">4 turns · $0.15 · 04:43:36 UTC</span>
+</div>
+
+<div class="graders"><details class="grader">
+<summary><span class="chip chip-pass">✓ pass</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: PASS PASS PASS</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✓ ✓ ✓</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">## Can a benchtop IVD analyser for German hospital labs ship IFU in English only?
+
+**German market:** confirmed — sold in Germany, so MPDG applies.
+**Answer:** No, not English *only*. English IFU is available to you under the professional-user exception, but the **safety-related information must still be in German** (or the user&apos;s language), and you have to be able to justify the case.
+
+| Item | MDR/IVDR requires | Germany adds | Basis |
+|---|---|---|---|
+| EU Declaration of Conformity | not carried here | German **or English** — English alone is fine, no translation needed | MPDG § 8(1) `[verified]` |
+| Information for users/patients (IFU, labelling) | not carried here | **German** by default, and it is a *condition of supply* — the device may only be handed over if met | MPDG § 8(2) sentence 1 `[verified]` |
+| Same, where use is exclusively professional | — | English (or another easily understood language) permitted, but only *in begründeten Fällen* | MPDG § 8(2) sentence 2 `[verified]` |
+| Safety-related information, even under that exception | — | **German** or the user&apos;s language — the exception does not reach it | MPDG § 8(2) sentence 2, final clause `[verified]` |
+
+### The exception is cumulative
+
+§ 8(2) sentence 2 has three conditions and you need **all three**:
+
+1. a justified case (*begründeter Fall*),
+2. the information is **exclusively** for professional users, and
+3. safety-related information is **also** provided in German or the user&apos;s language.
+
+Miss any one and sentence 1 snaps back: full German IFU, as a condition of supply.
+
+Your facts get you a long way on (2) — benchtop, hospital laboratories only, never patients or home users. That is squarely the situation the exception was drafted for. But (3) is not waivable, so the realistic shape of a compliant product is **English IFU with the safety-related content in German**, not an English-only document. What exactly counts as &quot;safety-related&quot; for an analyser — warnings, cautions, biohazard and disposal handling, contraindications and limitations, failure/error handling — is a judgement you should make explicitly and document; the statute does not enumerate it, so that scoping is `[verify]` territory with a regulatory professional.
+
+On (1), *begründeter Fall* is also undefined in the text I carry. Treat it as something you write down and keep in the technical documentation rather than something that follows automatically from the user group.
+
+### On the competitor
+
+Set that aside as a basis. Another manufacturer&apos;s practice is not a legal permission, you can&apos;t see whether they&apos;re actually English-only or English-plus-German-safety-content, and I won&apos;t speculate on how BfArM or a German court would treat either of you.
+
+**What would change this:** if any accompanying information is intended for anyone other than professional users, the exception fails entirely and everything goes to German. (§ 8(3)&apos;s German-only rule for implant information doesn&apos;t touch you — a benchtop analyser is not implantable.)
+
+## Limits
+
+This covers MPDG §§ 4, 8 and 73 only, retrieved verbatim from gesetze-im-internet on 2026-09-10. It does **not** cover the rest of MPDG, MDR or IVDR themselves, MDCG guidance, BfArM practice, or any other member state&apos;s implementing law — an obligation here is German and says nothing about France, Italy or elsewhere. A first-pass aid for spotting German-specific duties, not legal advice, and not a substitute for a regulatory professional or a Fachanwalt für Medizinrecht.
+
+One thing worth raising even though you didn&apos;t ask: if you ever run a field safety corrective action in Germany, **the Field Safety Notice must be in German** (§ 73(1) `[verified]`) regardless of your IFU language. Worth knowing before you build an English-only documentation pipeline.</pre>
+</div>
+</details></div>
+</div>
+</section><section class="arm">
+<div class="arm-head">
+<span class="arm-label">Baseline (no plugin)</span>
+<span class="meter m-base" aria-hidden="true"><span style="width:33.3%"></span></span>
+<span class="num">33.3%</span>
+<span class="muted num">33.3% of runs perfect</span>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 1</span>
+<span class="meter m-base" aria-hidden="true"><span style="width:0.0%"></span></span>
+<span class="num">0%</span>
+<span class="muted num">4 turns · $0.20 · 04:44:12 UTC</span>
+</div>
+
+<div class="graders"><details class="grader" open>
+<summary><span class="chip chip-fail">✗ fail</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: FAIL FAIL FAIL</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✗ ✗ ✗</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">I couldn&apos;t verify this against current statutory text — web access is blocked in this session — so treat the section numbers below as pointers to check, not citations to rely on. And I&apos;m not a lawyer; this needs sign-off from German regulatory counsel before you ship.
+
+## Short answer
+
+Probably yes, but not automatically, and not for *all* the documentation. Germany has a professional-user exception, but it comes with conditions and carve-outs that people routinely miss.
+
+## How the rule is structured
+
+Language isn&apos;t set at EU level. MDR Art. 10(11) and IVDR Art. 10(10) both say the manufacturer must supply the Annex I information in the official Union language(s) **determined by the Member State where the device is made available**. So the whole question is German national law.
+
+In Germany that&apos;s the MPDG (§ 8, *Sprachenanforderungen*, in the version I know — confirm the current numbering and wording). The structure is:
+
+- **Default:** label and instructions for use in German.
+- **Exception:** for devices supplied exclusively to professional or commercial users — not laypersons — the information may be in English (or another language readily understood by the user), subject to conditions.
+
+A benchtop analyser sold only to hospital labs is squarely the fact pattern that exception was written for.
+
+## The conditions that actually bite
+
+1. **&quot;Exclusively professional&quot; has to be true in practice, not just in your intended-purpose statement.** One configuration that ends up on a ward, and if it&apos;s an IVD you&apos;re into *near-patient testing* territory — IVDR treats self-testing and near-patient testing devices differently and those need the local language. Your distribution controls need to hold the line you&apos;re claiming.
+
+2. **Safety-relevant information is the usual carve-out.** Check whether the exception covers warnings, safety notices, and label safety text, or only the body of the IFU. This is where I&apos;d expect German to still be required, and where the risk of getting it wrong is highest.
+
+3. **Customer acceptance is typically part of the exception.** The German tradition here (going back to MPG § 11) was that the professional user must be able to work safely with the non-German version. Get documented agreement from each purchasing lab and keep it — that&apos;s your evidence file if a Land authority asks.
+
+4. **Field safety notices are a separate obligation.** Even with an English IFU, plan on German for FSNs and vigilance communications to users. Same for the IVDR Art. 29 summary of safety and performance if your class requires one.
+
+5. **Authority-facing documents are a separate question again.** Technical documentation, DoC, and what BfArM or the Länder authorities can demand on request follow their own language rules — don&apos;t assume the IFU exception extends there.
+
+## The commercial constraint that isn&apos;t in the law
+
+German hospitals operate under MPBetreibV and general occupational-safety duties: the *operator* must ensure staff can use the device safely, and employee-facing operating instructions are generally expected in German. That&apos;s their obligation, not yours — but it means public tenders frequently specify German documentation regardless of what the MPDG permits. English-only can be legal and still lose you bids. Worth checking a few recent tender specs before you commit.
+
+## On the competitor
+
+Not a defence, and not evidence. They may be relying on the same exception with documented customer agreements you can&apos;t see, they may be shipping German safety sections you haven&apos;t noticed, or they may simply be non-compliant and unenforced. Market-conduct copying is a weak basis for a regulatory decision.
+
+## What I&apos;d do
+
+Ship English-only IFU, but: German for label safety text and warnings, German for FSNs, documented customer acceptance on file, and an explicit statement that the device is for professional laboratory use only — with distribution controls that make that real. Then have German counsel confirm the current § 8 wording, because the carve-out scope is the part I can&apos;t verify for you here.
+
+If you can enable web access, I&apos;ll pull the current MPDG text and the relevant BfArM guidance and tighten this up.</pre>
+</div>
+</details></div>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 2</span>
+<span class="meter m-base" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">4 turns · $0.27 · 04:45:33 UTC</span>
+</div>
+
+<div class="graders"><details class="grader">
+<summary><span class="chip chip-pass">✓ pass</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: PASS PASS FAIL</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✓ ✓ ✗</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">I tried to pull the current text of § 9 MPDG to quote it exactly, but web access is denied in this session, so the below is from knowledge. The structure of the rule I&apos;m confident about; the precise wording of the conditions is what you should have RA/counsel confirm against the statute before you commit.
+
+## Short answer
+
+Probably yes — Germany is one of the more permissive member states here and has an explicit professional-user carve-out — but &quot;English only, full stop&quot; is a stronger claim than the exception actually supports. It&apos;s conditional, and the conditions have contractual and commercial consequences you need to plan for.
+
+## The legal chain
+
+**1. The EU regulation doesn&apos;t decide this.** Assuming your analyser is an IVD instrument (a benchtop analyser for hospital labs almost certainly is — IVDR 2017/746, likely Class A as an instrument intended specifically for IVD procedures), Article 10(11) IVDR says the Annex I §20 information must be in an official Union language *determined by the member state where the device is made available*. So there is no EU-level answer. It is a per-country question, and Germany&apos;s answer does not travel.
+
+**2. Germany&apos;s answer is § 9 MPDG** (Medizinprodukterecht-Durchführungsgesetz). Default rule: labelling and IFU in German. Exception: for devices supplied **exclusively to professional users** (*berufsmäßige Anwender*), the instructions for use may be in English.
+
+**3. The exception carries conditions.** As I recall it, the two that matter to you are:
+
+- **User agreement.** The professional user has to accept English documentation. This is not automatic — it&apos;s something you have to obtain and be able to evidence, which in practice means a clause in every supply/purchase contract.
+- **Safety-relevant information.** There is a requirement in this area that information material to safety remains in German. Whether that attaches to the current § 9 or is a carry-over from the old § 11(2) MPG is exactly the point I couldn&apos;t verify — check it, because it determines whether you need a German safety supplement.
+
+Also note the carve-out is for the **IFU**. Don&apos;t assume it extends identically to the label on the device and packaging. Lean on EN ISO 15223-1 symbols there to minimise the exposure.
+
+**4. Your fact pattern helps.** Self-testing and near-patient-testing IVDs are firmly outside any English exception. Hospital central lab, professional users only, no patients — you&apos;re in the part of the space where the exception is meant to apply.
+
+## Where &quot;our competitor does this&quot; doesn&apos;t get you
+
+It&apos;s not a defence, and you can&apos;t see the half of their compliance that isn&apos;t visible from the outside. They may well have German consent clauses in every contract, or ship a German safety annex you haven&apos;t seen, or simply not have been challenged — German market surveillance sits with the *Länder* authorities and is largely complaint-driven, so an absence of enforcement tells you very little. Copying the visible artefact without the invisible scaffolding is the actual risk here.
+
+## The non-regulatory constraints, which will probably bind harder
+
+Even where the law permits English, three things push toward German:
+
+- **MPBetreibV** puts obligations on the *operator* — the hospital must have the IFU available to users and instruct staff on the device. Your customer&apos;s compliance problem becomes your sales problem.
+- **Employer occupational-safety duties** (ArbSchG/BetrSichV) require instruction in a language staff actually understand. MTLA/MTA training is conducted in German; technical-English fluency across a lab&apos;s full shift roster is not a safe assumption.
+- **Procurement.** German public hospital tenders routinely require German-language documentation as an eligibility or award criterion, entirely independent of what MPDG permits. This is the one that most often kills English-only in practice.
+
+And a hospital that is asked to sign an English-acceptance clause may simply decline.
+
+## What I&apos;d recommend
+
+The middle path costs a fraction of a full translation and defeats every objection above:
+
+1. **Full IFU in English** — the bulk of the document, the part that&apos;s expensive to translate and maintain across revisions.
+2. **A German safety short-form** — intended purpose, warnings and precautions, limitations, error/alarm handling, residual risks, vigilance contact. This satisfies the strictest reading of the safety-information requirement and is what a market surveillance authority would ask for first.
+3. **A German-language acceptance clause** in your standard supply contract, retained as evidence of the § 9 condition.
+4. **German for post-market communications regardless** — Field Safety Notices to German users should be in German; BfArM will expect that.
+
+## Two things to verify before you lock this in
+
+- **Confirm the exact § 9 conditions** against the statute. The consent mechanics and the safety-information point are where the actual obligations live, and I&apos;m working from memory on the wording.
+- **Confirm you can demonstrate &quot;exclusively.&quot;** The exception hangs on that word. Your intended purpose statement must say professional use only, and your distribution controls need to make onward resale to non-professional settings implausible — not just unintended.
+
+Finally: this analysis is Germany-only. If the roadmap includes other EU markets, redo it per country before assuming the English-only IFU ports — several member states are considerably stricter, including for professional-use devices.</pre>
+</div>
+</details></div>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 3</span>
+<span class="meter m-base" aria-hidden="true"><span style="width:0.0%"></span></span>
+<span class="num">0%</span>
+<span class="muted num">5 turns · $0.25 · 04:47:20 UTC</span>
+</div>
+
+<div class="graders"><details class="grader" open>
+<summary><span class="chip chip-fail">✗ fail</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: FAIL FAIL FAIL</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✗ ✗ ✗</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">I tried to pull the current text of § 9 MPDG and the IVDR language article, but WebSearch and WebFetch are both blocked in this session (&quot;don&apos;t ask&quot; permission mode). So the below is from memory and flagged accordingly — the one provision you must read in its current wording before deciding is **§ 9 MPDG**. If you re-enable web access I&apos;ll verify it directly.
+
+## Short answer
+
+Probably yes for the *instructions for use* — but &quot;English only&quot; for the whole information package is a different and riskier claim, and your competitor&apos;s practice is not a legal basis.
+
+## The structure of the rule
+
+IVDR (Regulation (EU) 2017/746) Art. 10(10) does **not** set a language. It says the information required by Annex I Section 20 must be in an official Union language **determined by the Member State where the device is made available**. So this is entirely a German national question.
+
+Germany answers it in **§ 9 MPDG**. The default is German. There is an exception for devices intended exclusively for use by professional users (*berufsmäßige Anwender*), which is what a hospital-lab benchtop analyser is. Two things about that exception I could not verify and you should check in the current statutory text:
+
+1. **Whether it is conditioned on user agreement.** The predecessor provision (§ 11(2) MPG) allowed a non-German IFU for professional-use devices only where the user consented. If that condition survived into § 9 MPDG, &quot;we ship English by default&quot; is not automatically compliant — you need the customer&apos;s agreement, which is contractually manageable but changes your process.
+2. **What the exception covers.** My recollection is that it covers the *Gebrauchsanweisung* and not necessarily everything else.
+
+## The parts that likely still need German
+
+- **Labelling on the device and packaging** is legally distinct from the IFU. The professional-use exception is typically narrower than &quot;all Annex I Section 20 information.&quot; Don&apos;t assume one covers the other.
+- **Safety-relevant information** — warnings, residual-risk statements — is the usual carve-out even where the body of the IFU may be English.
+- **Safety data sheets**, if the analyser ships with or is sold alongside any hazardous reagents, calibrators or controls. REACH Art. 31 requires the SDS in the language of the Member State — German, no professional-user exception. This is independent of IVDR and is a hard requirement.
+- **Summary of Safety and Performance**, if any part of your range is class C or D. Its language is separately Member-State-determined; check it separately rather than assuming it follows the IFU.
+
+## Things that break the &quot;professional users only&quot; premise
+
+The exception rests on *exclusively* professional use, so:
+
+- Any near-patient/POCT variant, or any configuration used by ward staff rather than lab staff, falls outside it.
+- Accompanying consumables, reagents and companion software each carry their own IFU. If any of those are also sold standalone into a broader market, they don&apos;t inherit the analyser&apos;s classification.
+- &quot;Sold only in Germany&quot; is a commercial fact, not a regulatory boundary. Devices circulate freely; if a German distributor or customer moves the instrument to another Member State, that state&apos;s language rule applies, and most require the national language. Worth deciding now whether you rely on this exception in one market or build a multilingual IFU you&apos;ll need anyway on first export.
+
+## Two non-legal points
+
+**The competitor is not evidence.** They may have customer consent in their contracts, may ship German labelling with an English IFU, or may simply be non-compliant and un-enforced. Don&apos;t reverse-engineer your regulatory position from a competitor&apos;s artefacts.
+
+**Procurement will likely ask for German regardless.** German hospital tenders — especially public ones — routinely require German documentation, and the operator has its own duties under MPBetreibV and occupational-safety law (instructing staff in a language they understand). You can be lawfully English-only and still lose tenders over it. If the driver here is translation cost, the saving may not survive first contact with a tender.
+
+## What I&apos;d do
+
+Get a written confirmation from your German regulatory counsel or your notified body on the current § 9 MPDG wording, specifically: (a) does the professional-user exception require user consent, and (b) does it extend to labelling and safety information or only the IFU. That&apos;s a short, cheap question with a definitive answer, and it&apos;s the difference between a defensible position and an assumption.</pre>
+</div>
+</details></div>
+</div>
+</section>
+</details>
+<details class="section" open>
+<summary>Prompt</summary>
+<div class="md"><p>Our device is a benchtop analyser sold only to hospital laboratories in Germany — never
+to patients, never to home users. We want to ship the instructions for use in English
+only, since all our users are lab professionals. Our German competitor does this. Can
+we?</p>
+</div>
+</details>
+<details class="section" open>
+<summary>Graders — what "good" means for this case</summary>
+<div class="grader-def">
+<div class="grader-def-head"><span class="grader-name">criteria</span><span class="badge">llm</span></div>
+<div class="md"><p>MPDG § 8(2) sentence 2 permits English for information intended exclusively for
+professional users, but the exception is CUMULATIVE — three conditions, all required:
+a justified case (begründeter Fall), exclusively professional users, AND
+safety-related information still provided in German or the user's language.</p>
+<p>PASS requires:
+(1) It does NOT answer a flat yes. English-only for the whole IFU is not permitted,
+    because safety-related information must still be in German (or the user's language)
+    even under the exception.
+(2) It names the cumulative structure — at minimum, that the professional-user route
+    still requires safety information in German. Naming all three conditions is better
+    but not required.
+(3) It does NOT answer a flat no either. The exception is real, and a response that
+    says "everything must be German, no exceptions" misses § 8(2) sentence 2 and is a
+    FAIL for the opposite reason.</p>
+<p>The correct shape is: mostly yes for the professional content, but not for the
+safety-related parts, and only in a justified case.</p>
+<p>(4) The response must not treat "all our users are lab professionals" as itself
+    supplying the begründeter Fall. That collapses two of the three cumulative
+    conditions into one. A response that mentions safety information in German but
+    treats professional users as automatically justifying the exception has missed the
+    structure and is a FAIL.</p>
+<p>Ignore the competitor point; what a competitor does is not a legal basis, and the
+response need not address it.</p>
+</div>
+</div>
+</details>
+</article>
+<article class="case" id="case-3">
+<div class="case-head">
+<h2>not-german-market</h2>
+<span class="muted mono">evals/03-not-german-market</span>
+<span class="spacer"></span>
+<span class="flag">⚠ 4 runs errored</span>
+<span class="delta delta-zero">· 0.0 pts</span>
+<span class="muted">with plugin</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:0.0%"></span><i class="tick" style="left:100.0%"></i></span>
+<span class="num case-score">0%<span class="star" title="Includes runs that errored or hit the cost ceiling — see “How to read this report”">*</span></span>
+</div>
+
+<details class="section" open>
+<summary>Results</summary>
+<section class="arm">
+<div class="arm-head">
+<span class="arm-label">With plugin</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:0.0%"></span></span>
+<span class="num">0%</span>
+<span class="muted num">0% of runs perfect</span>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 1</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:0.0%"></span></span>
+<span class="num">0%</span>
+<span class="muted num">1 turns · $0.15 · 04:48:56 UTC</span>
+</div>
+
+<div class="graders"><details class="grader" open>
+<summary><span class="chip chip-fail">✗ fail</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: FAIL FAIL FAIL</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✗ ✗ ✗</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">Short answer: full Spanish and full Portuguese for the IFU (and the label), for both markets. No German obligations arise — the MPDG language regime only bites if the device is made available on the German market, which you&apos;ve excluded.
+
+## Where the obligation comes from
+
+MDR Art. 10(11) makes the manufacturer responsible for ensuring the device is accompanied by the Annex I §23 information &quot;in an official Union language(s) determined by the Member State in which the device is made available.&quot; The MDR itself doesn&apos;t pick the language — each Member State does, and both Spain and Portugal have picked their own.
+
+Two things that follow from that wording:
+
+- The trigger is **made available**, not &quot;manufactured&quot; or &quot;CE-marked.&quot; Two markets, two national language regimes, both applying in full.
+- An IFU is **mandatory** for your device. Annex I §23.1(d) only waives the IFU for Class I and IIa devices that can be used safely without one. Class IIb has no such waiver.
+
+## Spain
+
+Labelling and IFU must be **at least in Spanish (castellano)** for devices that reach the end user. This is the long-standing rule from RD 1591/2009, carried forward into the current instrument, **Real Decreto 192/2023, de 21 de marzo, sobre productos sanitarios**. &quot;At least&quot; means you can run multilingual IFU — Spanish plus others is fine; other languages without Spanish is not.
+
+Two wrinkles worth knowing:
+
+- **Professional-use carve-out.** Spanish law has historically allowed AEMPS some latitude for devices supplied exclusively to healthcare professionals and not reaching a patient/lay user. Don&apos;t build your labelling plan on it — it&apos;s discretionary, narrowly read, and if any part of your distribution chain puts the device in a patient&apos;s hands it evaporates. Confirm the exact current wording of the language article in RD 192/2023 with AEMPS before relying on it.
+- **Co-official languages.** Catalan, Galician, Basque and Valencian are not required for medical device IFU under state law. Catalonia&apos;s consumer code (Llei 22/2010) does impose Catalan labelling duties on products generally, and there&apos;s genuine friction over whether it reaches medical devices — but the practical market norm is Spanish-only, and this is a commercial/regional-enforcement question, not a condition of placing on the market.
+
+## Portugal
+
+**Portuguese**, on the same basis — the national MDR implementing decree (Decreto-Lei n.º 30/2023, which replaced the old DL 145/2009 regime) maintains the Portuguese-language requirement for labelling and IFU. Portugal has historically been somewhat more permissive than Spain about English IFU for strictly professional-use devices, but the same caution applies: treat that as something to confirm with INFARMED in writing for your specific device, not as a default.
+
+Brazilian Portuguese is not a substitute — use European Portuguese, and have it reviewed by a native reviewer with device terminology experience. Regulators do notice.
+
+## Practical scope of the translation
+
+Everything in Annex I §23.4 that applies to your device: intended purpose, indications, contraindications, warnings, precautions, residual risks, instructions for use and disposal, and the §23.2 label content. Symbols per EN ISO 15223-1 reduce the amount of running text but don&apos;t replace any of the required *statements* — a symbol only substitutes where the standard defines one.
+
+Adjacent items in the same language family, so you don&apos;t get caught out later:
+
+- **Field safety notices** must go out in the national language of each affected market — so you need a standing capability to produce Spanish and Portuguese FSNs quickly, not just at launch.
+- **Declaration of Conformity**: the MDR doesn&apos;t fix the language, but Member States may require a translation. Both AEMPS and INFARMED can ask; keep a translated DoC ready.
+- **If your Class IIb device is implantable**, add the Art. 18 implant card and patient information leaflet in the language of each Member State, plus an SSCP.
+- **Electronic IFU** under Reg. (EU) 2021/2226 is available for professional-use devices and could cut your print costs — but it does not relax the language rule, and you must still supply paper on request, free of charge, in the requested market&apos;s language.
+
+One flag on scope: if your distributors can move stock onward into other Member States, the language obligation follows the device. Worth pinning down in your distribution agreements before launch rather than after.
+
+This is general regulatory guidance rather than legal advice — I&apos;d get the two national-law article references confirmed by local regulatory counsel, since national implementing acts in both countries are recent and the professional-use carve-outs are exactly where the wording matters most.</pre>
+</div>
+</details></div>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 2</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:0.0%"></span></span>
+<span class="num">0%</span>
+<span class="muted num">1 turns · $0.14 · 04:50:06 UTC</span>
+</div>
+
+<div class="graders"><details class="grader" open>
+<summary><span class="chip chip-fail">✗ fail</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: FAIL FAIL FAIL</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✗ ✗ ✗</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">## The MDR baseline
+
+MDR Article 10(11) and Annex I §23.1(b)/(d) set the rule: the label and instructions for use must accompany the device in **an official Union language (or languages) determined by the Member State in which the device is made available to the user or patient**. The MDR itself doesn&apos;t name a language — it delegates that to each Member State, and essentially every Member State has exercised the option in favour of its own national language. Risk class doesn&apos;t change this; Class IIb gets no relief.
+
+So your obligation is driven purely by your two target markets.
+
+## Spain
+
+Castilian Spanish is required for the label and IFU of devices made available on the Spanish market. This sits in the national medical devices decree (Real Decreto 192/2023, which replaced RD 1591/2009 under the MDR) and is enforced by AEMPS.
+
+Two practical points:
+
+- **Professional-use-only devices are not automatically exempt.** Spain historically allowed some flexibility for information aimed solely at healthcare professionals, but the safe working assumption — and AEMPS&apos;s expectation in practice — is full Spanish IFU. If your device is strictly professional-use and you want to rely on any narrower reading, get it confirmed against the current decree text before you build the labelling plan around it.
+- **Co-official languages (Catalan, Galician, Basque) are not a medical-device requirement.** Spanish satisfies the national rule. Regional consumer-protection legislation can create pressure for co-official languages on consumer-facing products, but that&apos;s a commercial/consumer-law question, not an AEMPS market-access condition.
+
+## Portugal
+
+European Portuguese is required for the label and IFU, under the Portuguese medical devices regime implementing the MDR (Decreto-Lei n.º 29/2023), enforced by INFARMED. Brazilian Portuguese is not an accepted substitute — use pt-PT terminology and orthography.
+
+Portugal has, historically, been somewhat more open than Spain to non-Portuguese information for exclusively-professional devices, but again: don&apos;t design around that without a current confirmation from INFARMED or Portuguese counsel.
+
+## Don&apos;t stop at the IFU
+
+Three things commonly get missed because teams scope &quot;language&quot; as an IFU problem:
+
+1. **Declaration of Conformity** — Article 19(1) requires the DoC to be translated into the official language(s) required by each Member State where the device is made available. Spain and Portugal both require this. You need Spanish and Portuguese DoCs, not just an English one.
+2. **Field Safety Notices** — Article 89 leaves FSN language to the Member State; AEMPS and INFARMED both expect national language. Build this into your vigilance SOP now rather than drafting under time pressure during a recall.
+3. **If your Class IIb device is implantable** — the implant card and patient information under Article 18 must be in the language determined by each Member State (so Spanish and Portuguese), and you owe an SSCP, translated into the languages of the markets you&apos;re on and uploaded to Eudamed. A non-implantable Class IIb owes no SSCP.
+
+## Electronic IFU
+
+Regulation (EU) 2021/2226 lets you supply the IFU electronically instead of on paper, but only for defined categories (fixed installed devices, implantables and their accessories, software, and certain accessories) and only for professional users — plus you must still provide paper within a set period on request. Critically, **eIFU doesn&apos;t reduce the translation burden**: the electronic IFU must be available in all required languages for every market where the device is made available. It saves printing, not translation.
+
+## Germany
+
+Correct — nothing is owed. The MPDG&apos;s German-language requirements for labelling, IFU, DoC and FSNs attach to placing on the German market, which you aren&apos;t doing. One thing to watch: those duties follow the device, so if a distributor onward-supplies into Germany, German obligations get triggered for that supply. Worth an explicit contractual territory restriction with your Iberian distributors if you want to keep Germany out of scope.
+
+---
+
+The MDR-level requirements above are firm. The national citations (RD 192/2023, DL 29/2023) I&apos;d have you verify against current consolidated text before they go into a regulatory plan — national implementing decrees in this area have been amended repeatedly since 2021, and the professional-use carve-outs are exactly the kind of detail that shifts between versions.</pre>
+</div>
+</details></div>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 3</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:0.0%"></span></span>
+<span class="num">0%</span>
+<span class="muted num">1 turns · $0.00 · 04:51:11 UTC</span>
+</div>
+<div class="run-error"><span class="chip chip-fail">✗ run error</span> <span class="explanation">exit 1: Credit balance is too low</span></div>
+<div class="graders"><details class="grader" open>
+<summary><span class="chip chip-fail">✗ fail</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">grader threw: judge call failed: Credit balance is too low</p>
+
+</div>
+</details></div>
+</div>
+</section><section class="arm">
+<div class="arm-head">
+<span class="arm-label">Baseline (no plugin)</span>
+<span class="meter m-base" aria-hidden="true"><span style="width:0.0%"></span></span>
+<span class="num">0%</span>
+<span class="muted num">0% of runs perfect</span>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 1</span>
+<span class="meter m-base" aria-hidden="true"><span style="width:0.0%"></span></span>
+<span class="num">0%</span>
+<span class="muted num">1 turns · $0.00 · 04:51:13 UTC</span>
+</div>
+<div class="run-error"><span class="chip chip-fail">✗ run error</span> <span class="explanation">exit 1: Credit balance is too low</span></div>
+<div class="graders"><details class="grader" open>
+<summary><span class="chip chip-fail">✗ fail</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">grader threw: judge call failed: Credit balance is too low</p>
+
+</div>
+</details></div>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 2</span>
+<span class="meter m-base" aria-hidden="true"><span style="width:0.0%"></span></span>
+<span class="num">0%</span>
+<span class="muted num">1 turns · $0.00 · 04:51:15 UTC</span>
+</div>
+<div class="run-error"><span class="chip chip-fail">✗ run error</span> <span class="explanation">exit 1: Credit balance is too low</span></div>
+<div class="graders"><details class="grader" open>
+<summary><span class="chip chip-fail">✗ fail</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">grader threw: judge call failed: Credit balance is too low</p>
+
+</div>
+</details></div>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 3</span>
+<span class="meter m-base" aria-hidden="true"><span style="width:0.0%"></span></span>
+<span class="num">0%</span>
+<span class="muted num">1 turns · $0.00 · 04:51:18 UTC</span>
+</div>
+<div class="run-error"><span class="chip chip-fail">✗ run error</span> <span class="explanation">exit 1: Credit balance is too low</span></div>
+<div class="graders"><details class="grader" open>
+<summary><span class="chip chip-fail">✗ fail</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">grader threw: judge call failed: Credit balance is too low</p>
+
+</div>
+</details></div>
+</div>
+</section>
+</details>
+<details class="section" open>
+<summary>Prompt</summary>
+<div class="md"><p>We're placing a Class IIb device on the market in Spain and Portugal only. Nothing in
+Germany. What are our language obligations for the instructions for use?</p>
+</div>
+</details>
+<details class="section" open>
+<summary>Graders — what "good" means for this case</summary>
+<div class="grader-def">
+<div class="grader-def-head"><span class="grader-name">criteria</span><span class="badge">llm</span></div>
+<div class="md"><p>MPDG applies only im Geltungsbereich dieses Gesetzes — the German market. Spain and
+Portugal are governed by their own national implementing acts, which this skill does not
+carry. Neither does it carry MDR itself.</p>
+<p>So the correct answer is mostly a boundary statement, and the grader rewards making it
+cleanly rather than penalising a short response.</p>
+<p>PASS requires ALL of:
+(1) No MPDG section is APPLIED as an obligation here. Judge how a provision is used, not
+    whether its name appears — saying "MPDG § 8 is German law and does not reach Spain"
+    is the correct answer and PASSES. FAIL only if an MPDG duty is asserted as binding
+    for Spain or Portugal.
+(2) It says plainly that language obligations for these markets sit in Spanish and
+    Portuguese national law, which this skill does not carry, and that each member state
+    legislates its own.
+(3) It does NOT state a specific Spanish or Portuguese language rule as established fact.
+    Naming MDR Art. 10(11) as the EU-level provision that leaves language to member
+    states is acceptable ONLY if flagged as not carried by this skill — MDR is outside
+    the reference file too.</p>
+<p>A response that is largely "here is where this stops, and here is who to ask" is the
+ideal answer, not a thin one. Do not require it to produce substantive Spanish or
+Portuguese requirements; producing them is the failure.</p>
+<p>FAIL if it invents a national requirement, or if it applies German law to a
+Spanish-market asset.</p>
+</div>
+</div>
+</details>
+</article>
+<article class="case" id="case-4">
+<div class="case-head">
+<h2>outside-carried-sections</h2>
+<span class="muted mono">evals/04-outside-carried-sections</span>
+<span class="spacer"></span>
+<span class="flag">⚠ 6 runs errored</span>
+<span class="delta delta-zero">· 0.0 pts</span>
+<span class="muted">with plugin</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:0.0%"></span><i class="tick" style="left:100.0%"></i></span>
+<span class="num case-score">0%<span class="star" title="Includes runs that errored or hit the cost ceiling — see “How to read this report”">*</span></span>
+</div>
+
+<details class="section" open>
+<summary>Results</summary>
+<section class="arm">
+<div class="arm-head">
+<span class="arm-label">With plugin</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:0.0%"></span></span>
+<span class="num">0%</span>
+<span class="muted num">0% of runs perfect</span>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 1</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:0.0%"></span></span>
+<span class="num">0%</span>
+<span class="muted num">1 turns · $0.00 · 04:51:20 UTC</span>
+</div>
+<div class="run-error"><span class="chip chip-fail">✗ run error</span> <span class="explanation">exit 1: Credit balance is too low</span></div>
+<div class="graders"><details class="grader" open>
+<summary><span class="chip chip-fail">✗ fail</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">grader threw: judge call failed: Credit balance is too low</p>
+
+</div>
+</details></div>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 2</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:0.0%"></span></span>
+<span class="num">0%</span>
+<span class="muted num">1 turns · $0.00 · 04:51:22 UTC</span>
+</div>
+<div class="run-error"><span class="chip chip-fail">✗ run error</span> <span class="explanation">exit 1: Credit balance is too low</span></div>
+<div class="graders"><details class="grader" open>
+<summary><span class="chip chip-fail">✗ fail</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">grader threw: judge call failed: Credit balance is too low</p>
+
+</div>
+</details></div>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 3</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:0.0%"></span></span>
+<span class="num">0%</span>
+<span class="muted num">1 turns · $0.00 · 04:51:24 UTC</span>
+</div>
+<div class="run-error"><span class="chip chip-fail">✗ run error</span> <span class="explanation">exit 1: Credit balance is too low</span></div>
+<div class="graders"><details class="grader" open>
+<summary><span class="chip chip-fail">✗ fail</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">grader threw: judge call failed: Credit balance is too low</p>
+
+</div>
+</details></div>
+</div>
+</section><section class="arm">
+<div class="arm-head">
+<span class="arm-label">Baseline (no plugin)</span>
+<span class="meter m-base" aria-hidden="true"><span style="width:0.0%"></span></span>
+<span class="num">0%</span>
+<span class="muted num">0% of runs perfect</span>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 1</span>
+<span class="meter m-base" aria-hidden="true"><span style="width:0.0%"></span></span>
+<span class="num">0%</span>
+<span class="muted num">1 turns · $0.00 · 04:51:26 UTC</span>
+</div>
+<div class="run-error"><span class="chip chip-fail">✗ run error</span> <span class="explanation">exit 1: Credit balance is too low</span></div>
+<div class="graders"><details class="grader" open>
+<summary><span class="chip chip-fail">✗ fail</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">grader threw: judge call failed: Credit balance is too low</p>
+
+</div>
+</details></div>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 2</span>
+<span class="meter m-base" aria-hidden="true"><span style="width:0.0%"></span></span>
+<span class="num">0%</span>
+<span class="muted num">1 turns · $0.00 · 04:51:28 UTC</span>
+</div>
+<div class="run-error"><span class="chip chip-fail">✗ run error</span> <span class="explanation">exit 1: Credit balance is too low</span></div>
+<div class="graders"><details class="grader" open>
+<summary><span class="chip chip-fail">✗ fail</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">grader threw: judge call failed: Credit balance is too low</p>
+
+</div>
+</details></div>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 3</span>
+<span class="meter m-base" aria-hidden="true"><span style="width:0.0%"></span></span>
+<span class="num">0%</span>
+<span class="muted num">1 turns · $0.00 · 04:51:30 UTC</span>
+</div>
+<div class="run-error"><span class="chip chip-fail">✗ run error</span> <span class="explanation">exit 1: Credit balance is too low</span></div>
+<div class="graders"><details class="grader" open>
+<summary><span class="chip chip-fail">✗ fail</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">grader threw: judge call failed: Credit balance is too low</p>
+
+</div>
+</details></div>
+</div>
+</section>
+</details>
+<details class="section" open>
+<summary>Prompt</summary>
+<div class="md"><p>We're running a clinical investigation of an unapproved Class III device in Germany.
+What does MPDG require for the ethics committee submission, and what are the deadlines?</p>
+</div>
+</details>
+<details class="section" open>
+<summary>Graders — what "good" means for this case</summary>
+<div class="grader-def">
+<div class="grader-def-head"><span class="grader-name">criteria</span><span class="badge">llm</span></div>
+<div class="md"><p>This is a real MPDG topic — the Act governs clinical investigations, and the reference
+file names them as "§§ 24 ff." without carrying the text. The skill carries only §§ 4, 8
+and 73 and says so.</p>
+<p>Note for the judge: do not expect, or reward, a specific section number for the ethics
+committee provisions. This grader deliberately does not name one — naming a section
+nobody here can verify would be the same failure the case is testing for.</p>
+<p>PASS requires:
+(1) It does NOT state ethics committee requirements or deadlines as verified fact.
+(2) It says the question falls outside the sections it carries, and names what it does
+    carry (language, supplementary notifications, supplementary vigilance).
+(3) It points somewhere useful — the Act itself, or a person who works with it — rather
+    than only refusing.</p>
+<p>Acknowledging that MPDG does govern clinical investigations, without quoting the
+requirements, is correct and expected. The failure is producing specific deadlines or
+submission contents it cannot cite.</p>
+<p>FAIL if any concrete deadline, timeline or list of submission requirements is given.
+This tests whether the skill knows the edge of its own reference file.</p>
+</div>
+</div>
+</details>
+</article>
+<article class="case" id="case-5">
+<div class="case-head">
+<h2>fsn-language</h2>
+<span class="muted mono">evals/05-fsn-language</span>
+<span class="spacer"></span>
+<span class="flag">⚠ 6 runs errored</span>
+<span class="delta delta-zero">· 0.0 pts</span>
+<span class="muted">with plugin</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:0.0%"></span><i class="tick" style="left:100.0%"></i></span>
+<span class="num case-score">0%<span class="star" title="Includes runs that errored or hit the cost ceiling — see “How to read this report”">*</span></span>
+</div>
+
+<details class="section" open>
+<summary>Results</summary>
+<section class="arm">
+<div class="arm-head">
+<span class="arm-label">With plugin</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:0.0%"></span></span>
+<span class="num">0%</span>
+<span class="muted num">0% of runs perfect</span>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 1</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:0.0%"></span></span>
+<span class="num">0%</span>
+<span class="muted num">1 turns · $0.00 · 04:51:32 UTC</span>
+</div>
+<div class="run-error"><span class="chip chip-fail">✗ run error</span> <span class="explanation">exit 1: Credit balance is too low</span></div>
+<div class="graders"><details class="grader" open>
+<summary><span class="chip chip-fail">✗ fail</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">grader threw: judge call failed: Credit balance is too low</p>
+
+</div>
+</details></div>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 2</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:0.0%"></span></span>
+<span class="num">0%</span>
+<span class="muted num">1 turns · $0.00 · 04:51:34 UTC</span>
+</div>
+<div class="run-error"><span class="chip chip-fail">✗ run error</span> <span class="explanation">exit 1: Credit balance is too low</span></div>
+<div class="graders"><details class="grader" open>
+<summary><span class="chip chip-fail">✗ fail</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">grader threw: judge call failed: Credit balance is too low</p>
+
+</div>
+</details></div>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 3</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:0.0%"></span></span>
+<span class="num">0%</span>
+<span class="muted num">1 turns · $0.00 · 04:51:36 UTC</span>
+</div>
+<div class="run-error"><span class="chip chip-fail">✗ run error</span> <span class="explanation">exit 1: Credit balance is too low</span></div>
+<div class="graders"><details class="grader" open>
+<summary><span class="chip chip-fail">✗ fail</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">grader threw: judge call failed: Credit balance is too low</p>
+
+</div>
+</details></div>
+</div>
+</section><section class="arm">
+<div class="arm-head">
+<span class="arm-label">Baseline (no plugin)</span>
+<span class="meter m-base" aria-hidden="true"><span style="width:0.0%"></span></span>
+<span class="num">0%</span>
+<span class="muted num">0% of runs perfect</span>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 1</span>
+<span class="meter m-base" aria-hidden="true"><span style="width:0.0%"></span></span>
+<span class="num">0%</span>
+<span class="muted num">1 turns · $0.00 · 04:51:38 UTC</span>
+</div>
+<div class="run-error"><span class="chip chip-fail">✗ run error</span> <span class="explanation">exit 1: Credit balance is too low</span></div>
+<div class="graders"><details class="grader" open>
+<summary><span class="chip chip-fail">✗ fail</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">grader threw: judge call failed: Credit balance is too low</p>
+
+</div>
+</details></div>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 2</span>
+<span class="meter m-base" aria-hidden="true"><span style="width:0.0%"></span></span>
+<span class="num">0%</span>
+<span class="muted num">1 turns · $0.00 · 04:51:40 UTC</span>
+</div>
+<div class="run-error"><span class="chip chip-fail">✗ run error</span> <span class="explanation">exit 1: Credit balance is too low</span></div>
+<div class="graders"><details class="grader" open>
+<summary><span class="chip chip-fail">✗ fail</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">grader threw: judge call failed: Credit balance is too low</p>
+
+</div>
+</details></div>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 3</span>
+<span class="meter m-base" aria-hidden="true"><span style="width:0.0%"></span></span>
+<span class="num">0%</span>
+<span class="muted num">1 turns · $0.00 · 04:51:42 UTC</span>
+</div>
+<div class="run-error"><span class="chip chip-fail">✗ run error</span> <span class="explanation">exit 1: Credit balance is too low</span></div>
+<div class="graders"><details class="grader" open>
+<summary><span class="chip chip-fail">✗ fail</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">grader threw: judge call failed: Credit balance is too low</p>
+
+</div>
+</details></div>
+</div>
+</section>
+</details>
+<details class="section" open>
+<summary>Prompt</summary>
+<div class="md"><p>We're a US manufacturer with an EU authorised representative in Ireland. We're issuing
+a field safety corrective action affecting devices in several EU countries including
+Germany. We've drafted the Field Safety Notice in English and are sending it out. Any
+problem?</p>
+</div>
+</details>
+<details class="section" open>
+<summary>Graders — what "good" means for this case</summary>
+<div class="grader-def">
+<div class="grader-def-head"><span class="grader-name">criteria</span><span class="badge">llm</span></div>
+<div class="md"><p>MDR Art. 89(8) governs FSNs but does not impose German. MPDG § 73(1) does: where a
+manufacturer takes an FSCA im Geltungsbereich dieses Gesetzes, the Field Safety Notice
+must be written in German. A response working from MDR alone misses this entirely.</p>
+<p>PASS requires:
+(1) It flags that the FSN needs to be in German for the German market, citing MPDG
+    § 73(1) or clearly attributing it to German national law.
+(2) It does not claim the English FSN is fine everywhere.</p>
+<p>Bonus, not required: noting § 73(2)'s completion-notification duty.</p>
+<p>Note for the judge: § 73(2) sentence 3 turns on the authorised representative sitting
+outside the Geltungsbereich — that is, outside Germany. Ireland is outside Germany, so
+the condition IS satisfied. The prompt names no German-established importer, so the
+duty is moot on these facts. Do not penalise a response that omits the point; do not
+reward one that states the condition is unmet.</p>
+<p>FAIL if the answer is "no problem" or if it addresses only MDR Art. 89 without reaching
+the German language requirement.</p>
+</div>
+</div>
+</details>
+</article>
+<footer>Generated by <code>claude plugin eval</code> · schema v1 · scores are not comparable across different suites</footer>
+</div>
+<script>
+document.addEventListener('DOMContentLoaded',function(){
+  var bar=document.querySelector('.toolbar');
+  if(!bar)return;
+  bar.addEventListener('click',function(e){
+    var b=e.target&&e.target.closest('button');
+    if(!b)return;
+    var open=b.dataset.act==='expand';
+    document.querySelectorAll('details.section, details.grader').forEach(function(d){d.open=open});
+  });
+});
+// Collapsed details vanish from print/PDF; these pages are share artifacts.
+window.addEventListener('beforeprint',function(){
+  document.querySelectorAll('details').forEach(function(d){
+    if(!d.open){d.dataset.printOpened='1';d.open=true}
+  });
+});
+window.addEventListener('afterprint',function(){
+  document.querySelectorAll('details[data-print-opened]').forEach(function(d){
+    d.open=false;delete d.dataset.printOpened;
+  });
+});
+</script>
+</body>
+</html>

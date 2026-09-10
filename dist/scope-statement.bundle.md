@@ -101,6 +101,30 @@ intended purpose changing. A scope statement with no expiry gets quoted a year l
 5. **Check the negation.** Read "This does not establish" aloud. If it does not sting
    slightly, it is too soft to do its job.
 
+## When the space is small
+
+A scope statement that does not fit where it has to go does not get used. If the user
+says sidebar, footer, tooltip, one line, or "keep it short", **the format bends and the
+two load-bearing lines do not.**
+
+Compress in this order:
+
+1. **Drop the labels.** Prose carries the same content. "Runs on this file at upload,
+   by pattern matching — so a clean result means nothing matched, not that the file is
+   clear" is a complete scope statement in one sentence.
+2. **Merge `Checked` and `Against`.** "Pattern-matched against [ruleset v2.1]" does both.
+3. **Cut `Not checked` to the two a reader would most wrongly assume were covered.**
+   Not the full list — the two that matter. A long list in a small space gets skipped
+   entirely, which is worse than a short one that gets read.
+4. **Never cut the negation.** "A clean result means nothing matched, not that the file
+   is clear" is the line the whole block exists for. If only one sentence survives, it
+   is this one.
+5. **Never cut the expiry silently.** If there is no room, say "as of [date]" inline.
+
+A three-line prose version that keeps the omission and the negation beats a complete
+labelled block that gets cut by whoever pastes it into the sidebar. Offer the long form
+too if it would be useful elsewhere, but lead with what was asked for.
+
 ## What not to do
 
 **Do not write a disclaimer.** "For informational purposes only", "consult a
