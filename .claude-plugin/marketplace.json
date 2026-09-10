@@ -45,6 +45,16 @@
         "name": "Ege Can Gecer"
       },
       "license": "Apache-2.0"
+    },
+    {
+      "name": "mdr-transition",
+      "displayName": "MDR Article 120 \u2014 Legacy Transition",
+      "source": "./mdr-transition",
+      "description": "How long a legacy device may still be placed on the market, under Art. 120 as amended by 2023/607.",
+      "author": {
+        "name": "Ege Can Gecer"
+      },
+      "license": "Apache-2.0"
     }
   ]
 }

@@ -25,6 +25,14 @@ Load `mdr-classification/skills/software-classification/SKILL.md` first, then it
 
 If you cannot read files, use `dist/software-classification.bundle.md`, which carries the skill and all its references in one document.
 
+### legacy-transition
+
+Load `mdr-transition/skills/legacy-transition/SKILL.md` first, then its references:
+
+- `mdr-transition/skills/legacy-transition/references/art120-amended.md`
+
+If you cannot read files, use `dist/legacy-transition.bundle.md`, which carries the skill and all its references in one document.
+
 ### german-additions
 
 Load `mpdg-germany/skills/german-additions/SKILL.md` first, then its references:

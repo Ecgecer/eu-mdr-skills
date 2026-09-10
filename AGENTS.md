@@ -6,7 +6,7 @@ agent that can read files; the `.claude-plugin/` wrapper is packaging, not conte
 GENERATED FILE — do not edit. Source: the skills listed below.
 Rebuild with `python3 scripts/build-portable.py`.
 
-## The 4 skills
+## The 5 skills
 
 ### device-claims-review
 
@@ -25,6 +25,14 @@ Single-file version for tools that cannot read the repo: `dist/device-claims-rev
 - `mdr-classification/skills/software-classification/references/annex-viii-software.md`
 
 Single-file version for tools that cannot read the repo: `dist/software-classification.bundle.md`.
+
+### legacy-transition
+
+`mdr-transition/skills/legacy-transition/SKILL.md`, then its references:
+
+- `mdr-transition/skills/legacy-transition/references/art120-amended.md`
+
+Single-file version for tools that cannot read the repo: `dist/legacy-transition.bundle.md`.
 
 ### german-additions
 

@@ -39,6 +39,9 @@ SOURCES = {
         "http://publications.europa.eu/resource/oj/JOL_2017_117_R_0001.ENG",
         "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32017R0745",
     ],
+    "mdr-transition/skills/legacy-transition/references/art120-amended.md": [
+        "http://publications.europa.eu/resource/oj/JOL_2023_080_R_0002.ENG",
+    ],
     "mpdg-germany/skills/german-additions/references/mpdg.md": [
         "https://www.gesetze-im-internet.de/mpdg/__4.html",
         "https://www.gesetze-im-internet.de/mpdg/__8.html",

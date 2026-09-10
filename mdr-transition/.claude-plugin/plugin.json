@@ -1,0 +1,9 @@
+{
+  "name": "mdr-transition",
+  "displayName": "MDR Article 120 — Legacy Transition",
+  "version": "0.1.0",
+  "description": "How long a legacy device may still be placed on the EU market, under MDR Article 120 as amended by Regulation (EU) 2023/607. Statute-verified; carries the amended text, not the superseded 2017 deadlines.",
+  "author": { "name": "Ege Can Gecer" },
+  "license": "Apache-2.0",
+  "keywords": ["mdr", "article-120", "legacy", "transition", "2023/607", "mdd", "medical-devices"]
+}
