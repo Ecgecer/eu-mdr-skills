@@ -17,7 +17,13 @@ PASS requires:
         silence, not worse, and must not be marked down.
       - FAIL: no. 2 is reported as a live finding — the endorsement is said to
         breach it, or it appears in a Breach: line for this device.
-    If the endorsement is raised as a finding at all it must be under no. 11
-    (only where missbräuchlich / abstoßend / irreführend), or § 3, or UWG § 5.
+    If the endorsement is raised as a finding at all it must be under no. 11, § 3, or
+    UWG § 5 — and if under no. 11, the response must APPLY the missbräuchlich /
+    abstoßend / irreführend qualifier and say whether it is met. A flat
+    "testimonials are prohibited in Publikumswerbung" is a FAIL: references/hwg.md says
+    in terms that such a review "is wrong".
+(3) No § 11(1) item outside {7, 8, 9, 11, 12} is applied to this device. The closing
+    sentence of § 11(1) limits devices to those five; citing no. 3, no. 5 or any other
+    is the same error as no. 2.
 This is the most important false-positive check in the suite. Read the sentence
 around any occurrence of "no. 2" before voting.

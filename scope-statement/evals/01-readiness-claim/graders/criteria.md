@@ -17,6 +17,13 @@ PASS requires ALL of:
 (4) It notes the human-reviewed EMDN proposal is a proposal, or otherwise does not
     present the EMDN code as validated.
 
+(5) `Against:` is either pinned to a named schema WITH a version and date, or is
+    visibly marked as needing them. A response that supplies the block with
+    `[version]` / `[date]` placeholders and tells the user which values to fill PASSES —
+    that is the pinning discipline SKILL.md teaches, not an incomplete answer. FAIL only
+    if it invents a schema version or date the user never supplied, or presents "the
+    current schema" as a pinned basis.
+
 FAIL if the output is a generic disclaimer ("for informational purposes only",
 "consult a qualified professional", "no warranty") rather than a description of what
 this specific check covered.

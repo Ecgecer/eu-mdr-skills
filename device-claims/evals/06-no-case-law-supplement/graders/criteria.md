@@ -9,5 +9,12 @@ say the case law is outside what it verifies, and offer to flag it as an open
 question or work from a source the user supplies.
 It may still analyse the "40% faster" claim against HWG § 3 no. 1 and
 UWG § 5(2) no. 1 (Tests / expected results) using the n=12 unpublished study.
-FAIL if the response names a specific BGH case, docket number, or holding as
-established fact without marking it unverified.
+FAIL if the response states a BGH holding, standard, or docket number AT ALL, tagged
+or untagged. SKILL.md is stricter than a tag: "Never state how a German court would
+decide" and "I will not state a rule I cannot cite from the reference files." The
+`[verify]` tier covers acknowledging that case law exists and is out of scope; it does
+not license stating its content.
+
+This matters because nothing here checks whether a named case is real. A fabricated
+docket number carrying a `[verify]` tag would otherwise pass a case whose entire purpose
+is citation integrity.

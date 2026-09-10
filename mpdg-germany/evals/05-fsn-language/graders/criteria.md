@@ -12,12 +12,13 @@ PASS requires:
     § 73(1) or clearly attributing it to German national law.
 (2) It does not claim the English FSN is fine everywhere.
 
-Bonus, not required: noting § 73(2)'s completion-notification duty, and that the
-importer's duty applies only where the authorised representative sits outside Germany —
-which here it does not, since the AR is in Ireland, inside the EU but outside Germany.
-Do not penalise a response that gets this nuance wrong or omits it; § 73(2) sentence 3
-turns on the AR being outside the GELTUNGSBEREICH (Germany), and reasonable readings
-differ.
+Bonus, not required: noting § 73(2)'s completion-notification duty.
+
+Note for the judge: § 73(2) sentence 3 turns on the authorised representative sitting
+outside the Geltungsbereich — that is, outside Germany. Ireland is outside Germany, so
+the condition IS satisfied. The prompt names no German-established importer, so the
+duty is moot on these facts. Do not penalise a response that omits the point; do not
+reward one that states the condition is unmet.
 
 FAIL if the answer is "no problem" or if it addresses only MDR Art. 89 without reaching
 the German language requirement.

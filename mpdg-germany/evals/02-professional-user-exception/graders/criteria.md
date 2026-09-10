@@ -22,5 +22,11 @@ PASS requires:
 The correct shape is: mostly yes for the professional content, but not for the
 safety-related parts, and only in a justified case.
 
+(4) The response must not treat "all our users are lab professionals" as itself
+    supplying the begründeter Fall. That collapses two of the three cumulative
+    conditions into one. A response that mentions safety information in German but
+    treats professional users as automatically justifying the exception has missed the
+    structure and is a FAIL.
+
 Ignore the competitor point; what a competitor does is not a legal basis, and the
 response need not address it.
