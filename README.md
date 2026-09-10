@@ -145,24 +145,43 @@ claims case-law coverage it cannot verify is worse than one that draws the line.
 This is a drafting and risk-triage aid, **not legal advice**, and not a substitute for a
 Fachanwalt für Medizinrecht or Wettbewerbsrecht.
 
+## Which one do you want
+
+| If you are asking | Use | It carries |
+|---|---|---|
+| "Can we say this in our copy?" | `device-claims` | MDR Art. 7, IVDR Art. 7, HWG, UWG |
+| "What class is our software?" | `mdr-classification` | Annex VIII impl. rules 3.1–3.7, Rule 11 |
+| "Does Germany want more than MDR?" | `mpdg-germany` | MPDG §§ 4, 8, 73 |
+| "What should this report say it didn't check?" | `scope-statement` | nothing — domain-general |
+
+Each is independent. Install only what you need; together they cost about 660 tokens
+always-on.
+
 ## Install
 
 ```
 claude plugin marketplace add Ecgecer/eu-mdr-skills
-claude plugin install device-claims@eu-mdr-skills          # advertising claims
-claude plugin install mdr-classification@eu-mdr-skills     # software classification
+
+claude plugin install device-claims@eu-mdr-skills         # advertising claims
+claude plugin install mdr-classification@eu-mdr-skills    # software classification
+claude plugin install mpdg-germany@eu-mdr-skills          # German additions to MDR
+claude plugin install scope-statement@eu-mdr-skills       # bound a compliance claim
 ```
 
 ## Use
 
 ```
-/device-claims:device-claims-review     # review advertising copy
-/mdr-classification:software-classification   # classify software under Annex VIII
+/device-claims:device-claims-review              # review advertising copy
+/mdr-classification:software-classification      # classify software under Annex VIII
+/mpdg-germany:german-additions                   # what Germany adds on top of MDR
+/scope-statement:scope-statement                 # bound a compliance result
 ```
 
-The skill establishes two anchors before reviewing: the **intended purpose as assessed**
-(the reference point for Art. 7(d)) and the **audience** (Fachkreise vs. Publikum, which
-gates HWG § 11). It will ask for them rather than guess.
+Each skill establishes its own anchors before answering, and asks rather than guesses.
+`device-claims` wants the intended purpose as assessed and the audience (Fachkreise vs.
+Publikum, which gates HWG § 11). `mdr-classification` wants the intended purpose and
+whether the product is qualified as a device at all. `mpdg-germany` wants confirmation
+the German market is actually in play.
 
 ## Using it outside Claude Code
 
