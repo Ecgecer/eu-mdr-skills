@@ -1,0 +1,90 @@
+# Roadmap
+
+Candidates, with the evidence for and against each. Nothing here is committed; the point
+is to make the reasoning inspectable so a bad idea can be argued down before it costs a
+week.
+
+---
+
+## The evidence any new skill has to answer to
+
+Measured across five suites, 30 cases:
+
+| Suite | Mean delta | Content |
+|---|---|---|
+| `device-claims` | **+0.60** | MDR/IVDR Art. 7 **plus HWG and UWG** |
+| `mpdg-germany` | **+0.60** | German national law only |
+| `mdr-classification` | +0.14 | EU-level only |
+| `scope-statement` | +0.11 | domain-general |
+| `mdr-transition` | +0.07 | EU-level only |
+
+**The two that earn are the two carrying German national law.** The three EU-only skills
+measure between +0.07 and +0.14, because Claude already knows the Regulations — it quotes
+implementing rule 3.3 verbatim, cites 2023/607 by number, gets the suture carve-out right.
+
+So the pattern is not "EU MDR is hard". It is **national law a model reaches for and
+misapplies**. Four of the five cases measuring +1.00 are exactly that: a German
+advertising item cited against a device it does not reach, a lay-audience rule applied to
+a gated professional audience, German law applied to a French-market asset, and a
+Declaration of Conformity sent for translation that Germany accepts in English.
+
+Any sixth skill should be aimed there or it will measure zero.
+
+---
+
+## Candidate: MPBetreibV — who has to do what when operating a device in Germany
+
+**What it is.** The Medizinprodukte-Betreiberverordnung governs *operating and using*
+devices in Germany: instruction of users, maintenance, safety and metrological checks
+(STK/MTK), the device register a facility must keep.
+
+**Why it might earn, and this is the whole question.** Not because the model does not know
+it — it probably does. Because the provision has two boundary traps of exactly the shape
+that produced every +1.00 so far:
+
+1. **It binds the *Betreiber*, not the manufacturer.** A manufacturer asking "what do we
+   have to do" gets a wrong and expensive answer if operator duties are applied to them.
+   That is the same error as applying a lay-audience rule to Fachkreise.
+2. **STK and MTK intervals reach only listed device categories.** Applying them to all
+   devices is over-application, and it is the shape the model repeats.
+
+**Why it might not.** It is national law, which is the right target, but the audience is
+hospitals and clinical engineering rather than manufacturers — further from the users of
+everything else here. And if the model handles the Betreiber/Hersteller split cleanly, it
+measures zero like the EU-only skills did.
+
+**How to decide.** Write two cases first and measure them before building anything: one
+where a manufacturer asks what they must do and the answer is "these are operator duties,
+not yours", and one asking whether STK applies to a device outside the listed categories.
+If the baseline fails those in 3 of 3 runs, build the skill. If it passes, do not.
+
+Source is available: gesetze-im-internet serves MPBetreibV, and it verifies with the
+existing tooling.
+
+---
+
+## Rejected, with reasons
+
+**Another member state's national law** — France, Italy, Spain. The target is right and
+the evidence supports it. Blocked on sourcing: gesetze-im-internet has no equivalent that
+`verify-sources.py` can diff, and EUR-Lex's national-implementing-measures pages have been
+unreachable. A reference nobody can verify is the thing this repo exists not to ship.
+
+**More EU-level MDR** — qualification, GSPRs, technical documentation, clinical
+evaluation. Three EU-only suites measured +0.07 to +0.14. There is no reason to expect a
+fourth to differ, and the prediction that classification and Article 120 would be
+different was wrong both times.
+
+**A general "which jurisdiction applies" skill** — the highest-earning cases are
+jurisdiction errors, so this looks attractive. But each existing skill already opens by
+establishing market and audience, and `non-german-eu-market` (+1.00) shows that machinery
+works where it exists. A standalone version would duplicate it.
+
+---
+
+## Not a skill, and possibly the most valuable thing here
+
+**Run the benchmark against more models.** Every number is from Claude. If another model
+fails the *knowledge* cases Claude passes, the reference files earn more than measured,
+and the repo's central finding narrows from "models know EU MDR" to "Claude does". That is
+one afternoon of API calls and it changes what everything else means.
