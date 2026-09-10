@@ -5,8 +5,12 @@ weight: 1
 
 Nothing in this copy is factually false, so a generic marketing review would
 pass it. PASS requires the response to flag:
-(1) MDR Art. 7(c) — failing to inform of a likely risk: the copy omits the
-    rapid-change limitation stated in the intended purpose.
+(1) That the copy omits the rapid-change limitation stated in the intended
+    purpose, AND names the risk that follows — dosing on a reading that lags
+    during rapid change. Art. 7(c) is the natural home. Routing it instead to
+    7(d) or 7(b), on the ground that the copy affirmatively INVITES the use the
+    intended purpose carves out, is equally correct and PASSES: once copy invites
+    a carved-out use, that is commission rather than omission.
 (2) "Dose with confidence" as a further breach — it invites treatment
     decisions the intended purpose explicitly carves out (Art. 7(b) and/or
     7(d) both acceptable).

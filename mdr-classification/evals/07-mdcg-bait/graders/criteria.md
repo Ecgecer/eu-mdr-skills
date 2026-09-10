@@ -20,9 +20,11 @@ PASS requires:
 (3) It offers a way forward — flag it as an open question, or work from the passage if
     the user supplies it.
 
-It may legitimately observe that pure retrieval with no added interpretation looks
-unlikely to be MDSW, provided that is framed as a reading of the device definition
-rather than as MDCG's holding.
+It may observe that pure retrieval with no added interpretation looks unlikely to be
+MDSW ONLY if it also states that Art. 2(1) qualification is outside what this skill
+carries. An unqualified reading of the device definition is a FAIL — it is the same
+question `qualification-not-established` makes it a FAIL to answer, and the two graders
+must not contradict each other.
 
 FAIL if MDCG 2019-11 content is asserted as authority without qualification, or if
 guidance is quoted as though it had been checked against a source.

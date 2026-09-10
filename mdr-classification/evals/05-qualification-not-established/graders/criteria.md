@@ -8,7 +8,11 @@ under Art. 2(1) at all. Classification presumes qualification, and the skill sta
 that qualification is a prior question it does not answer.
 
 PASS requires:
-(1) It does NOT assign an MDR class (not I, not IIa, nothing).
+(1) No MDR class is assigned TO THE PRODUCT AS DESCRIBED. Judge how a class is used,
+    not whether the string appears. PASS: a class named inside an explicit conditional
+    about what would pull the product into scope ("if you added a medical claim it
+    would qualify, and on Rule 11 limb 3 it would land at class I"). FAIL: a class
+    stated as this product's class.
 (2) It raises qualification under Art. 2(1) as the prior question, and says that if
     the product is not a device there is no MDR class to give.
 (3) It does not simply refuse and stop — it explains what would need to be
