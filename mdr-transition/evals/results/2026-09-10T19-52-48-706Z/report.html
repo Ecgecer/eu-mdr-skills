@@ -1,0 +1,2060 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Eval report — mdr-transition v0.1.0</title>
+</head>
+<body>
+<style>
+:root{--plane:#f9f9f7;--surface:#fcfcfb;--ink:#0b0b0b;--ink-2:#52514e;--ink-3:#6b6a64;--hairline:rgba(11,11,11,.10);--grid:#e1e0d9;--inset:rgba(11,11,11,.04);--accent:#2a78d6;--base-fill:#6b6a64;--delta-good:#006300;--good:#067d06;--warning:#8a6100;--critical:#d03b3b;
+  color-scheme:light dark;
+}
+@media (prefers-color-scheme:dark){:root{--plane:#0d0d0d;--surface:#1a1a19;--ink:#ffffff;--ink-2:#c3c2b7;--ink-3:#898781;--hairline:rgba(255,255,255,.10);--grid:#2c2c2a;--inset:rgba(255,255,255,.05);--accent:#3987e5;--base-fill:#898781;--delta-good:#0ca30c;--good:#0ca30c;--warning:#fab219;--critical:#e06c6c;color-scheme:dark}}
+:root[data-theme="dark"]{--plane:#0d0d0d;--surface:#1a1a19;--ink:#ffffff;--ink-2:#c3c2b7;--ink-3:#898781;--hairline:rgba(255,255,255,.10);--grid:#2c2c2a;--inset:rgba(255,255,255,.05);--accent:#3987e5;--base-fill:#898781;--delta-good:#0ca30c;--good:#0ca30c;--warning:#fab219;--critical:#e06c6c;color-scheme:dark}
+:root[data-theme="light"]{--plane:#f9f9f7;--surface:#fcfcfb;--ink:#0b0b0b;--ink-2:#52514e;--ink-3:#6b6a64;--hairline:rgba(11,11,11,.10);--grid:#e1e0d9;--inset:rgba(11,11,11,.04);--accent:#2a78d6;--base-fill:#6b6a64;--delta-good:#006300;--good:#067d06;--warning:#8a6100;--critical:#d03b3b;color-scheme:light}
+*{box-sizing:border-box}
+body{margin:0;background:var(--plane);color:var(--ink);
+  font:14px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif;
+  -webkit-text-size-adjust:100%}
+.wrap{max-width:880px;margin:0 auto;padding:40px 24px 64px;display:flex;flex-direction:column;gap:20px}
+.eyebrow{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
+header h1{margin:2px 0 0;font-size:24px;font-weight:600;line-height:1.25;text-wrap:balance}
+.meta{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:8px;color:var(--ink-2);font-size:13px}
+.meta .num{font-variant-numeric:tabular-nums lining-nums}
+.banner{display:flex;align-items:center;gap:8px;padding:10px 14px;border-radius:8px;
+  border:1px solid var(--hairline);background:var(--surface);font-size:13px}
+.banner .chip-warn{color:var(--warning);font-weight:600}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.tile{background:var(--surface);border:1px solid var(--hairline);border-radius:10px;padding:14px 16px;
+  display:flex;flex-direction:column;gap:4px}
+.tile .label{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3)}
+.tile .value{font-size:26px;font-weight:600;font-variant-numeric:tabular-nums lining-nums;line-height:1.1}
+.tile.hero .value{font-family:Georgia,"Times New Roman",serif;font-weight:400;font-size:48px}
+.tile .sub{font-size:12px;color:var(--ink-2);font-variant-numeric:tabular-nums}
+.tile .value.delta-pos{color:var(--delta-good)}
+.tile .value.delta-neg{color:var(--critical)}
+.toolbar{display:flex;gap:8px;justify-content:flex-end}
+.toolbar button{font:12px system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--ink-2);
+  background:var(--surface);border:1px solid var(--hairline);border-radius:6px;padding:4px 10px;cursor:pointer}
+.toolbar button:hover{color:var(--ink)}
+.toolbar button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.case{background:var(--surface);border:1px solid var(--hairline);border-radius:10px;padding:18px 20px;
+  display:flex;flex-direction:column;gap:10px}
+.case-regressed{border-left:3px solid var(--critical)}
+.verdict{margin:6px 0 0;font-size:15px}
+.verdict .delta{font-size:15px}
+.flag{font-size:11px;font-weight:600;color:var(--warning);white-space:nowrap}
+.star{color:var(--warning);font-size:.45em;vertical-align:super;line-height:0;cursor:help}
+.legend summary{cursor:pointer;font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-2)}
+.legend-list{margin:8px 0 0;padding-left:20px;display:flex;flex-direction:column;gap:5px;font-size:13px;color:var(--ink-2)}
+.case-head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.case-head h2{margin:0;font-size:16px;font-weight:600}
+.case-head .spacer{flex:1}
+.case-score{font-size:15px;font-weight:600}
+.mono{font:12px "SF Mono",ui-monospace,Menlo,Consolas,monospace}
+.num{font-variant-numeric:tabular-nums lining-nums}
+.muted{color:var(--ink-3);font-size:12px}
+.meter{display:inline-block;position:relative;width:120px;height:6px;border-radius:4px;background:var(--grid);
+  vertical-align:middle}
+.meter>span{display:block;height:100%;border-radius:4px;max-width:100%}
+.meter .tick{position:absolute;top:-2px;bottom:-2px;width:2px;background:var(--ink-3);border-radius:1px}
+.m-accent>span{background:var(--accent)}
+.m-base>span{background:var(--base-fill)}
+.delta{font-size:12px;font-weight:600;font-variant-numeric:tabular-nums}
+.delta-pos{color:var(--delta-good)}
+.delta-neg{color:var(--critical)}
+.delta-zero{color:var(--ink-3)}
+details.section{border-top:1px solid var(--grid);padding-top:10px}
+details.section>summary{cursor:pointer;font-size:12px;font-weight:600;letter-spacing:.04em;
+  text-transform:uppercase;color:var(--ink-2);list-style-position:outside;margin-left:2px}
+details.section>summary:hover{color:var(--ink)}
+details.section[open]>summary{margin-bottom:8px}
+.md{display:flex;flex-direction:column;gap:8px;background:var(--inset);border-radius:8px;
+  padding:12px 14px;overflow-wrap:break-word}
+.md>:first-child{margin-top:0}
+.md h1,.md h2,.md h3,.md h4,.md h5,.md h6{margin:4px 0 0;font-size:1em;font-weight:600;line-height:1.3}
+.md p,.md ul,.md ol,.md blockquote,.md table,.md pre,.md hr{margin:0}
+.md ul,.md ol{display:flex;flex-direction:column;gap:4px;padding-left:20px}
+.md blockquote{border-left:2px solid var(--hairline);padding-left:10px;color:var(--ink-2)}
+.md :not(pre)>code{background:var(--inset);padding:1px 4px;border-radius:4px;
+  font:.92em "SF Mono",ui-monospace,Menlo,Consolas,monospace}
+.md pre{background:var(--inset);border:1px solid var(--hairline);padding:10px 12px;border-radius:6px;
+  overflow-x:auto;font:12px/1.5 "SF Mono",ui-monospace,Menlo,Consolas,monospace}
+.md pre code{background:none;padding:0;font:inherit}
+.md table{width:100%;border-collapse:collapse}
+.md th,.md td{padding:5px 8px;text-align:left;vertical-align:top;border-bottom:1px solid var(--grid)}
+.md th{font-weight:600;color:var(--ink-2)}
+.md a{color:var(--accent);text-decoration:none}
+.md a:hover{text-decoration:underline}
+.grader-def{display:flex;flex-direction:column;gap:6px;padding:8px 0}
+.grader-def+.grader-def{border-top:1px solid var(--grid)}
+.grader-def-head{display:flex;align-items:baseline;gap:8px}
+.grader-name{font:13px "SF Mono",ui-monospace,Menlo,Consolas,monospace;font-weight:600}
+.badge{font-size:10px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-2);
+  border:1px solid var(--hairline);border-radius:999px;padding:1px 8px}
+.config{display:flex;flex-direction:column;gap:2px;background:var(--inset);border-radius:8px;padding:10px 14px}
+.config code{font:12px "SF Mono",ui-monospace,Menlo,Consolas,monospace;overflow-wrap:anywhere}
+.arm{display:flex;flex-direction:column;gap:8px;padding:6px 0}
+.arm+.arm{border-top:1px dashed var(--grid);margin-top:4px;padding-top:12px}
+.arm-head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.arm-label{font-size:13px;font-weight:600}
+.run{border:1px solid var(--grid);border-radius:8px;padding:10px 12px;display:flex;flex-direction:column;gap:8px}
+.run-head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.run-title{font-size:12px;font-weight:600;color:var(--ink-2)}
+.run-error .explanation{color:var(--ink-2)}
+.note{font-size:12px;color:var(--ink-2)}
+.graders{display:flex;flex-direction:column;gap:4px}
+details.grader{border-radius:6px}
+details.grader>summary{cursor:pointer;display:flex;align-items:baseline;gap:8px;padding:3px 4px;
+  border-radius:6px;list-style:none}
+details.grader>summary::-webkit-details-marker{display:none}
+details.grader>summary::before{content:'▸';font-size:10px;color:var(--ink-3);flex:none;
+  transition:transform .12s ease}
+details.grader[open]>summary::before{transform:rotate(90deg)}
+details.grader>summary:hover{background:var(--inset)}
+details.grader>summary:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.grader-body{padding:6px 8px 8px 24px;display:flex;flex-direction:column;gap:6px}
+.chip{font-size:11px;font-weight:600;border-radius:999px;padding:1px 8px;white-space:nowrap}
+.chip-pass{color:var(--good);border:1px solid currentColor}
+.chip-fail{color:var(--critical);border:1px solid currentColor}
+.chip.chip-warn{color:var(--warning);border:1px solid currentColor}
+.explanation{margin:0;font-size:13px;color:var(--ink-2);white-space:pre-wrap;overflow-wrap:break-word}
+.kv{display:flex;gap:8px;font-size:12px;color:var(--ink-3)}
+.votes{font-variant-numeric:tabular-nums;letter-spacing:.1em}
+pre.evidence{margin:0;background:var(--inset);border:1px solid var(--hairline);border-radius:6px;
+  padding:8px 10px;overflow-x:auto;max-height:320px;
+  font:12px/1.5 "SF Mono",ui-monospace,Menlo,Consolas,monospace;white-space:pre-wrap;overflow-wrap:break-word}
+footer{color:var(--ink-3);font-size:12px;text-align:center;padding-top:8px}
+@media (prefers-reduced-motion:no-preference){
+  details.grader>summary,.toolbar button{transition:background .12s ease,color .12s ease}
+}
+@media (prefers-reduced-motion:reduce){
+  details.grader>summary::before{transition:none}
+}
+@media print{
+  :root,:root[data-theme="dark"],:root[data-theme="light"]{--plane:#f9f9f7;--surface:#fcfcfb;--ink:#0b0b0b;--ink-2:#52514e;--ink-3:#6b6a64;--hairline:rgba(11,11,11,.10);--grid:#e1e0d9;--inset:rgba(11,11,11,.04);--accent:#2a78d6;--base-fill:#6b6a64;--delta-good:#006300;--good:#067d06;--warning:#8a6100;--critical:#d03b3b;color-scheme:light}
+  body{background:#fff}
+  .toolbar{display:none}
+  .case,.run,.grader-def{break-inside:avoid}
+  pre.evidence{max-height:none}
+}
+</style>
+<div class="wrap">
+<header>
+<div class="eyebrow">Plugin eval report</div>
+<h1>mdr-transition v0.1.0</h1>
+<p class="verdict">Plugin effect: <span class="delta delta-pos">↑ +6.7 pts</span> vs baseline — improved 1 · flat 4 · regressed 0 of 5 cases.</p>
+<div class="meta">
+<span class="mono">.</span>
+<span>Claude Code v2.1.267</span>
+<span class="num">2026-09-10 19:52 UTC</span>
+<span class="num">28m 24s</span>
+<span class="num">$5.25</span>
+<span class="num">30 runs</span>
+
+
+<span>judge default</span>
+<span class="num">threshold 100%</span>
+
+</div>
+</header>
+
+<section class="tiles">
+<div class="tile hero"><span class="label">Suite score · with plugin</span><span class="value">86.7%</span><span class="sub">mean of per-case scores</span></div>
+<div class="tile"><span class="label">Ablation Δ</span><span class="value num delta-pos">↑ +6.7</span><span class="sub">score points vs baseline, 5 of 5 cases</span></div>
+<div class="tile"><span class="label">Baseline score</span><span class="value num">80%</span><span class="sub">without the plugin</span></div>
+<div class="tile"><span class="label">Cases</span><span class="value num">5</span><span class="sub">4 of 5 ≥ 100% threshold</span></div>
+<div class="tile"><span class="label">Perfect runs</span><span class="value num">86.7%</span><span class="sub">runs where every grader passed</span></div>
+</section>
+<details class="section legend">
+<summary>How to read this report</summary>
+<ul class="legend-list">
+<li>A run's score is the weighted fraction of its graders that passed; a "perfect" run passed every grader.</li>
+<li>A case's score is the mean of its runs; a case passes when its score is at or above the 100% threshold (the tick on each case bar).</li>
+<li>The suite score is the mean of the per-case scores.</li>
+<li>Judge votes are independent samples of the LLM judge; the majority decides pass or fail.</li>
+<li>"With plugin" and "Baseline" runs are identical except for the plugin being loaded; Δ is the with-plugin score minus the baseline score.</li>
+
+</ul>
+</details>
+<div class="toolbar"><button type="button" data-act="expand">Expand all</button><button type="button" data-act="collapse">Collapse all</button></div>
+<article class="case" id="case-1">
+<div class="case-head">
+<h2>superseded-deadline</h2>
+<span class="muted mono">evals/01-superseded-deadline</span>
+<span class="spacer"></span>
+
+<span class="delta delta-zero">· 0.0 pts</span>
+<span class="muted">with plugin</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:100.0%"></span><i class="tick" style="left:100.0%"></i></span>
+<span class="num case-score">100%</span>
+</div>
+
+<details class="section" open>
+<summary>Results</summary>
+<section class="arm">
+<div class="arm-head">
+<span class="arm-label">With plugin</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">100% of runs perfect</span>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 1</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">4 turns · $0.13 · 19:52:48 UTC</span>
+</div>
+
+<div class="graders"><details class="grader">
+<summary><span class="chip chip-pass">✓ pass</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: PASS PASS PASS</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✓ ✓ ✓</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">## Class III implantable device, MDD certificate under 93/42/EEC
+
+**Class:** III (as stated)
+**Route:** Article 120(3a) — certificate issued under 93/42/EEC
+**Deadline:** **31 December 2027** — conditional on 120(3c)
+
+| Question | Answer | Basis |
+|---|---|---|
+| Which paragraph applies | 120(3a)(a) — device holds a notified-body certificate under 93/42/EEC valid by virtue of 120(2) | `[verified]` |
+| Class-dependent date | 31 December 2027, the class III date (same date as class IIb implantables other than the listed exceptions) | `[verified]` |
+| 3c conditions met? | **NOT ESTABLISHED** — needs confirmation from you | — |
+
+### The important caveat
+
+Note first that **26 May 2024 is not your market deadline**. That was the original 2017 text; Regulation (EU) 2023/607 replaced it in March 2023. If anyone in your organisation is still working to a May 2024 sunset, that is superseded.
+
+But 26 May 2024 did not disappear — it changed job. It is now one of the dates the 2027 extension *depends on*. The extension in 120(3a) applies **only if all five** conditions in 120(3c) were met, cumulatively:
+
+- (a) the device continues to comply with 93/42/EEC;
+- (b) **no significant changes in design and intended purpose**;
+- (c) no unacceptable risk to health or safety;
+- (d) a **quality management system** in place under Article 10(9) **no later than 26 May 2024**;
+- (e) a **formal application lodged with a notified body no later than 26 May 2024**, and a **signed written agreement with that notified body no later than 26 September 2024**.
+
+If any of those was missed, the extension was never available to you and the answer is different — the derogation simply does not apply, and the device&apos;s position rests on the certificate&apos;s own validity, not on 2027. Can you confirm the application and written-agreement dates and the QMS?
+
+**Also easy to miss — 120(3d):** during the transition, MDR&apos;s requirements on post-market surveillance, market surveillance, vigilance, and registration of economic operators and devices apply **in place of** the corresponding 93/42/EEC requirements. A legacy device is not living entirely under the old regime.
+
+**What would change this:** any of the 3c conditions being unmet — most commonly the 26 May 2024 application or the 26 September 2024 written agreement. Separately, a **significant change in design or intended purpose** at any point breaks 3c(b) and ends the extension. What counts as &quot;significant&quot; is dealt with in MDCG guidance, which I don&apos;t have verified here — if your question turns on that, you&apos;ll need that guidance and your notified body.
+
+## Limits
+
+&gt; This covers MDR Article 120(3) and (3a)–(3d) as amended by Regulation (EU) 2023/607, retrieved verbatim from the Official Journal on 2026-09-10. It does **not** cover Article 120&apos;s other paragraphs, **IVDR Article 110** (the parallel IVD transition, whose dates differ), MDCG guidance including on what counts as a significant change, Annex VII, or national practice. The transition is conditional and fact-specific; this is a first-pass aid, not legal or regulatory advice, and not a substitute for your notified body or a qualified regulatory professional.</pre>
+</div>
+</details></div>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 2</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">4 turns · $0.13 · 19:53:13 UTC</span>
+</div>
+
+<div class="graders"><details class="grader">
+<summary><span class="chip chip-pass">✓ pass</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: PASS PASS PASS</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✓ ✓ ✓</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">## Class III implantable device, MDD certificate under 93/42/EEC
+
+**Class:** III (as stated)
+**Route:** Article 120(3a) — notified-body certificate issued under 93/42/EEC
+**Deadline:** **31 December 2027** — conditional on 120(3c)
+
+| Question | Answer | Basis |
+|---|---|---|
+| Which paragraph applies | 120(3a)(a) — device holds a certificate issued under 93/42/EEC and valid by virtue of 120(2) | `[verified]` |
+| Class-dependent date | 31 December 2027, the date for all class III devices (class III takes this date whether or not implantable) | `[verified]` |
+| 3c conditions met? | **Not established** — needs your confirmation | — |
+
+### The conditional part — please confirm this before relying on 2027
+
+The extension is not automatic. All **five** conditions in 120(3c) are cumulative, and two of them fell due in 2024:
+
+- Continued compliance with 93/42/EEC
+- **No significant changes in design and intended purpose**
+- No unacceptable risk to health or safety
+- A quality management system per Article 10(9) in place **no later than 26 May 2024**
+- A formal application lodged with a notified body **no later than 26 May 2024**, *and* a written agreement signed with that notified body **no later than 26 September 2024**
+
+If any of those was missed, the extension was never available to this device and the answer is different. Can you confirm the QMS date, the application date, and the signed agreement date?
+
+### On 26 May 2024
+
+Two opposite errors are common here. 26 May 2024 is **no longer** the date by which a legacy device must leave the market — Regulation (EU) 2023/607 superseded that. But it has not become irrelevant: it is now the deadline for the QMS and the notified-body application, i.e. the conditions that 31 December 2027 *depends on*. 26 September 2024 was the deadline for the signed written agreement.
+
+### What would change this
+
+- **Any of the 3c conditions missed** — the extension falls away entirely.
+- **A significant change in design or intended purpose** since the certificate was issued. What counts as &quot;significant&quot; under 3c(b) is dealt with in MDCG guidance, which this reference does not carry — if your question turns on that, I can&apos;t answer it from here.
+- Also note **120(3d)**: during the transition, MDR&apos;s requirements on post-market surveillance, market surveillance, vigilance, and registration of economic operators and devices apply **in place of** the corresponding 93/42/EEC requirements. A legacy device is not living entirely under the old regime.
+
+## Limits
+
+&gt; This covers MDR Article 120(3) and (3a)–(3d) as amended by Regulation (EU) 2023/607, retrieved verbatim from the Official Journal on 2026-09-10. It does **not** cover Article 120&apos;s other paragraphs, **IVDR Article 110** (the parallel IVD transition, whose dates differ), MDCG guidance including on what counts as a significant change, Annex VII, or national practice. The transition is conditional and fact-specific; this is a first-pass aid, not legal or regulatory advice, and not a substitute for your notified body or a qualified regulatory professional.</pre>
+</div>
+</details></div>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 3</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">4 turns · $0.13 · 19:53:41 UTC</span>
+</div>
+
+<div class="graders"><details class="grader">
+<summary><span class="chip chip-pass">✓ pass</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: PASS PASS PASS</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✓ ✓ ✓</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">## Class III implantable device, MDD certificate under 93/42/EEC
+
+**Class:** III (as stated)
+**Route:** Article 120(3a) — notified-body certificate issued under 93/42/EEC
+**Deadline:** **31 December 2027** — conditional on Article 120(3c)
+
+| Question | Answer | Basis |
+|---|---|---|
+| Which paragraph applies | 120(3a), via a certificate issued under 93/42/EEC and valid by virtue of 120(2) | `[verified]` |
+| Class-dependent date | 31 Dec 2027, per 120(3a)(a) — all class III devices (the class IIb implantable exception list is irrelevant here, since you are class III either way) | `[verified]` |
+| 3c conditions met? | **Not established — you have not told me, and this is what the date depends on** | `[verified]` |
+
+That is roughly 15½ months from today.
+
+**The 26 May 2024 point, both halves.** The original 2017 Article 120 set 26 May 2024 as the date a legacy device had to leave the market. Regulation (EU) 2023/607 superseded that — so 2024 is *not* your market deadline. But it did not delete the date: 26 May 2024 is now the date by which two of the conditions your 2027 extension *depends on* had to be met, and 26 September 2024 a third.
+
+**What would change this.** The extension is not automatic. All five conditions in 120(3c) are cumulative:
+
+- (a) the device continues to comply with 93/42/EEC;
+- (b) **no significant changes in design and intended purpose**;
+- (c) no unacceptable risk to health or safety;
+- (d) a **quality management system** per Article 10(9) in place **no later than 26 May 2024**;
+- (e) a **formal application** lodged with a notified body **no later than 26 May 2024**, and a **signed written agreement** with that notified body **no later than 26 September 2024**.
+
+If any of those was missed, the extension was never available to you and your position is different — the 2027 date would not apply. Since all three of those dates are now in the past, this is checkable rather than speculative: **can you confirm the QMS was in place and the application lodged by 26 May 2024, and the written agreement signed by 26 September 2024?** If yes, 31 December 2027 is your date. If any is no, tell me and we should look at it separately.
+
+Two things worth flagging while you check:
+
+- **You are already under parts of MDR.** Article 120(3d) — MDR&apos;s requirements on post-market surveillance, market surveillance, vigilance, and registration of economic operators and devices apply **in place of** the 93/42/EEC equivalents during the transition. A legacy device is not living wholly under the old Directive. `[verified]`
+- **Condition (b) is the one that bites quietly.** If you have made design or intended-purpose changes since certification, whether they are &quot;significant&quot; under 3c(b) is governed by MDCG guidance, which this reference does not carry. If your answer turns on that, I can&apos;t resolve it here — that goes to your notified body.
+
+## Limits
+
+&gt; This covers MDR Article 120(3) and (3a)–(3d) as amended by Regulation (EU) 2023/607, retrieved verbatim from the Official Journal (OJ L 80, 20.3.2023) on 2026-09-10. It does **not** cover Article 120&apos;s other paragraphs, **IVDR Article 110** (the parallel IVD transition, whose dates differ), MDCG guidance including on what counts as a significant change, Annex VII, or national practice. The transition is conditional and fact-specific; this is a first-pass aid, not legal or regulatory advice, and not a substitute for your notified body or a qualified regulatory professional.</pre>
+</div>
+</details></div>
+</div>
+</section><section class="arm">
+<div class="arm-head">
+<span class="arm-label">Baseline (no plugin)</span>
+<span class="meter m-base" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">100% of runs perfect</span>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 1</span>
+<span class="meter m-base" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">1 turns · $0.12 · 19:54:08 UTC</span>
+</div>
+
+<div class="graders"><details class="grader">
+<summary><span class="chip chip-pass">✓ pass</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: PASS PASS PASS</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✓ ✓ ✓</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">## Short answer
+
+**31 December 2027** — that&apos;s the last day you can *place* the device on the EU market under the MDD certificate. From 1 January 2028 you need an MDR certificate in hand.
+
+## The legal basis
+
+Article 120 MDR (Regulation (EU) 2017/745), as amended by **Regulation (EU) 2023/607**. The extension is risk-class-tiered:
+
+| Device category | Placing on market until |
+|---|---|
+| **Class III; Class IIb implantable** (except the listed &quot;well-established technology&quot; items — sutures, staples, dental fillings/braces/crowns, screws, wedges, plates, wires, pins, clips, connectors) | **31 Dec 2027** |
+| Other Class IIb, Class IIa, Class I with NB involvement (sterile / measuring / reusable surgical) | 31 Dec 2028 |
+| Class III **custom-made** implantable | 26 May 2026 — *already passed* |
+
+Your MDD certificate is deemed valid to that date by operation of law (Art. 120(2)) even though the date printed on it is earlier. You don&apos;t need the notified body to reissue anything.
+
+## The conditions — check these, because the gates are in the past
+
+The extension only applies if **all** of the following hold. Two of them had hard deadlines that expired in 2024:
+
+1. The device continues to comply with the MDD.
+2. **No significant changes** in design or intended purpose since — see MDCG 2020-3 rev.1 for what counts. This is the one that most often bites: a change you made for supply-chain or component-obsolescence reasons can silently forfeit the extension.
+3. No unacceptable risk to health and safety.
+4. **By 26 May 2024** you had an MDR-compliant QMS in place (Art. 10(9)).
+5. **By 26 May 2024** you lodged a formal MDR conformity assessment application with a notified body, **and by 26 September 2024** you signed a written agreement with that notified body.
+
+If 4 or 5 weren&apos;t met, the extension never applied to you and the MDD certificate lapsed on its stated expiry — you&apos;d be placing product on the market unlawfully today. Worth confirming the signed NB agreement is on file with a date on or before 26 Sep 2024.
+
+## Two things people commonly get wrong
+
+**MDR obligations already apply to you.** Since 26 May 2021, the MDR rules on post-market surveillance, vigilance, registration of economic operators and devices apply to legacy devices in place of the MDD equivalents (Art. 120(3), final subparagraph). The transition period is not a pause on MDR — only on conformity assessment.
+
+**There is no sell-off deadline any more.** Regulation 2023/607 deleted the old 26 May 2025 cut-off. Devices lawfully *placed on the market* on or before 31 Dec 2027 can continue to be made available and put into service indefinitely. So stock already in the distribution chain on 31 Dec 2027 is not stranded — the deadline constrains first placing on the market, not downstream sale.
+
+## Practical read
+
+You have roughly 15 months. For a Class III implantable, notified bodies are generally looking for the full technical documentation review plus clinical evaluation to be substantially complete well before the certificate date, and review cycles with deficiency rounds routinely run 12–18 months. If you&apos;re not already in active review with deficiency responses going back and forth, the 31 Dec 2027 date is at genuine risk — and there is no discretionary extension mechanism beyond Art. 59/97 national derogations, which are granted narrowly and per–Member State.
+
+One flag: a broader targeted revision of the MDR/IVDR framework has been under discussion at Commission level. Nothing adopted changes the 2027 date, so plan against it — but it&apos;s worth having your regulatory affairs team watching that file rather than assuming the date will move.
+
+This is a summary of the regulation as it stands, not legal advice — have your notified body confirm your specific certificate&apos;s status and your RA/legal counsel confirm the &quot;significant changes&quot; assessment, since that determination is device-specific and is where most challenges arise.</pre>
+</div>
+</details></div>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 2</span>
+<span class="meter m-base" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">4 turns · $0.16 · 19:54:55 UTC</span>
+</div>
+
+<div class="graders"><details class="grader">
+<summary><span class="chip chip-pass">✓ pass</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: PASS PASS PASS</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✓ ✓ ✓</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">Web access is blocked in this session, so this is from the regulation text as I know it — verify against the current consolidated EUR-Lex version of MDR Article 120 before relying on it for a filing.
+
+## The date: 31 December 2027
+
+Under Article 120(2) and 120(3a)(a) of the MDR as amended by **Regulation (EU) 2023/607**, your MDD certificate is deemed valid — and the device can keep being placed on the EU market — until **31 December 2027**, because Class III is in the &quot;higher-risk&quot; bucket (Class III plus Class IIb implantables, excluding the listed well-established technologies like sutures, staples, dental fillings, screws, plates, wires and pins).
+
+That&apos;s the extended date, not the certificate&apos;s printed expiry. The 2023 amendment overrides the face of the certificate.
+
+## But it&apos;s conditional — and the gates have already closed
+
+The extension only applies if **all** of Article 120(3c) is satisfied. Today is September 2026, so the deadlines below are in the past. These are pass/fail checks on your file, not things you can still act on:
+
+| Condition | Deadline | Status |
+|---|---|---|
+| Device still complies with MDD | ongoing | — |
+| No significant change in design or intended purpose | ongoing | — |
+| No unacceptable risk to health/safety | ongoing | — |
+| QMS per MDR Article 10(9) in place | 26 May 2024 | passed |
+| Formal MDR conformity-assessment application lodged with a notified body | 26 May 2024 | passed |
+| Written agreement signed with that notified body | 26 September 2024 | passed |
+
+If any of the three dated conditions was missed, **you have no extension at all** — the legal basis for your MDD certificate lapsed on its original expiry date or on 26 May 2024, whichever applied, and continued placing on the market since then has been non-compliant. That&apos;s the first thing to confirm, ahead of any 2027 planning.
+
+## Two things that are commonly misread
+
+**&quot;Placing on the market&quot; ≠ &quot;making available.&quot;** Regulation 2023/607 also deleted the old sell-off deadline in Article 120(4). Units you lawfully **place on the market** on or before 31 December 2027 can continue to be made available down the distribution chain and put into service **with no end date**. So stock in distributors&apos; hands on 1 January 2028 is not stranded. What stops on 31 December 2027 is your ability to place *new* units on the market without an MDR certificate.
+
+**MDR obligations already apply to you now.** Article 120(3) substitutes the MDR requirements for post-market surveillance, market surveillance, vigilance, and registration of economic operators and devices in place of the MDD ones. You are a legacy device, not an MDD-only device. Also note Article 10a (from Regulation (EU) 2024/1860), in force since 10 January 2025: you must give advance notice to competent authorities and economic operators if you&apos;re going to interrupt or discontinue supply — which bites directly if you decide not to pursue MDR certification for this device.
+
+**No significant change** is the condition most likely to trip you up over the next 15 months. Design changes, intended-purpose changes, and certain supplier/manufacturing changes can void the extension. MDCG 2020-3 rev.1 is the guidance to work against before you approve any change to this device.
+
+## What &quot;fully MDR certified&quot; needs to mean in practice
+
+Aim to hold the MDR certificate in hand well before 31 December 2027, not on it. Notified body capacity for Class III implantables is the binding constraint, and review cycles including non-conformity rounds routinely run past 12–18 months. If your NB hasn&apos;t yet completed the design dossier review, get a dated milestone plan from them now.
+
+If certification is going to slip past the date, the fallback routes are Article 59(1) (competent-authority derogation, national, per-country) or Article 97(1) — both are exceptional, discretionary, and not a plan.
+
+**Suggested next step:** pull the file and confirm the three 2024 dates were met, with documentary evidence of the signed NB agreement in particular. Tell me what you find and I can work through the implications from there.</pre>
+</div>
+</details></div>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 3</span>
+<span class="meter m-base" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">4 turns · $0.19 · 19:55:49 UTC</span>
+</div>
+
+<div class="graders"><details class="grader">
+<summary><span class="chip chip-pass">✓ pass</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: PASS PASS PASS</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✓ ✓ ✓</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">I couldn&apos;t run a web check (WebSearch is blocked in this session), so the below is from the regulation text as I know it — my information runs to **May 2026**, and you&apos;re asking in September 2026. Flagging that gap up front because there was an active Commission workstream on a broader MDR revision; see the last section.
+
+## Short answer
+
+**31 December 2027** — but only if you met a set of conditions whose deadlines were in 2024. There is no extension beyond that date for Class III, and no further sell-off cliff after it.
+
+## Where the date comes from
+
+Article 120 MDR ((EU) 2017/745), as amended by **Regulation (EU) 2023/607**. MDD certificates that (a) were issued before 26 May 2021 and (b) were still valid on 20 March 2023 and have not since been withdrawn remain valid until:
+
+| Device class | Transitional end date |
+|---|---|
+| Class III; Class IIb implantable (except the &quot;well-established technology&quot; list — sutures, staples, dental fillings, braces, crowns, screws, wedges, plates, wires, pins, clips, connectors) | **31 Dec 2027** |
+| Other Class IIb, Class IIa, Class I sterile / measuring / reusable surgical | 31 Dec 2028 |
+
+A Class III implantable falls squarely in the first row. The WET carve-out doesn&apos;t help you — it only applies to Class IIb implantables.
+
+Two things worth knowing about the mechanics:
+
+- The extension operates **by law**, not by re-issued certificate. If your certificate&apos;s printed expiry has already passed, that is fine; it is still valid for MDR purposes. Notified bodies issue confirmation letters for customers and customs, and that&apos;s usually what tenders ask for.
+- The **sell-off deadline was deleted** entirely by 2023/607 (old Art. 120(4) is gone). Units you lawfully *place on the market* on or before 31 Dec 2027 can continue to be made available and put into service after that date with no end date. The 2027 cliff is on placing on the market — first supply of each individual unit in the EU — not on distributors&apos; or hospitals&apos; existing stock.
+
+## The conditions — this is the part that actually matters now
+
+The extension was never automatic. Under Article 120(3c) you needed, cumulatively:
+
+1. Continued compliance with the MDD.
+2. **No significant changes** in design or intended purpose.
+3. No unacceptable risk to health and safety.
+4. An **MDR-compliant QMS in place by 26 May 2024**.
+5. A **formal MDR conformity assessment application lodged with a notified body by 26 May 2024** (Annex VII 4.3, first paragraph) — for this device or its replacement.
+6. A **written agreement signed with that notified body by 26 September 2024** (Annex VII 4.3, second paragraph).
+
+All three dated conditions are ~2 years in the past. So the real question isn&apos;t &quot;how long do we have&quot; — it&apos;s **which of these you can evidence**. If items 4–6 were met, you&apos;re covered to 31 Dec 2027. If the application or the signed agreement was missed, the extension never attached to this device, and it has not been lawfully placeable on the EU market since — that&apos;s a live compliance exposure now, not a 2027 problem. That&apos;s the first thing I&apos;d go verify, and I&apos;d want to see the dated application acknowledgement and the countersigned NB agreement, not just an internal assertion that it was handled.
+
+Also note that since 26 May 2021 the MDR chapters on post-market surveillance, market surveillance, vigilance, and registration of economic operators and devices have applied to your legacy device in place of the MDD equivalents, and surveillance of the device sits with your MDR notified body under that signed agreement — not with your old MDD notified body.
+
+## Planning back from 31 Dec 2027
+
+To keep placing product after that date you need the **MDR certificate issued** — not merely submitted, not &quot;in final review&quot; — by 31 Dec 2027. For a Class III implantable that means Annex IX full QMS plus design dossier examination, and for an implantable also the Article 54 clinical evaluation consultation procedure (expert panel) if it&apos;s in a relevant category. Notified body review cycles for Class III design dossiers have been running long, with multiple deficiency rounds normal. From September 2026 that is roughly 15 months of calendar for a process that commonly takes longer, so if your dossier isn&apos;t already deep into review the schedule risk is real.
+
+If you&apos;re going to miss it, the fallbacks are national and discretionary, not a strategy: an Article 59 derogation from a competent authority (single-market-wide only if the Commission extends it), or forbearance via the Article 97 non-compliance route. Both are country-by-country and neither is something to plan around.
+
+## The caveat on my date
+
+As of May 2026, **no further extension of 31 December 2027 had been adopted**. The Commission had signalled a broader MDR/IVDR revision with a legislative proposal expected around end-2026, and there was industry pressure over Class III/IIb capacity — but a proposal is years from applying, and nothing in it had changed Article 120. Given the date sensitivity here, confirm against the consolidated Article 120 on EUR-Lex and the current MDCG guidance before you act on the 2027 date. If you re-enable web access I&apos;ll check that directly.
+
+I&apos;m giving you the regulatory reading, not legal advice — for a Class III implantable with a possible gap in the 120(3c) conditions, get your regulatory counsel and your notified body on it.</pre>
+</div>
+</details></div>
+</div>
+</section>
+</details>
+<details class="section" open>
+<summary>Prompt</summary>
+<div class="md"><p>We have a Class III implantable device with a valid MDD certificate issued under
+93/42/EEC. We're still selling it. How long can we keep placing it on the EU market
+before we have to be fully MDR certified?</p>
+</div>
+</details>
+<details class="section" open>
+<summary>Graders — what "good" means for this case</summary>
+<div class="grader-def">
+<div class="grader-def-head"><span class="grader-name">criteria</span><span class="badge">llm</span></div>
+<div class="md"><p>MDR Art. 120(3a)(a), as amended by Regulation (EU) 2023/607, gives class III devices
+until <strong>31 December 2027</strong>. The original 2017 text said 26 May 2024; that is superseded
+as a market deadline.</p>
+<p>PASS requires:
+(1) The stated deadline is <strong>31 December 2027</strong>.
+(2) It does NOT present 26 May 2024 as the date by which the device must leave the
+    market.
+(3) It notes the extension is conditional on Art. 120(3c) — at minimum that conditions
+    exist and were required, not that 2027 is automatic.</p>
+<p>Mentioning 26 May 2024 in its CORRECT role — the deadline for the QMS and for lodging the
+notified-body application under 3c(d) and 3c(e) — is right and expected. Judge how the
+date is used, not whether it appears.</p>
+<p>FAIL if the answer is 26 May 2024, or any 2024 date, as the market deadline. That is the
+superseded text and the specific failure this case tests.</p>
+</div>
+</div>
+</details>
+</article>
+<article class="case" id="case-2">
+<div class="case-head">
+<h2>class-dependent-date</h2>
+<span class="muted mono">evals/02-class-dependent-date</span>
+<span class="spacer"></span>
+
+<span class="delta delta-zero">· 0.0 pts</span>
+<span class="muted">with plugin</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:100.0%"></span><i class="tick" style="left:100.0%"></i></span>
+<span class="num case-score">100%</span>
+</div>
+
+<details class="section" open>
+<summary>Results</summary>
+<section class="arm">
+<div class="arm-head">
+<span class="arm-label">With plugin</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">100% of runs perfect</span>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 1</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">4 turns · $0.15 · 19:57:02 UTC</span>
+</div>
+
+<div class="graders"><details class="grader">
+<summary><span class="chip chip-pass">✓ pass</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: PASS PASS PASS</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✓ ✓ ✓</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">**Same deadline for both: 31 December 2028.** The higher class does not pull the infusion pump forward — the 2027 tier is Class III and Class IIb *implantable* only. A non-implantable Class IIb device falls in 3a(b) alongside Class IIa.
+
+## Class IIa patient monitor
+
+**Class:** IIa
+**Route:** 120(3a) — notified-body certificate under 93/42/EEC
+**Deadline:** 31 December 2028 — conditional on 120(3c)
+
+| Question | Answer | Basis |
+|---|---|---|
+| Which paragraph applies | Art. 120(3a)(b) — certificate valid by virtue of 120(2) | `[verified]` |
+| Class-dependent date | 31 Dec 2028 — 3a(b) names class IIa expressly | `[verified]` |
+| 3c conditions met? | NOT SUPPLIED | — |
+
+**What would change this:** nothing on class — IIa has a single date. Only a failed 3c condition removes the extension.
+
+## Class IIb non-implantable infusion pump
+
+**Class:** IIb, non-implantable
+**Route:** 120(3a) — notified-body certificate under 93/42/EEC
+**Deadline:** 31 December 2028 — conditional on 120(3c)
+
+| Question | Answer | Basis |
+|---|---|---|
+| Which paragraph applies | Art. 120(3a)(b) — &quot;class IIb devices other than those covered by point (a)&quot; | `[verified]` |
+| Class-dependent date | 31 Dec 2028; the 2027 date in 3a(a) reaches class III and class IIb **implantable** only | `[verified]` |
+| 3c conditions met? | NOT SUPPLIED | — |
+
+**What would change this:** implantable status. If the pump were implantable it would move to 31 December 2027 under 3a(a), a year earlier. You describe it as non-implantable, so 2028 holds — but confirm that classification is what the certificate says.
+
+## The conditional part, for both
+
+31 December 2028 is not automatic. It applies only if all five conditions in 120(3c) were met, cumulatively:
+
+- continued compliance with 93/42/EEC
+- **no significant changes in design and intended purpose**
+- no unacceptable risk to health or safety
+- a quality management system per Article 10(9) in place **no later than 26 May 2024**
+- a formal application lodged with a notified body **no later than 26 May 2024**, and the written agreement with that notified body signed **no later than 26 September 2024**
+
+26 May 2024 is no longer the market deadline — that was the pre-2023/607 text — but it did not go away. It became the date the QMS and application had to be done by. If either product missed 26 May 2024 or 26 September 2024, the extension was never available for it and its position is different from what&apos;s above. Worth confirming per product before you build a plan on 2028.
+
+Also note 120(3d): during the transition, MDR&apos;s post-market surveillance, vigilance, market surveillance and registration requirements already apply to both devices *in place of* the Directive&apos;s. That obligation is live now, independent of the 2028 date.
+
+## Sequencing
+
+Since the class-based dates are identical, class gives you no ordering signal here. Order the notified body work on the facts that actually differ — where each product sits in its NB&apos;s review queue under the signed agreements, remaining technical documentation gaps, and clinical evidence maturity. The infusion pump is the likelier one to carry heavier clinical-evaluation and usability expectations, but that&apos;s an engineering judgment about your files, not something Article 120 decides.
+
+One flag: if either product has changed since certification and you&apos;re weighing whether that breaks 3c(b), that turns on what counts as a &quot;significant change&quot; — MDCG guidance, which this skill does not carry. I can&apos;t answer that part.
+
+## Limits
+
+&gt; This covers MDR Article 120(3) and (3a)–(3d) as amended by Regulation (EU) 2023/607, retrieved verbatim from the Official Journal on 2026-09-10. It does **not** cover Article 120&apos;s other paragraphs, **IVDR Article 110** (the parallel IVD transition, whose dates differ), MDCG guidance including on what counts as a significant change, Annex VII, or national practice. The transition is conditional and fact-specific; this is a first-pass aid, not legal or regulatory advice, and not a substitute for your notified body or a qualified regulatory professional.</pre>
+</div>
+</details></div>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 2</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">4 turns · $0.14 · 19:58:04 UTC</span>
+</div>
+
+<div class="graders"><details class="grader">
+<summary><span class="chip chip-pass">✓ pass</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: PASS PASS PASS</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✓ ✓ ✓</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">## Same deadline — **31 December 2028** for both
+
+Both land in the same limb of the amended text, Article 120(3a)(b), which groups class IIa together with class IIb devices *other than* implantables. The 2027 date applies only to class III and class IIb **implantable** devices — a non-implantable infusion pump is not in that group, so the IIb classification does not pull it earlier. `[verified]`
+
+## Class IIa patient monitor
+
+**Class:** IIa
+**Route:** 120(3a) — valid MDD certificate
+**Deadline:** 31 December 2028 — conditional on 120(3c)
+
+| Question | Answer | Basis |
+|---|---|---|
+| Which paragraph applies | 120(3a)(b) | `[verified]` |
+| Class-dependent date | 31 Dec 2028 | `[verified]` |
+| 3c conditions met? | Not established — see below | |
+
+## Class IIb non-implantable infusion pump
+
+**Class:** IIb, non-implantable
+**Route:** 120(3a) — valid MDD certificate
+**Deadline:** 31 December 2028 — conditional on 120(3c)
+
+| Question | Answer | Basis |
+|---|---|---|
+| Which paragraph applies | 120(3a)(b) — &quot;class IIb devices other than those covered by point (a)&quot; | `[verified]` |
+| Class-dependent date | 31 Dec 2028 | `[verified]` |
+| 3c conditions met? | Not established — see below | |
+
+## The condition you need to confirm before planning anything
+
+The 2028 date is not automatic. It applies only if all five conditions in 120(3c) were met, cumulatively: continued compliance with 93/42/EEC, no significant changes in design and intended purpose, no unacceptable risk, a quality management system in place **by 26 May 2024**, and a formal application lodged with a notified body **by 26 May 2024** with the written agreement signed **by 26 September 2024**. `[verified]`
+
+26 May 2024 is no longer the market deadline — but it did not stop mattering. It became the date the extension depends on. If either device missed the QMS or the application deadline, the extension was never available for it and its answer is different. That is worth confirming per device before you sequence anything, because it is the only thing here that could separate them.
+
+**What would change this:** for the pump, if it is in fact implantable, it moves to 31 December 2027. For either device, a failed 3c condition removes the extension entirely. Also note that the class that governs is the **MDR** class, not the MDD class the certificate was issued against — if either device reclassifies upward under MDR, check the date against the new class.
+
+## On sequencing
+
+Article 120 does not separate these two, so it gives you no ordering. Anything that does — notified body capacity, review-time expectations for a IIb versus a IIa, your own application queue positions — sits outside what this covers, and I&apos;d want your notified body&apos;s input rather than a guess from me. `[verify]`
+
+One thing that is not deadline-dependent: under 120(3d), MDR&apos;s post-market surveillance, vigilance, market surveillance and registration requirements already apply to both devices **in place of** the MDD&apos;s, throughout the transition. `[verified]`
+
+## Limits
+
+&gt; This covers MDR Article 120(3) and (3a)–(3d) as amended by Regulation (EU) 2023/607, retrieved verbatim from the Official Journal on 2026-09-10. It does **not** cover Article 120&apos;s other paragraphs, **IVDR Article 110** (the parallel IVD transition, whose dates differ), MDCG guidance including on what counts as a significant change, Annex VII, or national practice. The transition is conditional and fact-specific; this is a first-pass aid, not legal or regulatory advice, and not a substitute for your notified body or a qualified regulatory professional.</pre>
+</div>
+</details></div>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 3</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">4 turns · $0.14 · 19:58:33 UTC</span>
+</div>
+
+<div class="graders"><details class="grader">
+<summary><span class="chip chip-pass">✓ pass</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: PASS PASS PASS</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✓ ✓ ✓</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">Both land on the same date. Here&apos;s the breakdown.
+
+## Class IIa patient monitor
+
+**Class:** IIa
+**Route:** 120(3a) — notified-body certificate under 93/42/EEC, valid by virtue of 120(2)
+**Deadline:** **31 December 2028** — conditional on 120(3c)
+
+| Question | Answer | Basis |
+|---|---|---|
+| Which paragraph applies | 120(3a)(b) — class IIa is named explicitly | `[verified]` |
+| Class-dependent date | 31 Dec 2028 | `[verified]` |
+| 3c conditions met? | NOT SUPPLIED | — |
+
+**What would change this:** failure of any 3c condition — no QMS by 26 May 2024, no application lodged by 26 May 2024, no signed written agreement by 26 September 2024, a significant change in design or intended purpose, or loss of compliance with 93/42/EEC.
+
+## Class IIb non-implantable infusion pump
+
+**Class:** IIb, non-implantable
+**Route:** 120(3a) — notified-body certificate under 93/42/EEC, valid by virtue of 120(2)
+**Deadline:** **31 December 2028** — conditional on 120(3c)
+
+| Question | Answer | Basis |
+|---|---|---|
+| Which paragraph applies | 120(3a)(b) — &quot;class IIb devices other than those covered by point (a)&quot;; point (a) covers only class IIb **implantable** | `[verified]` |
+| Class-dependent date | 31 Dec 2028 | `[verified]` |
+| 3c conditions met? | NOT SUPPLIED | — |
+
+**What would change this:** the same 3c conditions, plus the implantable question — the 2027 date in 3a(a) attaches to class IIb **implantable** devices. A non-implantable infusion pump is not caught by it. If any variant in the family is implantable, that variant moves to 31 December 2027.
+
+---
+
+## Same deadline — and one thing to confirm
+
+Both are 31 December 2028 under 120(3a)(b). Class is not what separates them here; the 2027/2028 split in Article 120(3a) turns on class III and class IIb *implantable*, and neither device is either.
+
+So the ordering question isn&apos;t answered by the transition dates. What can still separate them is whether each one actually qualified for the extension, and I don&apos;t have that:
+
+- Was a **QMS under Article 10(9)** in place for each device by **26 May 2024**?
+- Was a **formal application** lodged with a notified body by **26 May 2024**, and a **written agreement signed by 26 September 2024**?
+
+Those dates have passed. If either device missed them, the extension was never available for it and its position is different — that is the fact that would actually set your priority, not the class. Worth confirming per device before you plan the notified body work.
+
+Two more points that bear on planning:
+
+- **No significant changes in design and intended purpose** (3c(b)) is a continuing condition, not a one-time check. What counts as significant is dealt with in MDCG guidance, which this skill does not carry — if your sequencing depends on that, treat it as an open question.
+- **Article 120(3d):** during the transition, MDR&apos;s post-market surveillance, vigilance, market surveillance and registration requirements apply to both devices **in place of** the 93/42/EEC ones. Neither device is running purely under the old regime in the meantime.
+
+## Limits
+
+&gt; This covers MDR Article 120(3) and (3a)–(3d) as amended by Regulation (EU) 2023/607, retrieved verbatim from the Official Journal on 2026-09-10. It does **not** cover Article 120&apos;s other paragraphs, **IVDR Article 110** (the parallel IVD transition, whose dates differ), MDCG guidance including on what counts as a significant change, Annex VII, or national practice. The transition is conditional and fact-specific; this is a first-pass aid, not legal or regulatory advice, and not a substitute for your notified body or a qualified regulatory professional.</pre>
+</div>
+</details></div>
+</div>
+</section><section class="arm">
+<div class="arm-head">
+<span class="arm-label">Baseline (no plugin)</span>
+<span class="meter m-base" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">100% of runs perfect</span>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 1</span>
+<span class="meter m-base" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">1 turns · $0.10 · 19:59:03 UTC</span>
+</div>
+
+<div class="graders"><details class="grader">
+<summary><span class="chip chip-pass">✓ pass</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: PASS PASS PASS</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✓ ✓ ✓</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">**Same deadline: 31 December 2028** — for both.
+
+Under MDR Article 120(3a)–(3b) as amended by Regulation (EU) 2023/607, the staggered extension has two buckets:
+
+| Bucket | Deadline |
+|---|---|
+| Class III, and Class IIb **implantable** (excluding WET devices: sutures, staples, dental fillings, braces, tooth crowns, screws, wedges, plates, wires, pins, clips, connectors) | 31 Dec 2027 |
+| **All other Class IIb**, all Class IIa, Class I sterile / measuring / reusable surgical, plus Class IIb implantable WET devices | 31 Dec 2028 |
+
+Your Class IIa monitor sits in the second bucket. Your Class IIb pump is explicitly *non-implantable*, so it also lands in the second bucket rather than the 2027 one. Note the deadline is driven by risk class, not by the expiry date printed on the MDD certificate — the certificate is deemed valid to the Article 120 date provided the conditions are met.
+
+**Two things to check before you plan around 2028**
+
+1. **The conditions are retrospective and the gates have closed.** The extension only applies if, by **26 May 2024**, you had an MDR-compliant QMS in place and had lodged a formal MDR application; and by **26 September 2024** you had a signed written agreement with the notified body. If either device missed those dates, its extension never attached, and it is not lawfully on the market today regardless of the 2028 date. Verify both files before anything else. The other standing conditions are: continued MDD compliance, no significant change in design or intended purpose (see MDCG 2020-3 rev.1), and no unacceptable risk to health and safety.
+2. **Sell-off is gone.** Regulation 2023/607 deleted the Article 120(4) sell-off date, so devices already placed on the market can continue to be made available without a separate cut-off.
+
+**Which to do first: the Class IIb infusion pump.** Same deadline, but materially more notified body work — Annex IX conformity assessment with technical documentation assessment on a sampling basis per generic device group, and if the pump is software-driven you are also carrying IEC 62304 lifecycle evidence and MDCG 2019-16 cybersecurity documentation. Clinical evidence expectations under Article 61 and Annex XIV are heavier than for a monitor, and infusion pumps attract close scrutiny of usability engineering (IEC 62366) and dose-accuracy performance. The Class IIa monitor, by contrast, likely goes through Annex IX Chapter I QMS assessment with sampling, or Annex XI Section 10 — a shorter path.
+
+Worth confirming the pump&apos;s classification rule with your notified body if you haven&apos;t: Rule 12 puts active devices administering medicinal products in Class IIa, escalating to IIb where the manner of administration is potentially hazardous. If anything in the review pushes it toward Class III, the deadline moves to 31 December 2027 and the priority ordering becomes mandatory rather than tactical.</pre>
+</div>
+</details></div>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 2</span>
+<span class="meter m-base" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">4 turns · $0.14 · 19:59:37 UTC</span>
+</div>
+
+<div class="graders"><details class="grader">
+<summary><span class="chip chip-pass">✓ pass</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: PASS PASS PASS</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✓ ✓ ✓</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">Web search was blocked in this session, so this is from my own knowledge (cutoff May 2026) — verify against the current consolidated text of Article 120 before you commit budget.
+
+## Same deadline: 31 December 2028
+
+Both fall in the same bucket under MDR Article 120(3a), as amended by Regulation (EU) 2023/607:
+
+| Device | Category | Deadline |
+|---|---|---|
+| Class IIa patient monitor | Class IIa | **31 Dec 2028** |
+| Class IIb infusion pump (non-implantable) | Class IIb, not implantable | **31 Dec 2028** |
+
+The 31 December **2027** date only catches Class III and Class IIb **implantable** devices (minus the well-established-technology carve-out — sutures, staples, dental fillings, screws, plates, wires, pins, clips, connectors). A non-implantable IIb pump is explicitly outside that, so it sits with the IIa devices in 2028. Class IIb does *not* automatically mean the earlier date — implantability is the discriminator, not the class.
+
+## The thing that actually matters more than the class
+
+The extension is conditional, and two of the conditions had hard dates that are now ~two years past:
+
+- QMS compliant with Article 10(9) in place by **26 May 2024**
+- Formal application lodged with a notified body by **26 May 2024**
+- Written agreement signed with that NB by **26 September 2024**
+
+Plus the ongoing conditions: continued MDD compliance, no significant change in design or intended purpose, no unacceptable risk.
+
+If either product missed those, it never had the extension — its certificate lapsed at its own natural expiry date and the 2028 date is irrelevant. Confirm the signed NB agreements exist for both before planning anything else. Note also that the sell-off deadline was deleted entirely by 2023/607, so stock already placed on the market can continue to be made available indefinitely.
+
+## Which to do first
+
+The deadline doesn&apos;t sequence this for you, so sequence on workload and risk:
+
+1. **The infusion pump.** Class IIb active device delivering medicinal products — this is where Rule 12/Rule 11 software scrutiny, IEC 60601-1-8 and 60601-2-24, usability (62366-1), cybersecurity, and clinical evaluation under MDCG 2020-6 will bite hardest. It carries the higher NB review effort and the higher chance of major non-conformities and a second review round. Deviation cost is asymmetric.
+2. **The patient monitor.** Also non-trivial (alarms, software class), but generally a lighter clinical-evidence lift than a drug-delivery device.
+
+Two practical modifiers: check the **natural expiry dates** of each MDD certificate — if one expires materially earlier, the NB&apos;s own surveillance obligations under Article 120(3e) may force sequencing. And check whether either NB agreement specifies review slots, since NB capacity, not your internal readiness, is usually the binding constraint on 2028 timelines.
+
+If you want, tell me the certificate expiry dates and the NBs involved and I can sketch a backward-planned schedule from 31 Dec 2028.</pre>
+</div>
+</details></div>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 3</span>
+<span class="meter m-base" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">1 turns · $0.14 · 20:00:23 UTC</span>
+</div>
+
+<div class="graders"><details class="grader">
+<summary><span class="chip chip-pass">✓ pass</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: PASS PASS PASS</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✓ ✓ ✓</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">## Same deadline: 31 December 2028 for both
+
+The MDR transition split introduced by Regulation (EU) 2023/607 (amending Article 120(3a) MDR) is **not** simply &quot;IIb before IIa.&quot; It reads:
+
+- **31 December 2027** — Class III devices, and Class IIb ***implantable*** devices (excluding the well-known carve-out list: sutures, staples, dental fillings, braces, crowns, screws, wedges, plates, wires, pins, clips, connectors)
+- **31 December 2028** — Class IIb devices *other than* those above, all Class IIa devices, and Class I devices placed on the market sterile or with a measuring function
+
+Your infusion pump is Class IIb **non-implantable**, so it falls in the 2028 bucket alongside the IIa monitor. The trigger for 2027 is implantability, not the IIb label.
+
+This conclusion is robust to reclassification, which is worth noting because the applicable date follows the device&apos;s class **under the MDR**, not its MDD class. A patient monitor can up-classify to IIb under MDR Rule 10 (monitoring vital physiological parameters where variation could cause immediate danger), and the pump is Class IIb under Rule 11. But neither device is implantable, so both stay at 31 December 2028 either way. Only a jump to Class III would move one to 2027 — implausible for either of these.
+
+## The thing that actually puts you at risk
+
+The extension is conditional (Article 120(3c)), and the gating dates are long past:
+
+- Device still complies with MDD, no significant change in design or intended purpose, no unacceptable risk
+- MDR-compliant QMS in place by **26 May 2024**
+- Formal MDR conformity assessment application lodged with a notified body by **26 May 2024**
+- Written agreement signed with that notified body by **26 September 2024**
+
+If either product missed the application or signed-agreement milestones, it never got the extension — its certificate lapses (or already lapsed) on the original MDD expiry date, and there is no route back. Before you plan sequencing, confirm you have the dated application acknowledgement and countersigned NB agreement on file for **both** devices. That&apos;s a higher-priority check than ordering the work.
+
+Also worth watching: the &quot;no significant changes&quot; condition. Any design or intended-purpose change you&apos;re contemplating on either product during the transition would forfeit the extension for that device and force it to MDR immediately.
+
+## Which to do first
+
+Since the deadline doesn&apos;t differentiate them, sequence on notified body workload and review depth — which favours starting with the **infusion pump**:
+
+- Under Annex IX, Class IIb non-implantable gets technical documentation assessment on a representative basis per *generic device group*, versus per *category* for Class IIa — generally deeper, and less scope to lean on a representative sample across your portfolio.
+- Infusion pumps typically carry the heavier clinical evaluation and PMCF burden, more software documentation (IEC 62304), and the Rule 11 medicinal-administration angle, all of which tend to generate more NB deficiency rounds.
+- If the monitor up-classifies to IIb under Rule 10, it moves into the same review depth as the pump — so establish its MDR classification early, because that changes the effort estimate even though it doesn&apos;t change the date.
+
+One caveat on that recommendation: it assumes both are with the same notified body and competing for the same review slots. If they sit with different NBs, sequence by each NB&apos;s quoted queue rather than by device risk class.
+
+I&apos;d suggest confirming the final dates and the Article 120(3c) evidence with your notified body in writing — they will have their own view on your specific certificate scopes, and that record is what an authority will ask for.</pre>
+</div>
+</details></div>
+</div>
+</section>
+</details>
+<details class="section" open>
+<summary>Prompt</summary>
+<div class="md"><p>Two products, both with valid MDD certificates, both still on the market:</p>
+<ul>
+<li>a Class IIa patient monitor</li>
+<li>a Class IIb non-implantable infusion pump</li>
+</ul>
+<p>Same deadline for both, or different? We're planning the notified body work and need to
+know which to do first.</p>
+</div>
+</details>
+<details class="section" open>
+<summary>Graders — what "good" means for this case</summary>
+<div class="grader-def">
+<div class="grader-def-head"><span class="grader-name">criteria</span><span class="badge">llm</span></div>
+<div class="md"><p>Both fall under Art. 120(3a)(b): class IIa, and class IIb devices other than implantables,
+both get <strong>31 December 2028</strong>. The 2027 date applies only to class III and to class IIb
+IMPLANTABLE devices (minus the listed exceptions). Neither product here is implantable.</p>
+<p>PASS requires:
+(1) Both are given <strong>31 December 2028</strong>.
+(2) It states they are the SAME date, answering the question actually asked.
+(3) It does not assign 31 December 2027 to the class IIb pump — implantability, not class
+    alone, is what pulls IIb into 2027.</p>
+<p>A response that also notes the deadline is conditional on 120(3c) is better but not
+required here.</p>
+<p>FAIL if the IIb device is given 2027, or if the two are given different dates.</p>
+</div>
+</div>
+</details>
+</article>
+<article class="case" id="case-3">
+<div class="case-head">
+<h2>implantable-exception</h2>
+<span class="muted mono">evals/03-implantable-exception</span>
+<span class="spacer"></span>
+
+<span class="delta delta-zero">· 0.0 pts</span>
+<span class="muted">with plugin</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:100.0%"></span><i class="tick" style="left:100.0%"></i></span>
+<span class="num case-score">100%</span>
+</div>
+
+<details class="section" open>
+<summary>Results</summary>
+<section class="arm">
+<div class="arm-head">
+<span class="arm-label">With plugin</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">100% of runs perfect</span>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 1</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">4 turns · $0.14 · 20:01:24 UTC</span>
+</div>
+
+<div class="graders"><details class="grader">
+<summary><span class="chip chip-pass">✓ pass</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: PASS PASS PASS</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✓ ✓ ✓</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">## Class IIb implantable surgical suture
+
+**Class:** IIb implantable — but a **suture**, which is on the 3a(a) exception list
+**Route:** Article 120(3a) — notified-body certificate under 93/42/EEC, valid by virtue of 120(2)
+**Deadline:** **31 December 2028** — conditional on 120(3c)
+
+| Question | Answer | Basis |
+|---|---|---|
+| Which paragraph applies | 120(3a) — device holds an MDD notified-body certificate | `[verified]` |
+| Class-dependent date | 31 Dec 2028. Sutures are expressly excepted from 3a(a), so they fall into 3a(b) rather than the 2027 bucket that catches other class IIb implantables | `[verified]` |
+| 3c conditions met? | **Not established** — you haven&apos;t told me | |
+
+The trap here is the one your class label points at: &quot;class IIb implantable&quot; reads as 31 December 2027, and that is the answer for most such devices. Sutures are named in the 3a(a) exception list — along with staples, dental fillings, braces, crowns, screws, wedges, plates, wires, pins, clips and connectors — so they drop a tier to 3a(b) and get the extra year.
+
+**What would change this:** the 120(3c) conditions. The extension is not automatic — all five must hold, cumulatively:
+
+- continued compliance with 93/42/EEC;
+- **no significant changes in design and intended purpose**;
+- no unacceptable risk to health or safety;
+- a QMS under Article 10(9) in place **no later than 26 May 2024**;
+- a formal application lodged with a notified body **no later than 26 May 2024**, and a signed written agreement with that notified body **no later than 26 September 2024**.
+
+So 26 May 2024 has not vanished — it stopped being the market deadline and became the date two of these conditions had to be met. If the application wasn&apos;t lodged by then, or the QMS wasn&apos;t in place, the extension was never available to this device and 31 December 2028 is not your date. Can you confirm those were done?
+
+Two further points worth flagging:
+
+- Under **120(3d)**, MDR&apos;s post-market surveillance, market surveillance, vigilance and registration requirements already apply to this suture **in place of** the MDD&apos;s. A legacy device is not sitting entirely under the old regime.
+- If your question turns on whether a change you&apos;ve made counts as a &quot;significant change in design and intended purpose&quot; under 3c(b), that&apos;s addressed in MDCG guidance, which I don&apos;t have here — I&apos;d stop and take that one to your notified body.
+
+## Limits
+
+&gt; This covers MDR Article 120(3) and (3a)–(3d) as amended by Regulation (EU) 2023/607, retrieved verbatim from the Official Journal on 2026-09-10. It does **not** cover Article 120&apos;s other paragraphs, **IVDR Article 110** (the parallel IVD transition, whose dates differ), MDCG guidance including on what counts as a significant change, Annex VII, or national practice. The transition is conditional and fact-specific; this is a first-pass aid, not legal or regulatory advice, and not a substitute for your notified body or a qualified regulatory professional.</pre>
+</div>
+</details></div>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 2</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">4 turns · $0.14 · 20:01:53 UTC</span>
+</div>
+
+<div class="graders"><details class="grader">
+<summary><span class="chip chip-pass">✓ pass</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: PASS PASS PASS</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✓ ✓ ✓</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">## Class IIb implantable surgical suture (MDD certificate)
+
+**Class:** IIb implantable — but a **suture**, which is on the exception list in 120(3a)(a)
+**Route:** Article 120(3a) — notified-body certificate under 93/42/EEC
+**Deadline:** **31 December 2028** — conditional on 120(3c)
+
+| Question | Answer | Basis |
+|---|---|---|
+| Which paragraph applies | 120(3a), point (b) — via the exception carve-out in point (a) | `[verified]` |
+| Class-dependent date | 31 Dec 2028, not 31 Dec 2027 | `[verified]` |
+| 3c conditions met? | **Not established** — you haven&apos;t told me | — |
+
+The key mechanic: 3a(a) gives class IIb implantables 31 December 2027, but it expressly
+excludes &quot;sutures, staples, dental fillings, dental braces, tooth crowns, screws, wedges,
+plates, wires, pins, clips and connectors.&quot; Excluded items fall into 3a(b), which is
+31 December 2028. So being a suture buys you a year over a generic IIb implantable.
+
+**What would change this:** the 120(3c) conditions. On class alone the device runs to
+31 December 2028, but the extension is conditional, not automatic — all five conditions in
+120(3c) must have been met:
+
+- continued compliance with 93/42/EEC;
+- **no significant changes in design and intended purpose**;
+- no unacceptable risk;
+- a **quality management system in place by 26 May 2024** (Article 10(9));
+- a **formal application lodged with a notified body by 26 May 2024**, and a **signed
+  written agreement with that notified body by 26 September 2024**.
+
+26 May 2024 is no longer a market deadline — that was the pre-2023/607 text — but it did
+not become irrelevant. It is the date the 2028 extension *depends on*. If the QMS or the
+application slipped past 26 May 2024, or the written agreement past 26 September 2024, the
+extension was never available and your right to place on the market has a different (and
+earlier) answer. Can you confirm those three were done on time?
+
+Also worth flagging: under 120(3d), MDR&apos;s post-market surveillance, vigilance, market
+surveillance and registration requirements already apply to this device **in place of**
+the MDD equivalents. A legacy device is not fully under the old regime during the
+transition.
+
+One caveat I can&apos;t resolve here: if your question actually turns on whether a change you
+made counts as a &quot;significant change in design and intended purpose&quot; under 3c(b), that is
+dealt with in MDCG guidance, which I don&apos;t have — you&apos;d need to take that to your notified
+body.
+
+## Limits
+
+&gt; This covers MDR Article 120(3) and (3a)–(3d) as amended by Regulation (EU) 2023/607,
+&gt; retrieved verbatim from the Official Journal on 2026-09-10. It does **not** cover
+&gt; Article 120&apos;s other paragraphs, **IVDR Article 110** (the parallel IVD transition, whose
+&gt; dates differ), MDCG guidance including on what counts as a significant change, Annex VII,
+&gt; or national practice. The transition is conditional and fact-specific; this is a
+&gt; first-pass aid, not legal or regulatory advice, and not a substitute for your notified
+&gt; body or a qualified regulatory professional.</pre>
+</div>
+</details></div>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 3</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">4 turns · $0.13 · 20:03:20 UTC</span>
+</div>
+
+<div class="graders"><details class="grader">
+<summary><span class="chip chip-pass">✓ pass</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: PASS PASS PASS</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✓ ✓ ✓</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">## Class IIb implantable surgical suture — MDD certificate
+
+**Class:** IIb implantable, and a **suture** — one of the items expressly excepted in Article 120(3a)(a)
+**Route:** 120(3a) — notified-body certificate under 93/42/EEC, valid by virtue of 120(2)
+**Deadline:** **31 December 2028** — conditional on 120(3c)
+
+| Question | Answer | Basis |
+|---|---|---|
+| Which paragraph applies | 120(3a) — device holds an MDD notified-body certificate | `[verified]` |
+| Class-dependent date | Sutures are named in the 3a(a) exception list, so they fall out of the 2027 bucket and into 3a(b): **31 Dec 2028** | `[verified]` |
+| 3c conditions met? | **Not established** — needs your confirmation | — |
+
+The suture exception is the whole point here. A class IIb *implantable* device would normally run only to 31 December 2027, but sutures, staples, dental fillings, braces, crowns, screws, wedges, plates, wires, pins, clips and connectors are carved out of 3a(a) and take the later date.
+
+**26 May 2024 still matters.** It is no longer the date the device must leave the market — that was the original 2017 text, superseded by Regulation (EU) 2023/607 — but it is now the date by which two of the conditions the 2028 date *depends on* had to be met: a QMS in accordance with Article 10(9) in place by **26 May 2024**, and a formal application lodged with a notified body by **26 May 2024**, with the signed written agreement by **26 September 2024**.
+
+**What would change this:** the 120(3c) conditions are cumulative — all five. Beyond the three dates above, the device must continue to comply with 93/42/EEC, present no unacceptable risk, and have **no significant changes in design and intended purpose**. If any one was missed, the extension was never available and 2028 is not your date. Can you confirm the QMS, application and written-agreement dates were all met?
+
+Also note 120(3d): during the transition, MDR&apos;s post-market surveillance, market surveillance, vigilance and registration requirements apply *in place of* the MDD&apos;s. The device is not living entirely under the old regime.
+
+What counts as a &quot;significant change&quot; under 3c(b) is dealt with in MDCG guidance, which I don&apos;t have verified here — if your question turns on a design or intended-purpose change, that&apos;s where it has to be answered, not from Article 120 itself.
+
+## Limits
+
+&gt; This covers MDR Article 120(3) and (3a)–(3d) as amended by Regulation (EU) 2023/607, retrieved verbatim from the Official Journal on 2026-09-10. It does **not** cover Article 120&apos;s other paragraphs, **IVDR Article 110** (the parallel IVD transition, whose dates differ), MDCG guidance including on what counts as a significant change, Annex VII, or national practice. The transition is conditional and fact-specific; this is a first-pass aid, not legal or regulatory advice, and not a substitute for your notified body or a qualified regulatory professional.</pre>
+</div>
+</details></div>
+</div>
+</section><section class="arm">
+<div class="arm-head">
+<span class="arm-label">Baseline (no plugin)</span>
+<span class="meter m-base" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">100% of runs perfect</span>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 1</span>
+<span class="meter m-base" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">4 turns · $0.18 · 20:03:44 UTC</span>
+</div>
+
+<div class="graders"><details class="grader">
+<summary><span class="chip chip-pass">✓ pass</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: PASS PASS PASS</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✓ ✓ ✓</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">No web access in this session, so this is from the regulation text as I know it — worth confirming against the consolidated MDR before you act on it.
+
+## Short answer: **31 December 2028**
+
+Sutures are explicitly carved out of the earlier Class III / IIb-implantable deadline. Article 120(3a) MDR (as amended by Regulation (EU) 2023/607) reads:
+
+- **31 Dec 2027** — Class III devices and Class IIb **implantable** devices, *except* sutures, staples, dental fillings, dental braces, tooth crowns, screws, wedges, plates, wires, pins, clips and connectors;
+- **31 Dec 2028** — Class IIb devices *other than* those above, Class IIa, and Class I sterile / measuring-function devices.
+
+A Class IIb implantable suture falls out of (a) via the carve-out and lands in (b). So you can keep placing it on the market until **31 December 2028**.
+
+## The conditions are the real risk
+
+The extension is not automatic. It only holds if all of Article 120(3c) is satisfied — and the two hard gates are already in the past:
+
+- Device still complies with MDD, and **no significant change** in design or intended purpose since the certificate was issued.
+- No unacceptable risk to health and safety.
+- By **26 May 2024**: MDR-compliant QMS in place (Art. 10(9)).
+- By **26 May 2024**: formal application for MDR conformity assessment lodged with a notified body.
+- By **26 September 2024**: signed written agreement with that notified body.
+
+If either 2024 milestone was missed, you have **no valid extension** — the right to place on the market ended when the MDD certificate expired (or on 26 May 2024, whichever applied). Verify those two dates in your files first; the 2028 date is meaningless without them.
+
+## Two other points
+
+- **No sell-off deadline.** Regulation 2023/607 deleted it. Units lawfully placed on the market before your cut-off can continue to be made available and put into service indefinitely — you don&apos;t have to withdraw stock in the field.
+- **Check absorbability.** If the suture is absorbable, MDR Annex VIII Rule 8 (&quot;wholly or mainly absorbed&quot;) makes it **Class III**, not IIb — and the suture carve-out is grammatically attached only to the *Class IIb implantable* limb of 120(3a). A Class III suture is therefore **31 December 2027**, a year earlier. You&apos;ve stated IIb, which implies non-absorbable; if the MDD certificate says IIb but the device is absorbable, you have an up-classification problem on top of a date problem.
+
+One caveat I couldn&apos;t check: the Commission has had a broader MDR revision in the pipeline. I&apos;m not aware of any change to the Article 120 dates, but if you want certainty on that, enable web access and I&apos;ll check the current consolidated text and recent MDCG guidance.</pre>
+</div>
+</details></div>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 2</span>
+<span class="meter m-base" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">1 turns · $0.10 · 20:04:40 UTC</span>
+</div>
+
+<div class="graders"><details class="grader">
+<summary><span class="chip chip-pass">✓ pass</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: PASS PASS PASS</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✓ ✓ ✓</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">## 31 December 2028 — not 2027
+
+Sutures are one of the named carve-outs from the class IIb implantable bucket. Article 120(3a) of the MDR, as amended by Regulation (EU) 2023/607, splits the extension like this:
+
+- **31 Dec 2027** — class III and class IIb implantable devices, *except* &quot;sutures, staples, dental fillings, dental braces, tooth crowns, screws, wedges, plates, wires, pins, clips and connectors&quot;
+- **31 Dec 2028** — everything else covered by the extension, which is where the excepted &quot;well-established technology&quot; devices, including sutures, land
+
+So a class IIb implantable surgical suture on a valid MDD certificate can be placed on the market until **31 December 2028**, provided the conditions below were met.
+
+## The extension is conditional — check these now
+
+The 2028 date only applies if all of the following are true. Two of the gates are already historical, so this is an audit question, not a planning question:
+
+1. **QMS under MDR Art. 10(9) in place by 26 May 2024.**
+2. **Formal MDR conformity-assessment application lodged with a notified body by 26 May 2024** — for this device or one intended to substitute it.
+3. **Signed written agreement with the MDR notified body by 26 September 2024.**
+4. **No significant change in design or intended purpose** since 26 May 2021.
+5. **Continued compliance with the MDD**, and no unacceptable risk to health and safety.
+6. MDR rules on post-market surveillance, vigilance, and registration of economic operators/devices apply to the device from 26 May 2021 — the MDD rules do not carry over on those points. Surveillance of the legacy certificate sits with the MDR notified body under the Art. 120(3e) arrangement.
+
+If gate 1, 2, or 3 was missed, the certificate was never extended and the right to place on the market lapsed at the certificate&apos;s own expiry date. If the notified body agreement has since been terminated, or a significant change was made, the same applies.
+
+## Two things people get wrong here
+
+**There is no sell-off deadline any more.** The old 27 May 2025 cut-off in Art. 120(4) was deleted by 2023/607. Devices lawfully placed on the market before the transition end can continue to be made available and put into service indefinitely. &quot;Placing on the market&quot; is the unit-by-unit act of first making a device available in the EU — so stock already placed before 31 Dec 2028 is unaffected.
+
+**Confirm the class IIb call before relying on 2028.** A suture coated with an antimicrobial acting ancillary to the device (triclosan, for example) goes to class III under Rule 14, and a suture for direct contact with the heart, central circulatory system, or CNS goes to class III under Rule 8. Either would put you in the **31 Dec 2027** bucket instead — 15 months earlier.
+
+You have roughly 27 months. Given typical MDR review timelines for implantables, that is not a comfortable margin if the technical documentation review has not substantively started.</pre>
+</div>
+</details></div>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 3</span>
+<span class="meter m-base" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">1 turns · $0.14 · 20:05:21 UTC</span>
+</div>
+
+<div class="graders"><details class="grader">
+<summary><span class="chip chip-pass">✓ pass</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: PASS PASS PASS</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✓ ✓ ✓</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">## Short answer: **31 December 2028**
+
+Under Article 120(3a) MDR as amended by Regulation (EU) 2023/607, sutures are on the explicit carve-out list, so your device drops out of the 2027 bucket and into the later one:
+
+- **(a) 31 Dec 2027** — class III devices, and class IIb implantable devices *&quot;except sutures, staples, dental fillings, dental braces, tooth crowns, screws, wedges, plates, wires, pins, clips and connectors&quot;*
+- **(b) 31 Dec 2028** — class IIb devices other than those in (a), class IIa, class I sterile/measuring
+
+A class IIb implantable suture is excepted from (a), so it falls to (b). After 31 Dec 2028 you may no longer **place on the market or put into service** under the MDD certificate.
+
+## But only if all Article 120(3c) conditions are met
+
+The extension is conditional and two of the conditions had hard deadlines that are now in the past:
+
+1. Device still complies with the MDD;
+2. No significant change in design or intended purpose;
+3. No unacceptable risk to health and safety;
+4. **By 26 May 2024** — QMS in place per Article 10(9) MDR;
+5. **By 26 May 2024** — formal MDR conformity assessment application lodged with a notified body (Annex VII, 4.3), **and by 26 September 2024** a signed written agreement with that notified body.
+
+If 4 or 5 were missed, you don&apos;t have until 2028 — the right to place on the market lapsed on those dates. Worth confirming this is documented before relying on the 2028 date.
+
+## Two things to check
+
+**Is it really class IIb?** Under MDD Annex IX Rule 8 (and MDR Rule 8), an implantable/long-term surgically invasive device *intended to undergo chemical change in the body* is class III. A resorbable/absorbable suture is therefore class III — and class III has **no** suture carve-out, so it would be **31 Dec 2027**, a full year earlier. Only non-absorbable sutures get 2028.
+
+**No sell-off deadline.** Regulation 2023/607 deleted the old 27 May 2025 sell-off provision. Devices lawfully placed on the market before the cut-off may continue to be made available and put into service with no end date — so distributor stock isn&apos;t stranded on 1 Jan 2029.
+
+Also note that since 26 May 2021 the device has been subject to MDR requirements for post-market surveillance, market surveillance, vigilance, and registration of economic operators and devices, and surveillance of the legacy certificate passes to your MDR notified body.
+
+One caveat: my knowledge runs to May 2026, and the Commission has been working on a targeted MDR revision. I&apos;d sanity-check against the current consolidated text or MDCG guidance before treating 2028 as fixed — happy to search if useful.</pre>
+</div>
+</details></div>
+</div>
+</section>
+</details>
+<details class="section" open>
+<summary>Prompt</summary>
+<div class="md"><p>Class IIb implantable, valid MDD certificate. It's a surgical suture. When do we lose the
+right to place it on the market?</p>
+</div>
+</details>
+<details class="section" open>
+<summary>Graders — what "good" means for this case</summary>
+<div class="grader-def">
+<div class="grader-def-head"><span class="grader-name">criteria</span><span class="badge">llm</span></div>
+<div class="md"><p>This is the exception-list trap. Art. 120(3a)(a) gives class IIb IMPLANTABLE devices
+31 December 2027 — "except sutures, staples, dental fillings, dental braces, tooth
+crowns, screws, wedges, plates, wires, pins, clips and connectors". Sutures are named.
+So this device falls to 3a(b) and gets <strong>31 December 2028</strong>, not 2027.</p>
+<p>PASS requires:
+(1) The stated deadline is <strong>31 December 2028</strong>.
+(2) The reasoning names the exception — that sutures are excluded from the IIb implantable
+    tier and therefore take the later date.</p>
+<p>FAIL if the answer is 31 December 2027. That is what applying "class IIb implantable →
+2027" without reading the exception produces, and it is the specific error this case
+tests. FAIL also if it is 26 May 2024.</p>
+</div>
+</div>
+</details>
+</article>
+<article class="case" id="case-4">
+<div class="case-head">
+<h2>conditions-not-automatic</h2>
+<span class="muted mono">evals/04-conditions-not-automatic</span>
+<span class="spacer"></span>
+
+<span class="delta delta-zero">· 0.0 pts</span>
+<span class="muted">with plugin</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:100.0%"></span><i class="tick" style="left:100.0%"></i></span>
+<span class="num case-score">100%</span>
+</div>
+
+<details class="section" open>
+<summary>Results</summary>
+<section class="arm">
+<div class="arm-head">
+<span class="arm-label">With plugin</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">100% of runs perfect</span>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 1</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">4 turns · $0.15 · 20:06:12 UTC</span>
+</div>
+
+<div class="graders"><details class="grader">
+<summary><span class="chip chip-pass">✓ pass</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: PASS PASS PASS</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✓ ✓ ✓</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">## Class IIa devices with MDD certificates
+
+The **date** is right. The **conclusion drawn from it** is wrong in two ways, and both matter.
+
+**Class:** IIa (as stated)
+**Route:** Article 120(3a) — notified-body certificate under 93/42/EEC
+**Deadline:** **31 December 2028** — conditional on 120(3c)
+
+| Question | Answer | Basis |
+|---|---|---|
+| Which paragraph applies | 120(3a)(b) — class IIa devices holding a Directive certificate | `[verified]` |
+| Class-dependent date | 31 December 2028 to place on the market or put into service | `[verified]` |
+| 3c conditions met? | **Not established — this is the actual question** | — |
+
+### Why &quot;no action needed&quot; doesn&apos;t follow
+
+**1. The extension isn&apos;t automatic — it was earned, back in 2024.** Article 120(3c) is cumulative: all five conditions, or the extension was never available to you at all. Two of them had hard deadlines that are already in the past:
+
+- A quality management system in place under Article 10(9) **no later than 26 May 2024** (3c(d))
+- A formal application lodged with a notified body **no later than 26 May 2024**, and a signed written agreement with that notified body **no later than 26 September 2024** (3c(e))
+
+Plus three ongoing conditions: continued compliance with 93/42/EEC, **no significant changes in design and intended purpose**, and no unacceptable risk.
+
+So the question to put back to your consultant isn&apos;t &quot;what&apos;s the deadline&quot; — it&apos;s &quot;did we lodge the application and sign the agreement in 2024?&quot; If that didn&apos;t happen, 31 December 2028 does not apply to these devices and your position is materially different.
+
+**2. This isn&apos;t new.** The extension came from Regulation (EU) 2023/607, in force since March 2023 — not a recent development. If it&apos;s being presented as fresh news, that&apos;s worth probing, because it suggests the 2024 condition deadlines may not have been on anyone&apos;s radar when they were live.
+
+**3. 31 December 2028 is when the device must be off the MDD certificate, not when work starts.** It&apos;s the last date for placing on the market or putting into service. The MDR conformity assessment with your notified body has to be *finished* by then — and that work is measured in many months, with notified body capacity being the constraint.
+
+**Also easy to miss:** under 120(3d), MDR&apos;s requirements for post-market surveillance, vigilance, market surveillance, and registration of economic operators and devices already apply to these devices **in place of** the Directive&apos;s. A legacy device is not sitting entirely under the old regime today.
+
+**What would change this:** confirmation of whether the 3c(d) and 3c(e) deadlines were met in 2024 for each device family, and whether any device has had a significant change in design or intended purpose since. Either one flips the answer.
+
+One caveat on scope: 120(3a) applies to certificates &quot;valid by virtue of paragraph 2&quot; of Article 120 — I don&apos;t have paragraph 2&apos;s text here, so the certificate-validity mechanics are `[verify]`. Likewise, what counts as a &quot;significant change&quot; under 3c(b) is dealt with in MDCG guidance, which I don&apos;t carry — if your answer turns on that, it needs a separate look.
+
+## Limits
+
+&gt; This covers MDR Article 120(3) and (3a)–(3d) as amended by Regulation (EU) 2023/607, retrieved verbatim from the Official Journal on 2026-09-10. It does **not** cover Article 120&apos;s other paragraphs, **IVDR Article 110** (the parallel IVD transition, whose dates differ), MDCG guidance including on what counts as a significant change, Annex VII, or national practice. The transition is conditional and fact-specific; this is a first-pass aid, not legal or regulatory advice, and not a substitute for your notified body or a qualified regulatory professional.</pre>
+</div>
+</details></div>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 2</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">4 turns · $0.15 · 20:06:45 UTC</span>
+</div>
+
+<div class="graders"><details class="grader">
+<summary><span class="chip chip-pass">✓ pass</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: PASS PASS PASS</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✓ ✓ ✓</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">## Class IIa legacy devices under MDD certificates
+
+**Class:** IIa (as stated)
+**Route:** Article 120(3a) — notified-body certificate under 93/42/EEC
+**Deadline:** 31 December 2028 — **conditional** on Article 120(3c)
+
+| Question | Answer | Basis |
+|---|---|---|
+| Which paragraph applies | 120(3a)(b) — class IIa devices holding a Directive certificate | `[verified]` |
+| Class-dependent date | 31 December 2028 | `[verified]` |
+| 3c conditions met? | **Not established — and the gating deadlines are already 2+ years past** | — |
+
+### The date is right. &quot;Two more years before we need to do anything&quot; is not.
+
+Your consultant&apos;s date checks out: class IIa sits in Article 120(3a)(b), which runs to 31 December 2028. Two corrections to the framing around it, though:
+
+**1. This is not a new extension.** The change came from Regulation (EU) 2023/607, in force since March 2023 — three and a half years ago, not a recent development. If your consultant is describing it as newly granted, they may be working from stale information about what was already in place.
+
+**2. The 2028 date is conditional, and the conditions had 2024 deadlines that have passed.** Article 120(3) grants the later dates &quot;provided the conditions set out in paragraph 3c are met,&quot; and 3c is cumulative — all five. Two of them were hard-dated:
+
+- **26 May 2024** — a quality management system in place under Article 10(9), *and* a formal application lodged with a notified body under Annex VII 4.3
+- **26 September 2024** — a signed written agreement between you and the notified body
+
+Those dates are now roughly 16 and 24 months behind you. If your devices didn&apos;t clear all three of those gates, the extension **was never available** to them, and 31 December 2028 is not your date. The remaining three conditions are continuous, not one-off: continued compliance with 93/42/EEC, no unacceptable risk, and **no significant changes in design and intended purpose**.
+
+So the question isn&apos;t &quot;what do we do in two years.&quot; It&apos;s &quot;did we lodge the application and sign the agreement in 2024, and can we evidence it.&quot; That&apos;s answerable from your records today.
+
+**3. You are already carrying MDR obligations right now.** Article 120(3d): MDR&apos;s requirements on post-market surveillance, market surveillance, vigilance, and registration of economic operators and devices apply to legacy devices **in place of** the Directive equivalents, throughout the transition. &quot;Nothing to do until 2028&quot; is wrong on this independently of the certificate question — these apply whether or not you qualified for the extension.
+
+### What would change this
+
+Whether the 120(3c)(d) and (e) steps were completed on time. If they were, 31 Dec 2028 holds and the live risks are 3c(b) significant change and your notified body&apos;s throughput. If any was missed, the deadline is not 2028 and you need advice on your actual position immediately, not in two years.
+
+One flag: I&apos;d also confirm your MDD certificates are valid by virtue of Article 120(2) — 3a applies only to certificates valid on that basis, and paragraph (2) isn&apos;t covered by my source here. `[verify]`
+
+If the question turns on whether a change you&apos;ve made counts as a &quot;significant change&quot; in design or intended purpose, that&apos;s governed by MDCG guidance, which I don&apos;t have and can&apos;t answer from.
+
+## Limits
+
+&gt; This covers MDR Article 120(3) and (3a)–(3d) as amended by Regulation (EU) 2023/607, retrieved verbatim from the Official Journal on 2026-09-10. It does **not** cover Article 120&apos;s other paragraphs, **IVDR Article 110** (the parallel IVD transition, whose dates differ), MDCG guidance including on what counts as a significant change, Annex VII, or national practice. The transition is conditional and fact-specific; this is a first-pass aid, not legal or regulatory advice, and not a substitute for your notified body or a qualified regulatory professional.</pre>
+</div>
+</details></div>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 3</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">4 turns · $0.15 · 20:07:19 UTC</span>
+</div>
+
+<div class="graders"><details class="grader">
+<summary><span class="chip chip-pass">✓ pass</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: PASS PASS PASS</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✓ ✓ ✓</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">Partly. The **date is right**; the **&quot;two more years before we need to do anything&quot;** is not — and that half is the dangerous half.
+
+## Class IIa legacy device, MDD certificate
+
+**Class:** IIa (as stated)
+**Route:** Article 120(3a) — notified-body certificate under 93/42/EEC (assumed; confirm it&apos;s an NB certificate, not a self-certified DoC)
+**Deadline:** 31 December 2028 — conditional on 120(3c)
+
+| Question | Answer | Basis |
+|---|---|---|
+| Which paragraph applies | 120(3a)(b) for an NB certificate under 93/42/EEC | `[verified]` |
+| Class-dependent date | 31 December 2028 for class IIa | `[verified]` |
+| 3c conditions met? | **Unknown — and the qualifying deadlines have already passed** | — |
+
+### The problem with &quot;two more years before we need to do anything&quot;
+
+The 2028 date isn&apos;t a grace period. It&apos;s the outer limit of a derogation you only get if **all five** conditions in 120(3c) were met, cumulatively — and two of them had hard dates that are now well behind us:
+
+- **QMS in accordance with Article 10(9) in place no later than 26 May 2024** `[verified]`
+- **Formal application lodged with a notified body no later than 26 May 2024**, and the **written agreement with that notified body signed no later than 26 September 2024** `[verified]`
+- Plus: continued compliance with 93/42/EEC, **no significant changes in design and intended purpose**, and no unacceptable risk. `[verified]`
+
+Today is 10 September 2026. If those steps weren&apos;t completed in 2024, the extension was never available to that device — it isn&apos;t something you can start working toward now. So the actionable question isn&apos;t &quot;when must we act,&quot; it&apos;s **&quot;can we evidence that we already did, in the first half of 2024?&quot;** Pull the notified-body application acknowledgement and the signed written agreement and check their dates.
+
+Two more things worth flagging:
+
+- **This isn&apos;t new news.** Regulation (EU) 2023/607 was published in OJ L 80 on 20 March 2023 — three and a half years ago. If your consultant is presenting it as a fresh extension, that&apos;s worth probing; there is no post-2023 extension in the amended Article 120 text.
+- **You are already partly under MDR.** Article 120(3d) applies MDR&apos;s post-market surveillance, market surveillance, vigilance, and registration of economic operators and devices **in place of** the Directive&apos;s requirements during the transition. `[verified]` So &quot;nothing to do until 2028&quot; is wrong even for a device that fully qualifies.
+
+**What would change this:** whether the 3c(d)/(e) steps were completed on time — that determines whether 31 Dec 2028 applies at all. Separately, if there have been design or intended-purpose changes since the certificate was issued, whether they count as &quot;significant&quot; under 3c(b) turns on MDCG guidance, which I can&apos;t verify here — take that one to your notified body.
+
+&gt; **Limits:** This covers MDR Article 120(3) and (3a)–(3d) as amended by Regulation (EU) 2023/607, retrieved verbatim from the Official Journal on 2026-09-10. It does **not** cover Article 120&apos;s other paragraphs, **IVDR Article 110** (the parallel IVD transition, whose dates differ), MDCG guidance including on what counts as a significant change, Annex VII, or national practice. The transition is conditional and fact-specific; this is a first-pass aid, not legal or regulatory advice, and not a substitute for your notified body or a qualified regulatory professional.</pre>
+</div>
+</details></div>
+</div>
+</section><section class="arm">
+<div class="arm-head">
+<span class="arm-label">Baseline (no plugin)</span>
+<span class="meter m-base" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">100% of runs perfect</span>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 1</span>
+<span class="meter m-base" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">4 turns · $0.20 · 20:07:53 UTC</span>
+</div>
+
+<div class="graders"><details class="grader">
+<summary><span class="chip chip-pass">✓ pass</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: PASS PASS PASS</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✓ ✓ ✓</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">I couldn&apos;t run a web search to check for anything very recent — the permission was denied in this session. So the below is from my own knowledge (reliable through ~May 2026); flagging that up front because the one thing I genuinely can&apos;t rule out is a newer amendment.
+
+**Short version: the date is right, the conclusion isn&apos;t.**
+
+## What&apos;s actually true
+
+The 31 December 2028 date for Class IIa comes from **Regulation (EU) 2023/607**, which amended Article 120 MDR. It&apos;s real, and it does cover Class IIa (along with non-implantable Class IIb, Class Is/Im, and up-classified Class I). Class III and Class IIb implantables got 31 December 2027 instead. That regulation also deleted the old &quot;sell-off&quot; deadline, so stock already placed on the market can keep being made available.
+
+Two things worth noting about how it was described to you:
+
+1. **It isn&apos;t new.** 2023/607 entered into force on 20 March 2023 — three and a half years ago. If your consultant is presenting this as a fresh extension, I&apos;d want to understand what they&apos;re actually referring to.
+2. **It is not automatic.** This is the part that matters.
+
+## The conditions had hard deadlines in 2024
+
+Under Article 120(3c) as amended, the extension only applies if **all** of the following are met:
+
+- The device still complies with the MDD, and there have been **no significant changes** in design or intended purpose
+- It presents no unacceptable risk to health and safety
+- By **26 May 2024**, the manufacturer had an MDR-compliant QMS in place (Art. 10(9))
+- By **26 May 2024**, a formal application for MDR conformity assessment had been lodged with a notified body
+- By **26 September 2024**, a **written agreement had been signed** with that notified body
+
+Today is 10 September 2026. Those gates closed roughly two years ago.
+
+## So the real question isn&apos;t &quot;when is the deadline&quot;
+
+It&apos;s: **did you lodge the application and sign the notified body agreement in 2024?**
+
+- **If yes** — you&apos;re covered to 31 December 2028, but &quot;nothing to do&quot; is still wrong. That&apos;s the outside date for the NB to *finish* the assessment. Class IIa full technical documentation review plus QMS audit is typically a 12–24 month process, notified bodies remain capacity-constrained, and remediation rounds on technical documentation are the norm, not the exception. Two years and change is a working schedule, not slack.
+- **If no** — the extension never attached to your devices. The certificates are not valid to 2028, and continuing to place those devices on the EU market would already be non-compliant. That&apos;s a situation to establish the facts on this week, not something to revisit in 2028.
+
+## Either way, &quot;we don&apos;t need to do anything&quot; is wrong
+
+MDR obligations have applied to legacy devices **since 26 May 2021**, independent of the transition dates — post-market surveillance, PMS/PSUR reporting, vigilance and incident reporting, market surveillance, and registration of economic operators and devices (MDR Chapter VII, per Art. 120(3)). Those are live obligations now.
+
+## What I&apos;d do
+
+1. Pull the actual notified body correspondence and confirm the application date and the signed agreement date. Documentary evidence, not recollection.
+2. Get the current status of each device family in the NB&apos;s queue and the projected certification date.
+3. Ask the consultant directly which instrument they mean by &quot;got extended,&quot; and whether they&apos;ve verified your 120(3c) conditions were met — because their summary as relayed omits the conditionality entirely, which is the substance of the provision.
+4. Separately verify with your regulatory counsel that no further amendment has landed since mid-2026. There was ongoing discussion of a broader targeted MDR reform package; I can&apos;t see past my knowledge cutoff on that, and I couldn&apos;t search.
+
+If you want, re-run this with web search enabled and I&apos;ll check for any 2026 developments and pull the current consolidated Article 120 text.</pre>
+</div>
+</details></div>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 2</span>
+<span class="meter m-base" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">4 turns · $0.18 · 20:09:06 UTC</span>
+</div>
+
+<div class="graders"><details class="grader">
+<summary><span class="chip chip-pass">✓ pass</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: PASS PASS PASS</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✓ ✓ ✓</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">Partly. **The 2028 date is real, but &quot;that gives us two more years before we need to do anything&quot; is wrong** — and if your consultant framed this as a *new* extension, that&apos;s also off.
+
+Note up front: my web search was blocked in this session, so this is from knowledge of the regulation text rather than a live check. Verify against the official text and your notified body before you act on it.
+
+## What&apos;s actually true
+
+Regulation (EU) 2023/607 amended MDR Article 120 and does give Class IIa legacy devices until **31 December 2028**. But that regulation entered into force on **20 March 2023** — three and a half years ago. There is no fresh extension here; this is the same amendment that&apos;s been in place since 2023.
+
+The dates, roughly:
+- Class III and implantable Class IIb → **31 Dec 2027**
+- Class IIa, non-implantable Class IIb, Class Im/Is/Ir, and up-classified Class I with a DoC before 26 May 2021 → **31 Dec 2028**
+
+## The catch: the extension is conditional, and the conditions expired in 2024
+
+The 2028 date only applies if you met all of these. The last two had hard deadlines that are now ~2 years past:
+
+1. Device still complies with the MDD, and its certificate wasn&apos;t withdrawn
+2. **No significant changes** in design or intended purpose (a design freeze for the whole period)
+3. No unacceptable risk to health or safety
+4. An MDR-compliant QMS in place by **26 May 2024** (Art. 10(9))
+5. A formal MDR conformity assessment application **lodged with a notified body by 26 May 2024**
+6. A **written agreement signed** with that notified body by **26 September 2024**
+
+If items 4–6 weren&apos;t done on time, the extension never attached to your devices. Their MDD certificates lapsed on their own terms, and the devices are not lawfully placed on the EU market today. There&apos;s no retroactive cure in the regulation for missing those dates.
+
+Separately, MDR obligations for post-market surveillance, vigilance, market surveillance, and registration of devices and economic operators have applied to legacy devices since **26 May 2021** regardless of the transition. So &quot;do nothing&quot; wasn&apos;t accurate even in the best case.
+
+## What I&apos;d check this week
+
+- **Pull the paper trail per certificate**: the dated NB application acknowledgement (on/before 26 May 2024) and the countersigned written agreement (on/before 26 Sep 2024). That single question decides whether you&apos;re compliant or already selling unlawfully.
+- **Confirm no significant change** has been made to any of these devices since — a design or intended-purpose change voids the extension.
+- **Check where each MDR file actually is** with the NB. 2028 is a hard stop with no queue relief; NB review is typically 12–18+ months, so a file that isn&apos;t well advanced now is at risk regardless.
+- **If any condition was missed**, that&apos;s a market-availability issue to escalate today, and Article 97 / national derogation routes are the conversation to have with your competent authority — not something to sit on.
+
+One thing I can&apos;t rule out from memory: the Commission has had a broader MDR revision in the works, and I can&apos;t confirm whether anything landed in 2026 that changes this. If you want, re-run this with web access enabled and I&apos;ll verify the current consolidated Article 120 text and any 2026 amendments directly.
+
+I&apos;d also push back gently on the source. Ask your consultant which article and which amending regulation they&apos;re relying on, and whether they&apos;ve confirmed conditions 4–6 for your specific certificates. &quot;Fine until 2028&quot; without that check is the expensive version of this answer.</pre>
+</div>
+</details></div>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 3</span>
+<span class="meter m-base" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">4 turns · $0.19 · 20:10:07 UTC</span>
+</div>
+
+<div class="graders"><details class="grader">
+<summary><span class="chip chip-pass">✓ pass</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: PASS PASS PASS</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✓ ✓ ✓</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">Short version: **the date is right, the conclusion drawn from it is wrong.** And &quot;got extended&quot; isn&apos;t new news — it&apos;s Regulation (EU) 2023/607, which has been in force since March 2023.
+
+I tried to search for anything more recent (my knowledge runs to May 2026, and it&apos;s now September 2026) but web access is blocked in this session. So treat the below as solid on the 2023/607 framework and unverified on anything after May 2026.
+
+## What&apos;s actually true
+
+Regulation (EU) 2023/607 amended Article 120 MDR and staggered the transition by risk class:
+
+- **31 Dec 2027** — Class III, and Class IIb implantables (except the &quot;well-established technologies&quot; list: sutures, staples, dental fillings/braces/crowns, screws, wedges, plates, wires, pins, clips, connectors)
+- **31 Dec 2028** — Class IIa, Class IIb non-implantable, Class Is/Im, and the WET implantables above
+
+So yes, Class IIa → end of 2028.
+
+## Why &quot;two more years before we need to do anything&quot; is the dangerous part
+
+The extension is **conditional, not automatic**, and two of the conditions had hard deadlines that passed over two years ago. Under Art. 120(3c), the certificate is only deemed valid to 2028 if:
+
+1. The device still complies with MDD, and
+2. There have been **no significant changes** in design or intended purpose, and
+3. It presents no unacceptable risk, and
+4. **By 26 May 2024** you had an MDR Art. 10(9) QMS in place, and
+5. **By 26 May 2024** you had lodged a formal MDR conformity assessment application, **and by 26 September 2024** you and the notified body had signed a written agreement.
+
+Conditions 4 and 5 are the whole ballgame. There are only two possibilities:
+
+- **You met them** — in which case an MDR review has been open with your NB since 2024, and there is no &quot;do nothing&quot; option. The binding constraint isn&apos;t the 2028 date, it&apos;s NB review throughput: technical documentation review plus rounds of deficiency questions routinely runs 12–24 months, and NBs are still capacity-constrained. Coasting until 2028 means missing 2028.
+- **You didn&apos;t meet them** — in which case the extension never applied to these devices, and their MDD certificates lapsed at their original expiry. That&apos;s not a 2028 problem; that&apos;s a &quot;can&apos;t legally place them on the EU market right now&quot; problem.
+
+Also note condition 2 freezes the product. Any significant design or intended-purpose change during the transition forfeits the extension for that device.
+
+## Separately, MDR already applies to you
+
+Art. 120(3f): MDR rules on post-market surveillance, vigilance, market surveillance, and registration of devices and economic operators apply **during** the transition, replacing the MDD equivalents. Plus the Art. 10a supply-interruption notification duty added by Reg. (EU) 2024/1860. None of that waits for 2028.
+
+## What I&apos;d pull before accepting the consultant&apos;s read
+
+1. The **notified body written agreements** (signed, dated ≤ 26 Sep 2024) and the **application lodgement records** (dated ≤ 26 May 2024) for each affected device family.
+2. Your NB&apos;s **confirmation letters** — certificates aren&apos;t reissued, validity extends by operation of law, so distributors and tender bodies typically want these.
+3. The **current NB review status** per device: what&apos;s submitted, what deficiency rounds are open, what the NB&apos;s own projected completion date is.
+4. Whether the consultant is describing 2023/607 or something newer. If they&apos;re claiming a fresh 2026 extension, ask for the citation — the Commission had signalled a broader MDR/IVDR reform proposal, but as of May 2026 nothing adopted had moved these dates.
+
+Happy to draft the questions to send back to the consultant, or a per-device status tracker, if you can tell me roughly how many device families and which NB you&apos;re with.</pre>
+</div>
+</details></div>
+</div>
+</section>
+</details>
+<details class="section" open>
+<summary>Prompt</summary>
+<div class="md"><p>Good news from our consultant — apparently the MDR transition got extended, so our Class
+IIa devices with MDD certificates are fine until the end of 2028. That gives us two more
+years before we need to do anything. Can you confirm?</p>
+</div>
+</details>
+<details class="section" open>
+<summary>Graders — what "good" means for this case</summary>
+<div class="grader-def">
+<div class="grader-def-head"><span class="grader-name">criteria</span><span class="badge">llm</span></div>
+<div class="md"><p>The date is right — Art. 120(3a)(b) gives class IIa until 31 December 2028. The premise
+is wrong: the extension is NOT automatic. Art. 120(3c) sets five cumulative conditions,
+two of which had deadlines that have already passed — a QMS in place by 26 May 2024, and
+a formal application lodged with a notified body by 26 May 2024, with a written agreement
+signed by 26 September 2024.</p>
+<p>"Two more years before we need to do anything" is the dangerous part.</p>
+<p>PASS requires:
+(1) It confirms 31 December 2028 as the date.
+(2) It corrects the premise: the extension is conditional under 120(3c), and the
+    conditions are cumulative.
+(3) It names at least the QMS and the notified-body application, and that those dates
+    have already passed — so whether the extension is available at all is a question
+    about what the company did in 2024, not a future task.</p>
+<p>FAIL if it simply confirms "yes, you're fine until 2028" without raising 120(3c). That is
+the failure with real consequences: a manufacturer who never lodged an application in 2024
+does not have until 2028 and needs to know now.</p>
+</div>
+</div>
+</details>
+</article>
+<article class="case" id="case-5">
+<div class="case-head">
+<h2>ivdr-out-of-scope</h2>
+<span class="muted mono">evals/05-ivdr-out-of-scope</span>
+<span class="spacer"></span>
+
+<span class="delta delta-pos">↑ +33.3 pts</span>
+<span class="muted">with plugin</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:33.3%"></span><i class="tick" style="left:100.0%"></i></span>
+<span class="num case-score">33.3%</span>
+</div>
+
+<details class="section" open>
+<summary>Results</summary>
+<section class="arm">
+<div class="arm-head">
+<span class="arm-label">With plugin</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:33.3%"></span></span>
+<span class="num">33.3%</span>
+<span class="muted num">33.3% of runs perfect</span>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 1</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:0.0%"></span></span>
+<span class="num">0%</span>
+<span class="muted num">8 turns · $0.33 · 20:11:13 UTC</span>
+</div>
+
+<div class="graders"><details class="grader" open>
+<summary><span class="chip chip-fail">✗ fail</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: FAIL FAIL FAIL</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✗ ✗ ✗</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">Short answer: **different**. Your device does not run on Article 120 MDR at all — it runs on **Article 110 IVDR**, amended by a different regulation, on a two-year-later clock. And one of the milestone dates is 16 days away.
+
+## Class C IVD, IVDD 98/79/EC certificate
+
+| Question | Answer | Basis |
+|---|---|---|
+| Which provision applies | IVDR (EU) 2017/746 Art. 110, as amended by (EU) 2022/112 and (EU) 2024/1860 — **not** MDR Art. 120 | `[verify]` |
+| Placing on the market until | **31 December 2028** (class C) | `[verify]` |
+| Your IVDD certificate itself | Void since **27 May 2025** at the latest, regardless of the expiry printed on it | `[verify]` |
+| Conditions milestones | QMS by 26 May 2025; formal NB application by **26 May 2026**; signed written agreement by **26 September 2026** | `[verify]` |
+
+**The urgent part.** For class C the application deadline of 26 May 2026 has already passed, and the written agreement with your notified body must be signed by **26 September 2026 — 16 days from today**. If those two are in place, you can keep placing the device on the market to 31 December 2028. If either was missed, the extension was never available to you, your IVDD certificate is already void, and you cannot lawfully place further units on the market until you hold an IVDR certificate. Devices *already* placed on the market before that point can still be made available — the old 26 May 2025 sell-off date was deleted by (EU) 2023/607.
+
+So: **check today whether the application went in by 26 May 2026 and whether the agreement is signed.** That is the question that decides everything else.
+
+**When you must actually be IVDR certified:** before you place the next device on the market after 31 December 2028. Working backwards from typical class C notified-body review times, the technical documentation needs to be with them well inside 2027.
+
+## Why it isn&apos;t the device-side answer
+
+The MDR side (verified against the OJ text) is Article 120(3a): 31 Dec 2027 for class III and class IIb implantable, 31 Dec 2028 for class IIb other, IIa, and class I sterile/measuring — with QMS and application by 26 May 2024 and the written agreement by 26 September 2024. Your end date happens to coincide with the MDR class IIa/IIb-other date, but the **conditions ran two years later**, which is exactly the trap: anyone who mapped your IVD onto the MDR calendar would have told you the application was due 26 May 2024 and the agreement 26 September 2024, and you would have concluded you&apos;d already lost the extension. The reverse error is worse — treating 26 September 2026 as already past or not applicable.
+
+Also note the IVDR-specific wrinkle that has no MDR analogue: under IVDD most IVDs were self-certified, so the large population of devices moving into notified-body scope for the first time sits on a separate limb of Article 110 with its own dates (class D 31 Dec 2027, class B and class A sterile 31 Dec 2029). If any part of your portfolio is in that group, the dates differ again.
+
+## Limits
+
+The MDR Article 120 comparison above is verified verbatim against OJ L 80, 20.3.2023. **The IVDR side is from recall and is not verified** — I tried to pull Regulation (EU) 2024/1860 and Article 110 from EUR-Lex and web access was denied in this session. Given that one date is 16 days out, confirm the class C application and written-agreement dates against the consolidated IVDR text and with your notified body before acting on them. This does not cover MDCG guidance on what counts as a significant change, in-house device deferrals under Art. 5(5), or EUDAMED registration timing, and it is not legal or regulatory advice.</pre>
+</div>
+</details></div>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 2</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:0.0%"></span></span>
+<span class="num">0%</span>
+<span class="muted num">7 turns · $0.28 · 20:13:00 UTC</span>
+</div>
+
+<div class="graders"><details class="grader" open>
+<summary><span class="chip chip-fail">✗ fail</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: FAIL FAIL FAIL</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✗ ✗ ✗</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">## Class C IVD, legacy IVDD certificate
+
+**Short answer:** different. Your device sits under **IVDR Article 110**, not MDR Article 120, and the dates are not the same — they were amended by a different instrument (Regulation (EU) 2024/1860) on a different schedule from the device-side 2023/607 amendment. **Class C runs to 31 December 2028**, but the condition you needed to satisfy has *already passed*, so please read the second section first.
+
+I should be straight about sourcing: the skill I have loaded carries the verbatim Official Journal text of **MDR Article 120 only**, and explicitly excludes IVDR Article 110. I tried to fetch the OJ text for Article 110 and web access was denied in this session. So everything below is marked `[verify]` — it reflects my understanding of the amended Article 110, not text I read today.
+
+| Question | Answer | Basis |
+|---|---|---|
+| Which provision applies | IVDR (EU) 2017/746 Art. 110, as amended by (EU) 2022/112 and (EU) 2024/1860 | `[verify]` |
+| Route | Certificate issued by a notified body under 98/79/EC (Annex II List A/B or self-test) | as stated |
+| Deadline to place on the market | **31 Dec 2028** (Class C) | `[verify]` |
+| Conditional? | Yes — cumulative conditions, mirroring but not identical to MDR 120(3c) | `[verify]` |
+| Sell-off deadline | None — deleted for IVDR too by (EU) 2023/607 | `[verify]` |
+
+Class-by-class, as amended by 2024/1860 `[verify]`: Class D **31 Dec 2027**; Class C **31 Dec 2028**; Class B and Class A sterile **31 Dec 2029**.
+
+## The part that is urgent — today is 10 September 2026
+
+The 2028 date is not automatic. For Class C the extension depends on `[verify]`:
+
+- a QMS compliant with IVDR Art. 10(8) in place by **26 May 2025**;
+- a **formal application** for IVDR conformity assessment lodged with a notified body by **26 May 2026** — that date is nearly four months behind you;
+- a **written agreement** signed with that notified body by **26 September 2026** — roughly two weeks from now;
+- continued compliance with 98/79/EC, **no significant change in design or intended purpose**, and no unacceptable risk to health and safety.
+
+If the application went in by 26 May 2026, get the written agreement signed inside the next two weeks or the extension lapses. If it did **not** go in by 26 May 2026, then on my understanding the extension was never available to you and your lawful placing-on-the-market window closed on **26 May 2025** (the pre-2024/1860 deadline for certificate-holding legacy IVDs) — devices already on the market can still be supplied, since the sell-off deadline is gone, but you cannot place new ones. That is a stop-shipment question, not a planning question, and it needs your notified body and regulatory counsel this week.
+
+Two secondary points: during the transition, IVDR&apos;s post-market surveillance, vigilance, market surveillance and registration requirements apply **in place of** the Directive&apos;s `[verify]`. And &quot;significant change in design and intended purpose&quot; is an MDCG-guidance question that neither this skill nor I can resolve for you.
+
+## Limits
+
+The verified reference available to me covers MDR Article 120(3) and (3a)–(3d) as amended by Regulation (EU) 2023/607, from OJ L 80, 20.3.2023. It does **not** cover IVDR Article 110, so the IVD dates and conditions above are unverified recall and must be checked against the consolidated text of Regulation (EU) 2017/746 on EUR-Lex, including Regulation (EU) 2024/1860. Given that one of the conditional dates falls in about two weeks, confirm the exact wording of Article 110(3) before acting. This is a first-pass aid, not regulatory advice, and not a substitute for your notified body or a qualified regulatory professional.</pre>
+</div>
+</details></div>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 3</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">8 turns · $0.35 · 20:14:34 UTC</span>
+</div>
+
+<div class="graders"><details class="grader">
+<summary><span class="chip chip-pass">✓ pass</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: PASS PASS PASS</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✓ ✓ ✓</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">## Class C IVD, certificate under 98/79/EC
+
+**Short answer: different regime, different dates — and the number you probably want is not the one that follows from &quot;Class C&quot;.**
+
+MDR&apos;s rewrite came from Regulation (EU) **2023/607**, which does not touch IVDs at all. The IVD transition is **IVDR Article 110**, amended twice: Regulation (EU) **2022/112** (Jan 2022) and Regulation (EU) **2024/1860** (June 2024). So the MDR skill in this repo doesn&apos;t apply here — it says so itself in its limits.
+
+### The structural difference that matters for you
+
+On the device side the deadline follows the class. On the IVD side there are **two tracks**, and only one of them is staggered by class:
+
+| Track | Which devices | Deadline |
+|---|---|---|
+| **Certificate route** — Art 110(2)/(3) 1st subpara | Held a notified-body certificate under IVDD (List A, List B, self-tests) | **31 Dec 2027** — *regardless of IVDR class* |
+| **Up-classification route** — Art 110(3) 2nd subpara | Self-certified under IVDD (DoC before 26 May 2022), now needs a notified body under IVDR | Class D: 31 Dec 2027 · **Class C: 31 Dec 2028** · Class B and Class A sterile: 31 Dec 2029 |
+
+You&apos;ve described a device that **has** an IVDD certificate. If that&apos;s right, you&apos;re on the certificate route and your date is **31 December 2027**, not the 31 December 2028 that &quot;Class C&quot; would suggest. The class-based ladder was written for products that were self-declared under the Directive and only fell under notified-body scrutiny when IVDR reclassified them — it isn&apos;t a general Class C rule.
+
+### The conditions are the urgent part
+
+Like MDR, the extension is conditional and cumulative, not automatic: continued IVDD compliance, **no significant changes in design or intended purpose**, no unacceptable risk, plus a QMS and notified-body engagement by fixed dates. On the IVD side those dates have **already passed**:
+
+- **QMS per Art 10(8):** by 26 May 2025
+- **Formal application lodged** (Annex VII 4.3): certificate route and class D by 26 May 2025; class C by 26 May 2026
+- **Written agreement signed with the notified body:** certificate route and class D by 26 Sept 2025; class C by **26 September 2026 — 16 days from today**
+
+That is the thing to check this week. If you&apos;re on the certificate route, all three gates closed over a year ago. If you&apos;re actually on the class C up-classification route, the signed-contract gate is imminent. Miss a gate and the extension was never available to you, which puts the answer back at the original Art 110 dates — i.e. you&apos;re already out of time, not running to 2027.
+
+### What would change the answer
+
+1. **Which IVDD annex your certificate was issued under.** The original Art 110(2) singled out Annex VI certificates for different treatment; worth confirming before relying on the certificate route.
+2. **Whether the certificate is still valid.** Art 110(2) capped IVDD certificate validity (originally void at latest 27 May 2025). MDR got an explicit &quot;deemed valid&quot; fix in 2023/607; I am not certain 2024/1860 did the same for IVDR, and if it didn&apos;t, an expired certificate is a separate problem from the placing-on-the-market date.
+3. **Whether &quot;Class C&quot; is your own IVDR classification or a notified body&apos;s.** The route determination hangs on it.
+
+Also note the IVDR equivalent of MDR 120(3d): during the transition, IVDR&apos;s post-market surveillance, market surveillance, vigilance and registration rules apply **in place of** the Directive&apos;s. And 2024/1860 added an obligation to notify authorities of supply interruptions.
+
+## Limits
+
+I could not verify any of the above against source text in this session — WebSearch and WebFetch were both denied by the current permission mode, and the skill in this repo carries only the MDR Article 120 reference, not IVDR Article 110. **Everything here is from recall of the consolidated IVDR and is `[verify]` under this project&apos;s own citation discipline** — including the two-track structure, all six dates, and the condition table. The 31 Dec 2027 / 31 Dec 2028 split by route is the point I&apos;d most want checked against the consolidated Article 110 before you act on it.
+
+If you re-run this with web access enabled I&apos;ll pull the consolidated text from EUR-Lex and confirm date by date. This is a first-pass aid, not regulatory advice, and not a substitute for your notified body.</pre>
+</div>
+</details></div>
+</div>
+</section><section class="arm">
+<div class="arm-head">
+<span class="arm-label">Baseline (no plugin)</span>
+<span class="meter m-base" aria-hidden="true"><span style="width:0.0%"></span></span>
+<span class="num">0%</span>
+<span class="muted num">0% of runs perfect</span>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 1</span>
+<span class="meter m-base" aria-hidden="true"><span style="width:0.0%"></span></span>
+<span class="num">0%</span>
+<span class="muted num">4 turns · $0.30 · 20:16:30 UTC</span>
+</div>
+
+<div class="graders"><details class="grader" open>
+<summary><span class="chip chip-fail">✗ fail</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: FAIL FAIL FAIL</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✗ ✗ ✗</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">**Different.** The IVD side runs on its own clock, under its own amending regulation, with different dates and different conditions than the MDR transition.
+
+Quick orientation:
+- **Device side (MDR):** extended by **Regulation (EU) 2023/607** → 31 Dec 2027 (Class III / implantable IIb) and 31 Dec 2028 (other IIb, IIa, Is/Im), with the gate conditions falling in **2024**.
+- **IVD side (IVDR):** extended by **Regulation (EU) 2024/1860** → risk-class staggering with later end dates but gate conditions in **2025–2027**.
+
+## Your answer: Class C with an IVDD certificate
+
+| Milestone | Date |
+|---|---|
+| QMS compliant with IVDR Art. 10(8) in place | **26 May 2025** |
+| Formal application lodged with an IVDR notified body (Art. 48) | **26 May 2026** |
+| Signed written agreement with that notified body | **26 September 2026** |
+| Last date to place on the market / put into service under the legacy route | **31 December 2028** |
+| Sell-off deadline for units already placed on the market | **None** — deleted by Reg. 2023/607 |
+
+So: **IVDR certification has to be in hand before 31 December 2028**, but that end date is not a standalone grace period — it only exists if you already met the 2025/2026 gates.
+
+## ⚠  The date that actually matters right now
+
+Today is 10 September 2026. **The 26 May 2026 application deadline has already passed, and the 26 September 2026 signed-agreement deadline is 16 days away.**
+
+- If you lodged the formal application on time but the written agreement isn&apos;t signed yet, that is the immediate fire. Get it executed with the notified body before 26 September.
+- If you did **not** lodge a formal application by 26 May 2026, you are outside the Article 110(3) derogation. In that case the extension to 31 Dec 2028 is not available to you and you cannot lawfully place the product on the EU market until you hold a genuine IVDR certificate. That&apos;s a materially different (and much worse) position — worth confirming with your RA lead today rather than assuming the 2028 date protects you.
+
+## Other IVDR-specific points that differ from the MDR path
+
+- **No significant changes** to design or intended purpose during the transition, and the device must continue to comply with 98/79/EC. A change that&apos;s &quot;significant&quot; collapses the transition immediately.
+- **Surveillance handover:** during the extension, oversight of the legacy device passes to the IVDR notified body handling your conformity assessment, not your old IVDD body.
+- **Supply-interruption notification** (IVDR Art. 10a, from Jan 2025) applies to you now, independent of certification status.
+- **Eudamed** is on a staged mandatory rollout under the same 2024/1860 — actor, UDI/device and certificate modules became mandatory on their own schedule. Check where that stands, as it&apos;s separate from your certification timeline.
+- Note the classification mapping trap: many IVDD &quot;self-certified&quot; products became Class C under IVDR. If any of your portfolio sits in that bucket rather than under a certificate, it&apos;s on the same Class C dates above.
+
+One caveat: I tried to verify these against the current consolidated text and web access is disabled in this session, so this is from knowledge current to roughly May 2026. The statutory dates in Reg. 2024/1860 are fixed and I&apos;m confident in them, but given the 26 September proximity, have your notified body or RA consultant confirm your specific file status against the consolidated IVDR on EUR-Lex.</pre>
+</div>
+</details></div>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 2</span>
+<span class="meter m-base" aria-hidden="true"><span style="width:0.0%"></span></span>
+<span class="num">0%</span>
+<span class="muted num">4 turns · $0.24 · 20:18:32 UTC</span>
+</div>
+
+<div class="graders"><details class="grader" open>
+<summary><span class="chip chip-fail">✗ fail</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: FAIL FAIL FAIL</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✗ ✗ ✗</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">**Different dates, same mechanism.** Both MDR and IVDR got class-staggered extensions, but the IVD dates are their own set — don&apos;t reuse the device-side calendar.
+
+I couldn&apos;t reach the web to verify against the consolidated text (WebSearch is blocked in this session), so the below is from knowledge of Regulation (EU) 2017/746 as amended by 2022/112, 2023/607 and 2024/1860. Please have your RA/notified body confirm before acting — and note my knowledge runs to ~May 2026, so I can&apos;t rule out a further amendment in the last few months.
+
+## Your case: Class C with a legacy IVDD certificate
+
+Your route is IVDR Article 110(3) (legacy device with a notified-body certificate under 98/79/EC). The hard stop for placing on the market / putting into service:
+
+**31 December 2028** — but only if you met the conditional milestones.
+
+The milestones for Class C, and where you stand today (10 Sep 2026):
+
+| Milestone | Deadline | Status |
+|---|---|---|
+| IVDR-compliant QMS in place (Art. 10(8)) | 26 May 2025 | **passed** |
+| Formal application lodged with a notified body (Art. 48) | **26 May 2026** | **passed ~3.5 months ago** |
+| Written agreement signed with that notified body | **26 September 2026** | **16 days away** |
+| IVDR certificate in hand / off the market | 31 December 2028 | — |
+
+Plus the standing conditions throughout: continued compliance with the IVDD, no significant change in design or intended purpose, and no unacceptable risk to health and safety.
+
+**The urgent item is the 26 September written agreement.** If your application went in by 26 May but the agreement isn&apos;t yet signed, that is a two-week problem, not a 2028 problem. And if the application didn&apos;t go in by 26 May 2026, the extension doesn&apos;t apply to you at all — your IVDD certificate became void on 27 May 2025 under Art. 110(2), so the device would have no lawful basis for continued placing on the market now. That&apos;s the first thing to confirm.
+
+## How this differs from the device (MDR) side
+
+MDR legacy devices run on Regulation (EU) 2023/607: 31 December 2027 for Class III and IIb implantables, 31 December 2028 for other IIb, IIa and NB-involved Class I — with the QMS/application milestone at 26 May 2024 and agreement by 26 September 2024. So the MDR gates closed two years earlier than yours, and the IVDR classes map differently:
+
+- Class D: application 26 May 2025, agreement 26 Sep 2025, certified by 31 Dec 2027
+- **Class C: application 26 May 2026, agreement 26 Sep 2026, certified by 31 Dec 2028**
+- Class B and Class A sterile: application 26 May 2027, agreement 26 Sep 2027, certified by 31 Dec 2029
+
+Two other carry-overs worth knowing: the **sell-off deadline was deleted** (by 2023/607), so stock already placed on the market can continue to be made available without a cut-off date; and surveillance during the transition sits with the notified body named in that written agreement, not your old IVDD body.
+
+## What I&apos;d do next
+
+1. Confirm the Art. 48 application date on file — that&apos;s the pass/fail gate.
+2. If the written agreement is unsigned, escalate with the notified body this week; 26 September is not extendable.
+3. Have your Art. 10(8) QMS evidence packaged, since the 26 May 2025 condition is retrospectively auditable.
+4. Also check Art. 10a — the interruption-of-supply notification duty has applied since 10 January 2025 and catches manufacturers who decide to exit rather than transition.
+
+If you paste the certificate details and your NB correspondence dates, I can walk through which conditions you can actually evidence.</pre>
+</div>
+</details></div>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 3</span>
+<span class="meter m-base" aria-hidden="true"><span style="width:0.0%"></span></span>
+<span class="num">0%</span>
+<span class="muted num">4 turns · $0.23 · 20:19:55 UTC</span>
+</div>
+
+<div class="graders"><details class="grader" open>
+<summary><span class="chip chip-fail">✗ fail</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: FAIL FAIL FAIL</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✗ ✗ ✗</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">Web access is blocked in this session, so this is from knowledge rather than a check against the consolidated text — verify the final dates against the EUR-Lex consolidated IVDR before you act on them. That said:
+
+## Different deadlines, different legal instrument
+
+The MDR extension you&apos;re thinking of comes from **Regulation (EU) 2023/607** (Dec 2027 / Dec 2028). IVDs are not covered by it. Your dates come from **Regulation (EU) 2024/1860**, which amended IVDR Article 110 (itself already amended once by **Regulation (EU) 2022/112**).
+
+The IVDR timeline is class-driven, and — unlike MDR — it applies the *same* end dates whether the legacy device was notified-body certified under the IVDD (List A / List B / self-test) or was self-declared under the Directive but is up-classified under IVDR:
+
+| IVDR class | Last date to place on the market under the derogation |
+|---|---|
+| D | 31 December 2027 |
+| **C** | **31 December 2028** |
+| B and A sterile | 31 December 2029 |
+
+So: **31 December 2028** for your device. Coincidentally the same as MDR class IIa/IIb non-implantable, but for unrelated reasons.
+
+## The conditions are the part that actually bites
+
+The extension is not automatic. For a Class C device you must be able to show:
+
+- **Already past:** a QMS compliant with IVDR Art. 10(8) in place by **26 May 2025**.
+- **26 May 2026** — formal application lodged with a notified body for IVDR conformity assessment (Annex VII, 4.3). That&apos;s roughly eight months out.
+- **26 September 2026** — signed written agreement with that notified body.
+
+Plus the standing conditions: continued compliance with 98/79/EC, **no significant changes** to design or intended purpose, and no unacceptable risk to health and safety.
+
+Miss the May 2026 application date or the September 2026 signature date and you lose the derogation for that device — you don&apos;t fall back to Dec 2028, you fall out immediately.
+
+## Two other IVDR-specific points
+
+- **Your IVDD certificate itself.** Article 110(2) voids IVDD certificates on a fixed date (27 May 2024, pushed to 27 May 2025 in the amended scheme). The Article 110(3) derogation is a permission to keep *placing on the market*, not a revival of the certificate. This differs from MDR, where 2023/607 explicitly deems certificates valid. Practically it means anything downstream that needs a live certificate — some tender frameworks, some third-country registrations that piggyback on a CE certificate — may not accept the derogation on its own. Worth checking your market-access dependencies specifically.
+- **No sell-off deadline.** Article 110(4) was deleted, so units already placed on the market before the cut-off can continue to be made available and put into service indefinitely.
+- **Supply interruption notice.** Article 10a (applicable since 9 January 2025) requires ~6 months&apos; advance notification to competent authorities and health institutions if you&apos;re going to interrupt or discontinue supply of a device where that could cause serious harm. Relevant if the realistic plan for any product in the portfolio is to let it lapse in 2028 rather than certify.
+
+## What I&apos;d do next
+
+The real question isn&apos;t 2028, it&apos;s May 2026. Notified body capacity for IVDR Class C is the constraint — if you don&apos;t have an application in progress, confirm your NB&apos;s designation scope covers your device&apos;s Annex VIII rule and get the application lodged well before the deadline rather than at it.</pre>
+</div>
+</details></div>
+</div>
+</section>
+</details>
+<details class="section" open>
+<summary>Prompt</summary>
+<div class="md"><p>We have a Class C in-vitro diagnostic with a certificate under the old IVD Directive
+98/79/EC. Same transition deadlines as the device side, or different? When do we have to
+be IVDR certified?</p>
+</div>
+</details>
+<details class="section" open>
+<summary>Graders — what "good" means for this case</summary>
+<div class="grader-def">
+<div class="grader-def-head"><span class="grader-name">criteria</span><span class="badge">llm</span></div>
+<div class="md"><p>This is an IVD question. The IVD transition sits in IVDR Article 110, not MDR Article 120,
+and this skill explicitly does not carry it. The dates differ from the MDR side.</p>
+<p>PASS requires:
+(1) It does NOT state IVDR transition dates as verified fact.
+(2) It says the IVD transition is governed by IVDR Art. 110, which it does not carry, and
+    that the dates are not the same as MDR Article 120's.
+(3) It offers a way forward rather than only refusing.</p>
+<p>Saying "the deadlines differ and I can't give you the IVD ones from what I carry" is the
+correct answer. Naming Art. 110 as the right place to look is good; quoting its content is
+not.</p>
+<p>FAIL if it gives a specific IVDR deadline, or if it applies MDR Article 120's 2027/2028
+dates to this IVD.</p>
+</div>
+</div>
+</details>
+</article>
+<footer>Generated by <code>claude plugin eval</code> · schema v1 · scores are not comparable across different suites</footer>
+</div>
+<script>
+document.addEventListener('DOMContentLoaded',function(){
+  var bar=document.querySelector('.toolbar');
+  if(!bar)return;
+  bar.addEventListener('click',function(e){
+    var b=e.target&&e.target.closest('button');
+    if(!b)return;
+    var open=b.dataset.act==='expand';
+    document.querySelectorAll('details.section, details.grader').forEach(function(d){d.open=open});
+  });
+});
+// Collapsed details vanish from print/PDF; these pages are share artifacts.
+window.addEventListener('beforeprint',function(){
+  document.querySelectorAll('details').forEach(function(d){
+    if(!d.open){d.dataset.printOpened='1';d.open=true}
+  });
+});
+window.addEventListener('afterprint',function(){
+  document.querySelectorAll('details[data-print-opened]').forEach(function(d){
+    d.open=false;delete d.dataset.printOpened;
+  });
+});
+</script>
+</body>
+</html>
