@@ -18,10 +18,17 @@ the answer. Not a hallucinated rule — a real rule applied one step past where 
 These skills pin every finding to verbatim statute text, state what they do **not**
 carry, and stop rather than conclude past their own boundary.
 
-| Skill | Does | Instruments |
+| Skill | Does | Measured |
 |---|---|---|
-| `device-claims` | Reviews device and IVD marketing copy | MDR Art. 7, IVDR Art. 7, HWG, UWG |
-| `mdr-classification` | Classifies software under Annex VIII | Implementing rules 3.1–3.7, Rule 11 |
+| `device-claims` | Reviews device and IVD marketing copy against MDR Art. 7, IVDR Art. 7, HWG, UWG | [10 cases, Δ +0.47](device-claims/evals/README.md) |
+| `mdr-classification` | Classifies software under Annex VIII implementing rules and Rule 11 | [7 cases, Δ +0.29](mdr-classification/evals/README.md) |
+| `scope-statement` | Bounds any compliance claim — what was checked, what wasn't, what it doesn't establish | [3 cases, Δ +0.33](scope-statement/evals/README.md) |
+
+Every skill ships an eval suite measured against a no-plugin baseline, and every suite
+reports the cases where the skill adds **nothing**. Across 20 cases in three domains:
+positive delta wherever the model would over-apply, over-conclude, invent an authority
+or reach for boilerplate; zero wherever it already had what it needed. These skills do
+not add knowledge. They add the discipline to stop.
 
 **Not legal advice.** Drafting and risk-triage aids, not a substitute for a regulatory
 professional or a Fachanwalt.

@@ -1,0 +1,1328 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Eval report — scope-statement v0.1.0</title>
+</head>
+<body>
+<style>
+:root{--plane:#f9f9f7;--surface:#fcfcfb;--ink:#0b0b0b;--ink-2:#52514e;--ink-3:#6b6a64;--hairline:rgba(11,11,11,.10);--grid:#e1e0d9;--inset:rgba(11,11,11,.04);--accent:#2a78d6;--base-fill:#6b6a64;--delta-good:#006300;--good:#067d06;--warning:#8a6100;--critical:#d03b3b;
+  color-scheme:light dark;
+}
+@media (prefers-color-scheme:dark){:root{--plane:#0d0d0d;--surface:#1a1a19;--ink:#ffffff;--ink-2:#c3c2b7;--ink-3:#898781;--hairline:rgba(255,255,255,.10);--grid:#2c2c2a;--inset:rgba(255,255,255,.05);--accent:#3987e5;--base-fill:#898781;--delta-good:#0ca30c;--good:#0ca30c;--warning:#fab219;--critical:#e06c6c;color-scheme:dark}}
+:root[data-theme="dark"]{--plane:#0d0d0d;--surface:#1a1a19;--ink:#ffffff;--ink-2:#c3c2b7;--ink-3:#898781;--hairline:rgba(255,255,255,.10);--grid:#2c2c2a;--inset:rgba(255,255,255,.05);--accent:#3987e5;--base-fill:#898781;--delta-good:#0ca30c;--good:#0ca30c;--warning:#fab219;--critical:#e06c6c;color-scheme:dark}
+:root[data-theme="light"]{--plane:#f9f9f7;--surface:#fcfcfb;--ink:#0b0b0b;--ink-2:#52514e;--ink-3:#6b6a64;--hairline:rgba(11,11,11,.10);--grid:#e1e0d9;--inset:rgba(11,11,11,.04);--accent:#2a78d6;--base-fill:#6b6a64;--delta-good:#006300;--good:#067d06;--warning:#8a6100;--critical:#d03b3b;color-scheme:light}
+*{box-sizing:border-box}
+body{margin:0;background:var(--plane);color:var(--ink);
+  font:14px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif;
+  -webkit-text-size-adjust:100%}
+.wrap{max-width:880px;margin:0 auto;padding:40px 24px 64px;display:flex;flex-direction:column;gap:20px}
+.eyebrow{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
+header h1{margin:2px 0 0;font-size:24px;font-weight:600;line-height:1.25;text-wrap:balance}
+.meta{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:8px;color:var(--ink-2);font-size:13px}
+.meta .num{font-variant-numeric:tabular-nums lining-nums}
+.banner{display:flex;align-items:center;gap:8px;padding:10px 14px;border-radius:8px;
+  border:1px solid var(--hairline);background:var(--surface);font-size:13px}
+.banner .chip-warn{color:var(--warning);font-weight:600}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.tile{background:var(--surface);border:1px solid var(--hairline);border-radius:10px;padding:14px 16px;
+  display:flex;flex-direction:column;gap:4px}
+.tile .label{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3)}
+.tile .value{font-size:26px;font-weight:600;font-variant-numeric:tabular-nums lining-nums;line-height:1.1}
+.tile.hero .value{font-family:Georgia,"Times New Roman",serif;font-weight:400;font-size:48px}
+.tile .sub{font-size:12px;color:var(--ink-2);font-variant-numeric:tabular-nums}
+.tile .value.delta-pos{color:var(--delta-good)}
+.tile .value.delta-neg{color:var(--critical)}
+.toolbar{display:flex;gap:8px;justify-content:flex-end}
+.toolbar button{font:12px system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--ink-2);
+  background:var(--surface);border:1px solid var(--hairline);border-radius:6px;padding:4px 10px;cursor:pointer}
+.toolbar button:hover{color:var(--ink)}
+.toolbar button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.case{background:var(--surface);border:1px solid var(--hairline);border-radius:10px;padding:18px 20px;
+  display:flex;flex-direction:column;gap:10px}
+.case-regressed{border-left:3px solid var(--critical)}
+.verdict{margin:6px 0 0;font-size:15px}
+.verdict .delta{font-size:15px}
+.flag{font-size:11px;font-weight:600;color:var(--warning);white-space:nowrap}
+.star{color:var(--warning);font-size:.45em;vertical-align:super;line-height:0;cursor:help}
+.legend summary{cursor:pointer;font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-2)}
+.legend-list{margin:8px 0 0;padding-left:20px;display:flex;flex-direction:column;gap:5px;font-size:13px;color:var(--ink-2)}
+.case-head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.case-head h2{margin:0;font-size:16px;font-weight:600}
+.case-head .spacer{flex:1}
+.case-score{font-size:15px;font-weight:600}
+.mono{font:12px "SF Mono",ui-monospace,Menlo,Consolas,monospace}
+.num{font-variant-numeric:tabular-nums lining-nums}
+.muted{color:var(--ink-3);font-size:12px}
+.meter{display:inline-block;position:relative;width:120px;height:6px;border-radius:4px;background:var(--grid);
+  vertical-align:middle}
+.meter>span{display:block;height:100%;border-radius:4px;max-width:100%}
+.meter .tick{position:absolute;top:-2px;bottom:-2px;width:2px;background:var(--ink-3);border-radius:1px}
+.m-accent>span{background:var(--accent)}
+.m-base>span{background:var(--base-fill)}
+.delta{font-size:12px;font-weight:600;font-variant-numeric:tabular-nums}
+.delta-pos{color:var(--delta-good)}
+.delta-neg{color:var(--critical)}
+.delta-zero{color:var(--ink-3)}
+details.section{border-top:1px solid var(--grid);padding-top:10px}
+details.section>summary{cursor:pointer;font-size:12px;font-weight:600;letter-spacing:.04em;
+  text-transform:uppercase;color:var(--ink-2);list-style-position:outside;margin-left:2px}
+details.section>summary:hover{color:var(--ink)}
+details.section[open]>summary{margin-bottom:8px}
+.md{display:flex;flex-direction:column;gap:8px;background:var(--inset);border-radius:8px;
+  padding:12px 14px;overflow-wrap:break-word}
+.md>:first-child{margin-top:0}
+.md h1,.md h2,.md h3,.md h4,.md h5,.md h6{margin:4px 0 0;font-size:1em;font-weight:600;line-height:1.3}
+.md p,.md ul,.md ol,.md blockquote,.md table,.md pre,.md hr{margin:0}
+.md ul,.md ol{display:flex;flex-direction:column;gap:4px;padding-left:20px}
+.md blockquote{border-left:2px solid var(--hairline);padding-left:10px;color:var(--ink-2)}
+.md :not(pre)>code{background:var(--inset);padding:1px 4px;border-radius:4px;
+  font:.92em "SF Mono",ui-monospace,Menlo,Consolas,monospace}
+.md pre{background:var(--inset);border:1px solid var(--hairline);padding:10px 12px;border-radius:6px;
+  overflow-x:auto;font:12px/1.5 "SF Mono",ui-monospace,Menlo,Consolas,monospace}
+.md pre code{background:none;padding:0;font:inherit}
+.md table{width:100%;border-collapse:collapse}
+.md th,.md td{padding:5px 8px;text-align:left;vertical-align:top;border-bottom:1px solid var(--grid)}
+.md th{font-weight:600;color:var(--ink-2)}
+.md a{color:var(--accent);text-decoration:none}
+.md a:hover{text-decoration:underline}
+.grader-def{display:flex;flex-direction:column;gap:6px;padding:8px 0}
+.grader-def+.grader-def{border-top:1px solid var(--grid)}
+.grader-def-head{display:flex;align-items:baseline;gap:8px}
+.grader-name{font:13px "SF Mono",ui-monospace,Menlo,Consolas,monospace;font-weight:600}
+.badge{font-size:10px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-2);
+  border:1px solid var(--hairline);border-radius:999px;padding:1px 8px}
+.config{display:flex;flex-direction:column;gap:2px;background:var(--inset);border-radius:8px;padding:10px 14px}
+.config code{font:12px "SF Mono",ui-monospace,Menlo,Consolas,monospace;overflow-wrap:anywhere}
+.arm{display:flex;flex-direction:column;gap:8px;padding:6px 0}
+.arm+.arm{border-top:1px dashed var(--grid);margin-top:4px;padding-top:12px}
+.arm-head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.arm-label{font-size:13px;font-weight:600}
+.run{border:1px solid var(--grid);border-radius:8px;padding:10px 12px;display:flex;flex-direction:column;gap:8px}
+.run-head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.run-title{font-size:12px;font-weight:600;color:var(--ink-2)}
+.run-error .explanation{color:var(--ink-2)}
+.note{font-size:12px;color:var(--ink-2)}
+.graders{display:flex;flex-direction:column;gap:4px}
+details.grader{border-radius:6px}
+details.grader>summary{cursor:pointer;display:flex;align-items:baseline;gap:8px;padding:3px 4px;
+  border-radius:6px;list-style:none}
+details.grader>summary::-webkit-details-marker{display:none}
+details.grader>summary::before{content:'▸';font-size:10px;color:var(--ink-3);flex:none;
+  transition:transform .12s ease}
+details.grader[open]>summary::before{transform:rotate(90deg)}
+details.grader>summary:hover{background:var(--inset)}
+details.grader>summary:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.grader-body{padding:6px 8px 8px 24px;display:flex;flex-direction:column;gap:6px}
+.chip{font-size:11px;font-weight:600;border-radius:999px;padding:1px 8px;white-space:nowrap}
+.chip-pass{color:var(--good);border:1px solid currentColor}
+.chip-fail{color:var(--critical);border:1px solid currentColor}
+.chip.chip-warn{color:var(--warning);border:1px solid currentColor}
+.explanation{margin:0;font-size:13px;color:var(--ink-2);white-space:pre-wrap;overflow-wrap:break-word}
+.kv{display:flex;gap:8px;font-size:12px;color:var(--ink-3)}
+.votes{font-variant-numeric:tabular-nums;letter-spacing:.1em}
+pre.evidence{margin:0;background:var(--inset);border:1px solid var(--hairline);border-radius:6px;
+  padding:8px 10px;overflow-x:auto;max-height:320px;
+  font:12px/1.5 "SF Mono",ui-monospace,Menlo,Consolas,monospace;white-space:pre-wrap;overflow-wrap:break-word}
+footer{color:var(--ink-3);font-size:12px;text-align:center;padding-top:8px}
+@media (prefers-reduced-motion:no-preference){
+  details.grader>summary,.toolbar button{transition:background .12s ease,color .12s ease}
+}
+@media (prefers-reduced-motion:reduce){
+  details.grader>summary::before{transition:none}
+}
+@media print{
+  :root,:root[data-theme="dark"],:root[data-theme="light"]{--plane:#f9f9f7;--surface:#fcfcfb;--ink:#0b0b0b;--ink-2:#52514e;--ink-3:#6b6a64;--hairline:rgba(11,11,11,.10);--grid:#e1e0d9;--inset:rgba(11,11,11,.04);--accent:#2a78d6;--base-fill:#6b6a64;--delta-good:#006300;--good:#067d06;--warning:#8a6100;--critical:#d03b3b;color-scheme:light}
+  body{background:#fff}
+  .toolbar{display:none}
+  .case,.run,.grader-def{break-inside:avoid}
+  pre.evidence{max-height:none}
+}
+</style>
+<div class="wrap">
+<header>
+<div class="eyebrow">Plugin eval report</div>
+<h1>scope-statement v0.1.0</h1>
+<p class="verdict">Plugin effect: <span class="delta delta-pos">↑ +33.3 pts</span> vs baseline — improved 2 · flat 1 · regressed 0 of 3 cases.</p>
+<div class="meta">
+<span class="mono">.</span>
+<span>Claude Code v2.1.267</span>
+<span class="num">2026-09-10 02:37 UTC</span>
+<span class="num">9m 19s</span>
+<span class="num">$1.83</span>
+<span class="num">18 runs</span>
+
+
+<span>judge default</span>
+<span class="num">threshold 100%</span>
+
+</div>
+</header>
+<div class="banner"><span class="chip-warn">⚠ Averages include non-judgments</span><span>1 run errored — their scores count toward the averages shown without a complete judgment.</span></div>
+<section class="tiles">
+<div class="tile hero"><span class="label">Suite score · with plugin</span><span class="value">100%</span><span class="sub">mean of per-case scores</span></div>
+<div class="tile"><span class="label">Ablation Δ</span><span class="value num delta-pos">↑ +33.3</span><span class="sub">score points vs baseline, 3 of 3 cases</span></div>
+<div class="tile"><span class="label">Baseline score</span><span class="value num">66.7%</span><span class="sub">without the plugin</span></div>
+<div class="tile"><span class="label">Cases</span><span class="value num">3</span><span class="sub">3 of 3 ≥ 100% threshold</span></div>
+<div class="tile"><span class="label">Perfect runs</span><span class="value num">100%</span><span class="sub">runs where every grader passed</span></div>
+</section>
+<details class="section legend">
+<summary>How to read this report</summary>
+<ul class="legend-list">
+<li>A run's score is the weighted fraction of its graders that passed; a "perfect" run passed every grader.</li>
+<li>A case's score is the mean of its runs; a case passes when its score is at or above the 100% threshold (the tick on each case bar).</li>
+<li>The suite score is the mean of the per-case scores.</li>
+<li>Judge votes are independent samples of the LLM judge; the majority decides pass or fail.</li>
+<li>"With plugin" and "Baseline" runs are identical except for the plugin being loaded; Δ is the with-plugin score minus the baseline score.</li>
+
+</ul>
+</details>
+<div class="toolbar"><button type="button" data-act="expand">Expand all</button><button type="button" data-act="collapse">Collapse all</button></div>
+<article class="case" id="case-1">
+<div class="case-head">
+<h2>readiness-claim</h2>
+<span class="muted mono">evals/01-readiness-claim</span>
+<span class="spacer"></span>
+
+<span class="delta delta-zero">· 0.0 pts</span>
+<span class="muted">with plugin</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:100.0%"></span><i class="tick" style="left:100.0%"></i></span>
+<span class="num case-score">100%</span>
+</div>
+
+<details class="section" open>
+<summary>Results</summary>
+<section class="arm">
+<div class="arm-head">
+<span class="arm-label">With plugin</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">100% of runs perfect</span>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 1</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">3 turns · $0.11 · 02:37:16 UTC</span>
+</div>
+
+<div class="graders"><details class="grader">
+<summary><span class="chip chip-pass">✓ pass</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: PASS PASS PASS</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✓ ✓ ✓</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">Here&apos;s the block. One thing I couldn&apos;t fill from what you&apos;ve told me: the schema version and retrieval date — that&apos;s flagged in-line and needs your real value, because pinning to &quot;the current schema&quot; is exactly the failure this block exists to prevent.
+
+## Scope of this check
+
+**Checked:** Your catalogue spreadsheet was mapped to EUDAMED fields. For every device row, each field the schema marks mandatory was confirmed present and non-empty, and values in constrained formats — dates, UDI-DI check digits, ISO country codes — were confirmed well-formed. An EMDN code was proposed for each device.
+
+**Against:** The EUDAMED [Device / UDI data exchange schema, version X.Y, retrieved YYYY-MM-DD] — mandatory-field flags and format rules are taken directly from that schema. The EMDN proposals are not from the schema: they are this tool&apos;s suggestion, generated from your device descriptions, and carry no authority until a reviewer accepts them.
+
+**Not checked:**
+- **Whether the values are true.** A well-formed date is not the right date; a valid check digit is not your UDI-DI. Every field could be filled, formatted correctly, and wrong.
+- **Whether the column mapping is right.** If one of your columns was mapped to the wrong EUDAMED field, the value lands in the wrong place and still passes as present and well-formed.
+- **Conditionally mandatory fields.** Only fields the schema flags as unconditionally mandatory were required. Fields that become mandatory depending on device class, risk class, or intended purpose were not evaluated against those conditions.
+- **Consistency across rows or against your other systems** — no cross-check against your UDI database entries, existing EUDAMED registrations, or technical file.
+- **Clinical evidence, technical documentation, labelling and IFU, PMS/PMCF planning, and your QMS.** None of these were assessed.
+- **Whether each device is eligible for registration at all** — certificate validity, notified body status, and Authorised Representative details were not verified against any external source.
+
+**This does not establish:**
+- This does not establish that your submission will be accepted. EUDAMED may reject it on grounds this tool does not examine.
+- This does not establish that your device data is correct — only that it is complete and well-formed.
+- This does not establish compliance with Regulation (EU) 2017/745. Registration data is one obligation among many, and this check covers part of that one.
+- This does not establish that the proposed EMDN codes are correct. They are unreviewed suggestions; you remain responsible for the code submitted.
+
+**Valid as of:** [date of run], for the catalogue file as submitted. This result is invalidated by any edit to the spreadsheet, any change to the column mapping, a change to a device&apos;s intended purpose or risk class, or a new version of the EUDAMED schema.
+
+---
+
+Two notes on placement:
+
+**The banner text is doing more damage than the block can undo.** &quot;Ready to submit&quot; is a verdict about the outcome; what you actually verified is a property of the file. Something like **&quot;Field checks passed&quot;** or **&quot;No blocking field errors&quot;** keeps the green and stops the reader completing the sentence themselves. Then the scope block explains rather than retracts.
+
+**The EMDN line belongs above the fold too.** Every device carries a machine-proposed code awaiting human review, and a green banner suggests the review already happened. Consider a count in the banner area — &quot;N EMDN codes proposed, 0 reviewed&quot; — so the outstanding work is visible without reading the scope.</pre>
+</div>
+</details></div>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 2</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">3 turns · $0.12 · 02:37:46 UTC</span>
+</div>
+
+<div class="graders"><details class="grader">
+<summary><span class="chip chip-pass">✓ pass</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: PASS PASS PASS</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✓ ✓ ✓</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">Here&apos;s the block. Two values I can&apos;t fill without you — flagged in brackets and asked at the end.
+
+## Scope of this check
+
+```markdown
+## Scope of this check
+
+**Checked:** Your catalogue export was mapped to EUDAMED device fields and each row was
+checked for two things only: that every field the schema marks mandatory is present and
+non-empty, and that the values in the fields we validate are well-formed — dates parse,
+UDI-DI check digits compute, country codes exist in the code list. An EMDN code was
+proposed for each device. All [N] devices in the file were checked; nothing was sampled.
+
+**Against:** EUDAMED device data schema [version], retrieved [date], for mandatory-field
+flags and value formats; [EMDN nomenclature version/date] for code proposals. The EMDN
+proposal is this tool&apos;s suggestion, not a schema rule and not a determination — it is
+generated by us and is the one output here that has no published authority behind it.
+
+**Not checked:**
+- **Whether any value is true.** A UDI-DI with a valid check digit may belong to a
+  different device. A well-formed date may be the wrong date. We check form, never fact.
+- **Whether the column mapping is right.** If your &quot;Model&quot; column was mapped to the
+  EUDAMED name field, a correct-looking value lands in the wrong field and passes every
+  check on this page. The mapping is our proposal and has not been confirmed by anyone.
+- **The EMDN codes.** They are proposals awaiting the human review your process
+  requires. This report going green does not mean that review happened, and does not
+  mean the proposals were right.
+- **Fields that are mandatory only in some circumstances** — those that become required
+  by device class, risk class, intended purpose or device type. We check what the schema
+  flags as mandatory for all devices. [Confirm before publishing — see note below.]
+- **Consistency across rows and against what is already registered** — duplicate
+  entries, Basic UDI-DI groupings, devices you have already submitted, and agreement
+  between this catalogue and your actor (SRN) registration.
+- **Everything outside the catalogue file:** clinical evidence, clinical evaluation,
+  technical documentation, labelling and IFU artwork, declaration of conformity,
+  notified body certificates, PMS and vigilance arrangements, and your QMS.
+- **EUDAMED&apos;s own validation at submission.** The system applies business rules on
+  receipt that we do not replicate.
+
+**This does not establish:**
+- That your device data is correct. It establishes that the fields are filled in and
+  formatted properly.
+- That a submission will be accepted. EUDAMED may reject this data.
+- That you are compliant with Regulation (EU) 2017/745. Nothing here was checked against
+  MDR requirements — only against the shape of the EUDAMED data fields.
+- That the devices in this catalogue may lawfully be placed on the market.
+
+**Valid as of:** [run date], for the file [filename], checksum [hash]. This result is
+void if the catalogue is edited after this run, if the EUDAMED schema or EMDN
+nomenclature is updated, if the column mapping is changed, or if a device&apos;s class or
+intended purpose changes.
+```
+
+**What I need from you to finish it:**
+
+1. **The schema version and retrieval date** you validate against, and the same for the EMDN nomenclature. &quot;The current schema&quot; can&apos;t be pinned, and pinning to an authority I haven&apos;t seen is exactly the failure this block prevents.
+2. **Confirm the conditional-mandatory line.** I&apos;ve written it as a gap because most implementations read a flat mandatory flag. If your schema handling does evaluate class- and context-dependent requirements, that bullet is wrong and should move up into **Checked** — it&apos;s a genuine strength and worth claiming.
+
+**On the banner itself:** &quot;Ready to submit&quot; is doing more work than the check supports — it names the outcome (submission succeeds) rather than the finding. The scope statement then spends four lines taking back what the banner asserted. &quot;No format or missing-field errors found&quot; says the same true thing and leaves nothing to retract. Your call, but the block below it gets much easier to hold if the banner isn&apos;t fighting it.</pre>
+</div>
+</details></div>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 3</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">3 turns · $0.12 · 02:38:29 UTC</span>
+</div>
+
+<div class="graders"><details class="grader">
+<summary><span class="chip chip-pass">✓ pass</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: PASS PASS PASS</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✓ ✓ ✓</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">Here&apos;s the block. One line needs a value I don&apos;t have — flagged after.
+
+## Scope of this check
+
+**Checked:** Your spreadsheet columns were mapped to EUDAMED fields; every field the schema marks mandatory was confirmed present and non-empty; dates, UDI-DI check digits and country codes were confirmed well-formed. An EMDN code was proposed for each device for human review.
+
+**Against:** The EUDAMED device data schema, version `[VERSION]`, retrieved `[DATE]` — for field names, mandatory flags and format rules. The proposed EMDN codes are **this tool&apos;s suggestion, not a schema rule**: they are derived from your device descriptions and have no regulatory standing until a reviewer confirms them.
+
+**Not checked:**
+- **Whether any value is true.** A correctly formatted, wrong entry passes. A UDI-DI with a valid check digit, a plausible date, or a real country code will pass whether or not it is the right one for the device.
+- **Whether the proposed EMDN codes are correct.** They are unreviewed output. A green banner does not mean they were accepted.
+- **Whether your column mapping is right.** The mapping was applied; it was not verified against your intent. Two swapped columns of the same type pass every check in this report.
+- **Whether every device is present.** Rows in the file were checked. Devices missing from the file entirely are invisible to this check.
+- **Conditionally mandatory fields** whose requirement depends on interpreting a device&apos;s characteristics (risk class, device type, intended purpose) rather than on a static schema flag.
+- **Cross-row consistency** — duplicates, conflicting entries for the same Basic UDI-DI, devices grouped under the wrong Basic UDI-DI.
+- **Whether the UDI-DIs are real.** A valid check digit is arithmetic, not evidence that the DI was issued by an accredited issuing entity or that it matches what is on the label.
+- **Clinical evidence, technical documentation, labelling and IFU, declaration of conformity, certificate and notified body status, and SRN/actor registration validity.** None of these were assessed.
+
+**This does not establish:**
+- This does not establish that your device data is correct.
+- This does not establish that a submission will be accepted, or that EUDAMED will not reject these records.
+- This does not establish compliance with the MDR/IVDR. It establishes that a spreadsheet is filled in and well-formed.
+
+**Valid as of:** `[DATE]`, for the file as submitted to this tool. It is invalidated by any edit to the data, any device added or removed, any change to the EUDAMED schema or its mandatory-field set, and by any change to a device&apos;s intended purpose or classification.
+
+---
+
+**What I need from you:** the schema version and retrieval date your validator pins to. If it fetches &quot;the current schema&quot; at runtime without recording a version, that&apos;s worth fixing before this ships — an unpinned basis is the thing this block exists to prevent, and the report can&apos;t honestly claim one it didn&apos;t capture.
+
+**One thing beyond the scope statement:** a green &quot;Ready to submit&quot; banner is doing more work than the check supports, and no amount of text underneath fully retracts a green banner — readers act on colour. Consider &quot;Format checks passed&quot; or &quot;No blocking format errors&quot; as the banner, with readiness left to the human. The scope statement is much easier to write honestly when the headline isn&apos;t already overclaiming.</pre>
+</div>
+</details></div>
+</div>
+</section><section class="arm">
+<div class="arm-head">
+<span class="arm-label">Baseline (no plugin)</span>
+<span class="meter m-base" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">100% of runs perfect</span>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 1</span>
+<span class="meter m-base" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">1 turns · $0.08 · 02:39:05 UTC</span>
+</div>
+
+<div class="graders"><details class="grader">
+<summary><span class="chip chip-pass">✓ pass</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: PASS PASS PASS</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✓ ✓ ✓</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">Here&apos;s the scope statement, followed by one note on the banner itself.
+
+---
+
+## Scope statement
+
+**What this check covers**
+
+This report tells you that your catalogue is *structurally* ready for EUDAMED — nothing more. We verified that:
+
+- your spreadsheet columns map onto the EUDAMED fields we expect;
+- every field the schema marks mandatory is present and non-empty;
+- formatted values are well-formed — dates parse, UDI-DI check digits compute, country codes are valid.
+
+*Checked against EUDAMED schema version {X}, retrieved {date}.*
+
+**What this check does not cover**
+
+We did not look at, and this report says nothing about:
+
+- **Whether your data is true.** A correctly-formed UDI-DI belonging to a different device passes every check here. So does a valid date that is the wrong date.
+- **Clinical evidence, technical documentation, labelling, or your technical file.** None of it was read.
+- **Device classification, or whether the device meets MDR/IVDR requirements.**
+- **Whether the proposed EMDN codes are right.** They are machine suggestions and are not part of the pass result. Each one must be confirmed by a competent reviewer before you submit — this report does not record that review as having happened.
+
+**What a pass means**
+
+Your submission should not be rejected for a missing or malformed field. It may still be rejected, returned, or found non-compliant for any reason above. Responsibility for the accuracy and completeness of what you submit to EUDAMED remains with the legal manufacturer.
+
+---
+
+**On the banner:** &quot;Ready to submit&quot; claims more than the tool checked — a reader who skims the green and skips the text will reasonably hear &quot;we&apos;ve been cleared.&quot; Consider narrowing it to something the tool can actually stand behind: **&quot;Field checks passed&quot;**, or **&quot;No blocking field errors — EMDN codes pending review&quot;** if any proposals are still unreviewed. Then the scope statement explains a modest claim rather than walking back an overstated one, which is a much easier job for it to do. Same for the colour: green plus &quot;ready&quot; is doing persuasive work that the underlying checks don&apos;t support.</pre>
+</div>
+</details></div>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 2</span>
+<span class="meter m-base" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">2 turns · $0.10 · 02:39:31 UTC</span>
+</div>
+
+<div class="graders"><details class="grader">
+<summary><span class="chip chip-pass">✓ pass</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: PASS PASS PASS</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✓ ✓ ✓</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">The repo is empty, so this is just the copy. One thing worth saying before the text itself: a scope statement under &quot;Ready to submit&quot; is working against the banner. &quot;Ready to submit&quot; is a readiness claim about the submission; the tool only supports a claim about the file. Whatever sits underneath will be read as fine print qualifying a verdict the user has already accepted. The statement below is written to do that job as well as it can, but I&apos;d also change the banner — options at the end.
+
+## Scope statement
+
+&gt; **What this check covers**
+&gt;
+&gt; This report confirms that your catalogue file is **structurally complete and well-formed** against the EUDAMED schema. Specifically, we checked that:
+&gt;
+&gt; - each spreadsheet column was mapped to a EUDAMED field, and every mapping is recorded in the mapping table above;
+&gt; - every field the schema marks mandatory is present and non-empty for every device;
+&gt; - values in format-constrained fields parse correctly — dates, UDI-DI check digits, and country codes.
+&gt;
+&gt; EMDN codes in this report are **proposals generated by the tool**. They have not been verified against your devices and require review and confirmation by a competent person before submission.
+&gt;
+&gt; **What this check does not cover**
+&gt;
+&gt; We did not examine, and this report says nothing about, whether:
+&gt;
+&gt; - the data is **factually correct** — that a value is well-formed does not mean it describes your device;
+&gt; - the entries are consistent with your technical documentation, Declaration of Conformity, clinical evaluation, or labelling and IFU;
+&gt; - the risk classification, Basic UDI-DI grouping, or device identifiers are correct;
+&gt; - the proposed EMDN codes are appropriate;
+&gt; - your devices meet any substantive requirement of the MDR/IVDR.
+&gt;
+&gt; None of the above is assessed by this tool. A file can pass every check here and still be inaccurate, incomplete in substance, or rejected on review.
+&gt;
+&gt; **Responsibility**
+&gt;
+&gt; Passing this check is not a determination of regulatory compliance and is not a substitute for review by your PRRC or regulatory function. Responsibility for the accuracy and completeness of what you submit to EUDAMED remains entirely with you as the manufacturer.
+
+## On the banner
+
+Three options, in the order I&apos;d recommend them:
+
+1. **&quot;No formatting issues found&quot;** — states what the tool actually established. The scope statement then explains rather than retracts.
+2. **&quot;Ready for regulatory review&quot;** — keeps the sense of forward progress, but names the next gate as a human one.
+3. Keep **&quot;Ready to submit&quot;** and lead the scope statement with a bolded qualifier: *&quot;&apos;Ready to submit&apos; here means the file is well-formed — not that its contents are correct.&quot;*
+
+If the banner changes to option 1 or 2, drop the last sentence of the &quot;does not cover&quot; section — it exists to counteract &quot;Ready to submit&quot; and stops being necessary.
+
+One gap you may want to close separately: the tool checks that mandatory fields are non-empty, which placeholder text (&quot;TBD&quot;, &quot;N/A&quot;, &quot;x&quot;) satisfies. If you don&apos;t screen for that, a file of filler passes cleanly — worth either a heuristic check or a line in the scope statement.</pre>
+</div>
+</details></div>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 3</span>
+<span class="meter m-base" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">1 turns · $0.09 · 02:40:04 UTC</span>
+</div>
+
+<div class="graders"><details class="grader">
+<summary><span class="chip chip-pass">✓ pass</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: PASS PASS PASS</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✓ ✓ ✓</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">Here&apos;s the scope statement, written to sit directly under the banner:
+
+---
+
+**What this check covers**
+
+This report is a check on the *structure* of your catalogue data — nothing more.
+
+**What we checked**
+- Your spreadsheet columns were mapped to EUDAMED fields (mapping shown above).
+- Every field the EUDAMED schema marks as mandatory is present and non-empty.
+- Values are well-formed: dates parse, UDI-DI check digits compute correctly, country codes are valid.
+- An EMDN code has been proposed for each device.
+
+**What we did not check**
+- **Whether any value is true.** A correctly formed date, UDI-DI or country code that describes the wrong device passes every check here. We verify format, not fact.
+- **Whether the proposed EMDN codes are right.** They are suggestions and require confirmation by someone who knows the devices. This report is not that review.
+- **Your technical documentation, clinical evidence, labelling or IFU, or declaration of conformity.** None of it was read.
+- **Whether the catalogue is complete or the classifications are correct.** A device missing from the spreadsheet is invisible to this tool.
+- **Whether EUDAMED will accept the submission.** EUDAMED applies its own validations, business rules and duplicate checks at upload, and may reject records that pass here.
+
+A pass means &quot;no data errors we can detect&quot;, not &quot;correct&quot;, &quot;compliant&quot;, or &quot;accepted&quot;. Responsibility for the accuracy and completeness of what you submit to EUDAMED remains with you as the manufacturer.
+
+---
+
+One thing worth raising while you&apos;re in this file: the scope statement is doing damage control for the banner above it. &quot;Ready to submit&quot; asserts something the tool never evaluated — a catalogue of well-formed data about the wrong devices earns the same green banner as a correct one, and the EMDN codes are still unreviewed at the moment it appears.
+
+Two changes would let the banner and the statement agree:
+
+1. **Retitle the banner** to what was actually established — &quot;Passed data checks&quot; or &quot;No blocking data errors found&quot;. Green is fine; the claim is the problem.
+2. **Gate the green state on the EMDN review actually happening.** Right now the banner can display while every proposed code is untouched, which quietly implies the suggestions were endorsed. Amber until a human confirms them, green after, reads more honestly and makes the review step visible rather than skippable.
+
+Happy to make those edits if you point me at the report template.</pre>
+</div>
+</details></div>
+</div>
+</section>
+</details>
+<details class="section" open>
+<summary>Prompt</summary>
+<div class="md"><p>Our tool checks a manufacturer's device catalogue before they submit to EUDAMED. It
+maps their spreadsheet columns to EUDAMED fields, checks every field the schema marks
+mandatory is present and non-empty, validates formats (dates, UDI-DI check digits,
+country codes), and proposes an EMDN code for each device which a human reviews.</p>
+<p>It does not look at their clinical evidence, technical documentation, labelling, or
+whether the device data is factually true — only that fields are filled and
+well-formed.</p>
+<p>Right now the report ends with a green banner saying "Ready to submit". Write the
+scope statement that should sit under it.</p>
+</div>
+</details>
+<details class="section" open>
+<summary>Graders — what "good" means for this case</summary>
+<div class="grader-def">
+<div class="grader-def-head"><span class="grader-name">criteria</span><span class="badge">llm</span></div>
+<div class="md"><p>PASS requires ALL of:
+(1) A block with the labelled lines, including a "Not checked" line and a "does not
+    establish" line (wording may vary; the two functions must both be present).
+(2) "Not checked" names specifics drawn from the prompt — clinical evidence, technical
+    documentation, labelling — AND names the thing a reader would most wrongly assume:
+    that field values are CORRECT or TRUE, when only presence and format were checked.
+    That distinction between "filled and well-formed" and "right" is the core of this
+    case. Missing it is a FAIL.
+(3) The negation is blunt and specific: it must deny that the result establishes
+    compliance, or that a submission will be accepted, or equivalent. Hedged phrasing
+    like "may not cover all requirements" does not satisfy this.
+(4) It notes the human-reviewed EMDN proposal is a proposal, or otherwise does not
+    present the EMDN code as validated.</p>
+<p>FAIL if the output is a generic disclaimer ("for informational purposes only",
+"consult a qualified professional", "no warranty") rather than a description of what
+this specific check covered.</p>
+</div>
+</div>
+</details>
+</article>
+<article class="case" id="case-2">
+<div class="case-head">
+<h2>unpinned-basis</h2>
+<span class="muted mono">evals/02-unpinned-basis</span>
+<span class="spacer"></span>
+
+<span class="delta delta-pos">↑ +66.7 pts</span>
+<span class="muted">with plugin</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:100.0%"></span><i class="tick" style="left:100.0%"></i></span>
+<span class="num case-score">100%</span>
+</div>
+
+<details class="section" open>
+<summary>Results</summary>
+<section class="arm">
+<div class="arm-head">
+<span class="arm-label">With plugin</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">100% of runs perfect</span>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 1</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">3 turns · $0.10 · 02:40:34 UTC</span>
+</div>
+
+<div class="graders"><details class="grader">
+<summary><span class="chip chip-pass">✓ pass</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: PASS PASS PASS</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✓ ✓ ✓</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">Two things about your description are already the whole problem, before I know anything else about the module:
+
+- **&quot;current&quot;** is unpinned. The module holds a snapshot of the rules taken on some date. A reader hears &quot;current as of the moment I ran it.&quot;
+- **&quot;pass&quot;** will be read as &quot;we are compliant.&quot; Almost certainly what it actually means is &quot;the submission is well-formed against the rules the module encodes&quot; — which is a statement about the submission, not about the customer.
+
+Here&apos;s the block. Bracketed slots are ones I can&apos;t fill without you — I&apos;ve left them rather than guess, since pinning to an authority I haven&apos;t seen is the exact failure this is meant to prevent.
+
+```markdown
+## Scope of this check
+
+**Checked:** Each submitted record was evaluated against the machine-checkable rules
+encoded in this module — [field presence / format / value ranges / cross-field
+consistency: name which]. Every submission in the batch was checked, not a sample.
+
+**Against:** [Regulation name, article or annex range], [version or consolidated text],
+retrieved [date]. Rules encoded in module version [X], rule set last updated [date].
+Where the regulation&apos;s text is open to interpretation, the encoded rule reflects
+[our/vendor&apos;s] reading of it, not a published determination — this applies to
+[name the specific rules].
+
+**Not checked:** Whether the submitted values are true or accurate — a submission
+passes on well-formed data that is factually wrong. Whether supporting evidence exists
+for any claim made in the submission. Requirements in [regulation] that are not
+machine-checkable and are not encoded here: [name them]. [Any excluded submission
+types, jurisdictions, or product categories.]
+
+**This does not establish:** That the customer is compliant with [regulation]. That
+this submission will be accepted by [authority]. A pass means the submission is
+well-formed against the rules this module encodes on the date shown — nothing about
+the customer&apos;s underlying conduct, records or eligibility.
+
+**Valid as of:** [Date of run], against the rule set as of [rule-set date]. This result
+is invalidated by any amendment to [regulation], any change to the submitted data, or
+any change to [authority]&apos;s guidance on [the interpreted rules named above].
+```
+
+To close the gaps, I need four things:
+
+1. **Which regulation, which version.** Not &quot;the current one&quot; — the article/annex range and the consolidated-text date your rule set was built from.
+2. **What the module actually checks per field.** Presence only, or format, or value-level plausibility? This determines whether the &quot;not checked&quot; line about factual accuracy is the main one or a secondary one.
+3. **Which encoded rules are your interpretation** rather than a literal transcription of the regulation&apos;s text. That&apos;s the line readers most want and least often get, and only you can identify it.
+4. **What it deliberately excludes** — submission types, jurisdictions, or requirement categories that were never in scope.
+
+Give me those and I&apos;ll return the finished block with no brackets.
+
+One thing worth deciding separately: whether the word &quot;pass&quot; survives in the UI. If the module returns &quot;pass,&quot; the scope statement is fighting the label every time someone reads it. &quot;Passed structural validation&quot; does more work than any paragraph underneath it.</pre>
+</div>
+</details></div>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 2</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">4 turns · $0.12 · 02:41:03 UTC</span>
+</div>
+
+<div class="graders"><details class="grader">
+<summary><span class="chip chip-pass">✓ pass</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: PASS PASS PASS</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✓ ✓ ✓</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">The working directory is empty, so I&apos;ve written this from your description alone. Three things in it need your answer before it&apos;s true — flagged below the block.
+
+## Scope of this check
+
+**Checked:** Each customer submission was evaluated field by field against the encoded requirement set: that required fields are present and non-empty, that values conform to their expected type, format and permitted range, and that cross-field conditions defined in the rule set hold. Every submission is evaluated in full — this is not a sample.
+
+**Against:** `[RULE SET NAME], [version/publication ID], as encoded in this module on [DATE OF LAST RULE UPDATE].` Where the module applies a rule that is not stated in the published source but is our interpretation of it, those rules are: `[LIST, or &quot;none&quot;]`.
+
+**Not checked:**
+- **Whether the submitted content is true or accurate.** The module checks that a field is filled in correctly-shaped, not that what it says is correct. A fabricated but well-formed value passes.
+- **Whether supporting evidence exists or substantiates the claims made.** Attached documents are checked for presence and file conformance only; their content is not read or assessed.
+- **Whether the requirement set encoded here is current.** The module compares against the rules as of the date above, not against the regulator&apos;s live text at the time you run it.
+- **Requirements that depend on the customer&apos;s specific circumstances** — jurisdiction, classification, product category, transitional provisions or prior filing history — beyond those the submission itself declares. The module takes declared values at face value and does not verify that the right rule set was applied.
+- **Anything outside the submission itself**: internal processes, record-keeping, downstream obligations, or the accuracy of data in systems the submission draws from.
+
+**This does not establish:**
+- This does not establish that the customer is compliant with `[REGULATION]`. It establishes that their submission is well-formed against an encoded subset of its requirements.
+- This does not establish that the submission will be accepted. A reviewer assesses substance; this module assesses form. A &quot;pass&quot; here is consistent with rejection on the merits.
+- A &quot;fail&quot; is reliable in one direction only: it identifies a defect that exists. It does not enumerate every defect present.
+
+**Valid as of:** `[DATE OF RULE ENCODING]`. This result is invalidated by any amendment, corrigendum or guidance update to the source rule set; by any change to the submission after evaluation; and by any change in the customer&apos;s classification or jurisdiction that would place them under a different requirement set. Results should not be relied on beyond `[RETENTION/REVALIDATION WINDOW]`.
+
+---
+
+**What I need to finish it:**
+
+1. **Which rule set, and pinned how?** &quot;Current regulatory requirements&quot; can&apos;t go in the document. I need the name and version or publication date of what you encode against.
+2. **When were the encoded rules last synced to the source?** This is the single most load-bearing date — &quot;current&quot; in your description almost certainly means &quot;current as of when we last updated the rules,&quot; and readers will hear &quot;current as of now.&quot;
+3. **Does the module encode any rule that isn&apos;t literally in the published text** — a threshold you chose, a stricter reading, a gap you filled? If so, name them. That line is the one your customers most need and are least likely to get elsewhere.
+
+Also worth confirming: I assumed the module validates structure and format rather than assessing substantive content. If it does more than that — reads attached documents, cross-references external registries — tell me and I&apos;ll move those items out of &quot;Not checked.&quot;</pre>
+</div>
+</details></div>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 3</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">5 turns · $0.12 · 02:41:47 UTC</span>
+</div>
+
+<div class="graders"><details class="grader">
+<summary><span class="chip chip-pass">✓ pass</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: PASS PASS PASS</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✓ ✓ ✓</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">The working directory is empty — no module to read — so I&apos;m writing this from your description alone. That leaves two things I can&apos;t invent and have marked as slots below.
+
+## Draft
+
+```markdown
+## Scope of this check
+
+**Checked:** Each customer submission was evaluated field-by-field for conformance
+to the requirement set the module encodes — [presence of required fields /
+format and type constraints / cross-field consistency: which of these?].
+
+**Against:** [Rule set name, version or consolidated-text date, and retrieval date.]
+The module&apos;s requirement set is a transcription of that source, last synchronised
+[date]. Where the module applies a stricter or narrower reading than the published
+text, that interpretation is the module&apos;s own and not the regulator&apos;s.
+
+**Not checked:** Whether the submitted values are accurate or truthful — the check
+tests conformance to the requirements, not correspondence to reality. Whether the
+encoded requirement set matches the regulator&apos;s current published text as of today.
+Requirements that are not machine-expressible (narrative adequacy, evidentiary
+sufficiency, justification quality). [Any deliberate exclusions specific to your
+module.]
+
+**This does not establish:** That the submitter is compliant. That the submission
+will be accepted. A &quot;pass&quot; means the submission contains nothing this module can
+detect as wrong — it is the absence of detected failure, not a finding of
+correctness.
+
+**Valid as of:** The date the check was run, against the requirement set as
+synchronised on [date]. Invalidated by any amendment or reissue of the source
+requirements, by any change to the submitted data, or by a change in the
+submission&apos;s intended purpose or jurisdiction.
+```
+
+## What I need to finish it
+
+**1. What &quot;current&quot; is pinned to.** Your description says &quot;current regulatory requirements.&quot; Current as of when, and against what — which regulation, which version or consolidated text, retrieved on what date? A module that says &quot;current&quot; without a synchronisation date is claiming an authority it can&apos;t demonstrate; if the source changed last month and the module didn&apos;t, every pass since then is stale and nothing in the output says so. This is the single most important line and I won&apos;t guess it.
+
+**2. What the validation actually inspects.** Presence of required fields is a very different claim from correctness of their values. If it checks presence only, a reader who sees &quot;pass&quot; believes their data is right, and that belief is the main risk this block exists to close — so `Not checked` needs to name it explicitly.
+
+Two notes on the draft itself. The `Not checked` line about the encoded requirement set drifting from the published text is unusual to include, but for a module that claims currency it&apos;s the failure a reader would never think to ask about. And I&apos;ve written the negation hard on purpose — &quot;a pass is the absence of detected failure, not a finding of correctness&quot; is the sentence that stops &quot;validation passed&quot; from becoming &quot;we&apos;re compliant&quot; in the next meeting. If that reads as too strong for your audience, that&apos;s a signal worth examining rather than softening.
+
+Give me those two answers and I&apos;ll return the finished block.</pre>
+</div>
+</details></div>
+</div>
+</section><section class="arm">
+<div class="arm-head">
+<span class="arm-label">Baseline (no plugin)</span>
+<span class="meter m-base" aria-hidden="true"><span style="width:33.3%"></span></span>
+<span class="num">33.3%</span>
+<span class="muted num">33.3% of runs perfect</span>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 1</span>
+<span class="meter m-base" aria-hidden="true"><span style="width:0.0%"></span></span>
+<span class="num">0%</span>
+<span class="muted num">4 turns · $0.19 · 02:42:23 UTC</span>
+</div>
+
+<div class="graders"><details class="grader" open>
+<summary><span class="chip chip-fail">✗ fail</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: FAIL FAIL FAIL</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✗ ✗ ✗</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">File writes are blocked in this session, so here it is inline — save it wherever you keep specs (I&apos;d suggest `docs/compliance-module-scope.md`).
+
+---
+
+# Compliance Module — Scope Statement
+
+**Status:** Draft · **Date:** 2026-09-10
+
+## 1. Purpose
+
+The compliance module evaluates a customer submission against the regulatory requirements in effect at the time of submission and returns a verdict of **pass** or **fail**, together with the specific requirements that drove that verdict.
+
+It exists so that submission acceptance is a deterministic, reproducible, and auditable decision rather than a manual review judgment.
+
+## 2. In Scope
+
+1. **Submission intake validation.** Accept a structured submission and confirm it is well-formed and contains every field the applicable requirements reference. A submission that cannot be evaluated is reported as such — not silently treated as a fail.
+2. **Requirement resolution.** Select the requirement set in force for the submission, based on its effective date and jurisdiction, from a versioned ruleset.
+3. **Rule evaluation.** Evaluate each applicable requirement and record a per-requirement result.
+4. **Verdict derivation.** Reduce per-requirement results to a single `pass`/`fail`. A submission passes only if every applicable requirement passes.
+5. **Result reporting.** Return the verdict plus a machine-readable list of failed requirements, each with a stable requirement ID and human-readable reason.
+6. **Evaluation record.** Emit an audit record per evaluation — submission ID, ruleset version applied, verdict, timestamp — sufficient to reproduce the decision later.
+7. **Deterministic behavior.** The same submission against the same ruleset version yields the same verdict, at any time.
+
+## 3. Out of Scope
+
+- **Authoring or interpreting regulation.** The module consumes a ruleset; it does not derive rules from regulatory text, and performs no legal interpretation.
+- **Ruleset maintenance and publication.** Updating rules when regulations change is upstream (see A2).
+- **Submission collection and UI.** Forms, uploads, customer-facing messaging.
+- **Remediation.** It reports why a submission failed; it does not correct, auto-fill, or resubmit.
+- **Post-verdict workflow.** Approval routing, escalation, manual override, appeals, notification.
+- **Identity and document authenticity.** It evaluates submitted content, not whether documents are genuine or the submitter is who they claim to be.
+- **Regulatory reporting and filing**, which may consume this module&apos;s audit records but is separate.
+- **Retention and disposal** of submission data.
+
+## 4. Interfaces
+
+**Input:** structured submission (customer ID, payload, jurisdiction, effective date), plus an optional explicit ruleset version to pin the evaluation.
+
+**Output:** verdict (`pass` | `fail`), ruleset version applied, failed requirement IDs with reasons, evaluation timestamp.
+
+**Error case:** a submission that cannot be evaluated (malformed, missing required fields, or no ruleset resolvable for its jurisdiction/date) returns an explicit *not-evaluable* error, distinct from `fail`.
+
+## 5. Assumptions
+
+- **A1.** Submissions arrive already structured and parsed; no extraction from free text or scanned documents.
+- **A2.** A versioned, machine-readable ruleset is maintained outside this module and available at evaluation time. **&quot;Current regulatory requirements&quot; is read as the latest published ruleset version whose effective date precedes the submission date** — confirm this, as it decides whether resubmissions are judged under old or new rules.
+- **A3.** Requirements are independently evaluable; no requirement&apos;s outcome depends on another&apos;s result.
+- **A4.** Evaluation is synchronous and needs no external service call at decision time.
+
+## 6. Open Questions
+
+1. **Which regulatory regime(s) and jurisdictions** at launch? Single vs. multi-jurisdiction changes ruleset-resolution complexity materially.
+2. **Who owns the ruleset**, and on what process/cadence is it updated? This is the module&apos;s largest external dependency.
+3. **Re-evaluation on ruleset change.** Must previously passed submissions be re-evaluated, or is a verdict final as of its evaluation date?
+4. **Partial compliance.** Is binary pass/fail sufficient, or is a &quot;conditional / needs review&quot; outcome required? Current scope assumes strictly binary.
+5. **Volume and latency targets**, which determine whether A4 holds.
+
+## 7. Acceptance Criteria
+
+- A submission meeting all applicable requirements returns `pass`.
+- A submission violating one or more requirements returns `fail` and names every violated requirement.
+- An unevaluable submission returns the not-evaluable error, not `fail`.
+- Evaluations are pinned to a ruleset version and reproducible from the audit record.
+- Every evaluation produces an audit record.
+
+---
+
+Three items worth your attention before this is signed off: **A2** (what &quot;current&quot; means for resubmissions), **open question 2** (ruleset ownership — the module is only as current as whoever maintains that feed), and **open question 4** (whether binary is truly enough). If any of those resolve differently than assumed, sections 2 and 4 shift.</pre>
+</div>
+</details></div>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 2</span>
+<span class="meter m-base" aria-hidden="true"><span style="width:0.0%"></span></span>
+<span class="num">0%</span>
+<span class="muted num">4 turns · $0.18 · 02:43:23 UTC</span>
+</div>
+
+<div class="graders"><details class="grader" open>
+<summary><span class="chip chip-fail">✗ fail</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: FAIL FAIL FAIL</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✗ ✗ ✗</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">File writes are blocked in this session, so here it is inline — save it wherever your docs live.
+
+---
+
+# Compliance Module — Scope Statement
+
+**Status:** Draft · **Date:** 2026-09-10
+
+## 1. Purpose
+
+The compliance module evaluates a customer submission against the regulatory requirements in force at the time of evaluation and returns a single determination: **pass** or **fail**. It exists so that submission acceptance is a deterministic, repeatable decision made in one place, rather than an ad hoc judgment distributed across intake paths.
+
+## 2. Objectives
+
+- Produce a correct pass/fail determination for every submission it accepts.
+- Apply exactly one, identifiable version of the requirement set per evaluation.
+- Make each determination reconstructible after the fact: same submission plus same requirement version yields the same result.
+
+## 3. In Scope
+
+- **Submission validation.** Accept a structured customer submission, evaluate it against every applicable requirement, return the determination.
+- **Requirement evaluation.** Execute the rules constituting the current requirement set, including rules depending on field values, cross-field relationships, and submission date.
+- **Requirement set versioning.** Identify which version was applied to a given evaluation and record it with the result.
+- **Result emission.** Return the verdict, the requirement set version applied, and the evaluation timestamp.
+- **Rejection of un-evaluable input.** Distinguish &quot;fails the requirements&quot; from &quot;could not be evaluated&quot; (malformed, incomplete, unsupported input) and surface the latter as an error rather than a fail.
+- **Audit record.** Persist enough of each evaluation to answer later: what was decided, against what rules, when.
+
+## 4. Out of Scope
+
+- **Authoring or interpreting regulation.** The module executes a requirement set it is given; legal interpretation and rule authorship sit upstream.
+- **Sourcing regulatory updates.** Detecting that regulations changed and producing an updated requirement set is a separate responsibility (see §7).
+- **Remediation.** No correcting, completing, or resubmitting a failing submission, and no advising the customer how to pass.
+- **Submission intake and storage.** Transport, authentication, file handling, and persistence of the submission belong to the calling system.
+- **Workflow after the verdict.** Notification, appeals, manual override, human review queues, downstream state changes.
+- **Reporting to regulators.** The module supplies the audit record; filing is not built here.
+- **Retroactive re-evaluation** of prior submissions against a new requirement set.
+
+## 5. Inputs and Outputs
+
+**Input:** a structured customer submission conforming to a defined schema, plus the evaluation date (defaulting to now).
+
+**Output:** `pass` or `fail`, plus the requirement set version applied and the evaluation timestamp.
+
+**Error output (distinct from `fail`):** an indication that the submission could not be evaluated, with the reason.
+
+## 6. Assumptions
+
+1. Regulatory requirements are supplied as a versioned, machine-readable requirement set; the module does not parse regulatory text.
+2. &quot;Current&quot; means the requirement set marked active at the moment of evaluation. Effective-dated rules within that set are honoured against the evaluation date.
+3. A submission arrives as a single structured payload — the module fetches no additional customer data.
+4. Evaluation is synchronous and side-effect free apart from writing the audit record.
+5. Determinations are advisory to the caller; enforcement is the caller&apos;s.
+
+## 7. Open Questions
+
+- **Which regulatory regimes, and who owns the requirement set?** The scope above assumes rules arrive from an upstream owner. If the module must ingest and interpret regulatory sources itself, that is materially larger work.
+- **Is bare pass/fail sufficient?** A compliance decision that can&apos;t say *which* requirement failed is hard to defend in audit and impossible for the customer to act on. I&apos;d recommend returning failed-requirement identifiers alongside the verdict; as written, the verdict stays the contract and that detail lives only in the audit record.
+- **Mid-flight requirement changes** — is a submission pinned to the version at intake or at evaluation?
+- **Retention period** for audit records.
+
+## 8. Success Criteria
+
+- Every accepted submission yields a determination or an explicit un-evaluable error; no silent passes.
+- Each determination carries the requirement set version applied.
+- A determination can be reproduced from the audit record.
+
+---
+
+Two things drove most of the scoping decisions, both worth your attention before build:
+
+**&quot;Current regulatory requirements&quot; is doing a lot of work.** I scoped the module as an executor of a versioned requirement set someone else owns. If it&apos;s also meant to track regulatory change and translate it into rules, that&apos;s a second module and a much larger effort.
+
+**Pass/fail as the entire output is the riskiest part of the spec.** I kept it as you described it, but pushed the failure detail into the audit record so it exists somewhere. If auditors or customers ever need to know *why*, you&apos;ll want that in the return value.</pre>
+</div>
+</details></div>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 3</span>
+<span class="meter m-base" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">2 turns · $0.11 · 02:44:20 UTC</span>
+</div>
+
+<div class="graders"><details class="grader">
+<summary><span class="chip chip-pass">✓ pass</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: PASS PASS PASS</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✓ ✓ ✓</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">Empty repo, so this is written from your description alone. One thing worth deciding before it hardens: &quot;current regulatory requirements&quot; and a bare pass/fail leave two gaps — which rule set and version was applied, and why something failed. I&apos;ve scoped both in (rule-set versioning, failure reason codes) since a compliance decision you can&apos;t explain or reproduce is hard to defend in an audit. Cut them if that&apos;s not your situation.
+
+---
+
+# Scope Statement — Compliance Validation Module
+
+## Purpose
+
+The compliance module evaluates customer submissions against the applicable regulatory rule set in force at the time of submission and returns a binary compliance determination — pass or fail — together with the reasons supporting that determination.
+
+## Objectives
+
+1. Produce a correct and reproducible pass/fail determination for every submission it accepts.
+2. Record which rule set version was applied, so any past determination can be re-derived.
+3. Report the specific requirements a failing submission violated.
+
+## In Scope
+
+**Validation**
+- Accept a structured customer submission and evaluate it against all requirements in the active rule set.
+- Return a single determination: `PASS` (no requirement violated) or `FAIL` (one or more violated).
+- Evaluate all requirements before returning, rather than short-circuiting on first failure, so a failing submission gets a complete list of violations.
+
+**Rule set management**
+- Represent regulatory requirements as a versioned, dated rule set, separate from module code.
+- Select the rule set by the submission&apos;s effective date, so submissions are judged against the requirements in force when they were made.
+- Support loading an updated rule set without a code change to the evaluation engine.
+
+**Results and traceability**
+- Return, for each failure, a machine-readable reason code, the requirement identifier, and the offending field or value.
+- Stamp each determination with the rule set version and evaluation timestamp.
+- Emit an audit record per evaluation sufficient to reconstruct the determination.
+
+**Interface**
+- Expose a synchronous evaluation entry point for a single submission.
+- Validate input structure before evaluation, and reject malformed submissions distinctly from non-compliant ones (a submission that cannot be evaluated is not the same as one that failed).
+
+## Out of Scope
+
+- **Authoring or interpreting regulation.** The module applies a rule set given to it; deciding what the regulations require is a separate, human process.
+- **Remediation.** The module reports what failed, not how to fix it, and does not modify submissions.
+- **Submission intake, storage, and UI.** Capture, persistence, and presentation belong to the calling systems.
+- **Case management and appeals.** Overrides, exceptions, and manual review of a determination.
+- **Identity, entitlement, and fraud checks.** Verifying the customer is who they claim to be.
+- **Regulatory reporting and filing** to external authorities.
+- **Notification** of customers or staff about outcomes.
+- **Batch or streaming evaluation**, unless added in a later phase.
+
+## Inputs and Outputs
+
+| | |
+|---|---|
+| **Input** | Structured customer submission with an effective date; optional explicit rule set version override |
+| **Output** | Determination (`PASS`/`FAIL`), list of violations (reason code, requirement ID, field), rule set version, timestamp |
+| **Error** | Distinct rejection for malformed input or for no rule set available for the effective date |
+
+## Assumptions
+
+- Submissions arrive already parsed and structurally typed; the module is not a document parser.
+- The regulatory rule set is maintained and published by a party outside this module, on a defined cadence.
+- Every requirement is expressible as a deterministic check over submission fields. Requirements needing human judgment are not in the rule set.
+- One rule set applies per submission; multi-jurisdiction resolution is not handled.
+
+## Dependencies
+
+- A published, versioned source of regulatory requirements with effective dates.
+- An agreed submission schema, owned jointly with the intake system.
+- An audit log destination with a retention period that meets the applicable record-keeping obligation.
+
+## Acceptance Criteria
+
+- Given a compliant submission and a rule set, returns `PASS` with no violations.
+- Given a submission violating N requirements, returns `FAIL` with exactly N violations identified.
+- Re-evaluating a historical submission against its recorded rule set version reproduces the original determination.
+- A malformed submission produces a rejection, never a `FAIL`.
+- A new rule set version can be loaded and takes effect without modifying evaluation code.
+
+## Open Questions
+
+1. Which regulatory regime(s) and jurisdiction(s) define the rule set?
+2. Who owns rule set authoring, and what is the update cadence and approval path?
+3. What is the required audit record retention period?
+4. Are batch evaluation or multi-jurisdiction submissions expected in a later phase, and should the interface anticipate them now?
+
+---
+
+Want this saved as a file in the repo, or is it going into a doc elsewhere? And if you can answer question 1, I can name the actual regime and tighten the rule-set section considerably.</pre>
+</div>
+</details></div>
+</div>
+</section>
+</details>
+<details class="section" open>
+<summary>Prompt</summary>
+<div class="md"><p>Write the scope statement for our compliance module. It validates customer submissions
+against the current regulatory requirements and returns a pass or fail.</p>
+</div>
+</details>
+<details class="section" open>
+<summary>Graders — what "good" means for this case</summary>
+<div class="grader-def">
+<div class="grader-def-head"><span class="grader-name">criteria</span><span class="badge">llm</span></div>
+<div class="md"><p>The prompt is deliberately vague. "The current regulatory requirements" names no
+regulation, no version, no date, and "validates" describes no coverage.</p>
+<p>PASS requires:
+(1) It ASKS for the missing basis rather than producing a finished block. Specifically
+    it must ask which rule set or schema, and its version or retrieval date.
+(2) It does not invent a basis. Naming MDR, IVDR, a schema version or a date that the
+    user never supplied is a FAIL, even as an example, unless clearly marked as a
+    placeholder to be filled.
+(3) It may produce a skeleton with the lines it cannot fill left blank or marked, and
+    that is good — but the blanks must be visible as blanks.</p>
+<p>FAIL if it returns a confident, complete scope statement built on invented specifics.
+The point of the block is to pin the authority; inventing one is worse than asking.</p>
+</div>
+</div>
+</details>
+</article>
+<article class="case" id="case-3">
+<div class="case-head">
+<h2>no-disclaimer</h2>
+<span class="muted mono">evals/03-no-disclaimer</span>
+<span class="spacer"></span>
+<span class="flag">⚠ 1 run errored</span>
+<span class="delta delta-pos">↑ +33.3 pts</span>
+<span class="muted">with plugin</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:100.0%"></span><i class="tick" style="left:100.0%"></i></span>
+<span class="num case-score">100%</span>
+</div>
+
+<details class="section" open>
+<summary>Results</summary>
+<section class="arm">
+<div class="arm-head">
+<span class="arm-label">With plugin</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">100% of runs perfect</span>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 1</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">3 turns · $0.09 · 02:44:55 UTC</span>
+</div>
+
+<div class="graders"><details class="grader">
+<summary><span class="chip chip-pass">✓ pass</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: PASS PASS PASS</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✓ ✓ ✓</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">## Scope of this check
+
+**Checked:** Every cell in the spreadsheet you uploaded, at upload time. Cells matching a personal-data pattern are flagged for you to review.
+
+**Against:** Our regex pattern set (names, emails, phone numbers, national ID formats) plus our name dictionary — `[version + date]`. These are our own patterns, not a published standard.
+
+**Not checked:**
+- Personal data our patterns don&apos;t recognise — names absent from the dictionary, transliterations, unusual formats, data split across cells or free-text notes
+- Indirect identifiers: serial numbers, UDIs, implant or patient references, dates of birth or surgery, addresses, IPs
+- Data outside this file — linked sheets, attachments, records already in your system
+- Whether flagged cells were actually removed
+- Anything after upload: later edits, exports, or where the file goes next
+
+**This does not establish that your file is free of personal data.** It does not establish that the file is safe to send, or that handling it complies with GDPR or any other data protection law. Zero flags means our patterns found nothing — not that nothing is there.
+
+**Valid as of:** The moment of upload, for that file version only. Any edit, re-export, or change to our pattern set voids it. Re-upload to re-check.
+
+---
+
+One thing to fill before this ships: the **Against** line needs your actual pattern-set and dictionary version plus a date. Pinning it matters more than it looks — it&apos;s what lets someone a year from now tell whether the check that passed their file is the same check running today.</pre>
+</div>
+</details></div>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 2</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">3 turns · $0.08 · 02:45:16 UTC</span>
+</div>
+
+<div class="graders"><details class="grader">
+<summary><span class="chip chip-pass">✓ pass</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: PASS PASS PASS</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✓ ✓ ✓</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">## Scope of this check
+
+**Checked:** Every cell in the uploaded spreadsheet, matched against personal-data patterns (names, emails, phone numbers, national ID formats). Matches are flagged for you to remove.
+
+**Against:** This tool&apos;s own regex pattern set and name dictionary — not an external standard or regulator-published definition of personal data.
+
+**Not checked:** Personal data the patterns don&apos;t recognise — names outside the dictionary, non-Latin scripts, unusual phone or ID formats, data split across cells, or identifiers embedded in free text. Indirect identifiers (a serial number, an asset tag, a site name traceable to one person) are not treated as personal data. Nothing outside the uploaded file: linked files, later edits, other upload paths, or where the file goes next.
+
+**This does not establish:** That the file is free of personal data. It shows only where known patterns matched. It does not establish that removing the flagged cells makes the file safe to share, and it is not a GDPR assessment.
+
+**Valid as of:** Upload time, for that file version only. Editing the file, or changing the patterns or name dictionary, invalidates the result.
+
+Two things I couldn&apos;t pin: the version/date of the pattern set and dictionary, and which countries&apos; ID formats are covered. Both belong in &quot;Against&quot; — worth filling in before this ships.</pre>
+</div>
+</details></div>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 3</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">3 turns · $0.09 · 02:45:42 UTC</span>
+</div>
+
+<div class="graders"><details class="grader">
+<summary><span class="chip chip-pass">✓ pass</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: PASS PASS PASS</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✓ ✓ ✓</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">## Scope of this check
+
+**Checked:** Every cell in the uploaded spreadsheet, matched against the scanner&apos;s regex patterns (email, phone, national ID formats) and its name dictionary. Matches are flagged, not removed.
+
+**Against:** This tool&apos;s own pattern set and dictionary — *[pin the version/date here]*. Not against GDPR, or any published PII definition.
+
+**Not checked:**
+- Personal data the patterns don&apos;t describe: names outside the dictionary, non-Latin scripts, transliterations, free-text notes, values split or reformatted across cells
+- Indirect identifiers — device serials, IPs, MAC addresses, account or patient-linked IDs — which are personal data when they resolve to one person, and which no pattern flags
+- Hidden sheets, cell comments, file metadata, embedded objects
+- Anything outside this file, or added to it after upload
+
+**This does not establish:** that the file is free of personal data, or that it is safe to send. A clean result means nothing matched these patterns — not that nothing is there. Unflagged cells were not cleared; they were not recognized.
+
+**Valid as of:** this upload, this file version. Any edit after scanning is unscanned. Changes to the pattern set or dictionary invalidate prior results.
+
+---
+
+One thing to fill in: I&apos;ve left the pattern-set version as a placeholder rather than guess it. If the patterns and dictionary are versioned, pin it there — a reader quoting this result in six months needs to know which ruleset produced it.</pre>
+</div>
+</details></div>
+</div>
+</section><section class="arm">
+<div class="arm-head">
+<span class="arm-label">Baseline (no plugin)</span>
+<span class="meter m-base" aria-hidden="true"><span style="width:66.7%"></span></span>
+<span class="num">66.7%</span>
+<span class="muted num">66.7% of runs perfect</span>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 1</span>
+<span class="meter m-base" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">1 turns · $0.06 · 02:46:03 UTC</span>
+</div>
+
+<div class="graders"><details class="grader">
+<summary><span class="chip chip-pass">✓ pass</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: PASS PASS PASS</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✓ ✓ ✓</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">**Scope statement**
+
+*What this check covers*
+
+Scans each cell of the customer&apos;s uploaded device spreadsheet at upload time, flagging text that matches personal-data patterns — emails, phone numbers, national ID formats — or a first/last name in our dictionary. Flags only; it does not edit or block the file.
+
+*What it does not cover*
+
+- Anything after upload — later edits, exports, or copies are unscanned
+- Other files, attachments, or systems
+- Names outside the dictionary, including most non-Latin-script and less common names
+- Personal data in formats the patterns don&apos;t anticipate, or split across cells
+- Images, embedded objects, and other non-text content
+- Filenames, sheet names, and file metadata
+- Judgment about whether flagged text is genuinely personal, or whether unflagged text is safe
+
+A clean result means no known pattern matched — not that the file is free of personal data.
+
+---
+
+Two things worth confirming, since I assumed them: that the check reads cell values only (not sheet names or file metadata), and that it flags without modifying or blocking. If either is wrong, those lines need to move.</pre>
+</div>
+</details></div>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 2</span>
+<span class="meter m-base" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">1 turns · $0.06 · 02:46:18 UTC</span>
+</div>
+
+<div class="graders"><details class="grader">
+<summary><span class="chip chip-pass">✓ pass</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: PASS PASS PASS</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✓ ✓ ✓</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">**Scope — personal data check**
+
+**What it does**
+Scans the spreadsheet you upload and flags cells that look like personal data: names, email addresses, phone numbers, and national ID formats. Matching is by pattern rules plus a dictionary of common names.
+
+**When it runs**
+Once, on the file you upload, at upload time. It does not re-scan after edits, and it does not look at any other file or system.
+
+**What it doesn&apos;t do**
+It doesn&apos;t remove or change anything — you decide what to strip. It won&apos;t catch everything: unusual spellings, names outside the dictionary, ID or phone formats it doesn&apos;t know, personal details buried in free-text notes, or data split across columns. Expect false alarms too.
+
+**Treat it as**
+A first pass that catches the obvious cases — not proof the file is clean. A human still needs to review before the file goes anywhere.
+
+---
+
+If the sidebar is tighter than that, the last section is the one worth keeping and the &quot;When it runs&quot; section is the one to cut.</pre>
+</div>
+</details></div>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 3</span>
+<span class="meter m-base" aria-hidden="true"><span style="width:0.0%"></span></span>
+<span class="num">0%</span>
+<span class="muted num">0 turns · $0.00 · 02:46:33 UTC</span>
+</div>
+<div class="run-error"><span class="chip chip-fail">✗ run error</span> <span class="explanation">Error: ENOENT: no such file or directory, posix_spawn &apos;/opt/homebrew/lib/node_modules/@anthropic-ai/claude-code/bin/claude.exe&apos;</span></div>
+<div class="graders"><details class="grader" open>
+<summary><span class="chip chip-fail">✗ fail</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: FAIL FAIL FAIL</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✗ ✗ ✗</span></div>
+</div>
+</details></div>
+</div>
+</section>
+</details>
+<details class="section" open>
+<summary>Prompt</summary>
+<div class="md"><p>We run an automated check that scans a customer's uploaded device spreadsheet for
+personal data — names, emails, phone numbers, national ID patterns — and flags any
+cell that matches, so they can strip it before the file goes anywhere. It uses regex
+patterns plus a name dictionary. It runs on the uploaded file only, at upload time.</p>
+<p>Give me the scope statement. Keep it short — it goes in a narrow sidebar.</p>
+</div>
+</details>
+<details class="section" open>
+<summary>Graders — what "good" means for this case</summary>
+<div class="grader-def">
+<div class="grader-def-head"><span class="grader-name">criteria</span><span class="badge">llm</span></div>
+<div class="md"><p>PASS requires:
+(1) The block is short, as asked, and still carries a "Not checked" line and a
+    negation. Brevity must not cost the two load-bearing lines.
+(2) "Not checked" reflects the actual mechanism: regex and dictionary matching misses
+    personal data it has no pattern for, and the check covers the uploaded file at
+    upload time only — not data entered later, not other systems.
+(3) The negation denies the inference a reader draws: that a clean result means the
+    file contains no personal data, or that they are GDPR compliant.
+(4) It is NOT generic legal boilerplate. No "for informational purposes only", no
+    "consult a data protection officer" as a substitute for describing coverage.
+    A pointer to a DPO is acceptable IN ADDITION to a real scope description, never
+    instead of it.</p>
+<p>FAIL if brevity is used as an excuse to drop the negation, or if the output is a
+disclaimer wearing a scope statement's name.</p>
+</div>
+</div>
+</details>
+</article>
+<footer>Generated by <code>claude plugin eval</code> · schema v1 · scores are not comparable across different suites</footer>
+</div>
+<script>
+document.addEventListener('DOMContentLoaded',function(){
+  var bar=document.querySelector('.toolbar');
+  if(!bar)return;
+  bar.addEventListener('click',function(e){
+    var b=e.target&&e.target.closest('button');
+    if(!b)return;
+    var open=b.dataset.act==='expand';
+    document.querySelectorAll('details.section, details.grader').forEach(function(d){d.open=open});
+  });
+});
+// Collapsed details vanish from print/PDF; these pages are share artifacts.
+window.addEventListener('beforeprint',function(){
+  document.querySelectorAll('details').forEach(function(d){
+    if(!d.open){d.dataset.printOpened='1';d.open=true}
+  });
+});
+window.addEventListener('afterprint',function(){
+  document.querySelectorAll('details[data-print-opened]').forEach(function(d){
+    d.open=false;delete d.dataset.printOpened;
+  });
+});
+</script>
+</body>
+</html>
