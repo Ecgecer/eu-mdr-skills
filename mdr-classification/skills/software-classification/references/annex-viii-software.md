@@ -126,6 +126,8 @@ purpose is stated correctly.
 >
 > **1.3.** 'Long term' means normally intended for continuous use for more than 30 days.
 >
+> [...]
+>
 > **2.4.** 'Active therapeutic device' means any active device used, whether alone or in
 > combination with other devices, to support, modify, replace or restore biological
 > functions or structures with a view to treatment or alleviation of an illness, injury
@@ -135,6 +137,8 @@ purpose is stated correctly.
 > used, whether alone or in combination with other devices, to supply information for
 > detecting, diagnosing, monitoring or treating physiological conditions, states of
 > health, illnesses or congenital deformities.
+>
+> [...]
 >
 > **2.7.** 'Central nervous system' means the brain, meninges and spinal cord.
 

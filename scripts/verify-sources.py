@@ -33,6 +33,10 @@ SOURCES = {
         "https://www.gesetze-im-internet.de/uwg_2004/__6.html",
     ],
     "device-claims/skills/device-claims-review/references/mdr-ivdr-art7.md": [
+        # EUR-Lex blocks scripted clients and has outages. The Publications Office
+        # serves the same Official Journal text and answers curl, so it is listed
+        # first -- a source that works is worth more than a canonical one that does not.
+        "http://publications.europa.eu/resource/oj/JOL_2017_117_R_0001.ENG",
         "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32017R0745",
     ],
     "mpdg-germany/skills/german-additions/references/mpdg.md": [
@@ -41,6 +45,7 @@ SOURCES = {
         "https://www.gesetze-im-internet.de/mpdg/__73.html",
     ],
     "mdr-classification/skills/software-classification/references/annex-viii-software.md": [
+        "http://publications.europa.eu/resource/oj/JOL_2017_117_R_0001.ENG",
         "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32017R0745",
     ],
 }
@@ -64,7 +69,7 @@ def normalise(s: str) -> str:
 def page_text(url: str):
     req = urllib.request.Request(url, headers={
         "User-Agent": UA,
-        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+        "Accept": "application/xhtml+xml,text/html,application/xml;q=0.9,*/*;q=0.8",
         "Accept-Language": "en-GB,en;q=0.9,de;q=0.8",
     })
     try:
