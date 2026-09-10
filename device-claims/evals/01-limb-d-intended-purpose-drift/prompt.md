@@ -11,6 +11,5 @@ purpose as assessed: "continuous single-lead ECG recording in adults under the
 supervision of a healthcare professional for the detection of cardiac
 arrhythmias."
 
-Copy: "The X100 patch records your heart rhythm for 14 days straight. Athletes
-love it for tracking recovery between hard training blocks — just peel, stick,
-and train."
+Copy: "The X100 patch records your heart rhythm for 14 days straight. New parents love
+it for keeping an eye on a newborn's breathing overnight — just peel, stick, and sleep."

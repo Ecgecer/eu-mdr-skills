@@ -9,5 +9,5 @@ allowed_tools: [Read, Glob, Grep, Skill]
 Review this comparison block for a German-market Class I software device.
 Market: Germany. Audience: manufacturers and regulatory consultants.
 
-Copy: "Unlike legacy EUDAMED tools, we validate every field before submission.
-Competitors leave you guessing. 3x faster than the alternatives."
+Copy: "The spreadsheet-and-email crowd still find their errors after submission.
+We catch them before. Half the rework of what most teams use today."
