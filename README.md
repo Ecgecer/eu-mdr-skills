@@ -1,6 +1,14 @@
 # eu-mdr-skills
 
+[![verify](https://github.com/Ecgecer/eu-mdr-skills/actions/workflows/verify.yml/badge.svg)](https://github.com/Ecgecer/eu-mdr-skills/actions/workflows/verify.yml)
+[![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
+
 Agent skills for EU medical device regulation that **say where the rules stop.**
+
+The `verify` badge is not decoration. It runs `scripts/verify-sources.py`, which
+re-fetches every statute source and diffs each quoted passage against it — so a green
+badge means the text in this repo still matches the law it claims to quote, as of the
+last run. It runs again every Monday.
 
 Claude already knows MDR. Measured across 17 cases, it recalls implementing rule 3.3
 verbatim, applies Rule 11's escalations correctly, and refuses to classify a non-device.
@@ -22,6 +30,7 @@ carry, and stop rather than conclude past their own boundary.
 |---|---|---|
 | `device-claims` | Reviews device and IVD marketing copy against MDR Art. 7, IVDR Art. 7, HWG, UWG | [10 cases, Δ +0.47](device-claims/evals/README.md) |
 | `mdr-classification` | Classifies software under Annex VIII implementing rules and Rule 11 | [7 cases, Δ +0.29](mdr-classification/evals/README.md) |
+| `mpdg-germany` | What Germany adds on top of MDR — language, DMIDS notifications, vigilance | [5 cases](mpdg-germany/evals/README.md) |
 | `scope-statement` | Bounds any compliance claim — what was checked, what wasn't, what it doesn't establish | [3 cases, Δ +0.33](scope-statement/evals/README.md) |
 
 Every skill ships an eval suite measured against a no-plugin baseline, and every suite
