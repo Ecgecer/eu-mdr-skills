@@ -38,21 +38,54 @@ Measured behaviour, including where the skill adds nothing, is in
 [`device-claims/evals/README.md`](device-claims/evals/README.md). Numbers live there,
 dated and tied to a commit, because they change.
 
-## What makes it verifiable
+## Verify the claim yourself, in one command
 
-Every provision this skill applies is stored **verbatim** in
-[`device-claims/skills/device-claims-review/references/`](device-claims/skills/device-claims-review/references/),
-with its source URL and retrieval date:
+Every provision these skills apply is stored **verbatim**, with its source URL and
+retrieval date. That is easy to assert and worth nothing unless you can check it, so
+checking it is one command:
 
-| Reference | Source | Retrieved |
-|---|---|---|
-| `mdr-ivdr-art7.md` | EUR-Lex, CELEX 32017R0745 and 32017R0746 | 2026-09-09 |
-| `hwg.md` | gesetze-im-internet.de/heilmwerbg | 2026-09-09 |
-| `uwg.md` | gesetze-im-internet.de/uwg_2004 | 2026-09-09 |
+```
+python3 scripts/verify-sources.py
+```
 
-The skill uses two citation tiers: `[verified]` for provisions in those files, and
-`[verify]` for anything else. It is instructed not to state a rule it cannot cite from
-the reference files, and to refuse rather than supplement from model knowledge.
+It re-fetches each source and confirms every quoted passage still appears, character
+for character after whitespace and quote-glyph normalisation. Elided quotes are
+verified fragment by fragment, because the joined string is not what the source says.
+
+```
+  OK            .../references/hwg.md  (6 fragments across 4 quotes match)
+  OK            .../references/uwg.md  (5 fragments across 2 quotes match)
+  UNVERIFIED    .../references/mdr-ivdr-art7.md
+                fetch failed: HTTP Error 403: Forbidden
+                check by hand: https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32017R0745
+                search the page for: "Article 7 Claims In the labelling, instructions for use..."
+```
+
+**It does not pass silently for what it could not read.** EUR-Lex blocks non-browser
+clients, so MDR and IVDR text is reported as UNVERIFIED with the exact string to search
+for. A verifier that reported success for a source it never fetched would be the same
+defect these skills exist to prevent.
+
+If a quote drifts, it says where:
+
+```
+  DRIFTED       .../references/hwg.md  (1 of 6 fragments no longer match)
+                quoted: "Unzulässig ist eine irrefuehrende Reklame. Eine Irreführung..."
+                on page up to: "...Unzulässig ist eine irref"
+```
+
+Exit 0 when every fetched source matches, 1 on drift, 2 if nothing could be fetched.
+
+| Reference | Source | Retrieved | Auto-verifiable |
+|---|---|---|---|
+| `hwg.md` | gesetze-im-internet.de/heilmwerbg | 2026-09-09 | yes |
+| `uwg.md` | gesetze-im-internet.de/uwg_2004 | 2026-09-09 | yes |
+| `mdr-ivdr-art7.md` | EUR-Lex, CELEX 32017R0745 / 32017R0746 | 2026-09-09 | no — EUR-Lex blocks scripted clients |
+| `annex-viii-software.md` | EUR-Lex, CELEX 32017R0745, Annex VIII | 2026-09-09 | no — same |
+
+The skills use two citation tiers: `[verified]` for provisions in those files, and
+`[verify]` for anything else. They are instructed to refuse rather than supplement from
+model knowledge.
 
 ## Scope limits, stated up front
 
