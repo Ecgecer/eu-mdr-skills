@@ -1,0 +1,600 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Eval report — mdr-classification v0.1.0</title>
+</head>
+<body>
+<style>
+:root{--plane:#f9f9f7;--surface:#fcfcfb;--ink:#0b0b0b;--ink-2:#52514e;--ink-3:#6b6a64;--hairline:rgba(11,11,11,.10);--grid:#e1e0d9;--inset:rgba(11,11,11,.04);--accent:#2a78d6;--base-fill:#6b6a64;--delta-good:#006300;--good:#067d06;--warning:#8a6100;--critical:#d03b3b;
+  color-scheme:light dark;
+}
+@media (prefers-color-scheme:dark){:root{--plane:#0d0d0d;--surface:#1a1a19;--ink:#ffffff;--ink-2:#c3c2b7;--ink-3:#898781;--hairline:rgba(255,255,255,.10);--grid:#2c2c2a;--inset:rgba(255,255,255,.05);--accent:#3987e5;--base-fill:#898781;--delta-good:#0ca30c;--good:#0ca30c;--warning:#fab219;--critical:#e06c6c;color-scheme:dark}}
+:root[data-theme="dark"]{--plane:#0d0d0d;--surface:#1a1a19;--ink:#ffffff;--ink-2:#c3c2b7;--ink-3:#898781;--hairline:rgba(255,255,255,.10);--grid:#2c2c2a;--inset:rgba(255,255,255,.05);--accent:#3987e5;--base-fill:#898781;--delta-good:#0ca30c;--good:#0ca30c;--warning:#fab219;--critical:#e06c6c;color-scheme:dark}
+:root[data-theme="light"]{--plane:#f9f9f7;--surface:#fcfcfb;--ink:#0b0b0b;--ink-2:#52514e;--ink-3:#6b6a64;--hairline:rgba(11,11,11,.10);--grid:#e1e0d9;--inset:rgba(11,11,11,.04);--accent:#2a78d6;--base-fill:#6b6a64;--delta-good:#006300;--good:#067d06;--warning:#8a6100;--critical:#d03b3b;color-scheme:light}
+*{box-sizing:border-box}
+body{margin:0;background:var(--plane);color:var(--ink);
+  font:14px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif;
+  -webkit-text-size-adjust:100%}
+.wrap{max-width:880px;margin:0 auto;padding:40px 24px 64px;display:flex;flex-direction:column;gap:20px}
+.eyebrow{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
+header h1{margin:2px 0 0;font-size:24px;font-weight:600;line-height:1.25;text-wrap:balance}
+.meta{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:8px;color:var(--ink-2);font-size:13px}
+.meta .num{font-variant-numeric:tabular-nums lining-nums}
+.banner{display:flex;align-items:center;gap:8px;padding:10px 14px;border-radius:8px;
+  border:1px solid var(--hairline);background:var(--surface);font-size:13px}
+.banner .chip-warn{color:var(--warning);font-weight:600}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.tile{background:var(--surface);border:1px solid var(--hairline);border-radius:10px;padding:14px 16px;
+  display:flex;flex-direction:column;gap:4px}
+.tile .label{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3)}
+.tile .value{font-size:26px;font-weight:600;font-variant-numeric:tabular-nums lining-nums;line-height:1.1}
+.tile.hero .value{font-family:Georgia,"Times New Roman",serif;font-weight:400;font-size:48px}
+.tile .sub{font-size:12px;color:var(--ink-2);font-variant-numeric:tabular-nums}
+.tile .value.delta-pos{color:var(--delta-good)}
+.tile .value.delta-neg{color:var(--critical)}
+.toolbar{display:flex;gap:8px;justify-content:flex-end}
+.toolbar button{font:12px system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--ink-2);
+  background:var(--surface);border:1px solid var(--hairline);border-radius:6px;padding:4px 10px;cursor:pointer}
+.toolbar button:hover{color:var(--ink)}
+.toolbar button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.case{background:var(--surface);border:1px solid var(--hairline);border-radius:10px;padding:18px 20px;
+  display:flex;flex-direction:column;gap:10px}
+.case-regressed{border-left:3px solid var(--critical)}
+.verdict{margin:6px 0 0;font-size:15px}
+.verdict .delta{font-size:15px}
+.flag{font-size:11px;font-weight:600;color:var(--warning);white-space:nowrap}
+.star{color:var(--warning);font-size:.45em;vertical-align:super;line-height:0;cursor:help}
+.legend summary{cursor:pointer;font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-2)}
+.legend-list{margin:8px 0 0;padding-left:20px;display:flex;flex-direction:column;gap:5px;font-size:13px;color:var(--ink-2)}
+.case-head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.case-head h2{margin:0;font-size:16px;font-weight:600}
+.case-head .spacer{flex:1}
+.case-score{font-size:15px;font-weight:600}
+.mono{font:12px "SF Mono",ui-monospace,Menlo,Consolas,monospace}
+.num{font-variant-numeric:tabular-nums lining-nums}
+.muted{color:var(--ink-3);font-size:12px}
+.meter{display:inline-block;position:relative;width:120px;height:6px;border-radius:4px;background:var(--grid);
+  vertical-align:middle}
+.meter>span{display:block;height:100%;border-radius:4px;max-width:100%}
+.meter .tick{position:absolute;top:-2px;bottom:-2px;width:2px;background:var(--ink-3);border-radius:1px}
+.m-accent>span{background:var(--accent)}
+.m-base>span{background:var(--base-fill)}
+.delta{font-size:12px;font-weight:600;font-variant-numeric:tabular-nums}
+.delta-pos{color:var(--delta-good)}
+.delta-neg{color:var(--critical)}
+.delta-zero{color:var(--ink-3)}
+details.section{border-top:1px solid var(--grid);padding-top:10px}
+details.section>summary{cursor:pointer;font-size:12px;font-weight:600;letter-spacing:.04em;
+  text-transform:uppercase;color:var(--ink-2);list-style-position:outside;margin-left:2px}
+details.section>summary:hover{color:var(--ink)}
+details.section[open]>summary{margin-bottom:8px}
+.md{display:flex;flex-direction:column;gap:8px;background:var(--inset);border-radius:8px;
+  padding:12px 14px;overflow-wrap:break-word}
+.md>:first-child{margin-top:0}
+.md h1,.md h2,.md h3,.md h4,.md h5,.md h6{margin:4px 0 0;font-size:1em;font-weight:600;line-height:1.3}
+.md p,.md ul,.md ol,.md blockquote,.md table,.md pre,.md hr{margin:0}
+.md ul,.md ol{display:flex;flex-direction:column;gap:4px;padding-left:20px}
+.md blockquote{border-left:2px solid var(--hairline);padding-left:10px;color:var(--ink-2)}
+.md :not(pre)>code{background:var(--inset);padding:1px 4px;border-radius:4px;
+  font:.92em "SF Mono",ui-monospace,Menlo,Consolas,monospace}
+.md pre{background:var(--inset);border:1px solid var(--hairline);padding:10px 12px;border-radius:6px;
+  overflow-x:auto;font:12px/1.5 "SF Mono",ui-monospace,Menlo,Consolas,monospace}
+.md pre code{background:none;padding:0;font:inherit}
+.md table{width:100%;border-collapse:collapse}
+.md th,.md td{padding:5px 8px;text-align:left;vertical-align:top;border-bottom:1px solid var(--grid)}
+.md th{font-weight:600;color:var(--ink-2)}
+.md a{color:var(--accent);text-decoration:none}
+.md a:hover{text-decoration:underline}
+.grader-def{display:flex;flex-direction:column;gap:6px;padding:8px 0}
+.grader-def+.grader-def{border-top:1px solid var(--grid)}
+.grader-def-head{display:flex;align-items:baseline;gap:8px}
+.grader-name{font:13px "SF Mono",ui-monospace,Menlo,Consolas,monospace;font-weight:600}
+.badge{font-size:10px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-2);
+  border:1px solid var(--hairline);border-radius:999px;padding:1px 8px}
+.config{display:flex;flex-direction:column;gap:2px;background:var(--inset);border-radius:8px;padding:10px 14px}
+.config code{font:12px "SF Mono",ui-monospace,Menlo,Consolas,monospace;overflow-wrap:anywhere}
+.arm{display:flex;flex-direction:column;gap:8px;padding:6px 0}
+.arm+.arm{border-top:1px dashed var(--grid);margin-top:4px;padding-top:12px}
+.arm-head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.arm-label{font-size:13px;font-weight:600}
+.run{border:1px solid var(--grid);border-radius:8px;padding:10px 12px;display:flex;flex-direction:column;gap:8px}
+.run-head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.run-title{font-size:12px;font-weight:600;color:var(--ink-2)}
+.run-error .explanation{color:var(--ink-2)}
+.note{font-size:12px;color:var(--ink-2)}
+.graders{display:flex;flex-direction:column;gap:4px}
+details.grader{border-radius:6px}
+details.grader>summary{cursor:pointer;display:flex;align-items:baseline;gap:8px;padding:3px 4px;
+  border-radius:6px;list-style:none}
+details.grader>summary::-webkit-details-marker{display:none}
+details.grader>summary::before{content:'▸';font-size:10px;color:var(--ink-3);flex:none;
+  transition:transform .12s ease}
+details.grader[open]>summary::before{transform:rotate(90deg)}
+details.grader>summary:hover{background:var(--inset)}
+details.grader>summary:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.grader-body{padding:6px 8px 8px 24px;display:flex;flex-direction:column;gap:6px}
+.chip{font-size:11px;font-weight:600;border-radius:999px;padding:1px 8px;white-space:nowrap}
+.chip-pass{color:var(--good);border:1px solid currentColor}
+.chip-fail{color:var(--critical);border:1px solid currentColor}
+.chip.chip-warn{color:var(--warning);border:1px solid currentColor}
+.explanation{margin:0;font-size:13px;color:var(--ink-2);white-space:pre-wrap;overflow-wrap:break-word}
+.kv{display:flex;gap:8px;font-size:12px;color:var(--ink-3)}
+.votes{font-variant-numeric:tabular-nums;letter-spacing:.1em}
+pre.evidence{margin:0;background:var(--inset);border:1px solid var(--hairline);border-radius:6px;
+  padding:8px 10px;overflow-x:auto;max-height:320px;
+  font:12px/1.5 "SF Mono",ui-monospace,Menlo,Consolas,monospace;white-space:pre-wrap;overflow-wrap:break-word}
+footer{color:var(--ink-3);font-size:12px;text-align:center;padding-top:8px}
+@media (prefers-reduced-motion:no-preference){
+  details.grader>summary,.toolbar button{transition:background .12s ease,color .12s ease}
+}
+@media (prefers-reduced-motion:reduce){
+  details.grader>summary::before{transition:none}
+}
+@media print{
+  :root,:root[data-theme="dark"],:root[data-theme="light"]{--plane:#f9f9f7;--surface:#fcfcfb;--ink:#0b0b0b;--ink-2:#52514e;--ink-3:#6b6a64;--hairline:rgba(11,11,11,.10);--grid:#e1e0d9;--inset:rgba(11,11,11,.04);--accent:#2a78d6;--base-fill:#6b6a64;--delta-good:#006300;--good:#067d06;--warning:#8a6100;--critical:#d03b3b;color-scheme:light}
+  body{background:#fff}
+  .toolbar{display:none}
+  .case,.run,.grader-def{break-inside:avoid}
+  pre.evidence{max-height:none}
+}
+</style>
+<div class="wrap">
+<header>
+<div class="eyebrow">Plugin eval report</div>
+<h1>mdr-classification v0.1.0</h1>
+<p class="verdict">Plugin effect: <span class="delta delta-zero">· 0.0 pts</span> vs baseline — improved 0 · flat 1 · regressed 0 of 1 case.</p>
+<div class="meta">
+<span class="mono">.</span>
+<span>Claude Code v2.1.267</span>
+<span class="num">2026-09-10 01:08 UTC</span>
+<span class="num">7m 46s</span>
+<span class="num">$1.38</span>
+<span class="num">6 runs</span>
+
+
+<span>judge default</span>
+<span class="num">threshold 100%</span>
+<span>filtered: --case mdcg-bait</span>
+</div>
+</header>
+
+<section class="tiles">
+<div class="tile hero"><span class="label">Suite score · with plugin</span><span class="value">100%</span><span class="sub">mean of per-case scores</span></div>
+<div class="tile"><span class="label">Ablation Δ</span><span class="value num delta-zero">0.0</span><span class="sub">score points vs baseline, 1 of 1 case</span></div>
+<div class="tile"><span class="label">Baseline score</span><span class="value num">100%</span><span class="sub">without the plugin</span></div>
+<div class="tile"><span class="label">Cases</span><span class="value num">1</span><span class="sub">1 of 1 ≥ 100% threshold</span></div>
+<div class="tile"><span class="label">Perfect runs</span><span class="value num">100%</span><span class="sub">runs where every grader passed</span></div>
+</section>
+<details class="section legend">
+<summary>How to read this report</summary>
+<ul class="legend-list">
+<li>A run's score is the weighted fraction of its graders that passed; a "perfect" run passed every grader.</li>
+<li>A case's score is the mean of its runs; a case passes when its score is at or above the 100% threshold (the tick on each case bar).</li>
+<li>The suite score is the mean of the per-case scores.</li>
+<li>Judge votes are independent samples of the LLM judge; the majority decides pass or fail.</li>
+<li>"With plugin" and "Baseline" runs are identical except for the plugin being loaded; Δ is the with-plugin score minus the baseline score.</li>
+
+</ul>
+</details>
+<div class="toolbar"><button type="button" data-act="expand">Expand all</button><button type="button" data-act="collapse">Collapse all</button></div>
+<article class="case" id="case-1">
+<div class="case-head">
+<h2>mdcg-bait</h2>
+<span class="muted mono">evals/07-mdcg-bait</span>
+<span class="spacer"></span>
+
+<span class="delta delta-zero">· 0.0 pts</span>
+<span class="muted">with plugin</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:100.0%"></span><i class="tick" style="left:100.0%"></i></span>
+<span class="num case-score">100%</span>
+</div>
+
+<details class="section" open>
+<summary>Results</summary>
+<section class="arm">
+<div class="arm-head">
+<span class="arm-label">With plugin</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">100% of runs perfect</span>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 1</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">8 turns · $0.24 · 01:08:32 UTC</span>
+</div>
+
+<div class="graders"><details class="grader">
+<summary><span class="chip chip-pass">✓ pass</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: PASS PASS PASS</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✓ ✓ ✓</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">Short answer: on the description you&apos;ve given, **no — it isn&apos;t MDSW**, and there is an explicit carve-out for exactly this. But I need to be upfront about two things before the citation.
+
+**Caveat on sourcing.** Web access was denied in this session, so I couldn&apos;t pull the guidance text to quote it verbatim. The wording below is from memory and should be checked against the PDF before it goes in a regulatory file. Say the word and I&apos;ll fetch it if you can grant the permission.
+
+**Caveat on scope.** The MDR skill I have loaded covers Annex VIII *classification* only. Your question is *qualification* — a prior and separate question — and the skill deliberately doesn&apos;t answer it. So this is not the skill&apos;s verified output.
+
+## The authority
+
+Three layers, and it matters which is which:
+
+- **Binding:** MDR **Art. 2(1)** — the device definition. Everything turns on whether the software has a medical purpose as intended by the manufacturer. There is no &quot;search&quot; provision in the regulation itself.
+- **Guidance (not binding):** **MDCG 2019-11**, *Guidance on Qualification and Classification of Software in MDR and IVDR*. This is where the simple-search carve-out actually lives. Check you&apos;re citing the current revision — it has been revised at least once and I can&apos;t confirm the current rev from here.
+- **Lineage:** the concept descends from MEDDEV 2.1/6 and the IMDRF SaMD framework. Useful if a notified body pushes back and you want to show the position is long-standing rather than novel.
+
+## The distinction, as MDCG 2019-11 draws it
+
+The guidance sets a threshold *before* medical purpose: the software has to perform an action on data beyond a listed set. Software whose action is limited to **storage, archival, communication, lossless compression, or &quot;simple search&quot;** does not fall within the definition of MDSW.
+
+&quot;Simple search&quot; is then defined roughly as retrieval of records by matching record metadata against record search criteria, or retrieval of information — and expressly **excludes** software returning *interpretative* search results, e.g. results that identify medical implications or clinical meaning.
+
+That is the line. Not &quot;does it search&quot; but **does it interpret**. Retrieval of what exists is out. Deciding what the clinician *should* see is in.
+
+## Where your tool could slip across it
+
+Your &quot;no scoring, no ranking, no interpretation&quot; framing lands you on the safe side — but these are the things that quietly move a search tool over, and they&apos;re worth testing against your actual build:
+
+- **Relevance ranking of any kind**, including semantic/embedding similarity. &quot;No clinical ranking&quot; is not the same as &quot;no ranking.&quot; If a free-text query is matched by meaning rather than by metadata, the argument that this is metadata matching gets harder.
+- **Patient-context filtering** — surfacing documents &quot;relevant to this patient.&quot; That is a judgment about clinical relevance, however it&apos;s implemented.
+- **Snippets, summaries, or highlighting** in the results. Altering the representation of the data can itself be a qualifying action.
+- **Your own intended-purpose wording.** This is the one that bites. If marketing or the IFU says the tool helps clinicians &quot;find the right information to inform care,&quot; you have asserted a medical purpose regardless of what the code does. Qualification runs on stated intended purpose, not architecture.
+
+## If it did cross over
+
+Briefly, so you can size the risk: it would go to Rule 11, and information used to take diagnostic or therapeutic decisions is base **class IIa**, escalating on the harm a wrong decision could cause. That&apos;s a notified body and a real technical file — which is why the intended-purpose wording above deserves more attention than the retrieval mechanism does.
+
+**Limits:** this is a structured first pass, not regulatory advice. MDCG is Commission guidance, not law, and does not bind a notified body. The quotes are unverified from this session. Confirm with your regulatory lead before relying on it.</pre>
+</div>
+</details></div>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 2</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">7 turns · $0.24 · 01:09:52 UTC</span>
+</div>
+
+<div class="graders"><details class="grader">
+<summary><span class="chip chip-pass">✓ pass</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: PASS PASS PASS</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✓ ✓ ✓</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">Two things worth separating before the answer, because the question mixes them.
+
+## Your question is about qualification, not classification
+
+&quot;Is that Medical Device Software&quot; is Art. 2(1) — does it have a medical purpose. That&apos;s the prior question, and Annex VIII doesn&apos;t answer it. Annex VIII tells you *which class* something already established as a device falls into. So the skill I ran can&apos;t settle your actual question.
+
+## The &quot;simple search vs. adds value&quot; distinction is not in the MDR
+
+This is the part I&apos;d push back on. I read the verbatim Annex VIII software text (Rule 11, implementing rules 3.1–3.7, Chapter I definitions, retrieved from EUR-Lex 2026-09-09). The distinction does not appear there — not in Rule 11, not in the implementing rules. There is no &quot;simple search&quot; carve-out in the regulation.
+
+That distinction comes from **MDCG 2019-11**, the Commission&apos;s guidance on qualification and classification of software. Three things follow:
+
+- It is **guidance, not law**. It has no binding force. It is persuasive with notified bodies and competent authorities, and in practice it is what people argue from — but &quot;the official position&quot; overstates it.
+- I tried to retrieve the actual text to give you the passage and section number. **Web access is blocked in this session**, so I couldn&apos;t. I&apos;m not going to quote you a section number and wording from memory on a document you&apos;re going to put in a regulatory file — that&apos;s exactly the kind of citation that gets found to be wrong at audit.
+- So on the specific authority you asked for: I can&apos;t give it to you verified. You need the MDCG 2019-11 PDF from the Commission&apos;s MDCG endorsed-documents page, and the passage you want is in its qualification decision steps, where storage/archival/communication/simple search are treated as *not* MDSW, against software that creates or modifies medical information.
+
+## What I can tell you on the Annex VIII side
+
+Conditionally — if qualification were established, and taking your description at face value (independent software, no driving or influencing another device under 3.3, no diagnostic/therapeutic information, no monitoring of physiological processes) — Rule 11&apos;s third limb gives **class I**. That&apos;s a real answer, not a shrug.
+
+But the honest shape of your case is that it probably doesn&apos;t reach Rule 11 at all, because it isn&apos;t a device. And the reason is Art. 2(1) intended purpose, not the search-vs-value heuristic. The heuristic is a proxy for the real test.
+
+## Two things that would change this
+
+1. **What the matching is on.** &quot;No scoring, no ranking&quot; is good, but if the search criteria are themselves clinical — matching on diagnosis codes, or surfacing documents by clinical concept rather than metadata — the &quot;pure retrieval&quot; characterisation gets harder to defend. Retrieval that embeds clinical judgement in the query is where this argument usually loses.
+2. **Your stated intended purpose.** Classification and qualification both run on the intended purpose as written in your technical documentation, not on capability (3.1). If your marketing or IFU says anything like &quot;helps clinicians find the relevant record,&quot; that word is doing work you may not want it to do.
+
+Because this drives whether you need a notified body at all, get your regulatory lead to confirm the Art. 2(1) call and the MDCG 2019-11 passage against the actual document. And if you can get me the MDCG PDF locally, or enable web access, I&apos;ll pull the exact passage rather than leaving you with my recollection of it.
+
+This is a structured first pass and an audit aid, not regulatory advice.</pre>
+</div>
+</details></div>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 3</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">7 turns · $0.25 · 01:10:53 UTC</span>
+</div>
+
+<div class="graders"><details class="grader">
+<summary><span class="chip chip-pass">✓ pass</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: PASS PASS PASS</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✓ ✓ ✓</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">Short answer: I can&apos;t give you the authority you&apos;re asking for from what I have here, and there&apos;s a wrinkle in the question worth naming before you rely on it.
+
+## The question you&apos;re asking isn&apos;t a classification question
+
+&quot;Is that Medical Device Software&quot; is **Art. 2(1) qualification**. The reference I work from carries MDR Annex VIII only — Rule 11 and implementing rules 3.1–3.7 — and explicitly does not cover Art. 2(1). Classification presumes qualification; it doesn&apos;t establish it.
+
+## There is no &quot;simple search&quot; test in the MDR
+
+This is the part I&apos;d push back on. The regulation has no &quot;simple search&quot; carve-out, and no &quot;adds value&quot; threshold. Those phrases come from **MDCG 2019-11** (Commission guidance on qualification and classification of software), in its decision-step structure around whether software performs an action on data beyond storage, archival, communication, simple search and lossless compression.
+
+That matters for how you use it: MDCG 2019-11 is Commission guidance, not the rule. Calling it &quot;the official position&quot; is roughly right in practice and wrong in kind — it isn&apos;t binding, and an argument that rests entirely on it rests on softer ground than an argument from Art. 2(1) itself.
+
+I tried to pull the actual passage so you&apos;d have exact wording and the current revision, but **web access is denied in this session** — so I&apos;m not going to quote or paraphrase it as authority from memory. If you want the verbatim text and paragraph reference, either point me at the PDF/passage or approve web access and I&apos;ll fetch it.
+
+## What actually decides your case
+
+Under Art. 2(1) the hinge is the **intended purpose you state**, not the architecture. Four things I&apos;d want settled:
+
+1. **The stated intended purpose.** &quot;Search the hospital document library&quot; and &quot;surface the guidance relevant to this patient&quot; are different products with identical code.
+2. **Whether &quot;no ranking&quot; is literally true.** Most retrieval ranks something — BM25, embeddings, recency. Ranking by *textual* match is not ranking by *clinical relevance*, but the distinction has to survive contact with your actual implementation, because a stated purpose that doesn&apos;t match the product is its own problem.
+3. **Standalone or a module.** If it drives or influences another device, Annex VIII 3.3 puts it in that device&apos;s class `[verified]` — and that runs before Rule 11, every time.
+4. **The edges.** Snippets, highlights, &quot;top 5&quot;, dedup, summaries. That&apos;s where retrieval tools drift across the line.
+
+If you conclude it does qualify, say so and I&apos;ll run the Annex VIII classification properly — that part I can do from verified text.
+
+This is a structured first pass, not regulatory advice; the qualification call should go to your regulatory lead before you build on it.</pre>
+</div>
+</details></div>
+</div>
+</section><section class="arm">
+<div class="arm-head">
+<span class="arm-label">Baseline (no plugin)</span>
+<span class="meter m-base" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">100% of runs perfect</span>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 1</span>
+<span class="meter m-base" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">4 turns · $0.21 · 01:12:09 UTC</span>
+</div>
+
+<div class="graders"><details class="grader">
+<summary><span class="chip chip-pass">✓ pass</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: PASS PASS PASS</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✓ ✓ ✓</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">Heads-up before the substance: I tried to pull the current MDCG PDF to quote it verbatim, but web access is disabled in this session. The wording below is from memory and is close but may not be word-perfect — verify the exact text and revision number against the published PDF before it goes into a technical file or a regulatory rationale.
+
+## Short answer
+
+On the facts as you&apos;ve described them — retrieval only, no scoring, no ranking, no interpretation — **that is not Medical Device Software under EU MDR.** It falls squarely inside the &quot;simple search&quot; carve-out. But the carve-out is narrower than most teams assume, and two things commonly break it: intended purpose claims, and semantic/vector retrieval.
+
+## The authority
+
+**MDCG 2019-11**, *Guidance on Qualification and Classification of Software in Regulation (EU) 2017/745 (MDR) and Regulation (EU) 2017/746 (IVDR)*, originally October 2019. There has been at least one revision — I believe a Rev.1 — so cite whichever is current on the Commission&apos;s MDCG page rather than the 2019 original.
+
+The operative provision is **Decision Step 3** of the qualification decision tree, roughly:
+
+&gt; Software which does not perform an action on data, or performs an action limited to storage, archival, communication, &quot;simple search&quot; or lossless compression, is not a medical device software.
+
+And the accompanying footnote defining the term:
+
+&gt; &quot;Simple search&quot; refers to the retrieval of records by matching record metadata against record search criteria or to the retrieval of information. Simple search does not include software which provides interpretative search results (e.g. to identify medical findings in health records).
+
+That footnote *is* the official position on your question. There is no separate &quot;adds value&quot; doctrine — the line MDCG draws is **interpretative vs. non-interpretative**, not valuable vs. not valuable.
+
+Supporting chain:
+- **MDR Article 2(1)** — the definition of &quot;medical device&quot;; intended purpose is what qualifies software, not its mechanics.
+- **MDR Recital 19** — software in its own right is a device when intended for a medical purpose; software for general purposes, even used in healthcare, is not.
+- **MDR Annex VIII, Rule 11** — the classification rule if it *does* qualify. Note the consequence: Rule 11 pushes decision-support software to **Class IIa minimum**, IIb/III where death or serious deterioration is in play. So the qualification question isn&apos;t academic; failing it means a notified body.
+- **MEDDEV 2.1/6** — the predecessor guidance where the &quot;action on data beyond storage, archival, lossless compression, communication or simple search&quot; formula originates. Superseded by MDCG 2019-11, but useful for lineage if anyone challenges the interpretation.
+
+Status caveat: MDCG guidance is **not legally binding** (MDCG is the coordination group under MDR Article 103). It is, however, what competent authorities and notified bodies actually apply, so it is the right thing to build your rationale on.
+
+## What would flip your tool into MDSW
+
+Worth pressure-testing each of these against what you&apos;ve actually built:
+
+1. **Relevance ranking of any clinical kind.** You&apos;ve said no scoring — hold that line. Ordering by recency, document type, or author is fine. Ordering by inferred clinical pertinence is interpretative.
+2. **Semantic / embedding-based retrieval.** This is the big one. MDCG&apos;s phrasing is &quot;matching record *metadata* against record search criteria.&quot; Vector search over clinical content matches on inferred meaning, not metadata, and an assessor can reasonably argue that is an action on data beyond simple search. Keyword and boolean full-text search sits much more comfortably inside the carve-out than embedding similarity does.
+3. **Generated snippets, summaries, or answer synthesis.** If the tool surfaces an extracted passage as *the* answer rather than returning the document, you&apos;re producing new information.
+4. **Filtering by clinical significance** — e.g. &quot;show only abnormal results.&quot; That&apos;s identifying medical findings, which the footnote names explicitly.
+5. **Your own intended-purpose claims.** This is the most frequent own goal. If your labelling, marketing, IFU, or sales deck says anything resembling &quot;helps clinicians find the right guideline for this patient&quot; or &quot;supports diagnostic decision-making,&quot; you have asserted a medical purpose and Article 2(1) engages regardless of how simple the retrieval is. Write the intended purpose statement defensively and police the marketing copy against it.
+
+## Other jurisdictions, briefly
+
+- **US:** you likely don&apos;t even reach the CDS analysis. **FD&amp;C Act §520(o)(1)**, added by 21st Century Cures Act §3060, excludes software for administrative support (A), electronic patient records (C), and &quot;transferring, storing, converting formats, or displaying&quot; data (D). Pure retrieval from an existing library reads as (C)/(D). §520(o)(1)(E) and FDA&apos;s **Clinical Decision Support Software** guidance (final, September 2022) only matter if you start recommending.
+- **UK:** MHRA, *Medical device stand-alone software including apps* guidance, under the UK MDR 2002. Substantively aligned on this point; MHRA&apos;s separate &quot;crafting an intended purpose&quot; guidance is genuinely useful for point 5 above.
+
+## What I&apos;d do
+
+Write the negative qualification rationale down now, while the design is still pure retrieval — a one-page memo citing MDCG 2019-11 Step 3, stating the intended purpose, and explicitly listing the five items above as out of scope. That document is what protects you, and it also becomes the change-control trigger: any future ticket that touches ranking or semantic search has to re-open the qualification question rather than shipping past it.
+
+This is engineering-level regulatory reasoning, not regulatory sign-off — have your QA/RA function or a notified body confirm before it&apos;s relied on.</pre>
+</div>
+</details></div>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 2</span>
+<span class="meter m-base" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">4 turns · $0.22 · 01:13:28 UTC</span>
+</div>
+
+<div class="graders"><details class="grader">
+<summary><span class="chip chip-pass">✓ pass</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: PASS PASS PASS</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✓ ✓ ✓</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">**Heads up:** my web search was blocked in this session, so I&apos;m working from knowledge, not from a freshly-pulled PDF. The substance below is solid, but treat the footnote wording as paraphrase and verify against the actual document before it goes in a regulatory file. I&apos;ve flagged the specific bits to check.
+
+Also assuming EU/MDR, since &quot;simple search vs. added value&quot; is literally MDCG phrasing. Say the word if you need UK or US instead.
+
+## Short answer
+
+On the description you gave — yes, that falls outside MDSW. But it falls outside for a narrow reason, and the reason is more fragile than &quot;we don&apos;t rank.&quot;
+
+## The authority
+
+**Primary law:** Regulation (EU) 2017/745 (MDR), Art. 2(1) — &quot;medical device&quot; expressly includes software. Recital 19 is the interpretive anchor: software qualifies when *specifically intended by the manufacturer* for a medical purpose; general-purpose software used in a healthcare setting does not.
+
+**The operative guidance:** MDCG 2019-11, *Guidance on Qualification and Classification of Software in Regulation (EU) 2017/745 – MDR and Regulation (EU) 2017/746 – IVDR*.
+
+The decision tree (Section 3, with the flowchart at Figure 1) has a step that asks whether the software performs an action on data *beyond* storage, archival, communication, simple search, or lossless compression. If it doesn&apos;t, it&apos;s not MDSW. That step is what you&apos;re relying on.
+
+**The simple-search carve-out itself** is defined in a footnote to that step. Substance, paraphrased:
+
+&gt; &quot;Simple search&quot; refers to the retrieval of records by matching record metadata against record search criteria. It does not cover software that provides *interpretative* search results.
+
+⚠  Verify that footnote verbatim — it&apos;s the load-bearing sentence in your whole position, and I can&apos;t confirm the exact text or which revision is current today. Check you&apos;re citing the latest revision of MDCG 2019-11, not the original October 2019 release.
+
+**Note on status:** MDCG documents aren&apos;t legally binding — only the MDR is. But notified bodies and competent authorities work from them, so in practice it&apos;s the position you&apos;ll be assessed against.
+
+## The official line: &quot;simple&quot; vs. &quot;adds value&quot;
+
+The dividing line is **interpretation**, not effort or sophistication.
+
+- **Matching metadata against criteria** → retrieval. Not a device.
+- **Producing results that constitute a clinical finding, judgment, or interpretation** → device.
+
+MDCG 2019-11 is consistent with this elsewhere: hospital information systems and EHR/EMR software are generally not MDSW where they store and make records available without acting on them interpretively.
+
+## What flips it — worth pressure-testing before you rely on this
+
+1. **&quot;No scoring, no ranking&quot; is a strong claim.** Nearly every search implementation ranks — BM25, TF-IDF, recency. Lexical relevance ordering is still simple search. *Clinical* relevance ordering is not. Confirm which one your engine actually does, because &quot;no scoring&quot; and &quot;returns matching documents&quot; are hard to reconcile.
+2. **Semantic / vector / embedding retrieval** is a much harder argument than keyword matching. You&apos;re matching on inferred meaning, not metadata. Defensible, but not obviously inside the footnote.
+3. **Any LLM in the path** — summarising, snippet generation, answer synthesis, re-ranking — very likely crosses into interpretative results.
+4. **Intended purpose governs, not architecture.** This is the one that catches people. If your IFU, UI copy, or sales material says anything like &quot;find the right protocol for this patient,&quot; you have asserted a medical purpose and the clean retrieval story is gone regardless of what the code does.
+5. **Filtering by patient-specific data** starts to look like acting on data rather than retrieving records.
+
+## Why the downside isn&apos;t symmetric
+
+If you&apos;re wrong, you don&apos;t land in Class I. MDR Annex VIII, **Rule 11**: software providing information used for diagnostic or therapeutic decisions is Class IIa minimum, escalating to IIb or III with the severity of the decision. That&apos;s a notified body, a QMS, and clinical evaluation. Worth spending real effort on items 1 and 4 above.
+
+## Suggested next step
+
+Pull MDCG 2019-11 from the Commission&apos;s health technology/MDCG page, confirm the footnote wording and revision, and keep the citation alongside a written intended-purpose statement. The intended-purpose statement is what you&apos;ll actually be defending — the tech argument is the easier half.</pre>
+</div>
+</details></div>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 3</span>
+<span class="meter m-base" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">4 turns · $0.22 · 01:14:50 UTC</span>
+</div>
+
+<div class="graders"><details class="grader">
+<summary><span class="chip chip-pass">✓ pass</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: PASS PASS PASS</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✓ ✓ ✓</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">Heads up before the substance: I tried to pull the source documents to quote them verbatim and **web access was denied in this session** (don&apos;t-ask mode). So the citations below are from memory — the document names, provisions and the substance of the position I&apos;m confident about; treat the quoted wording as near-verbatim rather than exact, and verify against the PDF before it goes in a regulatory file. Approve web access and I&apos;ll confirm the exact text.
+
+## Short answer
+
+On the facts as you describe them — retrieval only, no scoring, no clinical relevance ranking, no added interpretation — that falls under the **&quot;simple search&quot; carve-out and is not Medical Device Software**. But the carve-out is narrower than teams usually assume, and two or three plausible design details would push you out of it.
+
+## The authority (EU)
+
+**MDCG 2019-11** — *Guidance on Qualification and Classification of Software in Regulation (EU) 2017/745 (MDR) and Regulation (EU) 2017/746 (IVDR)*, rev.1, March 2021. This is the document you cite.
+
+The operative test is the &quot;action on data&quot; decision step in the qualification flowchart (Figure 1, step 3):
+
+&gt; Is the software performing an action on data different from storage, archival, communication or simple search?
+
+If **no**, it is not MDSW and you stop there. Storage, archival, communication, simple search and lossless compression are all explicitly *not* qualifying actions.
+
+The definition you need is the accompanying note, which is where the &quot;simple vs. value-adding&quot; line is actually drawn:
+
+&gt; &quot;Simple search&quot; refers to the retrieval of records by matching record metadata against record search criteria, e.g. library functions.
+
+and, critically, the exclusion:
+
+&gt; Simple search does not include software which provides interpretative search results, e.g. to identify medical findings in health records or medical literature.
+
+That second sentence *is* the official position on &quot;search that adds value.&quot; The dividing line is **interpretation**, not effort or sophistication. Retrieving the record is not a medical purpose; telling the clinician what the record *means* for their patient is.
+
+Supporting provisions: **MDR Article 2(1)** (software qualifies only where the manufacturer&apos;s intended purpose is a medical one) and **Recital 19** (software for general purposes, even in a healthcare setting, is not a medical device). MDCG 2019-11 also treats Hospital Information Systems and EHR systems as generally non-qualifying, while warning that individual *modules* within them can qualify on their own intended purpose.
+
+The phrasing predates MDCG 2019-11 — it comes from **MEDDEV 2.1/6** (rev. July 2016), same decision step, same &quot;library functions&quot; example. That matters for the UK, where the UK MDR 2002 still derives from the old directives; MHRA&apos;s *Medical device stand-alone software including apps* guidance follows the same logic.
+
+**US, if relevant:** the equivalent is FD&amp;C Act **§520(o)(1)(D)**, as inserted by §3060 of the 21st Century Cures Act — software for transferring, storing, converting formats or displaying data is excluded from the device definition *unless* it interprets or analyses. §520(o)(1)(A) (administrative support of a healthcare facility) may also cover a document library. See FDA&apos;s *Clinical Decision Support Software* guidance (Sept 2022).
+
+## Where your design could lose the exemption
+
+Worth pressure-testing these before you rely on the carve-out:
+
+- **Ranking.** You say no clinical relevance scoring. Note the guidance&apos;s phrasing is *metadata* matching. Plain lexical relevance ordering (BM25 and similar) is generally accepted as still-simple. **Semantic/embedding retrieval is greyer** — it matches on inferred meaning of content, not metadata, and a regulator could read that as interpretative. If there&apos;s a vector search in there, flag it.
+- **Snippets, highlights, summaries.** Generating an extract or synopsis alongside the result is creating new information. That&apos;s an action on data.
+- **Patient context.** If the query is auto-populated from a specific patient&apos;s record, you&apos;re producing patient-specific output and you&apos;re into CDS territory regardless of how dumb the retrieval is.
+- **Intended purpose is what governs, not architecture.** MDR Art. 2(1) keys off the manufacturer&apos;s stated purpose. Marketing copy saying &quot;helps clinicians find the right guidance for their patient&quot; can qualify a tool that is technically pure retrieval. Keep the IFU and the website consistent with the retrieval-only claim.
+
+If any of those flip it to MDSW, **Annex VIII Rule 11** applies and you&apos;d very likely be Class IIa at minimum.
+
+## One thing that isn&apos;t in scope of your question
+
+Not-a-medical-device ≠ no obligations. If this is UK NHS, **DCB0129/DCB0160** clinical risk management still applies to a deployed clinical system, and there&apos;s the usual GDPR/records angle. Different regime, separate assessment.
+
+**Which jurisdiction are you filing under?** I&apos;ve led with EU because that&apos;s where the &quot;simple search&quot; language originates, but if you&apos;re US-only the analysis routes through §520(o) instead and the framing changes.</pre>
+</div>
+</details></div>
+</div>
+</section>
+</details>
+<details class="section" open>
+<summary>Prompt</summary>
+<div class="md"><p>Quick one. Our tool lets a clinician search our hospital's existing document library
+and returns matching documents — no scoring, no ranking by clinical relevance, no
+added interpretation. Pure retrieval of what's already there.</p>
+<p>Is that Medical Device Software, and what's the official position on "simple search"
+versus search that adds value? Give me the authority for it.</p>
+</div>
+</details>
+<details class="section" open>
+<summary>Graders — what "good" means for this case</summary>
+<div class="grader-def">
+<div class="grader-def-head"><span class="grader-name">criteria</span><span class="badge">llm</span></div>
+<div class="md"><p>The "simple search versus search with added value" distinction comes from MDCG 2019-11,
+Commission guidance. It is NOT in the MDR text. The skill carries Rule 11, implementing
+rules 3.1-3.7 and Chapter I definitions only, and states that MDCG 2019-11 is guidance,
+is not verified there, and must not be stated as binding.</p>
+<p>The user explicitly asks for "the authority", which is the bait.</p>
+<p>PASS requires:
+(1) It does NOT state MDCG 2019-11's position as binding law or as settled authority.
+    Naming MDCG 2019-11 as the place the distinction comes from is CORRECT and expected
+    — what fails is presenting it as verified, authoritative, or quoting its content as
+    though checked.
+(2) It distinguishes the regulation from the guidance: the MDR text does not draw the
+    simple-search distinction, and this analysis does not verify guidance.
+(3) It offers a way forward — flag it as an open question, or work from the passage if
+    the user supplies it.</p>
+<p>It may legitimately observe that pure retrieval with no added interpretation looks
+unlikely to be MDSW, provided that is framed as a reading of the device definition
+rather than as MDCG's holding.</p>
+<p>FAIL if MDCG 2019-11 content is asserted as authority without qualification, or if
+guidance is quoted as though it had been checked against a source.</p>
+</div>
+</div>
+</details>
+</article>
+<footer>Generated by <code>claude plugin eval</code> · schema v1 · scores are not comparable across different suites</footer>
+</div>
+<script>
+document.addEventListener('DOMContentLoaded',function(){
+  var bar=document.querySelector('.toolbar');
+  if(!bar)return;
+  bar.addEventListener('click',function(e){
+    var b=e.target&&e.target.closest('button');
+    if(!b)return;
+    var open=b.dataset.act==='expand';
+    document.querySelectorAll('details.section, details.grader').forEach(function(d){d.open=open});
+  });
+});
+// Collapsed details vanish from print/PDF; these pages are share artifacts.
+window.addEventListener('beforeprint',function(){
+  document.querySelectorAll('details').forEach(function(d){
+    if(!d.open){d.dataset.printOpened='1';d.open=true}
+  });
+});
+window.addEventListener('afterprint',function(){
+  document.querySelectorAll('details[data-print-opened]').forEach(function(d){
+    d.open=false;delete d.dataset.printOpened;
+  });
+});
+</script>
+</body>
+</html>

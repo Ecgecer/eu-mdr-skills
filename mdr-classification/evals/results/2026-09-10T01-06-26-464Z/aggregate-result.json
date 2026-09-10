@@ -1,0 +1,232 @@
+{
+  "schemaVersion": 1,
+  "claudeVersion": "2.1.267",
+  "startedAt": "2026-09-10T01:06:26.464Z",
+  "durationSeconds": 403,
+  "costUsd": 1.2734315,
+  "partial": false,
+  "suite": {
+    "root": "/Users/egecangecer/projects/device-claims-review/mdr-classification",
+    "ablation": "with-without",
+    "caseFilter": "rule-not-carried",
+    "threshold": 1,
+    "plugins": [
+      {
+        "name": "mdr-classification",
+        "version": "0.1.0",
+        "path": "/Users/egecangecer/projects/device-claims-review/mdr-classification"
+      }
+    ]
+  },
+  "cases": [
+    {
+      "name": "rule-not-carried",
+      "dir": "evals/06-rule-not-carried",
+      "source": "prose",
+      "promptMarkdown": "MDR class for our product please.\n\nIt's a standalone prescription digital therapeutic for chronic insomnia. It delivers\na structured CBT-I programme directly to the patient over 6-9 weeks — sleep\nrestriction scheduling, stimulus control instructions, cognitive restructuring\nexercises. It is the treatment itself; there's no clinician in the loop during the\nprogramme and it doesn't feed information to anyone to decide anything. Qualification\nas a medical device is established. Intended purpose: \"to treat chronic insomnia in\nadults by delivering cognitive behavioural therapy for insomnia.\"",
+      "runsPerCase": 3,
+      "timeoutSeconds": 300,
+      "maxTurns": 10,
+      "graders": [
+        {
+          "name": "criteria",
+          "type": "llm",
+          "weight": 1,
+          "graderMarkdown": "This is the boundary test. The software TREATS. It does not provide information used\nto take a decision (limb 1) and does not monitor physiological processes (limb 2), so\nRule 11 alone lands it at limb 3 — \"all other software\" — which is class I.\n\nThat is almost certainly the wrong final answer, because implementing rule 3.5 says\nthe strictest applicable rule wins, and a rule this skill does not carry (the active\ntherapeutic device rule, Rule 9) plausibly reaches software that delivers treatment.\n\nPASS requires BOTH:\n(1) It does NOT present a confident final class. It must flag that implementing rule\n    3.5 means a stricter rule may apply, and that Rules 1-10 and 12-22 are not carried\n    here, so the Rule 11 result is a floor rather than the answer.\n(2) It correctly works Rule 11 to limb 3 / class I as the Rule-11-only result, or\n    explains why limbs 1 and 2 are not engaged.\n\nNaming Rule 9 or \"active therapeutic device\" specifically is a bonus, not required —\nthe skill does not carry that rule, so it cannot be expected to name it. What IS\nrequired is recognising that the question is not settled by Rule 11.\n\nFAIL if it states a final class (I, IIa, IIb or III) without flagging the 3.5 /\nuncarried-rule problem. A confident \"class I\" is the specific failure being tested:\ntechnically correct on Rule 11, wrong as an answer, and expensive if acted on.",
+          "config": {
+            "criteria": "This is the boundary test. The software TREATS. It does not provide information used\nto take a decision (limb 1) and does not monitor physiological processes (limb 2), so\nRule 11 alone lands it at limb 3 — \"all other software\" — which is class I.\n\nThat is almost certainly the wrong final answer, because implementing rule 3.5 says\nthe strictest applicable rule wins, and a rule this skill does not carry (the active\ntherapeutic device rule, Rule 9) plausibly reaches software that delivers treatment.\n\nPASS requires BOTH:\n(1) It does NOT present a confident final class. It must flag that implementing rule\n    3.5 means a stricter rule may apply, and that Rules 1-10 and 12-22 are not carried\n    here, so the Rule 11 result is a floor rather than the answer.\n(2) It correctly works Rule 11 to limb 3 / class I as the Rule-11-only result, or\n    explains why limbs 1 and 2 are not engaged.\n\nNaming Rule 9 or \"active therapeutic device\" specifically is a bonus, not required —\nthe skill does not carry that rule, so it cannot be expected to name it. What IS\nrequired is recognising that the question is not settled by Rule 11.\n\nFAIL if it states a final class (I, IIa, IIb or III) without flagging the 3.5 /\nuncarried-rule problem. A confident \"class I\" is the specific failure being tested:\ntechnically correct on Rule 11, wrong as an answer, and expensive if acted on.",
+            "focus": "last_message"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 4,
+            "costUsd": 0.2295645,
+            "judgeCostUsd": 0.005724,
+            "durationSeconds": 41,
+            "startedAt": "2026-09-10T01:06:26.471Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-xJnAFZ/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "# MDR Software Classification: Prescription CBT-I digital therapeutic\n\n**Intended purpose (as stated):** *\"to treat chronic insomnia in adults by delivering cognitive behavioural therapy for insomnia.\"*\n**Qualified as a device:** established (per your statement; not re-tested here)\n\n## Class: Rule 11 gives **I** — but I can't present that as settled (see 3.5)\n\n**Route:** 3.3 independent → Rule 11 limb 3 (all other software) → class I, subject to 3.5\n\n## Reasoning\n\n| Step | Question | Answer | Basis |\n|---|---|---|---|\n| 3.1 | Intended purpose | *\"to treat chronic insomnia in adults by delivering cognitive behavioural therapy for insomnia\"* | `[verified]` |\n| 3.3 | Drives or influences another device? | No — standalone, patient-facing, no hardware or companion device in the loop. Classified in its own right. | `[verified]` |\n| Rule 11 | Which limb | 3. Limb 1 requires software *intended to provide information which is used to take decisions* with diagnostic or therapeutic purposes. On your stated purpose the software **is** the therapy; it is not an input to someone else's decision. Limb 2 not engaged — no monitoring of physiological processes in the stated purpose. | `[verified]` |\n| Rule 11 | Escalation | None — limb 3 has no escalation | `[verified]` |\n| 3.5 | Could a stricter rule apply? | **Possibly, and this is the live issue.** | `[verify]` |\n\n## The 3.5 problem, stated plainly\n\nRule 11 is a floor, not a ceiling. Your product's whole design is that it *is* the treatment — and Annex VIII definition **2.4** reads: *\"'Active therapeutic device' means any active device used… to support, modify, replace or restore biological functions or structures with a view to treatment or alleviation of an illness\"* `[verified]`. Software that delivers CBT-I as the therapeutic intervention sits squarely inside that wording.\n\nThe rules governing active therapeutic devices are **not carried by this skill**. So:\n\n> Rule 11 gives class I. But under 3.5 the strictest applicable rule wins, and an intended purpose of \"to treat\" plausibly engages the active-therapeutic-device rules (Rule 9 and neighbours), which I do not verify. That could raise the class above I. This should be checked before class I is treated as the answer. `[verify]`\n\nThis is the single thing most likely to change the outcome, and it is exactly the point on which class I answers for DTx products get challenged.\n\n## What would change this\n\n1. **Whether the active-therapeutic-device rules reach it** — the 3.5 question above. Decisive, and outside what I verify.\n2. **Sleep restriction scheduling.** You describe the programme as computing a prescribed sleep window and titrating it. If the technical documentation frames that output as *information the patient acts on to make a therapeutic decision*, limb 1 is arguable and the base class becomes IIa. On your framing — the schedule is an instruction that constitutes the therapy, not information feeding a decision — limb 3 holds. Two readings of the same feature; make sure your IFU and technical file consistently support the one you're relying on.\n3. **Any sleep-diary or wearable-derived tracking.** If the product monitors sleep parameters *as part of its intended purpose* rather than merely logging adherence, limb 2 opens (base IIa; IIb only if the parameters are vital **and** their variation could cause immediate danger — insomnia parameters would not meet that second condition). `[verified]`\n4. **Contraindication or safety-screening logic.** If it screens for, say, comorbid sleep apnoea or bipolar disorder and routes users out, that output *is* information used to take a decision — limb 1, base IIa.\n5. **If a clinician ever enters the loop** (dashboards, therapist review, escalation alerts), limb 1 engages directly.\n\nPoint 2 is worth a specific look: sleep restriction is the component that carries real clinical risk (daytime sleepiness, driving), and how you characterise its output drives whether you're arguing limb 3 or limb 1.\n\n## Limits\n\n> This classifies software under MDR Annex VIII implementing rules 3.1–3.7 and Rule 11, retrieved verbatim from EUR-Lex on 2026-09-09. It does **not** cover Art. 2(1) qualification, Rules 1–10 or 12–22, Annex XVI, IVDR, MDCG guidance, notified-body practice, or national interpretation. Rule 11 is a floor: under 3.5 a stricter rule this skill does not carry may raise the class. A structured first pass and an audit aid, not legal or regulatory advice, and not a substitute for your notified body or a qualified regulatory professional.\n\nMDCG 2019-11 addresses software like this directly, but it is Commission guidance rather than the regulation and I don't verify it here. If you want, point me at the passage and I'll work against it explicitly.\n\n---\n\nThis is the Annex VIII text applied to the intended purpose as you stated it. The class drives your conformity route, whether you need a notified body, and the depth of your technical documentation, so confirm it with your regulatory lead or notified body before building on it. The three things to put in front of them:\n\n1. **The 3.5 question** — do the active-therapeutic-device rules reach software whose intended purpose is \"to treat\"? This is the one that matters.\n2. **The limb call** — limb 3 rather than limb 1, and specifically whether sleep restriction scheduling is therapy-delivery or decision-support information.\n3. **The 3.3 call** — independent software, classified in its own right, on the basis that nothing drives or influences another device."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 4,
+            "costUsd": 0.17474075000000003,
+            "judgeCostUsd": 0.0055590000000000014,
+            "durationSeconds": 44,
+            "startedAt": "2026-09-10T01:07:07.881Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-rUVhsL/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "# MDR Software Classification: CBT-I digital therapeutic (prescription DTx, chronic insomnia)\n\n**Intended purpose (as stated):** \"to treat chronic insomnia in adults by delivering cognitive behavioural therapy for insomnia.\"\n**Qualified as a device:** established (per your statement — not re-tested here)\n\n## Class: **Rule 11 gives class I — but I can't present that as your class.** See 3.5 below.\n\n**Route:** 3.3 independent → Rule 11 limb 3 (all other software) → I → **3.5 check does not clear.**\n\n## Reasoning\n\n| Step | Question | Answer | Basis |\n|---|---|---|---|\n| 3.1 | Intended purpose | \"to treat chronic insomnia in adults by delivering CBT-I\" | `[verified]` |\n| 3.3 | Drives or influences another device? | No — standalone, delivers directly to the patient, no other device in the loop | `[verified]` |\n| Rule 11 | Which limb | 3. Not limb 1: on the stated purpose it does not *provide information used to take* a therapeutic decision — it *is* the therapy. Not limb 2: no monitoring purpose stated | `[verified]` |\n| Rule 11 | Escalation | None — limb 3 has no escalation | `[verified]` |\n| 3.5 | Could a stricter rule apply? | **Possibly, and materially** — see below | `[verified]` |\n\n### Why 3.5 blocks a clean answer\n\nRule 11 is a floor, not a ceiling. Your intended purpose — *treat* insomnia — reads directly onto Annex VIII definition **2.4, 'active therapeutic device'**: an active device used \"to support, modify, replace or restore biological functions or structures with a view to treatment or alleviation of an illness\" `[verified]`. Sleep restriction scheduling and stimulus control are aimed squarely at modifying a biological function.\n\nThe rules that classify active therapeutic devices (Rule 9 and its neighbours) are **not carried by this skill** `[verify]`. If one of them reaches this software, 3.5 means it wins over Rule 11's class I. So the honest answer is: Rule 11 alone gives I, and I cannot tell you that I is the class until Rules 1–10 have been run against the same intended purpose. Please check those before treating I as settled.\n\n### Two things worth flagging, short of a finding\n\n**The limb 1 question is genuinely arguable.** The programme issues a patient-facing sleep window and instructions the patient then acts on. One reading calls that the therapy itself (limb 3, class I); another calls it information the patient uses to take a therapeutic decision (limb 1, class IIa base). The Annex VIII text on its own takes me to limb 3 on your stated purpose. This is the point where the DTx sector leans on MDCG 2019-11, which is Commission guidance rather than the regulation, and which I do not verify — I can flag the question, or you can point me at the passage.\n\n**3.1 note, not a classification finding.** CBT-I normally runs on sleep diaries, and sleep restriction titrates the window off logged sleep efficiency. If your product does that, ask whether the intended purpose as documented is complete — a monitoring element in the stated purpose would put limb 2 in play (base IIa; it would not escalate, since sleep parameters are not vital parameters varying so as to cause *immediate* danger). Capability alone doesn't raise the class; a mis-stated intended purpose does.\n\n## What would change this\n\n- **A Rule 9 / active-therapeutic-device analysis landing either way** — this is the decisive open item.\n- **Adding a monitoring or titration element to the stated intended purpose** → limb 2, base IIa.\n- **Restating the purpose as producing recommendations a patient or clinician acts on** → limb 1, base IIa. Escalation to IIb/III would still need a wrong output to risk serious or irreversible harm; sleep restriction's known effects (daytime sleepiness, transient) don't obviously reach that, but driving and mania/epilepsy contraindications are where I'd look if you test it.\n- **Any clinician-facing output, even post-programme** — you've excluded this, and it's load-bearing for the 3.3 and limb 1 calls.\n\n## Limits\n\n> This classifies software under MDR Annex VIII implementing rules 3.1–3.7 and Rule 11, retrieved verbatim from EUR-Lex on 2026-09-09. It does **not** cover Art. 2(1) qualification, Rules 1–10 or 12–22, Annex XVI, IVDR, MDCG guidance, notified-body practice, or national interpretation. Rule 11 is a floor: under 3.5 a stricter rule this skill does not carry may raise the class. A structured first pass and an audit aid, not legal or regulatory advice, and not a substitute for your notified body or a qualified regulatory professional.\n\nThis is the Annex VIII text applied to the intended purpose as you stated it. The class drives your conformity route, whether you need a notified body, and the depth of your technical documentation, so confirm it with your regulatory lead or notified body before building on it. The three things to put in front of them: (1) the 3.3 call that the software is independent; (2) the limb 3 vs limb 1 call — whether delivering a structured programme is \"providing information used to take therapeutic decisions\"; (3) **the 3.5 question of whether an active-therapeutic-device rule reaches this and raises it above class I.** The third is the one that could change your whole conformity route."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 4,
+            "costUsd": 0.16713375,
+            "judgeCostUsd": 0.005594999999999999,
+            "durationSeconds": 39,
+            "startedAt": "2026-09-10T01:07:51.917Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-nRSSio/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "I read the verbatim Annex VIII text before answering. Here's the analysis.\n\n# MDR Software Classification: CBT-I digital therapeutic\n\n**Intended purpose (as stated):** \"to treat chronic insomnia in adults by delivering cognitive behavioural therapy for insomnia.\"\n**Qualified as a device:** established (per your statement — not re-tested here)\n\n## Class: Rule 11 gives **I** — but I cannot conclude that is the class\n\n**Route:** 3.3 independent → Rule 11 limb 3 → class I → **blocked at 3.5**\n\n## Reasoning\n\n| Step | Question | Answer | Basis |\n|---|---|---|---|\n| 3.1 | Intended purpose | \"to treat chronic insomnia in adults by delivering CBT-I\" — classification runs on this, not on capability | `[verified]` |\n| 3.3 | Drives or influences another device? | No. Standalone, delivers directly to patient, no other device in the loop → classified in its own right | `[verified]` |\n| Rule 11 | Which limb | 3. Not limb 1: it does not *provide information used to take* a therapeutic decision — it *is* the therapy, and you state no one uses its output to decide anything. Not limb 2: the stated purpose is treatment, not monitoring physiological processes | `[verified]` |\n| Rule 11 | Escalation | None — limb 3 has no escalation | `[verified]` |\n| 3.5 | Could a stricter rule apply? | **Possibly, and this is the crux** — see below | `[verified]` |\n\n## Why I stop at 3.5\n\nRule 11 is a floor, not a ceiling. Your product looks squarely like an **active therapeutic device** under the Annex VIII Chapter I definition 2.4 `[verified]`: \"any active device used... to support, modify, replace or restore biological functions or structures with a view to treatment or alleviation of an illness.\" Software that *is* the treatment for insomnia — modifying sleep regulation with a view to treating an illness — reads directly onto that wording.\n\nThat definition exists to feed the rules on active therapeutic devices, which are **Rule 9 territory. I do not carry Rule 9** `[verify]`, and under 3.5 the strictest applicable rule wins. So the honest answer is:\n\n> Rule 11 gives class I. But 3.5 means the strictest applicable rule governs, and the intended purpose here — software that is itself the therapy — may also engage the rules on active therapeutic devices, which I do not carry. That could raise the class above I. Check Rule 9 before treating I as settled.\n\nThe all-software-is-Rule-11 instinct is exactly the trap 3.5 is written against. Do not let anyone hand you class I on Rule 11 alone.\n\n## What would change this\n\nThree facts, each of which moves the answer:\n\n1. **Rule 9 / active therapeutic device.** The single biggest open item. If Rule 9 reaches it, class I is wrong. This is a question about which rule applies, not about your product's risk.\n2. **How the sleep restriction schedule is generated.** If the programme takes patient-entered sleep diary data and outputs a prescribed sleep window, there is a real argument that it provides information used to take a therapeutic decision — limb 1, base **IIa**. You've told me nothing feeds anyone to decide anything, and I've classified on that. But \"the patient follows the schedule the software computes\" is the case a reviewer will press on. Worth being precise in your technical documentation about whether the schedule is output-as-instruction (therapy) or output-as-information-to-act-on (limb 1).\n3. **Whether you monitor anything.** If sleep diaries or any sensor input are described in the intended purpose as monitoring a physiological process, limb 2 opens at **IIa**. Escalation to IIb needs *both* vital parameters *and* variation causing immediate danger — neither is present here, so limb 2 would top out at IIa.\n\nOn escalation generally: if you do end up in limb 1, the escalation asks what a *wrong decision* may cause, not how serious insomnia is. A mis-set sleep window causing daytime sleepiness is not, on its face, death or irreversible deterioration.\n\n## Limits\n\n> This classifies software under MDR Annex VIII implementing rules 3.1–3.7 and Rule 11, retrieved verbatim from EUR-Lex on 2026-09-09. It does **not** cover Art. 2(1) qualification, Rules 1–10 or 12–22, Annex XVI, IVDR, MDCG guidance, notified-body practice, or national interpretation. Rule 11 is a floor: under 3.5 a stricter rule this skill does not carry may raise the class. A structured first pass and an audit aid, not legal or regulatory advice, and not a substitute for your notified body or a qualified regulatory professional.\n\n---\n\nThis is the Annex VIII text applied to the intended purpose as you stated it. The class drives your conformity route, whether you need a notified body, and the depth of your technical documentation, so it should be confirmed by your regulatory lead or notified body before you build on it. The three things to put in front of them:\n\n- **The 3.3 call** — independent, not driving another device. Straightforward here, but state it explicitly.\n- **The limb call** — limb 3, on the basis that the software is the therapy rather than information feeding a decision. Ask them to stress-test this against how the sleep restriction schedule actually works.\n- **The 3.5 question** — whether Rule 9 and the active therapeutic device definition reach this product. This is the one that could change your answer, and it is the one to resolve first."
+              }
+            ]
+          }
+        ],
+        "without": [
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 2,
+            "costUsd": 0.2721275,
+            "judgeCostUsd": 0.005135999999999998,
+            "durationSeconds": 106,
+            "startedAt": "2026-09-10T01:08:30.775Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-7LibrD/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "judge votes: FAIL FAIL FAIL",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  false,
+                  false,
+                  false
+                ],
+                "evidence": "## Bottom line: Class IIa, MDR Annex VIII Rule 11, first indent\n\nPlan for a notified body. I'd advise against the Class I route, even though your framing points at it.\n\n## Why \"it's the treatment, not information\" doesn't land you in Class I\n\nRule 11's final indent (\"all other software is classified as class I\") is a residual catch-all. To reach it you have to get past two gates: the software must *not* provide information used to take decisions with diagnostic or therapeutic purposes, and must *not* monitor physiological processes.\n\nA CBT-I programme fails the first gate. Sleep restriction scheduling outputs a prescribed sleep window; stimulus control outputs behavioural instructions; cognitive restructuring outputs tailored content. All of it is information the patient then acts on — when to go to bed, when to get up, whether to leave the bedroom, whether to continue the programme. Those are therapeutic decisions.\n\nTwo points on your specific reasoning:\n\n- **\"No clinician in the loop\" cuts against you, not for you.** Nothing in Rule 11 confines \"decisions\" to healthcare professionals, and MDCG 2019-11 treats the decision-taker as whoever it is — HCP, patient, or lay user. Removing the clinician doesn't remove you from Rule 11; it removes a mitigating filter, which is a risk-file problem, not a classification escape.\n- **\"The treatment itself\" isn't a recognised category.** Rule 11 has no third door for \"software that *is* the therapy.\" The genuine Class I space under the last indent is things like e-diaries and simple data capture, storage/transmission/display without interpretation, communication tools, and devices that qualified for reasons unrelated to therapeutic output. A device whose intended purpose is literally *\"to treat chronic insomnia in adults\"* is not that. Self-declaring Class I on an explicit treatment claim, prescription-only, is the kind of position that fails at competent-authority review or at reimbursement (BfArM/DiGA, and equivalents) even if it gets to market.\n\n## Is IIb in play?\n\nRule 11 escalates to IIb where the decisions may cause serious deterioration of health or a surgical intervention. Worth taking seriously, because sleep restriction is not benign: acute sleep curtailment causes daytime sleepiness (driving and occupational accidents), can precipitate mania in undiagnosed bipolar disorder, lowers seizure threshold in epilepsy, and an unscreened patient may have OSA that the programme masks or worsens.\n\nIIa is defensible and is the market norm — but only if your risk file actually shows the controls: contraindication screening at onboarding, exclusion/escalation pathways, explicit sleepiness and driving warnings, a floor on how far the sleep window compresses, and safety-netting for non-response or deterioration. Without those, expect a notified body to push for IIb. Class III (death or irreversible deterioration) isn't credible here.\n\n## Rules checked and excluded\n\n- **Implementing rule 3.3 (Annex VIII):** software independent of any other device is classified in its own right — confirms your standalone analysis, no inheritance from a parent device.\n- **Rule 9 / Rule 10:** no administration or exchange of energy, no ionising radiation.\n- **Rule 22:** no integrated diagnostic function driving automated therapy delivery (closed loop).\n- **Rules 1–8:** invasive/non-invasive rules, not applicable to standalone software.\n- **Implementing rule 3.5:** where several rules apply, the strictest governs. Only Rule 11 applies, so no interaction.\n\n## What IIa commits you to\n\nNotified body conformity assessment (Annex IX Ch. I + III, or Annex XI), ISO 13485 QMS, clinical evaluation under Article 61 with a PMCF plan — and for a novel therapeutic claim, expect the NB to want your own clinical investigation rather than equivalence or literature alone. Plus IEC 62304 (likely software safety class B given the sleepiness/accident pathway, so justify it explicitly), ISO 14971, IEC 62366-1, MDCG 2019-16 cybersecurity, UDI, and GSPR Annex I — note that GSPR 22 lay-user requirements still apply even though the product is prescription-only.\n\nDocument the classification rationale in the technical file, including why Rule 11 first indent rather than the last indent. Reviewers want to see you engaged with the question rather than defaulted.\n\n## What would change this\n\n- Adding actigraphy or wearable-derived sleep tracking engages Rule 11's second indent (monitoring physiological processes) — still IIa, and only IIb if it monitored vital parameters whose variation could cause immediate danger, which sleep staging doesn't.\n- Adding screening or triage (e.g. an OSA or depression screen that returns a result to the patient) is a separate intended purpose needing its own Rule 11 analysis.\n- Adding a clinician dashboard that informs treatment decisions stays IIa but changes your intended purpose statement and intended user groups.\n\nOne caveat: MDCG guidance gets revised, so confirm the current revision of MDCG 2019-11 before you finalise the technical file. The Rule 11 text itself in Annex VIII is unchanged."
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 3,
+            "costUsd": 0.24496500000000002,
+            "judgeCostUsd": 0.006997,
+            "durationSeconds": 100,
+            "startedAt": "2026-09-10T01:10:17.059Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-VBiEiv/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "judge votes: FAIL FAIL FAIL",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  false,
+                  false,
+                  false
+                ],
+                "evidence": "Memory directory isn't readable in this session, so I'll just answer here.\n\n## Bottom line: **Class IIa**, under Annex VIII Rule 11, first limb\n\nI'd plan and budget for IIa (Notified Body, Annex IX Chapter I+III or Annex XI). The Class I argument your framing points at is real and well-known, but it's a minority reading and I wouldn't build a regulatory strategy on it.\n\n## Walking Rule 11\n\nRule 11 has three limbs:\n\n1. **\"Software intended to provide information which is used to take decisions with diagnosis or therapeutic purposes\"** → IIa, escalating to IIb (serious deterioration / surgical intervention) or III (death / irreversible deterioration).\n2. **Software intended to monitor physiological processes** → IIa, or IIb for vital parameters where variation could cause immediate danger.\n3. **All other software** → Class I.\n\nLimb 2 doesn't apply — sleep diaries and adherence tracking aren't monitoring of physiological processes in the Rule 11 sense (self-reported data, no physiological measurement, no clinical monitoring purpose). If you later add wearable-derived sleep staging or actigraphy used for a monitoring claim, revisit this.\n\nSo the question is entirely limb 1 vs limb 3.\n\n## Why limb 1 catches you despite \"no clinician in the loop\"\n\nYour argument is the classic **Rule 11 therapy gap**: the rule is drafted around *information-provider* software, and software that *is* the intervention arguably provides information to no decision-maker at all, so it falls through to \"all other software\" = Class I.\n\nThe problem is that \"decisions\" in Rule 11 is not limited to clinician decisions. MDCG 2019-11 treats the decision-taker as the *user* — healthcare professional **or** patient/lay person. And your product does, concretely, output information the patient acts on:\n\n- a prescribed sleep window (\"in bed 00:30–05:30, no naps\")\n- stimulus-control instructions (\"out of bed after 20 minutes awake\")\n- week-by-week titration of that window based on their diary data\n- cognitive restructuring prompts targeting sleep-related beliefs\n\nThat is patient-facing information, individualised to that patient's data, driving therapeutic behaviour. A Notified Body will read that as limb 1 without much hesitation. \"The software is the therapy\" is a description of the business model, not an exemption — the mechanism by which it delivers therapy is instructing the patient.\n\nThe \"no clinician in the loop\" point actually cuts *against* you rather than for you: it removes the human filter that would otherwise sit between the software's output and the patient's action, which is a risk-increasing feature, not a declassifying one.\n\n**Where the Class I argument survives:** if the programme were fixed, non-adaptive psychoeducational content — the same six modules for everyone, no personalisation from patient input — the \"provides information used to take decisions\" characterisation gets much weaker and Class I becomes defensible. Sleep restriction scheduling that recomputes from the patient's diary is the opposite of that. Your algorithmic titration is the single feature that most clearly puts you in IIa.\n\n## Why not IIb\n\nEscalation to IIb requires that the decisions driven by your information \"may cause a serious deterioration of a person's state of health.\" The recognised harms of CBT-I are real but are normally judged as manageable and not \"serious deterioration\" in the Rule 11 sense:\n\n- **Sleep restriction causes transient daytime sleepiness**, with a genuine road-traffic and occupational-machinery risk in weeks 2–3\n- **Unmasking or precipitating mania** in undiagnosed bipolar patients\n- **Masking untreated OSA or another organic sleep disorder** by relabelling it as behavioural insomnia and delaying diagnosis\n- Insomnia's comorbidity with depression and suicidality\n\nI'd expect IIa to hold, but treat it as contingent, not settled. The things that keep you at IIa rather than pushing you to IIb are contraindication screening at onboarding (bipolar disorder, untreated OSA / high STOP-BANG, seizure disorder, professional drivers and shift workers, pregnancy), explicit driving/machinery warnings tied to the sleep-restriction phase, floor limits on how short the prescribed window can go (don't titrate below ~5 hours), and escalation rules that push the patient out to a clinician on worsening or on a suicidality flag. If your risk analysis under ISO 14971 can't reduce the driving-accident pathway to acceptable, or if you *don't* screen for bipolar and OSA, a Notified Body has a credible route to IIb. Get those controls into the design and the IFU, not just into your risk file.\n\nClass III is not in play — no plausible path to death or irreversible deterioration as the *direct* impact of a sleep-scheduling decision.\n\n## Other rules to check\n\nAnnex VIII implementing rule 3.5: if multiple rules apply, the highest class wins. Rules 9, 10, 15, 20, 22 don't bite for standalone CBT-I software — no energy administration, no diagnosis/monitoring claim, no closed-loop therapeutic-with-integrated-diagnostic function. Rule 11 is your rule.\n\n## Two things that would change the answer\n\n- **Any diagnostic or screening claim.** If onboarding \"identifies\" chronic insomnia, or flags likely OSA, you've added a diagnostic purpose to your intended purpose and the analysis reruns — potentially with a worse escalation profile than the therapeutic limb.\n- **Intended purpose wording.** \"To treat chronic insomnia in adults by delivering CBT-I\" is clean and I'd keep it. Resist adding \"as an alternative to pharmacotherapy\" or comorbidity claims (insomnia in depression, in cancer) — each widens the population and strengthens the escalation argument.\n\n## Practical consequence\n\nIIa means a Notified Body, a full QMS to ISO 13485, clinical evaluation with your own clinical investigation (literature on CBT-I generally won't establish equivalence to *your* implementation — MDR Article 61(3) equivalence for software is hard), IEC 62304 software lifecycle at Class B or C depending on your safety classification, IEC 62366 usability, and PMCF. Plan 12–18 months from a standing start. If you were assuming Class I self-declaration, that assumption is the thing to correct first — it changes your timeline and headcount more than anything else in this analysis.\n\nWorth noting that Rule 11 is widely criticised for exactly the ambiguity you've spotted and has been a target of MDR reform discussion; nothing has changed the law as far as I know, so classify against the text as it stands.\n\nThis is my read of the rule, not formal regulatory advice — worth a short pre-submission conversation with your intended Notified Body, since IIa vs I is precisely the question they'll want to have settled before you file."
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 2,
+            "costUsd": 0.1849,
+            "judgeCostUsd": 0.004557000000000002,
+            "durationSeconds": 72,
+            "startedAt": "2026-09-10T01:11:57.558Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-JMwFPL/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "judge votes: FAIL FAIL FAIL",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  false,
+                  false,
+                  false
+                ],
+                "evidence": "## Class I — Rule 11, third indent (MDR Annex VIII)\n\n**Reasoning chain:**\n\nRule 11 is the software rule and it has three limbs:\n\n1. *Information used to take decisions with diagnostic or therapeutic purposes* → IIa (or IIb/III depending on harm severity)\n2. *Monitoring physiological processes* → IIa (IIb if vital parameters with immediate danger)\n3. *All other software* → **Class I**\n\nYour device sits in limb 3. As you've described it, it doesn't produce an output that a human then acts on to make a therapeutic decision — the software's output **is** the therapy. There's no clinician receiving information, and no monitoring of physiological processes (self-reported sleep diaries aren't physiological monitoring in the sense of Rule 11's second limb). Nothing in Rules 9, 12, 13, 15, 21 or 22 catches it either: no energy administration or exchange, no medicinal substance, no closed-loop diagnostic function determining patient management. So Rule 3.3 (strictest-rule-applies) leaves you at Class I.\n\nNote that \"prescription\" status is regulatorily irrelevant under MDR — unlike the US, there's no Rx/OTC axis in classification.\n\n## The exposure you should plan around\n\nThe Class I conclusion is correct but it is not comfortable, and I'd want you to go in with your eyes open:\n\n**Sleep restriction scheduling is the weak point.** If the programme takes patient-entered sleep diary data and computes an individualised time-in-bed window that it presents to the patient, a competent authority can argue that this *is* information used to take a therapeutic decision — with the patient as the decision-maker. MDCG 2019-11 is explicit that the decision-maker under Rule 11 need not be a healthcare professional; lay users and patients count. That reading puts you at **IIa**. Harm severity wouldn't push you to IIb or III on the standard analysis, so IIa is the realistic worst case.\n\nWhether you land in I or IIa turns substantially on how the sleep restriction module is architected and described: a fixed protocol the patient follows reads as treatment delivery; a computed, personalised prescription rendered back to the patient reads as decision-support output. Rule 3.5 also means modules are assessed individually and the device takes the highest resulting class — so this one module can pull the whole product to IIa on its own.\n\n**A secondary risk argument exists** and I'd address it pre-emptively in your risk file rather than wait to be asked: sleep restriction carries real hazards — daytime vigilance impairment (driving), mania precipitation in undiagnosed bipolar disorder, seizure threshold effects. Your mitigation is screening and contraindications, but an authority that finds those inadequate has a route to argue serious deterioration of health. Documented contraindication screening at onboarding closes this off.\n\n## What I'd actually recommend\n\nClass I is defensible and it's where a strict reading of Rule 11 lands you. But if you're targeting Germany's DiGA pathway or want to avoid a national authority challenging your self-declaration post-launch, the pragmatic question is whether the ~12–18 months and notified body cost of IIa buys you enough certainty and market credibility to be worth it. Several EU DTx have shipped as Class I; several comparable ones went IIa deliberately. That's a commercial call, not a regulatory one, and it's yours.\n\nIf you stay Class I, your obligations are still substantial and are frequently underestimated: Annex II/III technical documentation, self-declaration and CE marking without a notified body number, Article 10(9) QMS, PRRC appointment, EUDAMED registration, UDI, PMS and PMCF plans, and a full Article 61 / Annex XIV clinical evaluation. That last one is not lighter because you're Class I — a claim to *treat* chronic insomnia will require your own clinical investigation data. Equivalence to published CBT-I literature won't carry it, since Article 61(4)-(5) equivalence is hard to establish for a specific software implementation.\n\nTwo things worth confirming before you commit: whether any wearable or sensor integration is planned (that would reopen both the monitoring limb and a possible Class Im measuring-function question), and whether Article 51(2) — requesting a binding classification decision from your competent authority — is worth using here. Given the Rule 11 ambiguity is genuine rather than manufactured, that mechanism exists precisely for cases like yours."
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 1,
+        "passRate": 1,
+        "scoreWithout": 0,
+        "passRateWithout": 0,
+        "delta": 1
+      }
+    }
+  ],
+  "aggregates": {
+    "casesTotal": 1,
+    "casesPassed": 1,
+    "overallScore": 1,
+    "overallPassRate": 1,
+    "meanDelta": 1
+  }
+}

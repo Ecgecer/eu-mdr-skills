@@ -3,15 +3,17 @@
 Five cases, each aimed at a specific wrong answer. Measured with
 `--ablation with-without`, 3 runs per case per arm, 2026-09-09 at commit 365db45.
 
-| Case | with | without | delta |
-|---|---|---|---|
-| `limb2-both-conditions` | 1.00 | **0.00** | **+1.00** |
-| `driving-software-3-3` | 1.00 | 1.00 | 0.00 |
-| `limb1-escalation-iii` | 1.00 | 1.00 | 0.00 |
-| `limb3-class-i` | 1.00 | 1.00 | 0.00 |
-| `qualification-not-established` | 1.00 | 1.00 | 0.00 |
+| Case | with | without | delta | what it tests |
+|---|---|---|---|---|
+| `limb2-both-conditions` | 1.00 | **0.00** | **+1.00** | over-escalation on half a condition |
+| `rule-not-carried` | 1.00 | **0.00** | **+1.00** | concluding where 3.5 leaves it open |
+| `driving-software-3-3` | 1.00 | 1.00 | 0.00 | recall of implementing rule 3.3 |
+| `limb1-escalation-iii` | 1.00 | 1.00 | 0.00 | reasoning about decision impact |
+| `limb3-class-i` | 1.00 | 1.00 | 0.00 | returning the lowest class |
+| `qualification-not-established` | 1.00 | 1.00 | 0.00 | refusing when asked plainly |
+| `mdcg-bait` | 1.00 | 1.00 | 0.00 | guidance-vs-regulation, asked directly |
 
-**Mean delta +0.20**, against +0.47 for the claims skill.
+**Mean delta +0.29**, against +0.47 for the claims skill.
 
 ## The prediction was wrong
 
@@ -70,3 +72,56 @@ Before concluding that classification is not worth a skill, the honest follow-up
 case that tests scope rather than correctness — for example a device whose class turns
 on a rule this skill does not carry, where the correct answer is "3.5 means a stricter
 rule may apply, and I do not carry Rules 1-10" rather than a confident number.
+
+## What the two scope cases changed
+
+The first five cases measured **recall**, with no web access, and found none needed.
+Two cases added afterwards measured whether the model knows where the text it is
+citing **stops**. Both of those earned.
+
+`rule-not-carried` is the clearest. A digital therapeutic that delivers treatment
+lands at Rule 11 limb 3 — class I — because it neither informs a decision nor monitors
+a process. That is technically right on Rule 11 and wrong as an answer, because 3.5
+means a stricter uncarried rule almost certainly reaches it. The baseline answered:
+
+> "Bottom line: Class IIa, MDR Annex VIII Rule 11, first indent [...] Plan for a
+> notified body."
+
+Its reasoning is defensible. Its confidence is not. It never mentions 3.5, never notes
+that other rules might reach software that treats, and goes straight to notified-body
+planning on a question Rule 11 does not settle.
+
+## The one that measured nothing, and why that matters
+
+`mdcg-bait` asks directly for "the authority" on simple search versus search with
+added value — a distinction that lives in MDCG 2019-11, not in the MDR. Both arms
+scored 1.00.
+
+But the baseline reached for MDCG **spontaneously** in two other cases, presenting it
+as though it settled the point. So the failure is real; this case just could not see
+it. Asking a model directly about the authority for something primes it to handle the
+authority question carefully.
+
+**Eval lesson worth keeping: you cannot test an incidental failure by asking about it
+directly.** The conditions have to be reproduced, not described.
+
+## Across both suites — 17 cases, two domains
+
+| | positive delta | zero delta |
+|---|---|---|
+| Claims (10) | 7 | 3 |
+| Classification (7) | 2 | 5 |
+
+Every positive delta is **over-application or over-conclusion**. Every zero is
+**recall, reasoning, or a caution the question explicitly asked for**.
+
+The refined statement, which now survives 17 cases:
+
+> The skill earns where the model would over-apply or over-conclude **incidentally**,
+> while answering something else. It earns nothing where the model needs to know the
+> regulation, reason from it, or be careful about something the user already flagged.
+
+That is a real property and a narrow one. It is also cheap: it is the same three
+artefacts each time — verbatim pinned text, an explicit statement of what is not in
+it, and a refusal to cross from regulation into guidance silently. It is not twelve
+skills of regulatory content.
