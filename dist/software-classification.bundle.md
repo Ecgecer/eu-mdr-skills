@@ -203,6 +203,10 @@ Verbatim statute text. Every finding must cite a provision that appears here.
 <https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32017R0745>
 **Retrieved:** 2026-09-09, verbatim from the consolidated EN text.
 
+**Emphasis added.** Bold inside quoted passages is mine, to mark the operative
+words. It is not in the source. Everything else in a quoted block is verbatim, and
+`scripts/verify-sources.py` checks that character for character.
+
 This file carries **Rule 11**, the **implementing rules** that govern how any rule is
 applied, and the **definitions** those rules depend on. It does not carry Rules 1–10
 or 12–22; where one of those may apply, say so and stop rather than guess.

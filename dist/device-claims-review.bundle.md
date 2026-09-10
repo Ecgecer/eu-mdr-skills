@@ -340,6 +340,10 @@ Verbatim statute text. Every finding must cite a provision that appears here.
 <https://www.gesetze-im-internet.de/heilmwerbg/>
 **Retrieved:** 2026-09-09, verbatim German text.
 
+**Emphasis added.** Bold inside quoted passages is mine, to mark the operative
+words. It is not in the source. Everything else in a quoted block is verbatim, and
+`scripts/verify-sources.py` checks that character for character.
+
 HWG applies **in addition to** MDR/IVDR Art. 7 when the advertising is directed at
 the German market. It is enforced privately through UWG (see `uwg.md`), which is
 why an HWG breach usually arrives as an **Abmahnung** from a competitor or a
@@ -472,6 +476,10 @@ See `../SKILL.md` § Limits.
 <https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32017R0745>
 **Retrieved:** 2026-09-09, verbatim from the consolidated EN text.
 
+**Emphasis added.** Bold inside quoted passages is mine, to mark the operative
+words. It is not in the source. Everything else in a quoted block is verbatim, and
+`scripts/verify-sources.py` checks that character for character.
+
 IVDR Article 7 (Regulation (EU) 2017/746, CELEX 32017R0746, retrieved same date)
 is **textually identical** except that it governs in-vitro diagnostic devices.
 Cite whichever regulation applies to the device; the analysis is the same.
@@ -545,6 +553,10 @@ verifies. See `../SKILL.md` § Limits.
 **Source:** gesetze-im-internet.de, `uwg_2004`
 <https://www.gesetze-im-internet.de/uwg_2004/>
 **Retrieved:** 2026-09-09, verbatim German text.
+
+**Emphasis added.** Bold inside quoted passages is mine, to mark the operative
+words. It is not in the source. Everything else in a quoted block is verbatim, and
+`scripts/verify-sources.py` checks that character for character.
 
 UWG matters here for two reasons:
 

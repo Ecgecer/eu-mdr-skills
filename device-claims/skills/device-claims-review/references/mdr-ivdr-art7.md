@@ -4,6 +4,10 @@
 <https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32017R0745>
 **Retrieved:** 2026-09-09, verbatim from the consolidated EN text.
 
+**Emphasis added.** Bold inside quoted passages is mine, to mark the operative
+words. It is not in the source. Everything else in a quoted block is verbatim, and
+`scripts/verify-sources.py` checks that character for character.
+
 IVDR Article 7 (Regulation (EU) 2017/746, CELEX 32017R0746, retrieved same date)
 is **textually identical** except that it governs in-vitro diagnostic devices.
 Cite whichever regulation applies to the device; the analysis is the same.

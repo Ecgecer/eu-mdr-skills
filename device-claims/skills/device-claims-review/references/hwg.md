@@ -4,6 +4,10 @@
 <https://www.gesetze-im-internet.de/heilmwerbg/>
 **Retrieved:** 2026-09-09, verbatim German text.
 
+**Emphasis added.** Bold inside quoted passages is mine, to mark the operative
+words. It is not in the source. Everything else in a quoted block is verbatim, and
+`scripts/verify-sources.py` checks that character for character.
+
 HWG applies **in addition to** MDR/IVDR Art. 7 when the advertising is directed at
 the German market. It is enforced privately through UWG (see `uwg.md`), which is
 why an HWG breach usually arrives as an **Abmahnung** from a competitor or a

@@ -160,6 +160,10 @@ Verbatim statute text. Every finding must cite a provision that appears here.
 <https://www.gesetze-im-internet.de/mpdg/>
 **Retrieved:** 2026-09-10, verbatim German text.
 
+**Emphasis added.** Bold inside quoted passages is mine, to mark the operative
+words. It is not in the source. Everything else in a quoted block is verbatim, and
+`scripts/verify-sources.py` checks that character for character.
+
 MPDG is Germany's implementation act for MDR and IVDR. It does not restate the
 Regulations — it **adds** to them, and the additions are where manufacturers selling
 into Germany get caught, because MDR alone does not mention them.

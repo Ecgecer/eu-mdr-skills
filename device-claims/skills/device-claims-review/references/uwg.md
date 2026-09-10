@@ -4,6 +4,10 @@
 <https://www.gesetze-im-internet.de/uwg_2004/>
 **Retrieved:** 2026-09-09, verbatim German text.
 
+**Emphasis added.** Bold inside quoted passages is mine, to mark the operative
+words. It is not in the source. Everything else in a quoted block is verbatim, and
+`scripts/verify-sources.py` checks that character for character.
+
 UWG matters here for two reasons:
 
 1. It is the **enforcement vehicle**. MDR Art. 7 and HWG have no private right of
