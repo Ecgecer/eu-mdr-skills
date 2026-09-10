@@ -48,43 +48,22 @@ If 3 is unknown, say the date **conditionally** and name what would remove it:
 
 ---
 
-## The dates
+## The dates, the conditions, and what 26 May 2024 now means
 
-| Device | Deadline |
-|---|---|
-| Class III | **31 Dec 2027** |
-| Class IIb implantable, except the listed items | **31 Dec 2027** |
-| Those listed items (sutures, staples, dental fillings, braces, crowns, screws, wedges, plates, wires, pins, clips, connectors) | **31 Dec 2028** |
-| Class IIb other | **31 Dec 2028** |
-| Class IIa | **31 Dec 2028** |
-| Class I sterile or measuring function | **31 Dec 2028** |
-| Route 3b — formerly self-certified, DoC before 26 May 2021 | **31 Dec 2028** |
+All of it is in the "art120-amended.md" section below, verbatim: the class-dependent deadlines,
+the exception list, route 3b, and the five cumulative conditions in 3c. **Read it rather
+than answering from memory** — the whole reason this skill exists is that the 2017 text
+and the amended text give different answers, and only one of them is in front of you.
 
-## 26 May 2024 changed job; it did not disappear
+Two things to carry out of it, because they are what people get wrong:
 
-Both of these are wrong, and they fail in opposite directions:
-
-- **"The deadline is 26 May 2024."** Superseded as a market deadline by 2023/607.
-- **"It moved to 2027/2028, so 2024 no longer matters."** 26 May 2024 is now the date by
-  which the QMS had to be in place and the notified-body application lodged — two of the
-  conditions the later dates *depend on*. 26 September 2024 was the deadline for the
-  signed written agreement.
-
-State both halves. A manufacturer told only the good news will not check whether they
-qualified.
-
-## The extension is conditional
-
-120(3c) is cumulative — all five conditions. Continued compliance with the old Directive,
-**no significant changes in design and intended purpose**, no unacceptable risk, QMS by
-26 May 2024, application by 26 May 2024 plus written agreement by 26 September 2024.
-
-Note **3d**: during the transition, MDR's post-market surveillance, market surveillance,
-vigilance and registration requirements apply **in place of** the old Directives'. A
-legacy device is not living entirely under the old regime.
-
-What counts as a "significant change" under 3c(b) is dealt with in MDCG guidance, which
-this skill does not carry. If the question turns on that, say so and stop.
+- **The extension is conditional.** 120(3c) is cumulative, and two of its conditions had
+  deadlines in 2024 that have passed. A device that met the class date but had no QMS in
+  place by 26 May 2024 never qualified.
+- **26 May 2024 changed job rather than disappearing.** It is no longer the market
+  deadline; it is when the QMS and the notified-body application were due, with the
+  written agreement due 26 September 2024. State both halves — someone told only the good
+  news will not check whether they qualified.
 
 ## Output
 
