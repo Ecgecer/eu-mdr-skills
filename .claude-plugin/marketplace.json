@@ -25,6 +25,16 @@
         "name": "Ege Can Gecer"
       },
       "license": "Apache-2.0"
+    },
+    {
+      "name": "scope-statement",
+      "displayName": "Scope Statement",
+      "source": "./scope-statement",
+      "description": "Bounds a compliance claim: what was checked, what was not, and what the result does not establish.",
+      "author": {
+        "name": "Ege Can Gecer"
+      },
+      "license": "Apache-2.0"
     }
   ]
 }

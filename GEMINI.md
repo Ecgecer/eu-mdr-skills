@@ -25,6 +25,13 @@ Load `mdr-classification/skills/software-classification/SKILL.md` first, then it
 
 If you cannot read files, use `dist/software-classification.bundle.md`, which carries the skill and all its references in one document.
 
+### scope-statement
+
+Load `scope-statement/skills/scope-statement/SKILL.md` first, then its references:
+
+
+If you cannot read files, use `dist/scope-statement.bundle.md`, which carries the skill and all its references in one document.
+
 ## Invariants any port must preserve
 
 Full reasoning in AGENTS.md. The short version:

@@ -1,0 +1,9 @@
+{
+  "name": "scope-statement",
+  "displayName": "Scope Statement",
+  "version": "0.1.0",
+  "description": "Turns a compliance claim into a bounded one: what was checked, against what, and — the part that matters — what was not checked and what the result does not establish.",
+  "author": { "name": "Ege Can Gecer" },
+  "license": "Apache-2.0",
+  "keywords": ["compliance", "scope", "boundary", "audit", "regulatory", "disclosure"]
+}
