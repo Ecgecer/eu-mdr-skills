@@ -72,8 +72,16 @@ def main():
         })
         by_plugin[plugin].append(name)
 
+    check = "--check" in sys.argv
     OUT.mkdir(exist_ok=True)
-    (OUT / "eu-mdr-bench.json").write_text(json.dumps({
+    written = {}
+    def emit(path, content):
+        if check:
+            have = path.read_text() if path.exists() else None
+            written[path] = (have == content)
+        else:
+            path.write_text(content)
+    emit(OUT / "eu-mdr-bench.json", json.dumps({
         "name": "eu-mdr-bench",
         "version": "0.1.0",
         "what_it_measures": ("Whether a model applies EU medical device regulation to "
@@ -168,7 +176,16 @@ def main():
         "diffs it. Errors found in these cases are logged in `../CORRECTIONS.md` rather",
         "than quietly fixed.", "",
     ]
-    (OUT / "README.md").write_text("\n".join(lines) + "\n")
+    emit(OUT / "README.md", "\n".join(lines) + "\n")
+    if check:
+        stale = [p for p, ok in written.items() if not ok]
+        for p in stale:
+            print(f"  STALE       {p.relative_to(ROOT)}")
+        if stale:
+            print("  Run: python3 scripts/export-benchmark.py")
+            return 1
+        print("  benchmark up to date")
+        return 0
     print(f"  {len(cases)} cases exported")
     print(f"  hard (baseline 0.00): {len(hard)}   baseline already passes: {len(free)}   unmeasured: {len(unmeasured)}")
     return 0

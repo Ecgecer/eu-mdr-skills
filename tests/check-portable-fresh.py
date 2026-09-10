@@ -104,14 +104,10 @@ else:
     print("  every statute-backed skill refuses to supplement from memory")
 
 # 5. the exported benchmark matches the eval cases it is generated from
-r2 = subprocess.run([sys.executable, str(ROOT / "scripts" / "export-benchmark.py")],
+rb = subprocess.run([sys.executable, str(ROOT / "scripts" / "export-benchmark.py"), "--check"],
                     capture_output=True, text=True)
-before = (ROOT / "benchmark" / "eu-mdr-bench.json").read_text() if (ROOT / "benchmark" / "eu-mdr-bench.json").exists() else ""
-r3 = subprocess.run(["git", "diff", "--quiet", "--", "benchmark/"], cwd=str(ROOT))
-if r3.returncode != 0:
-    print("\n  benchmark/ is out of date — run: python3 scripts/export-benchmark.py")
+print(rb.stdout.rstrip())
+if rb.returncode:
     failed = 1
-else:
-    print("  exported benchmark matches its eval cases")
 
 sys.exit(failed)
