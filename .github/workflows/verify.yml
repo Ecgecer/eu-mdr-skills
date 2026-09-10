@@ -1,0 +1,48 @@
+name: verify
+
+# Two things are checked, and they fail for different reasons.
+#
+# Generated artefacts (the Gemini and chat bundles) must match the canonical skills.
+# If they drift, someone using the bundle reviews against an older rule while the repo
+# says the text is current. That is a hard failure.
+#
+# The statute quotes must still match their sources. Law changes. A repo whose whole
+# claim is verbatim text needs to find out when its text stops being verbatim, so the
+# sources are re-checked on every push and again every Monday.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  schedule:
+    - cron: '17 6 * * 1'   # Mondays, 06:17 UTC
+  workflow_dispatch:
+
+jobs:
+  generated-artifacts-fresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - name: Bundles match the canonical skills
+        run: python3 tests/check-portable-fresh.py
+
+  statute-text-unchanged:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - name: Re-fetch sources and diff every quote
+        run: |
+          set +e
+          python3 scripts/verify-sources.py
+          code=$?
+          set -e
+          case $code in
+            0) echo "::notice::Every quote from every fetched source still matches." ;;
+            1) echo "::error::A statute quote no longer matches its source. Re-retrieve the text and update the retrieval date."; exit 1 ;;
+            2) echo "::warning::No source could be fetched from this runner, so nothing was verified. Not treated as a pass. Run scripts/verify-sources.py locally." ;;
+            *) echo "::error::verify-sources.py exited $code"; exit $code ;;
+          esac
