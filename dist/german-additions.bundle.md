@@ -135,6 +135,14 @@ in that column rather than stating it from memory.
 - **`[verify]`** — anything else, including MDR and IVDR articles themselves, other MPDG
   sections, MDCG guidance, and BfArM practice.
 
+**No silent supplement.** A `[verify]` tag is not permission to answer from memory. If
+the question turns on an MPDG section this skill does not carry, or on MDR/IVDR itself,
+**stop and say so**:
+
+> That falls outside the sections I carry. I can flag it as an open question, or you can
+> paste the provision and I will work from it. I will not state a requirement I cannot
+> cite from the reference file.
+
 Never state a BfArM position, a notified-body view, or how a German court would rule.
 
 ## Limits

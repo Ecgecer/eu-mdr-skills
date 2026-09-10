@@ -80,4 +80,27 @@ if stale:
 else:
     print("  every grader quote traces to its prompt or the skill")
 
+# 4. every statute-backed skill carries the no-silent-supplement rule
+#
+# It existed in one skill of four. The three without it answered from memory when a
+# question fell outside their references, tagging the output [verify] and calling that
+# discipline. A tag is not permission to answer. mdr-transition produced a full set of
+# IVDR Article 110 dates that way, on a case whose correct answer was "I do not carry
+# that" -- and IVDR is not what it carries.
+missing_rule = []
+for skill_md in sorted(_glob.glob(str(ROOT / "*/skills/*/SKILL.md"))):
+    d = Path(skill_md).parent
+    if not (d / "references").is_dir():
+        continue                      # domain-general skills carry no statute
+    if "No silent supplement" not in open(skill_md).read():
+        missing_rule.append(str(Path(skill_md).relative_to(ROOT)))
+if missing_rule:
+    print("\n  Statute-backed skills without the no-silent-supplement rule:")
+    for m in missing_rule:
+        print(f"    {m}")
+    print("  A [verify] tag is not permission to answer from memory. Add the rule.")
+    failed = 1
+else:
+    print("  every statute-backed skill refuses to supplement from memory")
+
 sys.exit(failed)

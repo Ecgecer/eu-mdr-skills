@@ -115,6 +115,19 @@ this skill does not carry. If the question turns on that, say so and stop.
 - **`[verify]`** — everything else: Article 120's other paragraphs, IVDR Article 110,
   MDCG guidance, Annex VII, Article 97, national practice.
 
+**No silent supplement.** A `[verify]` tag is not permission to answer from memory. If
+the question turns on something outside `references/`, **stop and say so** rather than
+producing content with a tag on it:
+
+> That turns on [IVDR Art. 110 / another Art. 120 paragraph / MDCG guidance], which this
+> skill does not carry. I can flag it as an open question, or you can paste the provision
+> and I will work from it. I will not give you dates I cannot cite from the reference
+> file.
+
+This matters most for **IVDR Article 110**. The IVD transition has its own dates on its
+own clock, and producing them from recall — even tagged — is exactly the failure this
+skill exists to prevent on the MDR side.
+
 Never state a notified body's position or how an authority would treat a borderline case.
 
 ## Limits

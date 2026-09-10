@@ -167,6 +167,13 @@ stated as binding. If an answer turns on it:
 > and which I do not verify. The Annex VIII text takes me to [X]. I can flag the
 > guidance question, or you can point me at the passage.
 
+**No silent supplement.** A `[verify]` tag is not permission to answer from memory. If
+the question turns on a rule this skill does not carry, **stop and say so**:
+
+> That turns on [Rule N / Art. 2(1) qualification / Annex XVI], which this skill does not
+> carry. I can flag it as an open question, or you can paste the text and I will work from
+> it. I will not state a rule I cannot cite from the reference file.
+
 Never state how a notified body would decide. Never invent a rule number.
 
 ## Limits
