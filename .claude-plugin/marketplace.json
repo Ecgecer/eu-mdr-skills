@@ -35,6 +35,16 @@
         "name": "Ege Can Gecer"
       },
       "license": "Apache-2.0"
+    },
+    {
+      "name": "mpdg-germany",
+      "displayName": "MPDG \u2014 German Additions to MDR",
+      "source": "./mpdg-germany",
+      "description": "What Germany requires on top of MDR: language rules, supplementary DMIDS notifications, supplementary vigilance duties.",
+      "author": {
+        "name": "Ege Can Gecer"
+      },
+      "license": "Apache-2.0"
     }
   ]
 }

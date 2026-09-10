@@ -25,6 +25,14 @@ Load `mdr-classification/skills/software-classification/SKILL.md` first, then it
 
 If you cannot read files, use `dist/software-classification.bundle.md`, which carries the skill and all its references in one document.
 
+### german-additions
+
+Load `mpdg-germany/skills/german-additions/SKILL.md` first, then its references:
+
+- `mpdg-germany/skills/german-additions/references/mpdg.md`
+
+If you cannot read files, use `dist/german-additions.bundle.md`, which carries the skill and all its references in one document.
+
 ### scope-statement
 
 Load `scope-statement/skills/scope-statement/SKILL.md` first, then its references:

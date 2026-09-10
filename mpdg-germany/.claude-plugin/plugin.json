@@ -1,0 +1,9 @@
+{
+  "name": "mpdg-germany",
+  "displayName": "MPDG — German Additions to MDR",
+  "version": "0.1.0",
+  "description": "What Germany requires on top of MDR and IVDR: language rules for the DoC and product information, supplementary DMIDS notifications, and supplementary vigilance duties. Statute-verified from gesetze-im-internet.",
+  "author": { "name": "Ege Can Gecer" },
+  "license": "Apache-2.0",
+  "keywords": ["mpdg", "germany", "mdr", "ivdr", "language", "vigilance", "national-implementation"]
+}

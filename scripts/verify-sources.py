@@ -35,6 +35,11 @@ SOURCES = {
     "device-claims/skills/device-claims-review/references/mdr-ivdr-art7.md": [
         "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32017R0745",
     ],
+    "mpdg-germany/skills/german-additions/references/mpdg.md": [
+        "https://www.gesetze-im-internet.de/mpdg/__4.html",
+        "https://www.gesetze-im-internet.de/mpdg/__8.html",
+        "https://www.gesetze-im-internet.de/mpdg/__73.html",
+    ],
     "mdr-classification/skills/software-classification/references/annex-viii-software.md": [
         "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32017R0745",
     ],
