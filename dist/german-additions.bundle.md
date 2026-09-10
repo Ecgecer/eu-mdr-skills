@@ -243,19 +243,9 @@ Both duties bite **before the activity starts**, not at first placing on the mar
 
 > **§ 73 Ergänzende Herstellerpflichten im Rahmen der Vigilanz; Sprachenregelung**
 >
-> (1) Ergreifen Hersteller im Geltungsbereich dieses Gesetzes Sicherheitskorrektur-
-> maßnahmen, sind die **Sicherheitsanweisungen im Feld** nach Artikel 89 Absatz 8 der
-> Verordnung (EU) 2017/745 oder Artikel 84 Absatz 8 der Verordnung (EU) 2017/746 **in
-> deutscher Sprache** abzufassen.
+> (1) Ergreifen Hersteller im Geltungsbereich dieses Gesetzes Sicherheitskorrekturmaßnahmen, sind die Sicherheitsanweisungen im Feld nach Artikel 89 Absatz 8 der Verordnung (EU) 2017/745 oder Artikel 84 Absatz 8 der Verordnung (EU) 2017/746 in deutscher Sprache abzufassen.
 >
-> (2) Hersteller mit Sitz im Geltungsbereich dieses Gesetzes haben die Durchführung von
-> Sicherheitskorrekturmaßnahmen im Feld zu **dokumentieren und regelmäßig auf ihre
-> Wirksamkeit zu überprüfen**. Hersteller, Bevollmächtigte und Importeure mit Sitz im
-> Geltungsbereich dieses Gesetzes haben der zuständigen Behörde und der zuständigen
-> Bundesoberbehörde den **Abschluss** einer Sicherheitskorrekturmaßnahme im Feld
-> mitzuteilen. Importeure mit Sitz im Geltungsbereich dieses Gesetzes haben [dies] nur
-> dann mitzuteilen, wenn der Bevollmächtigte seinen Sitz außerhalb des Geltungsbereichs
-> dieses Gesetzes hat.
+> (2) Hersteller mit Sitz im Geltungsbereich dieses Gesetzes haben die Durchführung von Sicherheitskorrekturmaßnahmen im Feld zu dokumentieren und regelmäßig auf ihre Wirksamkeit zu überprüfen. Hersteller, Bevollmächtigte und Importeure mit Sitz im Geltungsbereich dieses Gesetzes haben der zuständigen Behörde und der zuständigen Bundesoberbehörde den Abschluss einer Sicherheitskorrekturmaßnahme im Feld mitzuteilen. Importeure mit Sitz im Geltungsbereich dieses Gesetzes haben der zuständigen Behörde und der zuständigen Bundesoberbehörde den Abschluss einer Sicherheitskorrekturmaßnahme im Feld nur dann mitzuteilen, wenn der Bevollmächtigte seinen Sitz außerhalb des Geltungsbereichs dieses Gesetzes hat.
 
 Three additions MDR Art. 89 does not contain:
 
