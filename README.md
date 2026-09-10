@@ -69,6 +69,13 @@ clients, so MDR and IVDR text is reported as UNVERIFIED with the exact string to
 for. A verifier that reported success for a source it never fetched would be the same
 defect these skills exist to prevent.
 
+**Why the text is pinned locally at all.** EUR-Lex is not a dependable read-through
+source. Over one afternoon of ordinary use it returned an HTTP 202 stub to scripted
+clients, then a 403, and after repeated browser requests began redirecting every
+document URL — including ones that had served fine an hour earlier — to the Official
+Journal index. A skill that fetches the law when asked inherits all of that. A skill
+carrying the text, dated, with a command to re-check it, does not.
+
 If a quote drifts, it says where:
 
 ```
