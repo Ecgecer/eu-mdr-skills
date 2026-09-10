@@ -90,9 +90,66 @@ def build_gemini(skills):
     ]
     return "\n".join(lines)
 
+def build_agents(skills):
+    lines = [
+        "# AGENTS.md", "",
+        "Cross-tool entry point. This repo's substance is plain markdown and works in any",
+        "agent that can read files; the `.claude-plugin/` wrapper is packaging, not content.",
+        "",
+        "GENERATED FILE — do not edit. Source: the skills listed below.",
+        "Rebuild with `python3 scripts/build-portable.py`.", "",
+        f"## The {len(skills)} skills", "",
+    ]
+    for plugin, skill, skill_dir in skills:
+        refs = refs_of(skill_dir)
+        lines += [f"### {skill}", "",
+                  f"`{plugin}/skills/{skill}/SKILL.md`" +
+                  (", then its references:" if refs else " — no reference files; it is domain-general."), ""]
+        for r in refs:
+            lines.append(f"- `{plugin}/skills/{skill}/references/{r}`")
+        if refs: lines.append("")
+        lines += [f"Single-file version for tools that cannot read the repo: "
+                  f"`dist/{skill}.bundle.md`.", ""]
+    lines += [
+        "## Per-tool", "",
+        "**Codex, Cursor, anything reading AGENTS.md** — this file is enough.",
+        "",
+        "**Gemini CLI** — see `GEMINI.md`.",
+        "",
+        "**ChatGPT, Gemini web, Claude.ai, any chat with upload** — use the matching",
+        "`dist/*.bundle.md`. Each carries one skill and all its references in one document.",
+        "",
+        "**No file support** — paste the bundle.",
+        "",
+        "## Invariants any port must preserve", "",
+        "These are not stylistic. Dropping one changes what the skill outputs.", "",
+        "1. **Statute text stays verbatim**, with source URL and retrieval date. Bold inside",
+        "   a quoted passage is added emphasis and is declared as such in every reference.",
+        "   `scripts/verify-sources.py` re-fetches and diffs it.",
+        "2. **A finding must cite a provision that appears in the references.** Two tiers:",
+        "   `[verified]` for what is carried, `[verify]` for everything else.",
+        "3. **Refusal is a first-class output.** `Breach: none` + `Call: Verify`, and",
+        "   `Also engaged:` for provisions contingent on facts the reviewer lacks. Without",
+        "   these an open question gets inflated into a finding.",
+        "4. **A finding must name its basis from supplied material.** Inferring a risk from",
+        "   the product category condemns every advertisement ever written.",
+        "5. **Say what is not carried.** These skills are deliberately partial, and a",
+        "   confident answer outside their scope is the failure they exist to prevent.",
+        "6. **Guidance is not the regulation, and no case law.** Name it or refuse.",
+        "",
+        "## Not portable", "",
+        "`.claude-plugin/*.json`, the `argument-hint` frontmatter key, and the eval harness",
+        "format (`evals/*/prompt.md` + `evals/*/graders/*.md`) are Claude Code specific.",
+        "The eval prompts and graders are reusable text even where the harness is not.",
+        "",
+    ]
+    return "\n".join(lines)
+
+
 def targets():
     skills = discover()
-    t = {ROOT / "GEMINI.md": lambda s=skills: build_gemini(s)}
+    t = {ROOT / "GEMINI.md": lambda s=skills: build_gemini(s),
+         ROOT / "AGENTS.md": lambda s=skills: build_agents(s)}
     for plugin, skill, skill_dir in skills:
         t[ROOT / "dist" / f"{skill}.bundle.md"] = (
             lambda p=plugin, s=skill, d=skill_dir: build_bundle(p, s, d))
