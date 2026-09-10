@@ -145,11 +145,15 @@ Verbatim statute text. Every finding must cite a provision that appears here.
 It is not in the source. Everything else in a quoted block is verbatim, and
 `scripts/verify-sources.py` checks that character for character.
 
-> **Read this before anything else.** Article 120 was substantially amended in March
-> 2023. The original 2017 text set a single deadline of **26 May 2024** for placing
-> legacy devices on the market. That date no longer does that job. Any answer citing
-> 26 May 2024 as the market deadline is quoting superseded law — which is exactly what a
-> model recalling the 2017 text will do.
+**READ THIS FIRST — editorial note, not source text.**
+Article 120 was substantially amended in March 2023. The original 2017 text set a single
+deadline of **26 May 2024** for placing legacy devices on the market. That date no longer
+does that job. Any answer citing 26 May 2024 as the market deadline is quoting superseded
+law — which is exactly what a model recalling the 2017 text will do.
+
+*In these reference files `>` marks verbatim source text and nothing else.
+`scripts/verify-sources.py` checks every blockquote against the source, so editorial
+notes must not use it.*
 
 ---
 
