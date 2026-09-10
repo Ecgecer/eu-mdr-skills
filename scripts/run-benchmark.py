@@ -68,6 +68,26 @@ def ask_vertex(prompt, model):
     except Exception:
         return None, f"unexpected shape: {json.dumps(d)[:200]}"
 
+def ask_gemini_cli(prompt, model):
+    """Use the installed gemini CLI, which carries its own auth from ~/.gemini.
+    Avoids putting the key in this process's environment at all."""
+    try:
+        # "default" omits -m. The CLI self-reports gemini-2.5-pro but rejects that id
+        # via -m, so the routed model is recorded as the CLI default rather than trusting
+        # a model's account of itself.
+        cmd = ["gemini", "--skip-trust"]
+        if model and model != "default":
+            cmd += ["-m", model]
+        cmd += ["-p", prompt]
+        r = subprocess.run(cmd, capture_output=True, text=True, timeout=300, cwd="/tmp")
+    except subprocess.TimeoutExpired:
+        return None, "timeout after 180s"
+    out = "\n".join(l for l in r.stdout.splitlines() if not l.startswith("[STARTUP]")).strip()
+    if not out:
+        return None, (r.stderr or "empty response")[:300]
+    return out, None
+
+
 def ask_openai(prompt, model, key):
     d, err = post("https://api.openai.com/v1/chat/completions",
                   {"model": model, "messages": [{"role":"user","content":prompt}]},
@@ -78,17 +98,23 @@ def ask_openai(prompt, model, key):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--provider", choices=["gemini","vertex","openai"])
+    ap.add_argument("--provider", choices=["gemini","gemini-cli","vertex","openai"])
     ap.add_argument("--model", default="gemini-2.5-pro")
     ap.add_argument("--runs", type=int, default=3,
                     help="runs per case; 3 is the minimum that is evidence")
     ap.add_argument("--case", help="only this case id")
+    ap.add_argument("--hard-only", action="store_true",
+                    help="only cases where the measured baseline scored 0.00 -- the ones "
+                         "that actually discriminate between models")
     ap.add_argument("--list", action="store_true")
     a = ap.parse_args()
 
     bench = json.loads(BENCH.read_text())
     cases = bench["cases"]
     if a.case: cases = [c for c in cases if c["id"] == a.case]
+    if a.hard_only:
+        cases = [c for c in cases
+                 if (c.get("measured") or {}).get("baseline_pass_rate") == 0.0]
     if a.list:
         for c in bench["cases"]:
             m = c.get("measured") or {}
@@ -110,7 +136,8 @@ def main():
            "responses": []}
     for i, c in enumerate(cases, 1):
         for r in range(a.runs):
-            if a.provider == "gemini":   text, err = ask_gemini(c["prompt"], a.model, key)
+            if a.provider == "gemini-cli": text, err = ask_gemini_cli(c["prompt"], a.model)
+            elif a.provider == "gemini": text, err = ask_gemini(c["prompt"], a.model, key)
             elif a.provider == "vertex": text, err = ask_vertex(c["prompt"], a.model)
             else:                        text, err = ask_openai(c["prompt"], a.model, key)
             out["responses"].append({"case": c["id"], "run": r+1,

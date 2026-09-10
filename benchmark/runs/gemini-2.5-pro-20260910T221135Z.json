@@ -1,0 +1,14 @@
+{
+  "model": "gemini-2.5-pro",
+  "provider": "gemini-cli",
+  "runs_per_case": 1,
+  "started": "2026-09-10T22:11:32+00:00",
+  "responses": [
+    {
+      "case": "doc-english-sufficient",
+      "run": 1,
+      "response": null,
+      "error": "[STARTUP] Phase 'cleanup_ops' was started but never ended. Skipping metrics.\n[STARTUP] Cannot measure phase 'cleanup_ops': start mark 'startup:cleanup_ops:start' not found (likely cleared by reset).\nError when talking to Gemini API Full report available at: /var/folders/mx/dyv7h7tj17v0f91b6hcqq_rm00"
+    }
+  ]
+}

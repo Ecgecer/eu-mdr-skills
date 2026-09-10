@@ -30,7 +30,7 @@ measures.
 If you run it against another model, the results are welcome as a PR. The cases and
 criteria are model-agnostic by design; only the measured column is not.
 
-## The hard cases — Claude scored 0.00 (12)
+## The hard cases — Claude scored 0.00 (11)
 
 Claude failed every run of these with no reference material and no web access.
 Untested on other models:
@@ -47,7 +47,7 @@ Untested on other models:
   <sub>device-claims</sub>
 - **`ivdr-out-of-scope`** — answers an IVD question from memory instead of declining  
   <sub>mdr-transition</sub>
-- **`limb-d-intended-purpose-drift`** — a true claim that still breaches, and cannot be cured by evidence  
+- **`no-case-law-supplement`** — Device: Class IIa wound dressing, German market. Copy: "Heals wounds 40% faster.  
   <sub>device-claims</sub>
 - **`non-german-eu-market`** — applies German national law to a French-market asset  
   <sub>device-claims</sub>
@@ -57,10 +57,8 @@ Untested on other models:
   <sub>device-claims</sub>
 - **`rule-not-carried`** — concludes confidently where the cited rule does not settle it  
   <sub>mdr-classification</sub>
-- **`uwg6-comparison`** — mishandles comparative advertising that is lawful when compliant  
-  <sub>device-claims</sub>
 
-## Cases a baseline already passes (13)
+## Cases a baseline already passes (12)
 
 Published because a benchmark that hides its easy cases overstates itself.
 These measure nothing about boundary discipline; a model gets them right unaided.
@@ -70,7 +68,6 @@ These measure nothing about boundary discipline; a model gets them right unaided
 - `driving-software-3-3` (mdr-classification)
 - `fsn-language` (mpdg-germany)
 - `implantable-exception` (mdr-transition)
-- `limb-c-omission` (device-claims)
 - `limb1-escalation-iii` (mdr-classification)
 - `limb2-both-conditions` (mdr-classification)
 - `limb3-class-i` (mdr-classification)
