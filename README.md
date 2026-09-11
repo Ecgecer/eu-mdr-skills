@@ -48,7 +48,7 @@ Measured across 5 suites, 30 cases:
 | `mpdg-germany` | **+0.50** | 4 | German national law only |
 | `scope-statement` | +0.44 | 3 | domain-general |
 | `mdr-transition` | +0.20 | 5 | EU-level only |
-| `mdr-classification` | +0.17 | 6 | EU-level only |
+| `mdr-classification` | +0.10 | 7 | EU-level only |
 <!-- suite-summary:end -->
 
 This table is spliced in from the stored run data by `scripts/report-evals.py` and CI

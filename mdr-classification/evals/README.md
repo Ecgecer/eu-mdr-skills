@@ -5,32 +5,27 @@ data in `evals/results/`. Do not hand-edit the table; hand-edited tables are how
 corrections below happened.
 
 <!-- report-evals:start -->
-> ⚠ **The skill or its eval cases changed after these runs.** The numbers
-> below describe the earlier text, not what this plugin currently ships.
-> Re-measure with
-> `claude plugin eval mdr-classification --ablation with-without`.
-
 | Case | with | without | delta | runs | measured |
 |---|---|---|---|---|---|
-| `driving-software-3-3` | 1.00 | — | **—** | 3×2 | 2026-09-11 ⚠ |
-| `limb1-escalation-iii` | 1.00 | 1.00 | **+0.00** | 3×2 | 2026-09-10 |
-| `limb2-both-conditions` | 1.00 | 1.00 | **+0.00** | 3×2 | 2026-09-10 |
-| `limb3-class-i` | 1.00 | 1.00 | **+0.00** | 3×2 | 2026-09-10 |
-| `mdcg-bait` | 1.00 | 1.00 | **+0.00** | 3×2 | 2026-09-10 |
-| `qualification-not-established` | 1.00 | 1.00 | **+0.00** | 3×2 | 2026-09-10 |
-| `rule-not-carried` | 1.00 | 0.00 | **+1.00** | 3×2 | 2026-09-10 |
+| `driving-software-3-3` | 1.00 | 1.00 | **+0.00** | 3×2 | 2026-09-11 |
+| `limb1-escalation-iii` | 1.00 | 1.00 | **+0.00** | 3×2 | 2026-09-11 |
+| `limb2-both-conditions` | 0.67 | 1.00 | **-0.33** | 3×2 | 2026-09-11 |
+| `limb3-class-i` | 1.00 | 1.00 | **+0.00** | 3×2 | 2026-09-11 |
+| `mdcg-bait` | 1.00 | 1.00 | **+0.00** | 3×2 | 2026-09-11 |
+| `qualification-not-established` | 1.00 | 1.00 | **+0.00** | 3×2 | 2026-09-11 |
+| `rule-not-carried` | 1.00 | 0.00 | **+1.00** | 3×2 | 2026-09-11 |
 
-**Mean delta +0.17** across 6 case(s) with both arms measured.
+**Mean delta +0.10** across 7 case(s) with both arms measured.
 
 ### Every other stored run for these cases
 
-- `driving-software-3-3` — earlier runs: 2026-09-09 1.00/1.00; 2026-09-10 1.00/1.00
-- `limb1-escalation-iii` — earlier runs: 2026-09-09 1.00/1.00; 2026-09-11 —/— (6 errored)
-- `limb2-both-conditions` — earlier runs: 2026-09-09 1.00/0.00; 2026-09-11 —/— (6 errored)
-- `limb3-class-i` — earlier runs: 2026-09-09 1.00/1.00; 2026-09-11 —/— (6 errored)
-- `mdcg-bait` — earlier runs: 2026-09-10 1.00/1.00
-- `qualification-not-established` — earlier runs: 2026-09-09 1.00/1.00; 2026-09-11 —/— (6 errored)
-- `rule-not-carried` — earlier runs: 2026-09-10 1.00/0.00; 2026-09-11 —/— (5 errored)
+- `driving-software-3-3` — earlier runs: 2026-09-09 1.00/1.00; 2026-09-10 1.00/1.00; 2026-09-11 1.00/— (2 errored)
+- `limb1-escalation-iii` — earlier runs: 2026-09-09 1.00/1.00; 2026-09-10 1.00/1.00; 2026-09-11 —/— (6 errored)
+- `limb2-both-conditions` — earlier runs: 2026-09-09 1.00/0.00; 2026-09-10 1.00/1.00; 2026-09-11 —/— (6 errored)
+- `limb3-class-i` — earlier runs: 2026-09-09 1.00/1.00; 2026-09-10 1.00/1.00; 2026-09-11 —/— (6 errored)
+- `mdcg-bait` — earlier runs: 2026-09-10 1.00/1.00; 2026-09-10 1.00/1.00
+- `qualification-not-established` — earlier runs: 2026-09-09 1.00/1.00; 2026-09-10 1.00/1.00; 2026-09-11 —/— (6 errored)
+- `rule-not-carried` — earlier runs: 2026-09-10 1.00/0.00; 2026-09-10 1.00/0.00; 2026-09-11 —/— (5 errored)
 
 Listed because publishing only the most favourable run of several is how the earlier tables went wrong.
 
@@ -64,6 +59,31 @@ So that `+1.00` measured which words were used rather than whether anything was
 over-applied. The grader has since been rewritten and the case re-run: `limb2-both-
 conditions` now measures **+0.00**, both arms at 1.00. The artifact is gone from the
 table, which leaves `rule-not-carried` as this suite's one earning case.
+
+## `limb2-both-conditions` now measures −0.33, on one run
+
+Re-measured 2026-09-11 against the current skill text, this case went from 1.00 / 1.00 to
+**0.67 / 1.00**. The baseline is unchanged; one with-skill run of three failed, and it
+failed for a reason worth reading rather than averaging away.
+
+That run classified the app as **Class I** via limb 3, while writing:
+
+> Class: I (Rule 11, limb 3) on the purpose as drafted — but **limb 2 is genuinely live,
+> and would give IIa**
+
+Those two statements cannot both stand. `SKILL.md` says "Apply the limbs in this order.
+Stop at the first that matches", and limb 3 is reached only "if neither limb 1 nor limb 2
+is engaged". A response that records limb 2 as engaged and then classifies under limb 3
+has not followed the route it printed.
+
+**This is not being fixed by editing the skill.** The instruction it violated is already
+there, in one unambiguous line. Adding a second line telling the model to obey the first
+would be a change made on one run of three, which is the standard this repo refuses to
+publish numbers against. The other two runs followed the route correctly and the previous
+run of this case passed three for three.
+
+One run of three cannot distinguish variance from regression. What settles it is more
+runs of this one case, not more text in the skill, and that is what it will get.
 
 ## What still stands
 
