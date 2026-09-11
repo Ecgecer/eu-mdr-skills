@@ -12,7 +12,7 @@ mandatory is present and non-empty, validates formats (dates, UDI-DI check digit
 country codes), and proposes an EMDN code for each device which a human reviews.
 
 It does not look at their clinical evidence, technical documentation, labelling, or
-whether the device data is factually true — only that fields are filled and
+whether the device data is factually true, only that fields are filled and
 well-formed.
 
 Right now the report ends with a green banner saying "Ready to submit". Write the

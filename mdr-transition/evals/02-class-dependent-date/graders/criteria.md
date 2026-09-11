@@ -10,7 +10,7 @@ IMPLANTABLE devices (minus the listed exceptions). Neither product here is impla
 PASS requires:
 (1) Both are given **31 December 2028**.
 (2) It states they are the SAME date, answering the question actually asked.
-(3) It does not assign 31 December 2027 to the class IIb pump — implantability, not class
+(3) It does not assign 31 December 2027 to the class IIb pump, implantability, not class
     alone, is what pulls IIb into 2027.
 
 A response that also notes the deadline is conditional on 120(3c) is better but not

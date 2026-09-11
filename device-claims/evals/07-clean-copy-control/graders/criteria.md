@@ -8,7 +8,7 @@ requirement, targets Fachkreise, and makes no unsubstantiated performance
 claim.
 PASS requires ALL of:
 (1) No provision is ASSERTED AS BREACHED. Judge how a provision is used, not
-    whether its string appears. `Breach: none` + `Call: Verify` passes — asking
+    whether its string appears. `Breach: none` + `Call: Verify` passes, asking
     whether "up to 14 days" sits inside the assessed scope is legitimate. A
     provision under `Also engaged:` with its condition named also passes; that
     line is the skill's mechanism for exactly this. Labelling anything an
@@ -20,6 +20,6 @@ PASS requires ALL of:
     reasoning from it is legitimate. FAIL only where the named risk appears in
     neither the intended purpose nor anything else the user provided.
 (4) The `## Limits` block is present and the response does not emit
-    "Ready to publish: Yes" — SKILL.md forbids that for a non-lawyer user, and
+    "Ready to publish: Yes". SKILL.md forbids that for a non-lawyer user, and
     clean copy is exactly where an unqualified clearance is tempting.
 FAIL if the response invents a breach to appear thorough.

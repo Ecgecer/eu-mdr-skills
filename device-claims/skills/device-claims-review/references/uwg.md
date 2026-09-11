@@ -1,4 +1,4 @@
-# UWG — Gesetz gegen den unlauteren Wettbewerb
+# UWG: Gesetz gegen den unlauteren Wettbewerb
 
 **Source:** gesetze-im-internet.de, `uwg_2004`
 <https://www.gesetze-im-internet.de/uwg_2004/>
@@ -20,7 +20,7 @@ UWG matters here for two reasons:
 
 ---
 
-## § 5 — misleading commercial practices
+## § 5: misleading commercial practices
 
 > **(1)** Unlauter handelt, wer eine **irreführende geschäftliche Handlung** vornimmt,
 > die geeignet ist, den Verbraucher oder sonstigen Marktteilnehmer zu einer
@@ -56,16 +56,16 @@ UWG matters here for two reasons:
 
 ### The device-specific hooks in § 5(2)
 
-- **no. 1 "Zwecktauglichkeit / Verwendungsmöglichkeit"** — fitness for purpose and
+- **no. 1 "Zwecktauglichkeit / Verwendungsmöglichkeit"**: fitness for purpose and
   possible use. This is the UWG mirror of MDR Art. 7(d) intended-purpose drift.
-- **no. 1 "von der Verwendung zu erwartende Ergebnisse"** — expected results.
+- **no. 1 "von der Verwendung zu erwartende Ergebnisse"**: expected results.
   Outcome claims land here.
-- **no. 1 "Tests"** — claims about test results and their essential components.
+- **no. 1 "Tests"**: claims about test results and their essential components.
   Cherry-picked clinical or bench data lands here.
-- **no. 3 — the trader.** "die **Person, Eigenschaften oder Rechte des Unternehmers**
+- **no. 3, the trader.** "die **Person, Eigenschaften oder Rechte des Unternehmers**
   wie [...] **Status, Zulassung**". This reaches claims about the *company*: its
   qualifications, memberships, authorisations.
-- **no. 4 — the goods.** "Aussagen oder Symbole, die [...] sich auf eine **Zulassung des
+- **no. 4, the goods.** "Aussagen oder Symbole, die [...] sich auf eine **Zulassung des
   Unternehmers oder der Waren oder Dienstleistungen** beziehen". This is the CE-marking
   hook: copy implying a class, notified-body involvement, or a certification **the device
   does not hold**.
@@ -81,7 +81,7 @@ trivially wrong detail nobody buys on is not automatically a § 5 breach.
 
 ---
 
-## § 6 — comparative advertising
+## § 6: comparative advertising
 
 > **(1)** Vergleichende Werbung ist jede Werbung, die unmittelbar oder mittelbar
 > einen **Mitbewerber** oder die von einem Mitbewerber angebotenen Waren oder
@@ -108,14 +108,14 @@ trivially wrong detail nobody buys on is not automatically a § 5 breach.
 ### How to apply § 6 to a comparison page
 
 Comparative advertising is **lawful in Germany** when it satisfies § 6(2). It is not
-banned. The test is cumulative — a comparison must clear every limb.
+banned. The test is cumulative. A comparison must clear every limb.
 
 The two that fail most often on a SaaS/device comparison page:
 
-- **§ 6(2) no. 1 — same need or same purpose.** Comparing products with different
+- **§ 6(2) no. 1, same need or same purpose.** Comparing products with different
   intended purposes fails here before you reach accuracy. Two devices in different
   MDR classes or with different intended purposes are often not comparable at all.
-- **§ 6(2) no. 2 — objective, essential, relevant, verifiable, typical.**
+- **§ 6(2) no. 2, objective, essential, relevant, verifiable, typical.**
   "Verifiable" (*nachprüfbar*) is the sharp edge: the reader must be able to check
   the claim. A comparison table cell that cannot be verified from public
   information fails no. 2 even if it is accurate.
@@ -126,7 +126,7 @@ Anonymised comparisons are still comparative advertising.
 
 ---
 
-## Abmahnung — why this is the expensive failure mode
+## Abmahnung: why this is the expensive failure mode
 
 A UWG breach is typically enforced by a competitor sending an **Abmahnung**
 demanding a **strafbewehrte Unterlassungserklärung** (a cease-and-desist undertaking

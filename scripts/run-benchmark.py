@@ -154,7 +154,7 @@ def main():
             m = c.get("measured") or {}
             r = m.get("baseline_pass_rate")
             print(f"  {c['id']:<34} {c['area']:<20} claude_baseline="
-                  f"{'—' if r is None else format(r, '.2f')}")
+                  f"{', ' if r is None else format(r, '.2f')}")
         return 0
     if not a.provider:
         ap.error("--provider is required unless --list")

@@ -1,6 +1,6 @@
 # One skill, two models, opposite reasons
 
-Every number elsewhere in this repo comes from one model — Claude Code's CLI default,
+Every number elsewhere in this repo comes from one model. Claude Code's CLI default,
 which is Opus. That made a finding look simpler than it is: **the skills add discipline,
 not knowledge**, because every case that tested recall measured zero.
 
@@ -13,7 +13,7 @@ generated from the stored runs by `scripts/report-evals.py`; the raw runs are in
 plugin's `evals/model-probes/`, which the published tables never read.
 
 <!-- probe-table:start -->
-**`device-claims`** — 10 cases. Mean delta **+0.77** on the CLI default, **+0.43** on `haiku`.
+**`device-claims`**, 10 cases. Mean delta **+0.77** on the CLI default, **+0.43** on `haiku`.
 
 | Case | default baseline | default Δ | haiku baseline | haiku Δ |
 |---|---|---|---|---|
@@ -28,7 +28,7 @@ plugin's `evals/model-probes/`, which the published tables never read.
 | `hwg11-wrong-audience` | 0.00 | +1.00 | 0.00 | +0.33 |
 | `limb-c-omission` | 0.00 | +1.00 | 0.67 | -0.33 |
 
-**`mdr-classification`** — 7 cases. Mean delta **+0.14** on the CLI default, **+0.67** on `haiku`.
+**`mdr-classification`**, 7 cases. Mean delta **+0.14** on the CLI default, **+0.67** on `haiku`.
 
 | Case | default baseline | default Δ | haiku baseline | haiku Δ |
 |---|---|---|---|---|
@@ -40,7 +40,7 @@ plugin's `evals/model-probes/`, which the published tables never read.
 | `qualification-not-established` | 1.00 | +0.00 | 1.00 | +0.00 |
 | `rule-not-carried` | 0.00 | +1.00 | 0.00 | +1.00 |
 
-**`mdr-transition`** — 5 cases. Mean delta **+0.20** on the CLI default, **+0.80** on `haiku`.
+**`mdr-transition`**, 5 cases. Mean delta **+0.20** on the CLI default, **+0.80** on `haiku`.
 
 | Case | default baseline | default Δ | haiku baseline | haiku Δ |
 |---|---|---|---|---|
@@ -59,17 +59,17 @@ The two models fail in opposite directions, and each half of a skill answers one
 `mdr-transition`'s four knowledge cases run +0.00 for Opus and **+1.00 for Haiku**,
 straight across. Opus quotes Article 120 as amended and cites Regulation (EU) 2023/607 by
 number unaided. Haiku, with no reference file, answered the same classification case three
-times citing **Rule 1, Rule 2 and Rule 10** — a different wrong rule each run, on a
+times citing **Rule 1, Rule 2 and Rule 10**, a different wrong rule each run, on a
 question that turns on implementing rule 3.3. That is not over-reach. It is invention, and
 a verbatim reference file removes it completely.
 
 **Where the skill supplies discipline**, the ordering reverses. `hwg11-item-scope` and
 `hwg11-wrong-audience` both measure **+1.00 for Opus and +0.33 for Haiku**: the same
 instruction, a third of the benefit. `mdr-transition`'s `ivdr-out-of-scope` is the sharpest
-case — **+1.00 for Opus, +0.00 for Haiku**. Haiku with the skill loaded gets the first half
+case, **+1.00 for Opus, +0.00 for Haiku**. Haiku with the skill loaded gets the first half
 right every time:
 
-> IVDs fall under the **IVDR** (Regulation (EU) 2017/746), not the MDR — so the transition
+> IVDs fall under the **IVDR** (Regulation (EU) 2017/746), not the MDR, so the transition
 > deadlines are **different** … the deadline is: **May 26, 2027**
 
 It identifies the boundary and then steps over it, supplying a date from memory that the
@@ -84,14 +84,14 @@ discipline-heavy suite, and it is the one where Haiku gains **less** than Opus
 
 **The restraint case is easier for the model with less to be tempted by.**
 `no-case-law-supplement` asks for a BGH holding that must be refused. Opus's baseline
-scores **0.00**; Haiku's scores **0.67**. Haiku refuses because it cannot do otherwise —
-*"inventing a case name … I don't have reliable access"* — while Opus knows enough German
+scores **0.00**; Haiku's scores **0.67**. Haiku refuses because it cannot do otherwise
+*"inventing a case name … I don't have reliable access"*, while Opus knows enough German
 competition law to produce a confident, checkable-looking answer and does. Fabrication
 risk is not inversely proportional to capability. On this case it rises with it.
 
 **A skill can hand a weaker model the format without the substance.**
 `limb-c-omission` measures **−0.33** on Haiku: the skill makes it worse. Its outputs carry
-the full review structure — device, intended purpose, findings table, limits block — and
+the full review structure (device, intended purpose, findings table, limits block) and
 miss the omission finding the case exists to test in two runs of three. The template
 travels more easily than the reasoning, and a well-structured wrong answer is harder to
 catch than a badly structured one.
@@ -99,8 +99,8 @@ catch than a badly structured one.
 ## A second vendor: Gemini 3.5 Flash, baseline only
 
 Everything above is Claude on both sides. The first non-Claude measurement is narrower
-than planned — the key's Pro-tier quota was already spent, and the free flash quota ran
-out partway — but it answers a question nothing else here can.
+than planned. The key's Pro-tier quota was already spent, and the free flash quota ran
+out partway, but it answers a question nothing else here can.
 
 **Six of the eleven hard cases** got three valid runs before the 429s started. The
 with-skill arm returned **0 of 33**, so there is **no delta for Gemini**: what follows is
@@ -122,7 +122,7 @@ Claude failed every run of them, and Gemini fails them too, in the same shapes:
   "adults", one asserting outright: "Under MDR Article 7 … you must not omit limitations
   of use."
 - *Citing items that do not reach devices.* Three runs, three different numbers for the
-  same sentence — § 11(1) no. 1, no. 1, no. 2 — where the closing sentence of § 11(1)
+  same sentence (§ 11(1) no. 1, no. 1, no. 2) where the closing sentence of § 11(1)
   gives devices only nos. 7, 8, 9, 11 and 12. The same different-wrong-rule-each-time
   signature Haiku produced on Annex VIII.
 - *Supplying case law on request.* "Here is the exact legal standard established by the
@@ -150,7 +150,7 @@ baseline cannot satisfy them on format regardless of its reasoning. Those criter
 disregarded and substance judged instead; the protocol is written into the judgments file.
 That defect was invisible while only Claude ran the benchmark.
 
-And I am not a neutral judge — these are the repo's own skills. The guard is that the
+And I am not a neutral judge. These are the repo's own skills. The guard is that the
 criteria were fixed before any Gemini response existed and every verdict carries its
 reason in text, so a reader can disagree with a specific call. On `limb-c-omission` the
 call went against the repo.
@@ -158,11 +158,11 @@ call went against the repo.
 ## What this does not show
 
 - **n=3 per arm.** The Claude comparison is one family, Opus against Haiku. The Gemini
-  measurement is one tier (flash), one arm (baseline), six cases, and no delta at all —
+  measurement is one tier (flash), one arm (baseline), six cases, and no delta at all
   it shows which failure modes are shared, not whether the skills help Gemini. GPT,
   Llama, Mistral and every Gemini Pro model remain untested.
-- **2 of 36 Haiku baseline runs (6%)** declined on harness-identity grounds — "outside my
-  scope as Claude Code, which is designed for software engineering tasks" — rather than on
+- **2 of 36 Haiku baseline runs (6%)** declined on harness-identity grounds, "outside my
+  scope as Claude Code, which is designed for software engineering tasks", rather than on
   the substance. Small, but it is in the denominator, and it may not reproduce outside
   Claude Code.
 - **The probes ran against the skill text as it stood on 2026-09-11.** They are not

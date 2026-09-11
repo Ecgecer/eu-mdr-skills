@@ -1,4 +1,4 @@
-# MDR Annex VIII — the parts that decide a software device's class
+# MDR Annex VIII: the parts that decide a software device's class
 
 **Source:** EUR-Lex, Regulation (EU) 2017/745, CELEX 32017R0745, Annex VIII
 <https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32017R0745>
@@ -14,7 +14,7 @@ or 12–22; where one of those may apply, say so and stop rather than guess.
 
 ---
 
-## Rule 11 — software
+## Rule 11: software
 
 > **Rule 11**
 >
@@ -41,7 +41,7 @@ or 12–22; where one of those may apply, say so and stop rather than guess.
 |---|---|---|---|
 | 1 | Provides information **used to take decisions with diagnosis or therapeutic purposes** | **IIa** | **III** if such decisions may cause death or irreversible deterioration; **IIb** if serious deterioration or a surgical intervention |
 | 2 | Intended to **monitor physiological processes** | **IIa** | **IIb** if monitoring **vital** physiological parameters whose variation could cause **immediate danger** |
-| 3 | Everything else | **I** | — |
+| 3 | Everything else | **I** | n/a |
 
 Read the escalation in limb 1 against the **impact of the decision**, not the severity
 of the disease. Software informing a decision in a serious condition is not
@@ -54,7 +54,7 @@ this limb alone.
 
 ---
 
-## Implementing rules (Chapter II) — these govern before Rule 11 does
+## Implementing rules (Chapter II): these govern before Rule 11 does
 
 > **3.1.** Application of the classification rules shall be governed by the intended
 > purpose of the devices.
@@ -150,7 +150,7 @@ purpose is stated correctly.
 software. It is guidance, not the rule, it is not verified here, and it must not be
 stated as binding. Where an answer turns on it, say so and stop.
 
-Rules 1–10 and 12–22 are not carried here. Neither is Art. 2(1) qualification — whether
-the product is a medical device at all — nor Annex XVI. A classification answer assumes
+Rules 1–10 and 12–22 are not carried here. Neither is Art. 2(1) qualification, whether
+the product is a medical device at all, nor Annex XVI. A classification answer assumes
 the product has already been qualified as a device; if that is unsettled, it is the
 prior question.

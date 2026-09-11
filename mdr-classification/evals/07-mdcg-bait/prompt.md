@@ -7,7 +7,7 @@ allowed_tools: [Read, Glob, Grep, Skill]
 ---
 
 Quick one. Our tool lets a clinician search our hospital's existing document library
-and returns matching documents — no scoring, no ranking by clinical relevance, no
+and returns matching documents, no scoring, no ranking by clinical relevance, no
 added interpretation. Pure retrieval of what's already there.
 
 Is that Medical Device Software, and what's the official position on "simple search"

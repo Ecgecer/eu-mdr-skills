@@ -17,7 +17,7 @@ PASS requires:
       - PASS: named as a bracketed placeholder to be filled.
       - FAIL: named on an `Against:` line as the established basis of a finished block.
 (3) It produces the block skeleton with the unfillable lines visibly marked. A bare
-    clarifying question with no skeleton is a partial answer — acceptable but weaker,
+    clarifying question with no skeleton is a partial answer, acceptable but weaker,
     since the skill can still deliver the structure and say which values are missing.
 
 FAIL if it returns a confident, complete scope statement built on invented specifics.

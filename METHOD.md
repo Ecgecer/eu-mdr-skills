@@ -33,7 +33,7 @@ What it got wrong was where rules **stop**:
 <!-- method-failures:end -->
 
 Every one is plausible, well-reasoned, and wrong in a way you cannot detect from the
-answer. Not a hallucinated rule — **a real rule applied one step past where it reaches.**
+answer. Not a hallucinated rule. **A real rule applied one step past where it reaches.**
 
 **So the first thing to do is not write a skill. It is to find out, by measurement,
 which of those two problems you actually have.** If the model already performs at
@@ -69,7 +69,7 @@ Concretely, in the skills here:
 
 - A `Breach: none` + `Call: Verify` state, so an open question is not inflated into a
   finding. Without it, the review promoted "check the technical file" into a breach.
-- A rule that a finding must name its basis **from supplied material** — inferring a
+- A rule that a finding must name its basis **from supplied material**, inferring a
   likely risk from the product category condemns every advertisement ever written, and
   is unfalsifiable.
 - An explicit "this rule is a floor, not the answer" path when another uncarried rule
@@ -85,12 +85,12 @@ attribute the model's competence to your prompt.
 
 Weight the suite the way the value actually distributes:
 
-- **False-positive controls** — clean input where the correct answer is "nothing here".
+- **False-positive controls**: clean input where the correct answer is "nothing here".
   These produced the largest deltas in every suite. A model with no skill manufactured
   findings on clean copy in 3 of 3 runs.
-- **Scope tests** — where a real rule does not reach the thing in front of it.
-- **Refusal tests** — where the honest answer is a question.
-- **Detection tests** — will mostly measure zero. Include a few anyway; they are how you
+- **Scope tests**: where a real rule does not reach the thing in front of it.
+- **Refusal tests**: where the honest answer is a question.
+- **Detection tests**: will mostly measure zero. Include a few anyway; they are how you
   learn which half of your skill is decorative.
 
 **Publish the zeroes.** A suite reporting only its wins is marketing. Half the cases
@@ -105,7 +105,7 @@ command that tests it.
 `scripts/verify-sources.py` re-fetches each source and confirms every quoted passage
 still appears, character for character after normalising whitespace and quote glyphs.
 It reports drift with the point of divergence. Where a source cannot be fetched it says
-so and prints what to search for by hand — **it never counts an unread source as a
+so and prints what to search for by hand. **It never counts an unread source as a
 pass.** Run it in CI, and on a schedule, because law changes.
 
 ---
@@ -116,21 +116,21 @@ pass.** Run it in CI, and on a schedule, because law changes.
 down a response that named no. 2 *in order to exclude it*, because the grader
 pattern-matched a string instead of judging how the provision was used. Two graders had
 this defect and both were caught by chance. Judge the use, not the mention. And have
-someone else read your graders — a suite written by the skill's author tests what the
+someone else read your graders. A suite written by the skill's author tests what the
 author thought to test.
 
 **One run is not evidence.** A hand-run pass reported 7 of 7 from a single run per case.
 Three runs found two cases that fail one run in three. Use at least three.
 
 **Testing an incidental failure by asking about it directly.** Asked point-blank "what
-is the authority for X?", the model handled non-binding guidance correctly — delta zero.
+is the authority for X?", the model handled non-binding guidance correctly, delta zero.
 It nonetheless reached for that same guidance *unprompted*, as though it settled the
 point, while answering unrelated questions. **The conditions have to be reproduced, not
 described.** That case measured nothing and the failure is real.
 
 **Generated artefacts with a hardcoded file list.** The freshness check listed the files
 it knew about. A second skill was added, its bundle was never generated, and the check
-reported everything up to date — the guard against silent drift could not see the drift
+reported everything up to date. The guard against silent drift could not see the drift
 because it had been told what to look at. Discover, do not enumerate.
 
 **Verifying elided quotes as one string.** A quote containing `[...]` is not contiguous
@@ -139,7 +139,7 @@ false drifts on text that was perfectly correct. Split on the elision and verify
 fragment.
 
 **Detecting a stub by response size.** EUR-Lex serves a ~2 KB shell to scripted clients,
-so a size threshold seemed reasonable — and it flagged every good source as a bot check,
+so a size threshold seemed reasonable, and it flagged every good source as a bot check,
 because gesetze-im-internet legitimately serves each section as its own 3–8 KB page. Key
 on status code and extracted-text length.
 
@@ -154,20 +154,20 @@ suite each. **Write the two hardest cases first and run them against no plugin a
 It is the cheapest question in this method and it has changed the answer every time.
 
 **Propagating a fix by pattern-match.** A demand for information ate the deliverable in
-three places — a missing intended purpose stopped a claims review instead of narrowing
+three places. A missing intended purpose stopped a claims review instead of narrowing
 it, a declined case-law citation still supplied the doctrine, a missing schema version
 turned a scope statement into a fill-in form. Having named the pattern, the obvious next
 move was to grep every skill for templates ending in a question and fix those too. Two
 turned up. Neither was a defect: `mdr-transition` already delivers the date and *then*
 asks to confirm the conditions, and `mdr-classification` asks for an intended purpose it
-genuinely cannot classify without — its two cases that supply none both score 1.00, so
+genuinely cannot classify without, its two cases that supply none both score 1.00, so
 the gate costs nothing. A pattern that is a defect in one place is a hypothesis
 everywhere else. Check what it costs before you fix it, or you will spend a measurement
 undoing your own tidying.
 
 **Believing your own prediction.** We predicted classification would show a large delta
 because the rules interact and models get them confidently wrong. It measured +0.20 on
-the five cases that suite then had (run of 2026-09-09) — lower than the skill we thought
+the five cases that suite then had (run of 2026-09-09), lower than the skill we thought
 was weaker, with the baseline getting four of five right unaided. The suite has grown
 since; its current figure is in its own eval README rather than restated here. The measurement is the point. If you are confident enough not to run it, run it.
 
@@ -176,11 +176,11 @@ since; its current figure is in its own eval README rather than restated here. T
 ## What it costs
 
 <!-- eval-cost:start -->
-**$153 of eval spend so far**, across 39 stored runs of 5 suites and 30 cases, at 3 runs per case per arm. The largest single run — `device-claims`, 10 cases, both arms — was **$16.39** and took 97 minutes.
+**$153 of eval spend so far**, across 39 stored runs of 5 suites and 30 cases, at 3 runs per case per arm. The largest single run (`device-claims`, 10 cases, both arms) was **$16.39** and took 97 minutes.
 <!-- eval-cost:end -->
 
 Budget for re-running after every substantive change, because that is when a suite earns
-its keep — and for re-running after a **grader** change too, which is easy to forget and
+its keep, and for re-running after a **grader** change too, which is easy to forget and
 invalidates the numbers just as thoroughly.
 
 ## The shortest version

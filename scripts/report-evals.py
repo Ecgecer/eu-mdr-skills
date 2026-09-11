@@ -106,7 +106,7 @@ def readme_path(plugin):
 def splice(plugin):
     """Return the eval README with its generated region replaced, or None if unmarked.
 
-    The tables said "generated ... do not hand-edit" and were then pasted by hand, so
+    The tables said "generated... do not hand-edit" and were then pasted by hand, so
     three of them drifted from the runs they claimed to report -- mpdg-germany published
     +0.47 against a stored +0.60, scope-statement +0.22 against +0.11. Generated now
     means generated.
@@ -153,7 +153,7 @@ def suite_summary():
     out = [f"Measured across {len(rows)} suites, {counted} cases:", "",
            "| Suite | Mean delta | Cases measured | Content |", "|---|---|---|---|"]
     for pl, mean, n in rows:
-        val = "—" if mean is None else (f"**{mean:+.2f}**" if mean >= 0.5 else f"{mean:+.2f}")
+        val = "n/a" if mean is None else (f"**{mean:+.2f}**" if mean >= 0.5 else f"{mean:+.2f}")
         out.append(f"| `{pl}` | {val} | {n} | {CONTENT.get(pl, '')} |")
     # The share of cases where the skill changes nothing is the number that keeps the
     # rest honest, and it drifts every re-measure -- prose said "roughly half" while it
@@ -168,7 +168,7 @@ def suite_summary():
             total += 1
             zero += abs(w - wo) < 0.01
     if total:
-        out += ["", f"**{zero} of those {total} cases measure a delta of 0.00** — the skill "
+        out += ["", f"**{zero} of those {total} cases measure a delta of 0.00**, the skill "
                     f"changes nothing. They are published case by case, because a suite "
                     f"that reports only what it earns is not reporting."]
     return "\n".join(out)
@@ -215,7 +215,7 @@ def probe_table():
         rows.sort(key=lambda r: (-(r[4] - r[2]), r[0]))
         d_def = sum(r[2] for r in rows) / len(rows)
         d_probe = sum(r[4] for r in rows) / len(rows)
-        blocks.append(f"**`{plugin}`** — {len(rows)} cases. Mean delta **{d_def:+.2f}** on "
+        blocks.append(f"**`{plugin}`**, {len(rows)} cases. Mean delta **{d_def:+.2f}** on "
                       f"the CLI default, **{d_probe:+.2f}** on `{model}`.\n")
         blocks.append("| Case | default baseline | default Δ | "
                       f"{model} baseline | {model} Δ |")
@@ -248,7 +248,7 @@ def cost_summary():
            f"{len(plugins())} suites and {n_cases} cases, at 3 runs per case per arm."]
     if biggest:
         c, cases, secs, pl = biggest
-        out.append(f"The largest single run — `{pl}`, {cases} cases, both arms — was "
+        out.append(f"The largest single run (`{pl}`, {cases} cases, both arms) was "
                    f"**${c:.2f}** and took {round(secs / 60)} minutes.")
     return " ".join(out)
 
@@ -395,7 +395,7 @@ def load(plugin):
             runs[c["name"]].append(rec)
     return runs
 
-def fmt(v): return "—" if v is None else f"{v:.2f}"
+def fmt(v): return "n/a" if v is None else f"{v:.2f}"
 
 def stale_banner(plugin):
     """A line in the table itself when the skill text moved after it was measured.
@@ -438,7 +438,7 @@ def table(plugin):
     for name in sorted(runs):
         cur = current(runs[name])
         w, wo = cur["arms"]["with"]["score"], cur["arms"]["without"]["score"]
-        delta = "—" if (w is None or wo is None) else f"{w - wo:+.2f}"
+        delta = "n/a" if (w is None or wo is None) else f"{w - wo:+.2f}"
         note = ""
         if cur["arms"]["with"]["errored"] or cur["arms"]["without"]["errored"]:
             note = " ⚠"
@@ -450,7 +450,7 @@ def table(plugin):
                 + (f" ({r['arms']['with']['errored'] + r['arms']['without']['errored']} errored)"
                    if (r['arms']['with']['errored'] or r['arms']['without']['errored']) else "")
                 for r in runs[name] if r is not cur)
-            extra.append(f"- `{name}` — earlier runs: {others}")
+            extra.append(f"- `{name}`, earlier runs: {others}")
     deltas = []
     for name in sorted(runs):
         cur = current(runs[name])
@@ -473,7 +473,7 @@ def table(plugin):
                 "with `--model` belongs in `evals/model-probes/`, which this table does "
                 "not read. Each row is that case's most recent run with a scorable arm, "
                 "so rows can come from different runs and the mean is a composite rather "
-                "than any single run's figure — the dates say which.</sub>"]
+                "than any single run's figure, the dates say which.</sub>"]
     return "\n".join(out) + "\n"
 
 if __name__ == "__main__":

@@ -1,6 +1,6 @@
-# MDR Article 120 — the legacy transition, as amended
+# MDR Article 120: the legacy transition, as amended
 
-**Source:** Publications Office, Official Journal L 80, 20.3.2023, p. 24 —
+**Source:** Publications Office, Official Journal L 80, 20.3.2023, p. 24
 **Regulation (EU) 2023/607**, Article 1, amending Regulation (EU) 2017/745.
 <http://publications.europa.eu/resource/oj/JOL_2023_080_R_0002.ENG>
 **Retrieved:** 2026-09-10, verbatim from the English OJ text.
@@ -9,11 +9,11 @@
 It is not in the source. Everything else in a quoted block is verbatim, and
 `scripts/verify-sources.py` checks that character for character.
 
-**READ THIS FIRST — editorial note, not source text.**
+**READ THIS FIRST, editorial note, not source text.**
 Article 120 was substantially amended in March 2023. The original 2017 text set a single
 deadline of **26 May 2024** for placing legacy devices on the market. That date no longer
 does that job. Any answer citing 26 May 2024 as the market deadline is quoting superseded
-law — which is exactly what a model recalling the 2017 text will do.
+law, which is exactly what a model recalling the 2017 text will do.
 
 *In these reference files `>` marks verbatim source text and nothing else.
 `scripts/verify-sources.py` checks every blockquote against the source, so editorial
@@ -81,7 +81,7 @@ notes must not use it.*
 |---|---|
 | Class III | **31 Dec 2027** |
 | Class IIb **implantable**, except the listed items | **31 Dec 2027** |
-| The listed exceptions — sutures, staples, dental fillings, dental braces, tooth crowns, screws, wedges, plates, wires, pins, clips, connectors | **31 Dec 2028** |
+| The listed exceptions n/a sutures, staples, dental fillings, dental braces, tooth crowns, screws, wedges, plates, wires, pins, clips, connectors | **31 Dec 2028** |
 | Class IIb, other | **31 Dec 2028** |
 | Class IIa | **31 Dec 2028** |
 | Class I sterile, or with a measuring function | **31 Dec 2028** |
@@ -90,7 +90,7 @@ notes must not use it.*
 The exception list in 3a(a) moves those items **down** a tier: a class IIb implantable
 suture gets 2028, not 2027.
 
-## 26 May 2024 has not disappeared — it changed job
+## 26 May 2024 has not disappeared: it changed job
 
 It is no longer the date by which a legacy device must leave the market. It is now the
 date by which two of the 3c conditions had to be met: the QMS in place (3c(d)) and the
@@ -99,8 +99,8 @@ formal application lodged with a notified body (3c(e)). A further date, **26 Sep
 
 So both of these are wrong:
 
-- "The deadline was 26 May 2024" — superseded as a market deadline.
-- "The deadline moved to 2027/2028, so 2024 no longer matters" — 2024 and September 2024
+- "The deadline was 26 May 2024", superseded as a market deadline.
+- "The deadline moved to 2027/2028, so 2024 no longer matters", 2024 and September 2024
   are the conditions on which 2027/2028 depend. Miss them and the extension was never
   available.
 
@@ -115,7 +115,7 @@ Directives'.
 
 ## What this file does not carry
 
-Article 120's other paragraphs — (1), (2), (4) onward — including the rules on validity of
+Article 120's other paragraphs ((1), (2), (4) onward) including the rules on validity of
 old certificates and on devices already placed on the market. It does not carry
 **IVDR Article 110**, the parallel IVD transition, whose dates differ. It does not carry
 MDCG guidance on Article 120, notably on what counts as a "significant change" under

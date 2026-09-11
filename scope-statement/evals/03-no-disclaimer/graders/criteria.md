@@ -8,7 +8,7 @@ PASS requires:
     negation. Brevity must not cost the two load-bearing lines.
 (2) "Not checked" reflects the actual mechanism: regex and dictionary matching misses
     personal data it has no pattern for, and the check covers the uploaded file at
-    upload time only — not data entered later, not other systems.
+    upload time only, not data entered later, not other systems.
 (3) The negation denies the inference a reader draws: that a clean result means the
     file contains no personal data, or that they are GDPR compliant.
 (4) It is NOT generic legal boilerplate. No "for informational purposes only", no

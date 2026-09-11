@@ -2,7 +2,7 @@
 name: german-additions
 description: >
   Answer what Germany requires ON TOP OF MDR/IVDR for a device placed on the German
-  market — language rules for the Declaration of Conformity and product information
+  market, language rules for the Declaration of Conformity and product information
   (MPDG § 8), supplementary DMIDS notifications (§ 4), and supplementary vigilance
   duties including German-language FSNs (§ 73). Use when the user asks "do we need
   German labelling", "what does Germany require", "MPDG", "is English enough",
@@ -11,7 +11,7 @@ description: >
 argument-hint: "[the German-market question]"
 ---
 
-# MPDG — the German delta
+# MPDG: the German delta
 
 MDR is not the whole obligation for the German market. MPDG, Germany's implementation
 act, **adds** duties that MDR never mentions, and those additions are where a
@@ -21,13 +21,13 @@ This skill answers one question: **does Germany require something here that MDR 
 not, and if so what.** Verbatim text is in `references/mpdg.md`. Read it before
 answering.
 
-It carries **three sections only** — § 8 (language), § 4 (supplementary notifications),
+It carries **three sections only**, § 8 (language), § 4 (supplementary notifications),
 § 73 (supplementary vigilance). Everything else in MPDG is out of scope and must be
 said so rather than guessed.
 
 ---
 
-## Step 0 — Establish two things
+## Step 0: Establish two things
 
 **Is the German market actually in play?** MPDG applies *im Geltungsbereich dieses
 Gesetzes*. If the product is not made available in Germany, none of this applies, and
@@ -47,33 +47,33 @@ outside Germany.
 
 ## The three areas
 
-### § 8 — Language
+### § 8: Language
 
 **Do not answer "everything must be in German".** That is wrong, and it is the more
 common error of the two. The rule is asymmetric:
 
-- **EU Declaration of Conformity** — German **or English**. § 8(1). English alone is
+- **EU Declaration of Conformity**: German **or English**. § 8(1). English alone is
   compliant. Telling a manufacturer to translate the DoC is over-application.
-- **Information for users and patients** — **German**. § 8(2) sentence 1, and it is a
+- **Information for users and patients**: **German**. § 8(2) sentence 1, and it is a
   condition of supply: products may only be handed over if it is met.
-- **The professional-user exception** — § 8(2) sentence 2 permits English or another
+- **The professional-user exception**: § 8(2) sentence 2 permits English or another
   easily understood language, but only where **all three** hold: it is a justified case
   (*begründeter Fall*), the information is **exclusively** for professional users, and
   **safety-related information is still provided in German** or the user's language.
   Missing any one, sentence 1 applies.
-- **Implant information** under MDR Art. 18(1) — **German**, § 8(3). No professional-user
+- **Implant information** under MDR Art. 18(1). **German**, § 8(3). No professional-user
   exception reaches it.
 
 When someone asks "is English enough?", the answer depends entirely on which of those
 they mean. Ask if it is not clear.
 
-### § 4 — Supplementary notifications
+### § 4: Supplementary notifications
 
 Notifications to the German competent authority through **DMIDS** (§ 86), which is
 separate from EUDAMED registration. Two triggers:
 
 - Reprocessing sterile or low-germ devices exclusively for others, or a health
-  institution reprocessing single-use devices under MDR Art. 17(3) — **unless** already
+  institution reprocessing single-use devices under MDR Art. 17(3), **unless** already
   obliged to register under MDR Art. 31.
 - Manufacturing **class III custom-made implantable** devices.
 
@@ -83,16 +83,16 @@ must be notified **unverzüglich**.
 The Art. 31 carve-out in § 4(1) is the point: this catches parties MDR's own
 registration does not.
 
-### § 73 — Supplementary vigilance
+### § 73: Supplementary vigilance
 
 Three things MDR Art. 89 does not say:
 
-1. The **Field Safety Notice must be in German** — § 73(1), attaching to FSCAs taken in
+1. The **Field Safety Notice must be in German**, § 73(1), attaching to FSCAs taken in
    Germany.
 2. Manufacturers established in Germany must **document the FSCA and periodically review
-   its effectiveness** — § 73(2) sentence 1.
+   its effectiveness**, § 73(2) sentence 1.
 3. **Completion** of an FSCA must be notified to both the competent authority and the
-   federal higher authority — § 73(2) sentence 2. For importers this applies only where
+   federal higher authority, § 73(2) sentence 2. For importers this applies only where
    the authorised representative is outside Germany.
 
 ---
@@ -115,12 +115,12 @@ free-sale certificates, penalties and fines.
 ```markdown
 ## [the question]
 
-**German market:** [confirmed | not established — see note]
+**German market:** [confirmed | not established, see note]
 **Answer:** [the obligation, in one line]
 
 | Item | MDR requires | Germany adds | Basis |
 |---|---|---|---|
-| ... | ... | ... | MPDG § X `[verified]` |
+|... |... |... | MPDG § X `[verified]` |
 
 **What would change this:** [the fact that flips it]
 
@@ -133,9 +133,9 @@ in that column rather than stating it from memory.
 
 ## Citation discipline
 
-- **`[verified]`** — MPDG §§ 4, 8, 73, in `references/mpdg.md`, retrieved from
+- **`[verified]`**: MPDG §§ 4, 8, 73, in `references/mpdg.md`, retrieved from
   gesetze-im-internet 2026-09-10 and re-checkable there.
-- **`[verify]`** — anything else, including MDR and IVDR articles themselves, other MPDG
+- **`[verify]`**: anything else, including MDR and IVDR articles themselves, other MPDG
   sections, MDCG guidance, and BfArM practice.
 
 **No silent supplement.** A `[verify]` tag is not permission to answer from memory. If

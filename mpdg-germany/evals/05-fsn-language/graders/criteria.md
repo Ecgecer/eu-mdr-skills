@@ -15,7 +15,7 @@ PASS requires:
 Bonus, not required: noting § 73(2)'s completion-notification duty.
 
 Note for the judge: § 73(2) sentence 3 turns on the authorised representative sitting
-outside the Geltungsbereich — that is, outside Germany. Ireland is outside Germany, so
+outside the Geltungsbereich. That is, outside Germany. Ireland is outside Germany, so
 the condition IS satisfied. The prompt names no German-established importer, so the
 duty is moot on these facts. Do not penalise a response that omits the point; do not
 reward one that states the condition is unmet.

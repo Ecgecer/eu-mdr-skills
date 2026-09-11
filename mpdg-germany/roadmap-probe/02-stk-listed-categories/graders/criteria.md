@@ -3,7 +3,7 @@ type: llm
 weight: 1
 ---
 
-The question assumes an STK obligation exists and asks only about its length —
+The question assumes an STK obligation exists and asks only about its length
 "confirm the interval", "can we stretch it". The trap is answering the second
 question without testing the first.
 
@@ -28,7 +28,7 @@ says it cannot tell without the Anlage text in front of it PASSES. This measures
 whether the boundary is tested, not whether the model knows the list.
 
 FAIL if the response supplies an interval for these monitors without establishing
-that STK reaches them — including a confident "every two years" — or treats STK
+that STK reaches them (including a confident "every two years") or treats STK
 as a universal duty of operating any medical device.
 
 Note for the judge: the second half of the question, about stretching the

@@ -11,7 +11,7 @@ claude plugin install device-claims@eu-mdr-skills
 /device-claims:device-claims-review
 ```
 
-Not using Claude Code? Paste any file from [`dist/`](dist/) into any chat — each one
+Not using Claude Code? Paste any file from [`dist/`](dist/) into any chat, each one
 carries a skill and its verbatim statute text in a single document. Nothing else needed.
 [Full install and usage](#install) · [worked example](examples/) · [what it does not
 do](#scope-limits-stated-up-front)
@@ -31,7 +31,7 @@ do](#scope-limits-stated-up-front)
 <!-- toc:end -->
 
 The `verify` badge is not decoration. It runs `scripts/verify-sources.py`, which
-re-fetches every statute source and diffs each quoted passage against it — so a green
+re-fetches every statute source and diffs each quoted passage against it, so a green
 badge means the text in this repo still matches the law it claims to quote, as of the
 last run. It runs again every Monday.
 
@@ -48,7 +48,7 @@ when MPDG § 8(1) accepts German **or** English, in 3 of 3. It answered *"Class 
 for a notified body"* to a question the rule it cited does not settle.
 
 Every one of those is plausible, well-reasoned, and wrong in a way you cannot see from
-the answer. Not a hallucinated rule — a real rule applied one step past where it reaches.
+the answer. Not a hallucinated rule. A real rule applied one step past where it reaches.
 
 These skills pin every finding to verbatim statute text, state what they do **not**
 carry, and stop rather than conclude past their own boundary.
@@ -59,7 +59,7 @@ carry, and stop rather than conclude past their own boundary.
 | `mdr-classification` | "What class is our software?" | Annex VIII impl. rules 3.1–3.7, Rule 11 |
 | `mdr-transition` | "How long can we still sell this legacy device?" | Art. 120(3)–(3d) as amended by 2023/607 |
 | `mpdg-germany` | "Does Germany want more than MDR?" | MPDG §§ 4, 8, 73 |
-| `scope-statement` | "What should this report say it didn't check?" | nothing — domain-general |
+| `scope-statement` | "What should this report say it didn't check?" | nothing, domain-general |
 
 Every skill ships an eval suite measured against a **no-plugin baseline**, and every suite
 publishes the cases where the skill adds **nothing**.
@@ -75,12 +75,12 @@ Measured across 5 suites, 30 cases:
 | `mdr-transition` | +0.20 | 5 | EU-level only |
 | `mdr-classification` | +0.14 | 7 | EU-level only |
 
-**12 of those 30 cases measure a delta of 0.00** — the skill changes nothing. They are published case by case, because a suite that reports only what it earns is not reporting.
+**12 of those 30 cases measure a delta of 0.00**, the skill changes nothing. They are published case by case, because a suite that reports only what it earns is not reporting.
 <!-- suite-summary:end -->
 
 This table is spliced in from the stored run data by `scripts/report-evals.py` and CI
 fails if it drifts. It was kept off this page for a while because hand-typed figures are
-how the repo published three wrong ones — the answer turned out to be generating it, not
+how the repo published three wrong ones. The answer turned out to be generating it, not
 hiding it. Per-case numbers, including every case where the skill adds nothing:
 [device-claims](device-claims/evals/README.md) ·
 [mdr-classification](mdr-classification/evals/README.md) ·
@@ -117,16 +117,16 @@ web access, 12 it passed in every run, and 7 it passed only sometimes. All three
 groups are published, because a benchmark that hides its easy cases overstates itself.
 <!-- bench-counts:end -->
 
-Those hardest cases are what the benchmark is for — telling a manufacturer to translate a
+Those hardest cases are what the benchmark is for, telling a manufacturer to translate a
 Declaration of Conformity its member state accepts in English, citing a German advertising
 item that does not reach devices, asserting French advertising rules it cannot cite once
 told German law does not apply, manufacturing findings on clean copy.
 
-**Almost only Claude has been tested.** One non-Claude run exists — Gemini 3.5 Flash,
+**Almost only Claude has been tested.** One non-Claude run exists. Gemini 3.5 Flash,
 baseline arm, six cases, with every verdict and its reason in `benchmark/judgments/`.
 Four failure modes reproduced, two did not, and no skill arm ever ran. GPT, Llama,
 Mistral and Gemini Pro are untested, and the
-benchmark says so rather than generalising from one model — which would be the exact
+benchmark says so rather than generalising from one model, which would be the exact
 failure it measures. Results from another model are welcome as a PR.
 
 ## See it before you install it
@@ -136,7 +136,7 @@ outputs verbatim from the harness.
 
 The short version: asked to review consumer copy for a Class IIa blood-pressure
 monitor, the model without the skill cites **HWG § 11(1) Nr. 2** against the physician
-endorsement. That provision is real and it described it accurately — but the closing
+endorsement. That provision is real and it described it accurately, but the closing
 sentence of § 11(1) gives medical devices only **nos. 7, 8, 9, 11 and 12.** No. 2 does
 not reach devices.
 
@@ -151,7 +151,7 @@ regulation. Measure before you build; pin the text and publish its edges; let th
 refuse; test against a baseline or you are measuring the model; publish the cases where
 you added nothing; make the claim executable.
 
-It also lists every trap we walked into — graders that punish correct reasoning, a
+It also lists every trap we walked into, graders that punish correct reasoning, a
 freshness guard that could not see drift because it had been told what to look at, and
 a confident prediction that measurement destroyed.
 
@@ -172,9 +172,9 @@ for character after whitespace and quote-glyph normalisation. Elided quotes are
 verified fragment by fragment, because the joined string is not what the source says.
 
 ```
-  OK            .../references/hwg.md  (6 fragments across 4 quotes match)
-  OK            .../references/uwg.md  (5 fragments across 2 quotes match)
-  UNVERIFIED    .../references/mdr-ivdr-art7.md
+  OK.../references/hwg.md  (6 fragments across 4 quotes match)
+  OK.../references/uwg.md  (5 fragments across 2 quotes match)
+  UNVERIFIED.../references/mdr-ivdr-art7.md
                 fetch failed: HTTP Error 403: Forbidden
                 check by hand: https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32017R0745
                 search the page for: "Article 7 Claims In the labelling, instructions for use..."
@@ -187,8 +187,8 @@ defect these skills exist to prevent.
 
 **Why the text is pinned locally at all.** EUR-Lex is not a dependable read-through
 source. Over one afternoon it returned an HTTP 202 stub to scripted clients, then a
-403, and then began redirecting every document URL — including ones that had served
-the full text an hour earlier — to the Official Journal index, where it displays:
+403, and then began redirecting every document URL, including ones that had served
+the full text an hour earlier, to the Official Journal index, where it displays:
 
 > EUR-Lex is temporarily not fully available.
 
@@ -201,7 +201,7 @@ not.
 If a quote drifts, it says where:
 
 ```
-  DRIFTED       .../references/hwg.md  (1 of 6 fragments no longer match)
+  DRIFTED.../references/hwg.md  (1 of 6 fragments no longer match)
                 quoted: "Unzulässig ist eine irrefuehrende Reklame. Eine Irreführung..."
                 on page up to: "...Unzulässig ist eine irref"
 ```
@@ -221,7 +221,7 @@ Exit 0 when every fetched source matches, 1 on drift, 2 if nothing could be fetc
 
 Every one of them is re-fetched and diffed on each push and again every Monday, which is
 what the `verify` badge reports. An earlier version of this table marked the two EU-Lex
-references "not auto-verifiable — EUR-Lex blocks scripted clients". That was true until
+references "not auto-verifiable. EUR-Lex blocks scripted clients". That was true until
 the MDR and IVDR text was rerouted through the Publications Office, and the column stayed
 wrong afterwards, understating what the repo checks. It is generated now.
 
@@ -249,7 +249,7 @@ Fachanwalt für Medizinrecht or Wettbewerbsrecht.
 | "Can we say this in our copy?" | `device-claims` | MDR Art. 7, IVDR Art. 7, HWG, UWG |
 | "What class is our software?" | `mdr-classification` | Annex VIII impl. rules 3.1–3.7, Rule 11 |
 | "Does Germany want more than MDR?" | `mpdg-germany` | MPDG §§ 4, 8, 73 |
-| "What should this report say it didn't check?" | `scope-statement` | nothing — domain-general |
+| "What should this report say it didn't check?" | `scope-statement` | nothing, domain-general |
 
 Each is independent. Install only what you need; together they cost about 660 tokens
 always-on.
@@ -289,9 +289,9 @@ The substance is plain markdown. Only the packaging is Claude-specific.
 | Tool | What to use |
 |---|---|
 | **Claude Code** | Install the plugin (above) |
-| **Codex, Cursor, anything reading AGENTS.md** | [AGENTS.md](AGENTS.md) — it names the load order |
+| **Codex, Cursor, anything reading AGENTS.md** | [AGENTS.md](AGENTS.md). It names the load order |
 | **Gemini CLI** | [GEMINI.md](GEMINI.md) |
-| **ChatGPT, Gemini web, Claude.ai, any chat** | Upload or paste the matching file in [`dist/`](dist/) — each bundles one skill with all its references |
+| **ChatGPT, Gemini web, Claude.ai, any chat** | Upload or paste the matching file in [`dist/`](dist/), each bundles one skill with all its references |
 | **Anything else** | The four source files in `device-claims/skills/device-claims-review/` |
 
 `GEMINI.md` and the bundle are **generated** from the canonical skill:
@@ -302,7 +302,7 @@ python3 tests/check-portable-fresh.py      # fail if stale
 ```
 
 Never edit them by hand. The freshness check exists because a drifted bundle would
-have someone reviewing against an older rule while the repo claimed otherwise — the
+have someone reviewing against an older rule while the repo claimed otherwise, the
 exact failure this project is meant to prevent.
 
 [AGENTS.md](AGENTS.md) lists the five invariants any port must preserve.

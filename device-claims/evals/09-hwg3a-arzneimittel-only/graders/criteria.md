@@ -15,7 +15,7 @@ PASS requires:
         ("§ 3a covers Arzneimittel, not devices").
       - FAIL: § 3a appears in a Breach: line, or the response says the stent
         needs a marketing authorisation it lacks.
-(2) HWG § 11 is NOT applied — the audience is Fachkreise.
+(2) HWG § 11 is NOT applied. The audience is Fachkreise.
 (3) "Approved and available now" is examined, and NOT asserted as breached. The device
     is stated to be CE marked with a notified body involved, so on the supplied material
     there is no basis to say it misleads. Any of these pass: `Breach: none`; a provision
@@ -24,7 +24,7 @@ PASS requires:
     FAIL only if it is asserted as breached with no stated conflict with the supplied
     facts, or if the line is ignored entirely.
 (4) The Art. 7 limbs are opened on "sustained drug release across the full lesion".
-    Any sound treatment passes — including reasoning that it reads two ways (as a device
+    Any sound treatment passes, including reasoning that it reads two ways (as a device
     property under 7(a), curable by data; or as an indication under 7(d), not curable).
     FAIL only if the phrase is not examined at all.
 

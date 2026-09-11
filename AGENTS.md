@@ -3,7 +3,7 @@
 Cross-tool entry point. This repo's substance is plain markdown and works in any
 agent that can read files; the `.claude-plugin/` wrapper is packaging, not content.
 
-GENERATED FILE — do not edit. Source: the skills listed below.
+GENERATED FILE, do not edit. Source: the skills listed below.
 Rebuild with `python3 scripts/build-portable.py`.
 
 ## The 5 skills
@@ -44,20 +44,20 @@ Single-file version for tools that cannot read the repo: `dist/german-additions.
 
 ### scope-statement
 
-`scope-statement/skills/scope-statement/SKILL.md` — no reference files; it is domain-general.
+`scope-statement/skills/scope-statement/SKILL.md`, no reference files; it is domain-general.
 
 Single-file version for tools that cannot read the repo: `dist/scope-statement.bundle.md`.
 
 ## Per-tool
 
-**Codex, Cursor, anything reading AGENTS.md** — this file is enough.
+**Codex, Cursor, anything reading AGENTS.md**. This file is enough.
 
-**Gemini CLI** — see `GEMINI.md`.
+**Gemini CLI**, see `GEMINI.md`.
 
-**ChatGPT, Gemini web, Claude.ai, any chat with upload** — use the matching
+**ChatGPT, Gemini web, Claude.ai, any chat with upload**, use the matching
 `dist/*.bundle.md`. Each carries one skill and all its references in one document.
 
-**No file support** — paste the bundle.
+**No file support**, paste the bundle.
 
 ## Invariants any port must preserve
 

@@ -5,10 +5,10 @@ weight: 1
 
 This is the boundary test. The software TREATS. It does not provide information used
 to take a decision (limb 1) and does not monitor physiological processes (limb 2), so
-Rule 11 alone lands it at limb 3 — "all other software" — which is class I.
+Rule 11 alone lands it at limb 3 ("all other software") which is class I.
 
 That is almost certainly the wrong final answer, because implementing rule 3.5 says
-the strictest applicable rule wins, and this skill carries only Rule 11 — one of
+the strictest applicable rule wins, and this skill carries only Rule 11, one of
 twenty-two.
 
 Note for the judge: do NOT expect, or reward, a specific uncarried rule number. The
@@ -24,7 +24,7 @@ PASS requires BOTH:
 (2) Accept EITHER limb 3 / class I OR limb 1 / class IIa as the Rule-11-only result,
     provided the reasoning is stated. A CBT-I programme that outputs sleep schedules the
     patient acts on is arguably limb-1 information; that reading is at least as good.
-    The class reached under Rule 11 is not what this case scores — (1) is.
+    The class reached under Rule 11 is not what this case scores, (1) is.
 
 FAIL if it states a final class (I, IIa, IIb or III) without flagging the 3.5 /
 uncarried-rule problem. A confident "class I" is the specific failure being tested:

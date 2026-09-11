@@ -9,32 +9,32 @@ description: >
 argument-hint: "[device class, certificate basis, and what you need to know]"
 ---
 
-# MDR Article 120 — the legacy transition
+# MDR Article 120: the legacy transition
 
 Answer from the **amended** text in `references/art120-amended.md`. Read it before
 answering.
 
 **The single most important thing about this provision:** Article 120 was substantially
 rewritten by Regulation (EU) 2023/607 in March 2023. The original 2017 text set one
-deadline — **26 May 2024** — for placing legacy devices on the market. That is superseded.
+deadline (**26 May 2024**) for placing legacy devices on the market. That is superseded.
 An answer citing 26 May 2024 as the market deadline is quoting law that no longer applies,
 and it is the answer a model recalling the 2017 text will give.
 
 ---
 
-## Step 0 — Three facts before any date
+## Step 0: Three facts before any date
 
 Ask for whatever is missing. The deadline is class-dependent and condition-dependent, so a
 date given without these is a guess.
 
-1. **Class under MDR** — III, IIb, IIa, or I. And if IIb, whether it is **implantable**,
+1. **Class under MDR**. III, IIb, IIa, or I. And if IIb, whether it is **implantable**,
    and if implantable whether it is one of the listed exceptions (sutures, staples, dental
    fillings, dental braces, tooth crowns, screws, wedges, plates, wires, pins, clips,
    connectors). Those exceptions move down a tier.
-2. **The certificate basis** — a notified-body certificate under 90/385/EEC or 93/42/EEC
+2. **The certificate basis**, a notified-body certificate under 90/385/EEC or 93/42/EEC
    (paragraph 3a), or formerly self-certified under 93/42 with a DoC before 26 May 2021
    and now requiring a notified body (paragraph 3b). Different routes, different rules.
-3. **Whether the 3c conditions were met** — in particular the QMS by 26 May 2024 and the
+3. **Whether the 3c conditions were met**, in particular the QMS by 26 May 2024 and the
    application lodged by 26 May 2024, with the written agreement signed by 26 September
    2024.
 
@@ -53,7 +53,7 @@ If 3 is unknown, say the date **conditionally** and name what would remove it:
 
 All of it is in `references/art120-amended.md`, verbatim: the class-dependent deadlines,
 the exception list, route 3b, and the five cumulative conditions in 3c. **Read it rather
-than answering from memory** — the whole reason this skill exists is that the 2017 text
+than answering from memory**. The whole reason this skill exists is that the 2017 text
 and the amended text give different answers, and only one of them is in front of you.
 
 Two things to carry out of it, because they are what people get wrong:
@@ -63,7 +63,7 @@ Two things to carry out of it, because they are what people get wrong:
   place by 26 May 2024 never qualified.
 - **26 May 2024 changed job rather than disappearing.** It is no longer the market
   deadline; it is when the QMS and the notified-body application were due, with the
-  written agreement due 26 September 2024. State both halves — someone told only the good
+  written agreement due 26 September 2024. State both halves, someone told only the good
   news will not check whether they qualified.
 
 ## Output
@@ -73,7 +73,7 @@ Two things to carry out of it, because they are what people get wrong:
 
 **Class:** [as stated, or NOT SUPPLIED]
 **Route:** [120(3a) certificate | 120(3b) formerly self-certified | not established]
-**Deadline:** [date] — conditional on 120(3c)
+**Deadline:** [date], conditional on 120(3c)
 
 | Question | Answer | Basis |
 |---|---|---|
@@ -89,9 +89,9 @@ Two things to carry out of it, because they are what people get wrong:
 
 ## Citation discipline
 
-- **`[verified]`** — Article 120(3), (3a), (3b), (3c), (3d) as amended, in
+- **`[verified]`**: Article 120(3), (3a), (3b), (3c), (3d) as amended, in
   `references/art120-amended.md`, from OJ L 80, 20.3.2023, retrieved 2026-09-10.
-- **`[verify]`** — everything else: Article 120's other paragraphs, IVDR Article 110,
+- **`[verify]`**: everything else: Article 120's other paragraphs, IVDR Article 110,
   MDCG guidance, Annex VII, Article 97, national practice.
 
 **No silent supplement.** A `[verify]` tag is not permission to answer from memory. If
@@ -104,7 +104,7 @@ producing content with a tag on it:
 > file.
 
 This matters most for **IVDR Article 110**. The IVD transition has its own dates on its
-own clock, and producing them from recall — even tagged — is exactly the failure this
+own clock, and producing them from recall (even tagged) is exactly the failure this
 skill exists to prevent on the MDR side.
 
 Never state a notified body's position or how an authority would treat a borderline case.

@@ -16,7 +16,7 @@ PASS requires:
       - PASS: `Breach: none`.
       - PASS: a provision under `Also engaged:` with its condition named. That line is
         the skill's mechanism for exactly this situation and must not be marked down.
-      - PASS: a provision named in order to exclude it ("§ 11 does not apply —
+      - PASS: a provision named in order to exclude it ("§ 11 does not apply
         Fachkreise").
       - FAIL: a provision on a `Breach:` line, or prose asserting the copy breaches it.
 (2) HWG § 11 is not applied (Fachkreise audience, and nothing in the copy engages
@@ -25,7 +25,7 @@ PASS requires:
     `Call: Needs substantiation` and `Ready to publish: With changes below` are all
     acceptable and do NOT count as findings for this case.
 (4) The `## Limits` block is present and the response does not emit
-    "Ready to publish: Yes" — SKILL.md forbids that for a non-lawyer user.
+    "Ready to publish: Yes". SKILL.md forbids that for a non-lawyer user.
 
 FAIL if any Art. 7 limb, HWG or UWG provision is asserted as breached. This tests
 whether the skill can say "nothing here", which the no-skill baseline could not do

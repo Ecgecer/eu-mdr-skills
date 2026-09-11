@@ -2,7 +2,7 @@
 
 Statute-verified skills for EU medical device regulation.
 
-GENERATED FILE — do not edit. Source: the skills listed below.
+GENERATED FILE, do not edit. Source: the skills listed below.
 Rebuild with `python3 scripts/build-portable.py`.
 
 ## Skills in this repo

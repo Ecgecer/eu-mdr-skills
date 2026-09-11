@@ -1,4 +1,4 @@
-# MPDG — what Germany requires on top of MDR
+# MPDG: what Germany requires on top of MDR
 
 **Source:** gesetze-im-internet.de, Medizinprodukterecht-Durchführungsgesetz (MPDG)
 <https://www.gesetze-im-internet.de/mpdg/>
@@ -9,14 +9,14 @@ words. It is not in the source. Everything else in a quoted block is verbatim, a
 `scripts/verify-sources.py` checks that character for character.
 
 MPDG is Germany's implementation act for MDR and IVDR. It does not restate the
-Regulations — it **adds** to them, and the additions are where manufacturers selling
+Regulations. It **adds** to them, and the additions are where manufacturers selling
 into Germany get caught, because MDR alone does not mention them.
 
 This file carries three sections. It does not carry the rest of the Act.
 
 ---
 
-## § 8 — Language (Sprachenregelung)
+## § 8: Language (Sprachenregelung)
 
 > **§ 8 Sprachenregelung für die EU-Konformitätserklärung und für Produktinformationen**
 >
@@ -46,7 +46,7 @@ a real error:
 | Item | Language | Note |
 |---|---|---|
 | **EU Declaration of Conformity** | German **or English** | § 8(1). English alone is sufficient. Requiring German here is over-application. |
-| **Information for users and patients** | **German** | § 8(2) sentence 1. The default, and it is a condition of supply — products may only be handed over if it is met. |
+| **Information for users and patients** | **German** | § 8(2) sentence 1. The default, and it is a condition of supply n/a products may only be handed over if it is met. |
 | Same, professional users only | English or another easily understood language | § 8(2) sentence 2, and only **in begründeten Fällen**. Three conditions, all required. |
 | **Safety-related** information, even then | **German** or the user's language | § 8(2) sentence 2, final clause. The exception does not reach safety information. |
 | **Implant card / implant information**, Art. 18(1) MDR | **German** | § 8(3). No professional-user exception. |
@@ -57,7 +57,7 @@ default in sentence 1 applies.
 
 ---
 
-## § 4 — Supplementary notification duties (Ergänzende Anzeigepflichten)
+## § 4: Supplementary notification duties (Ergänzende Anzeigepflichten)
 
 > **§ 4 Ergänzende Anzeigepflichten**
 >
@@ -80,14 +80,14 @@ default in sentence 1 applies.
 
 These are notifications to the German competent authority through **DMIDS** (Deutsches
 Medizinprodukteinformations- und Datenbanksystem, § 86), separate from EUDAMED
-registration. § 4(1) carves out anyone already obliged to register under MDR Art. 31 —
+registration. § 4(1) carves out anyone already obliged to register under MDR Art. 31
 so this catches parties MDR's own registration does not.
 
 Both duties bite **before the activity starts**, not at first placing on the market.
 
 ---
 
-## § 73 — Supplementary vigilance duties (Ergänzende Herstellerpflichten)
+## § 73: Supplementary vigilance duties (Ergänzende Herstellerpflichten)
 
 > **§ 73 Ergänzende Herstellerpflichten im Rahmen der Vigilanz; Sprachenregelung**
 >
@@ -97,20 +97,20 @@ Both duties bite **before the activity starts**, not at first placing on the mar
 
 Three additions MDR Art. 89 does not contain:
 
-1. The **FSN must be written in German** — § 73(1). This attaches to the action, not to
+1. The **FSN must be written in German**, § 73(1). This attaches to the action, not to
    where the manufacturer sits: it applies to manufacturers taking an FSCA *im
    Geltungsbereich dieses Gesetzes*.
-2. **Documenting the FSCA and periodically reviewing its effectiveness** — § 73(2)
+2. **Documenting the FSCA and periodically reviewing its effectiveness**, § 73(2)
    sentence 1, for manufacturers established in Germany.
 3. **Notifying completion** of an FSCA to both the competent authority and the federal
-   higher authority — § 73(2) sentence 2. The importer's duty in sentence 3 is
+   higher authority, § 73(2) sentence 2. The importer's duty in sentence 3 is
    conditional: only where the authorised representative sits outside Germany.
 
 ---
 
 ## What this file does not carry
 
-The rest of MPDG — clinical investigations (§§ 24 ff.), operation and use of devices
+The rest of MPDG, clinical investigations (§§ 24 ff.), operation and use of devices
 (§ 11), special authorisation (§ 7), classification and legal-status determination by
 the authority (§ 6), free-sale certificates (§ 10), penalties and fines (§§ 92–94), and
 everything else. Where a question touches those, say so and stop.

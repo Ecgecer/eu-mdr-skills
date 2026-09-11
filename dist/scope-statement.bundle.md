@@ -1,9 +1,9 @@
-# scope-statement — single-file bundle
+# scope-statement, single-file bundle
 
 Plugin `scope-statement`. Everything needed to run this skill in a tool that cannot
 read the repo: paste or upload this whole file, then give it your input.
 
-GENERATED FILE — do not edit. Source:
+GENERATED FILE, do not edit. Source:
 scope-statement/skills/scope-statement/. Rebuild with `python3 scripts/build-portable.py`.
 
 ---
@@ -60,7 +60,7 @@ part. That is the line readers most want and least often get.
 
 **This is the one that earns the block.** Two categories, and both belong:
 
-1. **Deliberate exclusions** — what the check was never designed to cover.
+1. **Deliberate exclusions**, what the check was never designed to cover.
 2. **What a reader would reasonably assume was covered and wasn't.** Harder, more
    valuable. If the check validates field presence but not field *correctness*, a
    reader who sees "passed" believes their data is right. Say so.
@@ -97,15 +97,15 @@ intended purpose changing. A scope statement with no expiry gets quoted a year l
    > **Against:** our own pattern set and name dictionary, version not supplied — not an
    > external standard.
 
-   That is a finished sentence claiming no authority it cannot support. A bracket —
-   `[pattern set version + date — fill this in]` — is an unfinished document: asked for a
+   That is a finished sentence claiming no authority it cannot support. A bracket
+   `[pattern set version + date (fill this in]`) is an unfinished document: asked for a
    scope statement, the reader gets a form to complete. Deliver the block, then ask
    underneath:
 
    > Tell me the rule set or schema and its version or retrieval date and I will pin the
    > basis line. Without it I can say what was checked but not what it means.
 
-4. **Write the block.** Fill every line. An empty line is a lie of omission — and so is a
+4. **Write the block.** Fill every line. An empty line is a lie of omission, and so is a
    line filled with a placeholder addressed to the reader.
 5. **Check the negation.** Read "This does not establish" aloud. If it does not sting
    slightly, it is too soft to do its job.
@@ -119,11 +119,11 @@ two load-bearing lines do not.**
 Compress in this order:
 
 1. **Drop the labels.** Prose carries the same content. "Runs on this file at upload,
-   by pattern matching — so a clean result means nothing matched, not that the file is
+   by pattern matching, so a clean result means nothing matched, not that the file is
    clear" is a complete scope statement in one sentence.
 2. **Merge `Checked` and `Against`.** "Pattern-matched against [ruleset v2.1]" does both.
 3. **Cut `Not checked` to the two a reader would most wrongly assume were covered.**
-   Not the full list — the two that matter. A long list in a small space gets skipped
+   Not the full list, the two that matter. A long list in a small space gets skipped
    entirely, which is worse than a short one that gets read.
 4. **Never cut the negation.** "A clean result means nothing matched, not that the file
    is clear" is the line the whole block exists for. If only one sentence survives, it
@@ -137,7 +137,7 @@ too if it would be useful elsewhere, but lead with what was asked for.
 ## What not to do
 
 **Do not write a disclaimer.** "For informational purposes only", "consult a
-professional", "no warranty" — these protect the author and tell the reader nothing.
+professional", "no warranty", these protect the author and tell the reader nothing.
 A scope statement is a description of coverage. If a line would appear unchanged on an
 unrelated product, delete it.
 

@@ -64,7 +64,7 @@ def normalise(s: str) -> str:
     """Collapse the differences that are not the text: whitespace and quote glyphs."""
     s = html.unescape(s)
     for a, b in [("‘", "'"), ("’", "'"), ("“", '"'), ("”", '"'),
-                 ("—", "-"), ("–", "-"), ("−", "-"), ("\xa0", " ")]:
+                 ("\u2014", "-"), ("–", "-"), ("−", "-"), ("\xa0", " ")]:
         s = s.replace(a, b)
     return re.sub(r"\s+", " ", s).strip()
 
@@ -82,11 +82,11 @@ def page_text(url: str):
     except (urllib.error.URLError, TimeoutError, OSError) as e:
         return None, f"fetch failed: {e}"
     if status != 200:
-        return None, f"HTTP {status} — served a stub, not the document (bot protection)"
+        return None, f"HTTP {status}, served a stub, not the document (bot protection)"
     body = re.sub(r"<(script|style).*?</\1>", " ", raw, flags=re.S | re.I)
     text = normalise(re.sub(r"<[^>]+>", " ", body))
     if len(text) < MIN_TEXT:
-        return None, f"HTTP {status} but only {len(text)} chars of text — stub, not the document"
+        return None, f"HTTP {status} but only {len(text)} chars of text, stub, not the document"
     return text, None
 
 
@@ -120,7 +120,7 @@ def quotes_in(path: Path):
 
 
 def longest_run(quote: str, corpus: str) -> str:
-    """Longest leading fragment of `quote` present in corpus — shows where drift starts."""
+    """Longest leading fragment of `quote` present in corpus, shows where drift starts."""
     lo, hi = 0, len(quote)
     while lo < hi:
         mid = (lo + hi + 1) // 2
@@ -179,7 +179,7 @@ def main():
               f"update the retrieval date before relying on them.")
         return 1
     if not fetched_any:
-        print("No source could be fetched. Nothing was verified — do not read this as a pass.")
+        print("No source could be fetched. Nothing was verified, do not read this as a pass.")
         return 2
     print("Every quote from every fetched source matches. Unverified files are listed above.")
     return 0

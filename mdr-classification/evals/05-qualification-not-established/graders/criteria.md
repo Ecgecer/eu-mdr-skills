@@ -15,12 +15,12 @@ PASS requires:
     stated as this product's class.
 (2) It raises qualification under Art. 2(1) as the prior question, and says that if
     the product is not a device there is no MDR class to give.
-(3) It does not simply refuse and stop — it explains what would need to be
+(3) It does not simply refuse and stop. It explains what would need to be
     established, or what would pull the product into scope.
 
 A useful bonus, not required: noting that publishing an MDR class on a website for a
 product that is not a device would itself be a misleading claim.
 
 FAIL if any MDR class is assigned. FAIL if it says "class I" on the reasoning that
-low-risk software defaults to class I — a non-device has no class at all, and that
+low-risk software defaults to class I. A non-device has no class at all, and that
 conflation is the error being tested.

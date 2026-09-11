@@ -46,12 +46,12 @@ def build_bundle(plugin, skill, skill_dir):
     body = body.replace("`references/`", "the reference texts below")
     body = body.replace("outside `references/`", "outside the reference texts below")
     parts = [
-        f"# {skill} — single-file bundle",
+        f"# {skill}, single-file bundle",
         "",
         f"Plugin `{plugin}`. Everything needed to run this skill in a tool that cannot",
         "read the repo: paste or upload this whole file, then give it your input.",
         "",
-        "GENERATED FILE — do not edit. Source:",
+        "GENERATED FILE, do not edit. Source:",
         f"{plugin}/skills/{skill}/. Rebuild with `python3 scripts/build-portable.py`.",
         "", "---", "",
         body.rstrip(),
@@ -94,12 +94,13 @@ def reference_table():
         src = re.search(r"\*\*Source:\*\*\s*(.+)", txt)
         url = re.search(r"<(https?://[^>]+)>", txt)
         got = re.search(r"\*\*Retrieved:\*\*\s*([0-9]{4}-[0-9]{2}-[0-9]{2})", txt)
-        src_txt = (src.group(1).strip().rstrip("—").strip() if src else "—")
+        # rstrip the em dash the Source line may end on; "n/a" when there is no Source.
+        src_txt = (src.group(1).strip().rstrip("\u2014").strip() if src else "n/a")
         if url:
             src_txt = f"[{src_txt}]({url.group(1)})"
         # parts: <plugin>/skills/<skill>/references/<file>.md -- the plugin is -5.
         plugin = ref.parts[-5]
-        rows.append(f"| `{ref.name}` | `{plugin}` | {src_txt} | {got.group(1) if got else '—'} |")
+        rows.append(f"| `{ref.name}` | `{plugin}` | {src_txt} | {got.group(1) if got else ', '} |")
     return "\n".join(["| Reference | Skill | Source | Retrieved |", "|---|---|---|---|"] + rows)
 
 
@@ -107,7 +108,7 @@ def build_gemini(skills):
     lines = [
         "# GEMINI.md", "",
         "Statute-verified skills for EU medical device regulation.", "",
-        "GENERATED FILE — do not edit. Source: the skills listed below.",
+        "GENERATED FILE, do not edit. Source: the skills listed below.",
         "Rebuild with `python3 scripts/build-portable.py`.", "",
         "## Skills in this repo", "",
     ]
@@ -137,7 +138,7 @@ def build_agents(skills):
         "Cross-tool entry point. This repo's substance is plain markdown and works in any",
         "agent that can read files; the `.claude-plugin/` wrapper is packaging, not content.",
         "",
-        "GENERATED FILE — do not edit. Source: the skills listed below.",
+        "GENERATED FILE, do not edit. Source: the skills listed below.",
         "Rebuild with `python3 scripts/build-portable.py`.", "",
         f"## The {len(skills)} skills", "",
     ]
@@ -145,7 +146,7 @@ def build_agents(skills):
         refs = refs_of(skill_dir)
         lines += [f"### {skill}", "",
                   f"`{plugin}/skills/{skill}/SKILL.md`" +
-                  (", then its references:" if refs else " — no reference files; it is domain-general."), ""]
+                  (", then its references:" if refs else ", no reference files; it is domain-general."), ""]
         for r in refs:
             lines.append(f"- `{plugin}/skills/{skill}/references/{r}`")
         if refs: lines.append("")
@@ -153,14 +154,14 @@ def build_agents(skills):
                   f"`dist/{skill}.bundle.md`.", ""]
     lines += [
         "## Per-tool", "",
-        "**Codex, Cursor, anything reading AGENTS.md** — this file is enough.",
+        "**Codex, Cursor, anything reading AGENTS.md**. This file is enough.",
         "",
-        "**Gemini CLI** — see `GEMINI.md`.",
+        "**Gemini CLI**, see `GEMINI.md`.",
         "",
-        "**ChatGPT, Gemini web, Claude.ai, any chat with upload** — use the matching",
+        "**ChatGPT, Gemini web, Claude.ai, any chat with upload**, use the matching",
         "`dist/*.bundle.md`. Each carries one skill and all its references in one document.",
         "",
-        "**No file support** — paste the bundle.",
+        "**No file support**, paste the bundle.",
         "",
         "## Invariants any port must preserve", "",
         "These are not stylistic. Dropping one changes what the skill outputs.", "",
@@ -207,7 +208,7 @@ def main():
     if dist.is_dir():
         for orphan in sorted(p for p in dist.glob("*.bundle.md") if p.name not in expected):
             stale.append(orphan.relative_to(ROOT))
-            print(f"  ORPHAN      {orphan.relative_to(ROOT)} — no matching skill")
+            print(f"  ORPHAN      {orphan.relative_to(ROOT)}, no matching skill")
             if not check:
                 orphan.unlink(); print(f"  removed     {orphan.relative_to(ROOT)}")
     for path, fn in tgts.items():

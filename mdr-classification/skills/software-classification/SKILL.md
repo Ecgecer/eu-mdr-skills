@@ -1,8 +1,8 @@
 ---
 name: software-classification
 description: >
-  Classify medical device software (SaMD) under MDR Annex VIII — implementing rule
-  3.3 and Rule 11 — and say which class it falls in and why. Use when the user asks
+  Classify medical device software (SaMD) under MDR Annex VIII, implementing rule
+  3.3 and Rule 11, and say which class it falls in and why. Use when the user asks
   "what class is our software", "is this Rule 11", "SaMD classification", "is our app
   class IIa or IIb", "MDR class for software", or describes software whose MDR class
   is in question.
@@ -19,7 +19,7 @@ rules 3.1–3.7 and Rule 11. It does not carry Rules 1–10 or 12–22.
 
 ---
 
-## Step 0 — Two prior questions, settled before any rule is applied
+## Step 0: Two prior questions, settled before any rule is applied
 
 ### Is the product a medical device at all?
 
@@ -43,12 +43,12 @@ the software can technically do. Ask for it if it is not supplied:
 > you give me the intended purpose as written in your technical documentation?
 
 A capability outside the intended purpose does not raise the class. It raises a
-different question — whether the intended purpose is stated correctly — and that is
+different question (whether the intended purpose is stated correctly) and that is
 worth flagging when you see it, as a note rather than a classification finding.
 
 ---
 
-## Gate 1 — Does it drive or influence another device? (3.3)
+## Gate 1: Does it drive or influence another device? (3.3)
 
 **Run this before Rule 11. Every time.** It is the step most often skipped, and skipping
 it produces a confident wrong answer.
@@ -69,11 +69,11 @@ genuinely unclear, say which way it turns and what fact would settle it.
 
 ---
 
-## Gate 2 — Rule 11, in order
+## Gate 2: Rule 11, in order
 
 Apply the limbs in this order. Stop at the first that matches.
 
-### Limb 1 — information used to take diagnostic or therapeutic decisions → IIa, escalating
+### Limb 1: information used to take diagnostic or therapeutic decisions → IIa, escalating
 
 Base class **IIa**. Then test the **impact of the decision**, not the severity of the
 disease:
@@ -86,7 +86,7 @@ The escalation asks what a wrong decision may cause. Software informing decision
 serious condition is not automatically III. Software whose output routinely triggers
 surgery is IIb even if the condition is not itself life-threatening.
 
-### Limb 2 — monitoring physiological processes → IIa, escalating
+### Limb 2: monitoring physiological processes → IIa, escalating
 
 Base class **IIa**. Escalation to **IIb** requires **both**:
 
@@ -96,20 +96,20 @@ Base class **IIa**. Escalation to **IIb** requires **both**:
 Both. Monitoring a vital parameter that varies slowly and without urgency does not reach
 IIb on this limb. Do not collapse "physiological process" into "vital parameter".
 
-### Limb 3 — all other software → I
+### Limb 3: all other software → I
 
 If neither limb 1 nor limb 2 is engaged on the stated intended purpose, the class is
 **I**. Say so plainly. A class I answer is a real answer, not a failure to find something.
 
 ---
 
-## Gate 3 — Could another rule reach it? (3.5)
+## Gate 3: Could another rule reach it? (3.5)
 
 > **3.5.** If several rules [...] apply to the same device [...] the strictest rule and
 > sub-rule resulting in the higher classification shall apply.
 
 Rule 11 sets a **floor, not a ceiling**. Before concluding, ask whether the intended
-purpose also engages a rule this skill does not carry — for example software that is
+purpose also engages a rule this skill does not carry, for example software that is
 itself an active therapeutic function, or that controls administration of a substance.
 
 If it might, **do not conclude**. Say:
@@ -128,7 +128,7 @@ Better an incomplete answer than a confident floor presented as the class.
 # MDR Software Classification: [name]
 
 **Intended purpose (as stated):** [quoted, or NOT SUPPLIED]
-**Qualified as a device:** [established | not established — see note]
+**Qualified as a device:** [established | not established, see note]
 
 ## Class: [I | IIa | IIb | III | cannot conclude]
 
@@ -141,7 +141,7 @@ Better an incomplete answer than a confident floor presented as the class.
 | 3.3 | Drives or influences another device? | [yes/no] | `[verified]` |
 | Rule 11 | Which limb | [1/2/3] | `[verified]` |
 | Rule 11 | Escalation | [none / IIb / III] and why | `[verified]` |
-| 3.5 | Could a stricter rule apply? | [no / possibly — which] | `[verified]` |
+| 3.5 | Could a stricter rule apply? | [no / possibly, which] | `[verified]` |
 
 ## What would change this
 [the specific facts that would move the class, named]
@@ -154,10 +154,10 @@ Better an incomplete answer than a confident floor presented as the class.
 
 ## Citation discipline
 
-- **`[verified]`** — the provision is in `references/annex-viii-software.md`: Rule 11,
+- **`[verified]`**: the provision is in `references/annex-viii-software.md`: Rule 11,
   implementing rules 3.1–3.7, and the Chapter I definitions carried there. Retrieved
   from EUR-Lex 2026-09-09 and re-checkable there.
-- **`[verify]`** — anything else. Rules 1–10 and 12–22, Art. 2(1) qualification,
+- **`[verify]`**: anything else. Rules 1–10 and 12–22, Art. 2(1) qualification,
   Annex XVI, national practice.
 
 **MDCG 2019-11 is guidance, not the rule.** It is not verified here and must never be

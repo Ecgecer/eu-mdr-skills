@@ -1,4 +1,4 @@
-# MDR Article 7 / IVDR Article 7 — Claims
+# MDR Article 7 / IVDR Article 7: Claims
 
 **Source:** EUR-Lex, Regulation (EU) 2017/745 (MDR), CELEX 32017R0745
 <https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32017R0745>
@@ -56,7 +56,7 @@ test. A claim can be entirely true and still breach (d) if the use it suggests
 falls outside the intended purpose that the conformity assessment covered. The
 anchor is the **intended purpose as assessed**, not what the device can factually do.
 
-Limb (c) is likewise not a truthfulness test — it is an **omission** test. Copy
+Limb (c) is likewise not a truthfulness test. It is an **omission** test. Copy
 that says nothing false can still breach (c).
 
 ## Scope note

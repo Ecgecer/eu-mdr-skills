@@ -9,10 +9,10 @@ recur, because each one was turned into something that fails automatically:
 
 | What went wrong | What stops it now |
 |---|---|
-| Arm values inferred from a reported delta; the most favourable of several runs published | Tables generated from the stored JSON, every run listed — `report-evals.py` |
+| Arm values inferred from a reported delta; the most favourable of several runs published | Tables generated from the stored JSON, every run listed, `report-evals.py` |
 | Tables headed "generated, do not hand-edit" and then hand-edited | `--check-tables` fails CI when a published table and its runs disagree |
 | A billing failure counted as a score of zero | Errored runs excluded from scoring and marked ⚠ |
-| An arm scored from whichever runs survived | An arm needs three valid runs or it reports "—" |
+| An arm scored from whichever runs survived | An arm needs three valid runs or it reports ", " |
 | A single hand-run pass reported as evidence | Three runs per case, enforced by the same rule |
 | Numbers describing skill text that had since changed | Content hash of skill **and** eval cases; the table carries a banner until re-measured |
 | A retracted claim still live in four other files | Registered strings in this file, checked across all Markdown |
@@ -25,19 +25,19 @@ retracted-claim register found the claim in three more files each time it was ma
 literal, and it found a second retracted claim nobody had looked for.
 
 What is **not** automated: whether a grader is fair, and whether a measurement means what
-you say it means. Both have gone wrong here in both directions — graders that failed
-correct reasoning and graders that would have passed wrong answers — and both were caught
+you say it means. Both have gone wrong here in both directions, graders that failed
+correct reasoning and graders that would have passed wrong answers, and both were caught
 by reading transcripts, not by reading scores.
 
 ---
 
-## 2026-09-10 — a false claim about a measured result
+## 2026-09-10: a false claim about a measured result
 
 **Published:** `mdr-classification/evals/README.md` said the baseline "escalated home
 blood-pressure trending to IIb in 3 of 3 runs on the reasoning that blood pressure is a
 vital parameter."
 
-**Actually:** all three stored baseline runs answered Class **IIa** — the answer the
+**Actually:** all three stored baseline runs answered Class **IIa**, the answer the
 grader requires. Zero said IIb. The failure mode was asserted without reading the runs.
 
 **Why it scored 0.00 anyway:** the grader demanded the response "explicitly REJECT the
@@ -47,7 +47,7 @@ using different words, which makes that suite's only earning case a grader artif
 
 ---
 
-## 2026-09-10 — arm values inferred rather than observed
+## 2026-09-10: arm values inferred rather than observed
 
 **Published:** `puffery-restraint` as 1.00 / 0.67, `hwg3a-arzneimittel-only` as
 1.00 / 0.33, and "All ten score 1.00 with the skill."
@@ -62,7 +62,7 @@ tables are no longer typed.
 
 ---
 
-## 2026-09-10 — a billing failure counted as a skill failure
+## 2026-09-10: a billing failure counted as a skill failure
 
 **Published:** `no-disclaimer` as 1.00 / 0.67, delta +0.33, and a scope-statement mean
 of +0.33.
@@ -73,11 +73,11 @@ the suite mean is +0.22.
 
 ---
 
-## 2026-09-10 — the most favourable of several runs published
+## 2026-09-10: the most favourable of several runs published
 
 **Published:** one row per case.
 
-**Actually:** several cases had multiple stored runs with different results —
+**Actually:** several cases had multiple stored runs with different results
 `uwg6-comparison` had three, including one where the baseline outscored the skill. Only
 the best was published.
 
@@ -85,7 +85,7 @@ the best was published.
 
 ---
 
-## 2026-09-10 — eval prompts that leaked their own answers
+## 2026-09-10: eval prompts that leaked their own answers
 
 **Published:** three device-claims cases whose copy reused, near-verbatim, worked
 examples sitting in the reference files the with-skill arm loads. `01-limb-d` used
@@ -97,7 +97,7 @@ the reference file's wording.
 
 ---
 
-## 2026-09-09 — a hand-run pass reported as evidence
+## 2026-09-09: a hand-run pass reported as evidence
 
 **Published:** "7/7 cases pass."
 
@@ -106,19 +106,19 @@ Single runs are not evidence, and the harness default of three exists for a reas
 
 ---
 
-## 2026-09-09 — two graders that punished correct reasoning
+## 2026-09-09: two graders that punished correct reasoning
 
 **Published:** `hwg11-item-scope` and `uwg6-comparison` at 0.67.
 
 **Actually:** grader defects. One could not tell a provision being *used* from a
 provision being named in order to *exclude* it. The other demanded an affirmation a
 correct analysis has no occasion to make. Both were caught by reading failing
-transcripts, not by review — which is why the repo later commissioned an adversarial
+transcripts, not by review, which is why the repo later commissioned an adversarial
 pass over all 25 graders and found five more.
 
 ---
 
-## 2026-09-11 — "a frontier model" from a sample of one
+## 2026-09-11: "a frontier model" from a sample of one
 
 **Published:** the benchmark and README described the measured baseline as "a frontier
 model", and the finding as "models over-apply".
@@ -128,7 +128,7 @@ model", and the finding as "models over-apply".
 not even record which Claude model, only the CLI version.
 
 Generalising from one model to "frontier models" is precisely the defect these skills
-measure — a claim applied one step past where the evidence reaches. Caught by the repo's
+measure. A claim applied one step past where the evidence reaches. Caught by the repo's
 owner asking whether we were assuming other models know what Claude knows.
 
 **Fix:** every claim narrowed to Claude, with the untested scope stated and results from
@@ -139,14 +139,14 @@ would earn more rather than less. Nobody has measured it, and the file now says 
 **Measured 2026-09-11, within the Claude family.** Re-running three suites pinned to Haiku
 4.5 shows exactly that: the knowledge cases that measure +0.00 against Opus measure
 **+1.00** against Haiku, whose baseline cites a different wrong Annex VIII rule on each of
-three runs. The guess was right about the references and wrong about the shape — the
+three runs. The guess was right about the references and wrong about the shape, the
 *discipline* half does not transfer, so the boundary cases measure +1.00 for Opus and
 +0.33 or +0.00 for Haiku. [MODELS.md](MODELS.md) has it. GPT, Gemini and everything
 outside the Claude family remain untested, and this does not speak for them.
 
 ---
 
-## 2026-09-11 — tables that said "generated" and were typed by hand
+## 2026-09-11: tables that said "generated" and were typed by hand
 
 **Published:** each suite's eval README carried a results table headed "Generated by
 `report-evals.py` from the stored run data. Do not hand-edit the table."
@@ -172,25 +172,25 @@ means generated on every push rather than generated once.
 
 ---
 
-## 2026-09-11 — an arm scored from whichever runs survived
+## 2026-09-11: an arm scored from whichever runs survived
 
 **Published:** `mpdg-germany/fsn-language` as a measured delta.
 
 **Actually:** its baseline arm had one surviving run of three; the other two failed on
 billing. The generator averaged whatever was left, so one run became a published arm
-value — in a repo whose own method file says three runs is the minimum that counts as
+value, in a repo whose own method file says three runs is the minimum that counts as
 evidence. The same averaging briefly turned that case into +1.00.
 
-**Fix:** an arm needs three valid runs or it reports "—". **Unmeasured is not zero**, and
-it is not a small sample either. The row now reads "—" and says the baseline is unknown.
+**Fix:** an arm needs three valid runs or it reports ", ". **Unmeasured is not zero**, and
+it is not a small sample either. The row now reads ", " and says the baseline is unknown.
 
 ---
 
-## 2026-09-11 — numbers describing text the plugin no longer shipped
+## 2026-09-11: numbers describing text the plugin no longer shipped
 
 **Published:** five suites' tables, presented as describing the skills in the repo.
 
-**Actually:** four had been edited after their last measurement — `scope-statement` by a
+**Actually:** four had been edited after their last measurement, `scope-statement` by a
 commit whose entire purpose was changing its behaviour, `mdr-classification` and
 `mpdg-germany` by the no-silent-supplement rule, `mdr-transition` by a trim whose own
 commit message said UNTESTED. Nothing in the repo disagreed with the stale numbers,
@@ -201,26 +201,26 @@ is always newer than the run it describes.
 
 **Fix:** `report-evals.py --stamp` records a hash of the skill text a measurement
 describes. When it no longer matches, the generated table carries a banner saying so, and
-that banner is inside the CI-checked region — so a reader of the table finds out from the
+that banner is inside the CI-checked region, so a reader of the table finds out from the
 table, not from the commit log. All five suites carry it as this is written.
 
 ---
 
-## 2026-09-11 — a retracted claim still on the front page
+## 2026-09-11: a retracted claim still on the front page
 
 **Published:** the README's opening pitch listed four measured failures, among them "It
 escalated a device class on half of a two-part condition in 3 of 3."
 
 **Actually:** that is the same claim this file retracted a day earlier. The stored
 baseline runs for `limb2-both-conditions` answer Class **IIa** in all three and score
-**1.00** — the baseline gets it right. The correction was written into the suite's eval
+**1.00**: the baseline gets it right. The correction was written into the suite's eval
 README and into this file, and nobody checked whether the sentence it retracted appeared
 anywhere else. It did, in the most-read paragraph in the repo.
 
 A second claim in the same paragraph was wrong on its own terms: "It applied German law
 to a French-market asset in 2 of 3." The baseline does the opposite. In 3 of 3 runs it
-explicitly drops German law — *"the France-only scoping is correct as far as it goes —
-the German HWG doesn't reach this page"* — and then asserts French advertising rules it
+explicitly drops German law. *"The France-only scoping is correct as far as it goes
+the German HWG doesn't reach this page"*, and then asserts French advertising rules it
 cannot cite, which is what the grader actually fails it for. Same defect family, wrong
 country, and published as a different failure than the one measured.
 
@@ -233,20 +233,20 @@ not retracting it. There was no step that asked where else the sentence lived.
 
 ---
 
-## 2026-09-11 — a benchmark that listed 23 of its own 30 cases
+## 2026-09-11: a benchmark that listed 23 of its own 30 cases
 
 **Published:** `benchmark/README.md` split its cases into "hard" (baseline 0.00) and
 "cases a baseline already passes" (baseline 1.00), and the root README said "12 of the 30
 ... the 13 cases a baseline already passes".
 
-**Actually:** the two generated sections covered 11 and 12 cases. The other **7 — the
-ones the baseline passes only sometimes — were in no section at all**, so the file
+**Actually:** the two generated sections covered 11 and 12 cases. The other **7, the
+ones the baseline passes only sometimes, were in no section at all**, so the file
 silently omitted a quarter of itself. The root README's hand-typed 12 and 13 matched
 neither the generator nor each other: 12 + 13 is not 30.
 
 The omitted group is the most diagnostic one. A baseline that scores 0.33 or 0.67 across
 three runs can reach the right answer and does not do so reliably, which is a different
-finding from either "knows it" or "does not know it" — and it is the group that proves
+finding from either "knows it" or "does not know it", and it is the group that proves
 why three runs is the minimum.
 
 **Fix:** a third section lists them with their baseline rates, an assertion in the
@@ -255,7 +255,7 @@ are spliced in from the data and checked in CI.
 
 ---
 
-## 2026-09-11 — one withdrawn claim, five files
+## 2026-09-11: one withdrawn claim, five files
 
 **Published:** after retracting "applied German law to a French-market asset" and
 correcting README.md, the guard built to enforce that retraction reported the repo
@@ -266,14 +266,14 @@ being made progressively less literal:
 
 | Where | Phrasing | Why the guard missed it |
 |---|---|---|
-| `README.md` | applied German law to a French-market asset | — found by hand |
-| `scripts/export-benchmark.py` | applying German law to a French-market asset | — found by hand |
+| `README.md` | applied German law to a French-market asset |, found by hand |
+| `scripts/export-benchmark.py` | applying German law to a French-market asset |, found by hand |
 | `ROADMAP.md` | German law **applied to** a French-market asset | word order |
 | `device-claims/evals/README.md` | applied German **national** law to a French-market asset | one inserted word |
 | `METHOD.md` | **Applied** German law to a French-market asset | capital letter |
 
 The same pass found a second withdrawn claim, "escalated a device class on half of a
-two-part condition", alive in METHOD.md's summary table with a capital E — retracted on
+two-part condition", alive in METHOD.md's summary table with a capital E, retracted on
 2026-09-10, corrected in README.md on 2026-09-11, and still published in a third file
 because an exact match is case-sensitive.
 
@@ -300,7 +300,7 @@ asked where else it lived.
 
 These are the strings that must not reappear. `retracted:` is a literal;
 `retracted-re:` is a regular expression, which exists because the literal list missed
-"German law applied to a French-market asset" — the same withdrawn claim with two words
+"German law applied to a French-market asset", the same withdrawn claim with two words
 swapped, sitting in ROADMAP.md. Then the widened pattern missed "applied German
 **national** law to a French-market asset" in device-claims' eval README, because one
 extra word defeats an exact phrase. Three phrasings, three files, one withdrawn claim. A
@@ -324,6 +324,6 @@ Every one is the same failure: **a claim asserted from something other than the 
 describes.** From a delta instead of the arms. From a schema instead of the data. From
 what a grader was meant to test instead of what it tests. From one run instead of three.
 
-That is the identical defect the skills themselves are built to prevent in a model — a
+That is the identical defect the skills themselves are built to prevent in a model, a
 real rule applied one step past where it reaches. It turns out to be just as easy to do
 to your own measurements.

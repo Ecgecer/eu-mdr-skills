@@ -1,39 +1,39 @@
-# legacy-transition — single-file bundle
+# legacy-transition, single-file bundle
 
 Plugin `mdr-transition`. Everything needed to run this skill in a tool that cannot
 read the repo: paste or upload this whole file, then give it your input.
 
-GENERATED FILE — do not edit. Source:
+GENERATED FILE, do not edit. Source:
 mdr-transition/skills/legacy-transition/. Rebuild with `python3 scripts/build-portable.py`.
 
 ---
 
-# MDR Article 120 — the legacy transition
+# MDR Article 120: the legacy transition
 
 Answer from the **amended** text in the "art120-amended.md" section below. Read it before
 answering.
 
 **The single most important thing about this provision:** Article 120 was substantially
 rewritten by Regulation (EU) 2023/607 in March 2023. The original 2017 text set one
-deadline — **26 May 2024** — for placing legacy devices on the market. That is superseded.
+deadline (**26 May 2024**) for placing legacy devices on the market. That is superseded.
 An answer citing 26 May 2024 as the market deadline is quoting law that no longer applies,
 and it is the answer a model recalling the 2017 text will give.
 
 ---
 
-## Step 0 — Three facts before any date
+## Step 0: Three facts before any date
 
 Ask for whatever is missing. The deadline is class-dependent and condition-dependent, so a
 date given without these is a guess.
 
-1. **Class under MDR** — III, IIb, IIa, or I. And if IIb, whether it is **implantable**,
+1. **Class under MDR**. III, IIb, IIa, or I. And if IIb, whether it is **implantable**,
    and if implantable whether it is one of the listed exceptions (sutures, staples, dental
    fillings, dental braces, tooth crowns, screws, wedges, plates, wires, pins, clips,
    connectors). Those exceptions move down a tier.
-2. **The certificate basis** — a notified-body certificate under 90/385/EEC or 93/42/EEC
+2. **The certificate basis**, a notified-body certificate under 90/385/EEC or 93/42/EEC
    (paragraph 3a), or formerly self-certified under 93/42 with a DoC before 26 May 2021
    and now requiring a notified body (paragraph 3b). Different routes, different rules.
-3. **Whether the 3c conditions were met** — in particular the QMS by 26 May 2024 and the
+3. **Whether the 3c conditions were met**, in particular the QMS by 26 May 2024 and the
    application lodged by 26 May 2024, with the written agreement signed by 26 September
    2024.
 
@@ -52,7 +52,7 @@ If 3 is unknown, say the date **conditionally** and name what would remove it:
 
 All of it is in the "art120-amended.md" section below, verbatim: the class-dependent deadlines,
 the exception list, route 3b, and the five cumulative conditions in 3c. **Read it rather
-than answering from memory** — the whole reason this skill exists is that the 2017 text
+than answering from memory**. The whole reason this skill exists is that the 2017 text
 and the amended text give different answers, and only one of them is in front of you.
 
 Two things to carry out of it, because they are what people get wrong:
@@ -62,7 +62,7 @@ Two things to carry out of it, because they are what people get wrong:
   place by 26 May 2024 never qualified.
 - **26 May 2024 changed job rather than disappearing.** It is no longer the market
   deadline; it is when the QMS and the notified-body application were due, with the
-  written agreement due 26 September 2024. State both halves — someone told only the good
+  written agreement due 26 September 2024. State both halves, someone told only the good
   news will not check whether they qualified.
 
 ## Output
@@ -72,7 +72,7 @@ Two things to carry out of it, because they are what people get wrong:
 
 **Class:** [as stated, or NOT SUPPLIED]
 **Route:** [120(3a) certificate | 120(3b) formerly self-certified | not established]
-**Deadline:** [date] — conditional on 120(3c)
+**Deadline:** [date], conditional on 120(3c)
 
 | Question | Answer | Basis |
 |---|---|---|
@@ -88,9 +88,9 @@ Two things to carry out of it, because they are what people get wrong:
 
 ## Citation discipline
 
-- **`[verified]`** — Article 120(3), (3a), (3b), (3c), (3d) as amended, in
+- **`[verified]`**: Article 120(3), (3a), (3b), (3c), (3d) as amended, in
   the "art120-amended.md" section below, from OJ L 80, 20.3.2023, retrieved 2026-09-10.
-- **`[verify]`** — everything else: Article 120's other paragraphs, IVDR Article 110,
+- **`[verify]`**: everything else: Article 120's other paragraphs, IVDR Article 110,
   MDCG guidance, Annex VII, Article 97, national practice.
 
 **No silent supplement.** A `[verify]` tag is not permission to answer from memory. If
@@ -103,7 +103,7 @@ producing content with a tag on it:
 > file.
 
 This matters most for **IVDR Article 110**. The IVD transition has its own dates on its
-own clock, and producing them from recall — even tagged — is exactly the failure this
+own clock, and producing them from recall (even tagged) is exactly the failure this
 skill exists to prevent on the MDR side.
 
 Never state a notified body's position or how an authority would treat a borderline case.
@@ -126,9 +126,9 @@ Verbatim statute text. Every finding must cite a provision that appears here.
 
 ## art120-amended.md
 
-# MDR Article 120 — the legacy transition, as amended
+# MDR Article 120: the legacy transition, as amended
 
-**Source:** Publications Office, Official Journal L 80, 20.3.2023, p. 24 —
+**Source:** Publications Office, Official Journal L 80, 20.3.2023, p. 24
 **Regulation (EU) 2023/607**, Article 1, amending Regulation (EU) 2017/745.
 <http://publications.europa.eu/resource/oj/JOL_2023_080_R_0002.ENG>
 **Retrieved:** 2026-09-10, verbatim from the English OJ text.
@@ -137,11 +137,11 @@ Verbatim statute text. Every finding must cite a provision that appears here.
 It is not in the source. Everything else in a quoted block is verbatim, and
 `scripts/verify-sources.py` checks that character for character.
 
-**READ THIS FIRST — editorial note, not source text.**
+**READ THIS FIRST, editorial note, not source text.**
 Article 120 was substantially amended in March 2023. The original 2017 text set a single
 deadline of **26 May 2024** for placing legacy devices on the market. That date no longer
 does that job. Any answer citing 26 May 2024 as the market deadline is quoting superseded
-law — which is exactly what a model recalling the 2017 text will do.
+law, which is exactly what a model recalling the 2017 text will do.
 
 *In these reference files `>` marks verbatim source text and nothing else.
 `scripts/verify-sources.py` checks every blockquote against the source, so editorial
@@ -209,7 +209,7 @@ notes must not use it.*
 |---|---|
 | Class III | **31 Dec 2027** |
 | Class IIb **implantable**, except the listed items | **31 Dec 2027** |
-| The listed exceptions — sutures, staples, dental fillings, dental braces, tooth crowns, screws, wedges, plates, wires, pins, clips, connectors | **31 Dec 2028** |
+| The listed exceptions n/a sutures, staples, dental fillings, dental braces, tooth crowns, screws, wedges, plates, wires, pins, clips, connectors | **31 Dec 2028** |
 | Class IIb, other | **31 Dec 2028** |
 | Class IIa | **31 Dec 2028** |
 | Class I sterile, or with a measuring function | **31 Dec 2028** |
@@ -218,7 +218,7 @@ notes must not use it.*
 The exception list in 3a(a) moves those items **down** a tier: a class IIb implantable
 suture gets 2028, not 2027.
 
-## 26 May 2024 has not disappeared — it changed job
+## 26 May 2024 has not disappeared: it changed job
 
 It is no longer the date by which a legacy device must leave the market. It is now the
 date by which two of the 3c conditions had to be met: the QMS in place (3c(d)) and the
@@ -227,8 +227,8 @@ formal application lodged with a notified body (3c(e)). A further date, **26 Sep
 
 So both of these are wrong:
 
-- "The deadline was 26 May 2024" — superseded as a market deadline.
-- "The deadline moved to 2027/2028, so 2024 no longer matters" — 2024 and September 2024
+- "The deadline was 26 May 2024", superseded as a market deadline.
+- "The deadline moved to 2027/2028, so 2024 no longer matters", 2024 and September 2024
   are the conditions on which 2027/2028 depend. Miss them and the extension was never
   available.
 
@@ -243,7 +243,7 @@ Directives'.
 
 ## What this file does not carry
 
-Article 120's other paragraphs — (1), (2), (4) onward — including the rules on validity of
+Article 120's other paragraphs ((1), (2), (4) onward) including the rules on validity of
 old certificates and on devices already placed on the market. It does not carry
 **IVDR Article 110**, the parallel IVD transition, whose dates differ. It does not carry
 MDCG guidance on Article 120, notably on what counts as a "significant change" under

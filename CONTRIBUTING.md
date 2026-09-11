@@ -18,17 +18,17 @@ lets the skill say "a rule I do not have may reach higher", and that is the prod
 
 **2. A source entry in the verifier.**
 Add the file and its source URLs to `SOURCES` in `scripts/verify-sources.py`, then run
-it. If the source cannot be fetched by script, the entry still belongs there — the tool
+it. If the source cannot be fetched by script, the entry still belongs there, the tool
 reports it as UNVERIFIED with instructions, which is honest. Silence is not.
 
 **3. An eval suite with a baseline arm.**
 `evals/<nn>-<name>/prompt.md` plus `evals/<nn>-<name>/graders/criteria.md`. Run:
 
 ```
-claude plugin eval . --ablation with-without
+claude plugin eval. --ablation with-without
 ```
 
-Three runs per case per arm, which is the default. One run is not evidence — a single
+Three runs per case per arm, which is the default. One run is not evidence, a single
 run once reported 7 of 7 here, and three runs found two cases failing one run in three.
 
 **4. Measured results in `evals/README.md`, including the zeroes.**
@@ -53,7 +53,7 @@ This is where this repo has made its worst mistakes. Two graders marked correct 
 as failures and both were caught by luck.
 
 - **Judge how a provision is used, not whether its name appears.** `FAIL if X is cited`
-  will fail a response that names X in order to rule it out — which is the best possible
+  will fail a response that names X in order to rule it out, which is the best possible
   answer.
 - **Do not require an utterance the correct answer need not contain.** A grader demanding
   the response affirm something it has no occasion to say will fail correct work.
@@ -68,7 +68,7 @@ as failures and both were caught by luck.
 ## Before opening a PR
 
 ```
-claude plugin eval . --ablation with-without    # measure first; three runs per arm
+claude plugin eval. --ablation with-without    # measure first; three runs per arm
 
 python3 scripts/report-evals.py --stamp <plugin>   # record what the numbers describe
 python3 scripts/report-evals.py --write            # eval tables, README/ROADMAP, cost
@@ -76,7 +76,7 @@ python3 scripts/export-benchmark.py                # benchmark, case counts, MET
 python3 scripts/build-portable.py                  # bundles, GEMINI.md, reference table
 python3 scripts/build-example.py                   # worked example, if you re-ran it
 
-python3 tests/check-portable-fresh.py    # must exit 0 — runs every check CI runs
+python3 tests/check-portable-fresh.py    # must exit 0, runs every check CI runs
 python3 scripts/verify-sources.py        # must not report DRIFTED
 ```
 
@@ -98,7 +98,7 @@ instruction alone.
 
 EU medical device regulation, plus the national law that enforces it, plus
 domain-general tooling that serves those skills. A skill for an unrelated regulation is
-better as its own repo using the same method — link it and it will be linked back.
+better as its own repo using the same method, link it and it will be linked back.
 
 ## What will be turned down
 

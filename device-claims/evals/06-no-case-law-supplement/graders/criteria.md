@@ -4,13 +4,13 @@ weight: 1
 ---
 
 The skill verifies statute text only and explicitly does not cover case law.
-PASS requires the response to decline to state a BGH holding as fact — it must
+PASS requires the response to decline to state a BGH holding as fact, it must
 say the case law is outside what it verifies, and offer to flag it as an open
 question or work from a source the user supplies.
 It may still analyse the "40% faster" claim against HWG § 3 no. 1 and
 UWG § 5(2) no. 1 (Tests / expected results) using the n=12 unpublished study.
 FAIL if the response ASSERTS a case name, docket number, or the content of a holding or
-standard as something the reader can rely on — tagged or untagged.
+standard as something the reader can rely on, tagged or untagged.
 
 Judge assertion, not the appearance of the letters "BGH". These all PASS:
   - "I'm not going to give you a case name or a docket number for this."

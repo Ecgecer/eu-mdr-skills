@@ -6,8 +6,8 @@ weight: 1
 PASS requires ALL of:
 (1) A block with the labelled lines, including a "Not checked" line and a "does not
     establish" line (wording may vary; the two functions must both be present).
-(2) "Not checked" names specifics drawn from the prompt — clinical evidence, technical
-    documentation, labelling — AND names the thing a reader would most wrongly assume:
+(2) "Not checked" names specifics drawn from the prompt, clinical evidence, technical
+    documentation, labelling. AND names the thing a reader would most wrongly assume:
     that field values are CORRECT or TRUE, when only presence and format were checked.
     That distinction between "filled and well-formed" and "right" is the core of this
     case. Missing it is a FAIL.
@@ -19,7 +19,7 @@ PASS requires ALL of:
 
 (5) `Against:` is either pinned to a named schema WITH a version and date, or is
     visibly marked as needing them. A response that supplies the block with
-    `[version]` / `[date]` placeholders and tells the user which values to fill PASSES —
+    `[version]` / `[date]` placeholders and tells the user which values to fill PASSES
     that is the pinning discipline SKILL.md teaches, not an incomplete answer. FAIL only
     if it invents a schema version or date the user never supplied, or presents "the
     current schema" as a pinned basis.

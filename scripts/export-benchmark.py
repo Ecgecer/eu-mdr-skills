@@ -2,7 +2,7 @@
 """Export the eval cases as a portable benchmark, with measured baseline difficulty.
 
 The cases here were written to test skills, but what they actually measure is whether a
-model over-applies EU medical device regulation — citing a provision against a product,
+model over-applies EU medical device regulation, citing a provision against a product,
 market or audience it does not reach. That question is not Claude-specific and the cases
 should not be locked in one harness's format.
 
@@ -123,19 +123,19 @@ def main():
         "## How to run it", "",
         "Each case has a `prompt` and a `correct_answer_criteria` written for an LLM judge.",
         "Send the prompt to the system under test with no other context, then score the",
-        "response against the criteria. Three runs per case — single runs are not evidence,",
+        "response against the criteria. Three runs per case, single runs are not evidence,",
         "and two of these cases were mis-scored here for exactly that reason.", "",
         "`baseline_pass_rate` is what **Claude** scored with no reference material and no",
         "web access, three runs, measured rather than estimated.", "",
         "There is a runner in the parent repo that does the sending and stores the raw",
-        "answers, so generation and judging stay separate steps — mixing them is how you",
+        "answers, so generation and judging stay separate steps, mixing them is how you",
         "end up unable to tell a model failure from a grader failure:", "",
         "```",
         "# every case, three runs each",
         "GEMINI_API_KEY=...  python3 scripts/run-benchmark.py --provider gemini --model gemini-2.5-pro",
         "OPENAI_API_KEY=...  python3 scripts/run-benchmark.py --provider openai --model gpt-4o",
         "",
-        "# just the cases Claude failed in every run — the ones that discriminate",
+        "# just the cases Claude failed in every run, the ones that discriminate",
         "python3 scripts/run-benchmark.py --provider gemini --model gemini-2.5-pro --hard-only",
         "",
         "python3 scripts/run-benchmark.py --list          # cases and their measured baselines",
@@ -152,12 +152,12 @@ def main():
         "universally hard. There is no cross-vendor delta -- the with-skill arm never ran.",
         "Whether",
         "they share these failure modes is an open question, and this file deliberately does",
-        "not guess — a benchmark that generalises from one model is doing the exact thing it",
+        "not guess. A benchmark that generalises from one model is doing the exact thing it",
         "measures.", "",
         "If you run it against another model, the results are welcome as a PR.", "",
-        "**12 of these 30 cases carry criteria that assume the skill's own output shape** —",
+        "**12 of these 30 cases carry criteria that assume the skill's own output shape**",
         "a `## Limits` block, a `Ready to publish` line, the `Breach:` / `Call:` /",
-        "`Also engaged:` fields — or refer the judge to `SKILL.md`, which is not in this",
+        "`Also engaged:` fields, or refer the judge to `SKILL.md`, which is not in this",
         "directory. No model can satisfy those without the plugin loaded, so scoring a",
         "baseline against them measures format rather than reasoning. They are marked",
         "`criteria_assume_skill_format` in the JSON; judge the substance and say so.",
@@ -165,16 +165,16 @@ def main():
         "and it took running a non-Claude model to notice.", "",
         "**Give the model no web access.** The Claude column was measured with none, so a",
         "run that retrieved is not comparable to it. This is easy to do by accident: an",
-        "agent CLI will quietly reach for a search tool on these prompts — the Gemini CLI",
+        "agent CLI will quietly reach for a search tool on these prompts, the Gemini CLI",
         "does, which is why `scripts/run-benchmark.py` refuses it and calls the plain API",
         "instead. The contamination leaves no trace in the answer text, so state the",
         "condition rather than leaving a reader to assume it.", "",
-        f"## The hard cases — Claude scored 0.00 ({len(hard)})", "",
+        f"## The hard cases. Claude scored 0.00 ({len(hard)})", "",
         "Claude failed every run of these with no reference material and no web access.",
         "Untested on other models:", "",
     ]
     WHAT = {
-        "clean-copy-control": "clean copy — the model invents findings that are not there",
+        "clean-copy-control": "clean copy. The model invents findings that are not there",
         "doc-english-sufficient": "tells a manufacturer to translate a DoC its member state accepts in English",
         "hwg11-item-scope": "cites a German advertising item that does not reach medical devices",
         "hwg11-wrong-audience": "applies a lay-audience rule to a gated professional audience",
@@ -190,7 +190,7 @@ def main():
     }
     for c in hard:
         what = WHAT.get(c["id"], c["prompt"].splitlines()[0][:80])
-        lines.append(f"- **`{c['id']}`** — {what}  \n  <sub>{c['area']}</sub>")
+        lines.append(f"- **`{c['id']}`**, {what}  \n  <sub>{c['area']}</sub>")
     lines += ["", f"## Cases a baseline already passes ({len(free)})", "",
               "Published because a benchmark that hides its easy cases overstates itself.",
               "These measure nothing about boundary discipline; a model gets them right unaided.", ""]
@@ -207,7 +207,7 @@ def main():
                   "not do so reliably, so a single run of any of them proves nothing.", ""]
         for c in partial:
             r = c["measured"]["baseline_pass_rate"]
-            lines.append(f"- `{c['id']}` ({c['area']}) — baseline {r:.2f}")
+            lines.append(f"- `{c['id']}` ({c['area']}), baseline {r:.2f}")
     if unmeasured:
         lines += ["", f"## Not yet measured ({len(unmeasured)})", ""]
         for c in unmeasured:
@@ -220,9 +220,9 @@ def main():
         "suture carve-out right. **For this model, knowledge was never the gap.**", "",
         "Whether that holds for other models is untested. It is a plausible guess that a",
         "model with less European regulatory text in training would fail the knowledge cases",
-        "too — in which case the reference files would earn more, not less. Nobody has",
+        "too, in which case the reference files would earn more, not less. Nobody has",
         "measured it.", "",
-        "What it got wrong, repeatedly, was reach — citing a German advertising provision",
+        "What it got wrong, repeatedly, was reach, citing a German advertising provision",
         "against a device that provision does not cover, asserting French advertising",
         "rules it cannot cite once told German law did not apply, telling a manufacturer",
         "to translate a Declaration of Conformity that its member state accepts in",

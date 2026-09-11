@@ -1,9 +1,9 @@
-# device-claims-review — single-file bundle
+# device-claims-review, single-file bundle
 
 Plugin `device-claims`. Everything needed to run this skill in a tool that cannot
 read the repo: paste or upload this whole file, then give it your input.
 
-GENERATED FILE — do not edit. Source:
+GENERATED FILE, do not edit. Source:
 device-claims/skills/device-claims-review/. Rebuild with `python3 scripts/build-portable.py`.
 
 ---
@@ -23,9 +23,9 @@ Three layers apply, and they are cumulative. Copy must clear all three:
 
 Verbatim statute text, with source URL and retrieval date, is in:
 
-- the "mdr-ivdr-art7.md" section below — MDR Art. 7 and IVDR Art. 7
-- the "hwg.md" section below — HWG § 1(1) no. 1a, § 3, § 3a, § 11
-- the "uwg.md" section below — UWG § 5, § 6
+- the "mdr-ivdr-art7.md" section below. MDR Art. 7 and IVDR Art. 7
+- the "hwg.md" section below. HWG § 1(1) no. 1a, § 3, § 3a, § 11
+- the "uwg.md" section below. UWG § 5, § 6
 
 **Read the "mdr-ivdr-art7.md" section below before the claim-by-claim pass.** It carries
 the operative text of the four limbs and the limb-by-limb mapping table. Read the
@@ -35,12 +35,12 @@ Every finding must cite a provision that appears in these files.
 
 ---
 
-## Step 0 — Establish the two anchors before reviewing anything
+## Step 0: Establish the two anchors before reviewing anything
 
 **Do not begin the claim-by-claim pass until both are settled.** Guessing either
 one produces confident, wrong findings.
 
-### Anchor 1 — The intended purpose as assessed
+### Anchor 1: The intended purpose as assessed
 
 Ask for, or locate, the device's **intended purpose** exactly as it appears in the
 conformity assessment / technical documentation / Declaration of Conformity.
@@ -64,17 +64,17 @@ got a question back has received nothing they can act on.
 Also capture, if available: device class, whether a notified body was involved, and
 the certificate scope. Claims about these are UWG § 5(2) no. 3/4 territory.
 
-### Anchor 2 — The audience
+### Anchor 2: The audience
 
 HWG § 11 applies **only outside Fachkreise**. Establish which:
 
-- **Fachkreise** — manufacturers, notified bodies, regulatory consultants,
+- **Fachkreise**: manufacturers, notified bodies, regulatory consultants,
   clinicians, hospital procurement, trade press. § 11 does **not** apply. § 3 does.
-- **Publikum** — patients, carers, general public, and any ungated public web page.
+- **Publikum**: patients, carers, general public, and any ungated public web page.
   § 11 applies, but **only nos. 7, 8, 9, 11 and 12** (see the "hwg.md" section below).
 
 A B2B page that anyone can read is not automatically Fachkreise. If it is ambiguous,
-ask. Do not default to Fachkreise because the product is technical — that is the
+ask. Do not default to Fachkreise because the product is technical. That is the
 assumption that produces the most under-flagging.
 
 ---
@@ -84,7 +84,7 @@ assumption that produces the most under-flagging.
 Operative text and the mapping table: the "mdr-ivdr-art7.md" section below.
 
 Classify every finding under the limb it breaches. A finding that maps to no limb
-and no HWG/UWG provision is not a finding — drop it or mark it as a drafting note.
+and no HWG/UWG provision is not a finding, drop it or mark it as a drafting note.
 
 ### (a) Ascribing functions or properties the device does not have
 
@@ -110,13 +110,13 @@ Shapes: benefit-only copy with no mention of a known limitation, contraindicatio
 or the fact that results require clinical interpretation.
 
 Ask: is there a **likely** risk associated with use in line with the intended
-purpose that this copy does not surface? "Likely" is the statutory word — not every
+purpose that this copy does not surface? "Likely" is the statutory word, not every
 theoretical risk belongs in an ad.
 
 **Name the risk from supplied material, or do not raise (c).** The risk must come from
 the intended purpose, the IFU, the technical documentation, or something the user told
 you. Do **not** infer a likely risk from the device category and then flag the copy for
-omitting it — every benefit-framed advertisement omits some inferable risk, so a (c)
+omitting it, every benefit-framed advertisement omits some inferable risk, so a (c)
 finding built that way is unfalsifiable and worthless. If you suspect an omission but
 cannot point to the risk in supplied material, raise it as an open question:
 
@@ -145,16 +145,16 @@ Check it explicitly on every asset, including images and captions.
 Apply when the copy targets the German market. Details and verbatim text in
 the "hwg.md" section below and the "uwg.md" section below.
 
-### HWG § 3 — adds two prohibitions Art. 7 does not have
+### HWG § 3: adds two prohibitions Art. 7 does not have
 
-- **§ 3 no. 2(a) — guaranteed success.** "Erfolg mit Sicherheit". Any promise that
+- **§ 3 no. 2(a), guaranteed success.** "Erfolg mit Sicherheit". Any promise that
   an outcome is certain. Art. 7 has no explicit guarantee limb; this is additive.
-- **§ 3 no. 2(b) — no harmful effects.** Claiming that proper or prolonged use
+- **§ 3 no. 2(b), no harmful effects.** Claiming that proper or prolonged use
   produces no harmful effects. Additive.
-- **§ 3 no. 3(b)** — overstating the maker's credentials, qualifications or track
+- **§ 3 no. 3(b)**: overstating the maker's credentials, qualifications or track
   record.
 
-### HWG § 11 — only if the audience is Publikum
+### HWG § 11: only if the audience is Publikum
 
 For devices, **only nos. 7, 8, 9, 11, 12 apply.** Citing any other § 11 item against
 a device is a false positive.
@@ -164,29 +164,29 @@ a device is a false positive.
 - **no. 9**: advertorial or native content whose promotional purpose is not clearly
   recognisable.
 - **no. 11**: third-party testimonials **where abusive, repulsive or misleading**.
-  Testimonials are not flatly prohibited for devices — do not report them as such.
+  Testimonials are not flatly prohibited for devices, do not report them as such.
 
-### UWG § 5 — certification and status claims
+### UWG § 5: certification and status claims
 
-Beyond general misleadingness, § 5(2) nos. 3 and 4 cover **Status, Zulassung** —
+Beyond general misleadingness, § 5(2) nos. 3 and 4 cover **Status, Zulassung**
 approval and certification status. Copy implying a class, notified-body involvement,
 or a certificate the device does not hold is a finding here independently of whether
 the performance claims are accurate.
 
-### UWG § 6 — comparisons
+### UWG § 6: comparisons
 
 Comparative advertising is **lawful** in Germany when it clears every limb of
 § 6(2). Do not report comparisons as prohibited. Test:
 
-1. **no. 1** — same need or same intended purpose? Devices with different intended
+1. **no. 1**, same need or same intended purpose? Devices with different intended
    purposes often are not comparable at all, which fails before accuracy is reached.
-2. **no. 2** — objective, and on **essential, relevant, verifiable, typical**
+2. **no. 2**, objective, and on **essential, relevant, verifiable, typical**
    characteristics. *Verifiable* is the sharp edge: can the reader check it from
    public information?
 
 **Failing no. 2 is a breach, not an evidence gap.** A comparative figure with an
-undefined comparator — "half the rework of what most teams use today", "twice as fast as
-conventional systems" — breaches § 6(2) no. 2 on the face of the copy. Do not record it
+undefined comparator, "half the rework of what most teams use today", "twice as fast as
+conventional systems", breaches § 6(2) no. 2 on the face of the copy. Do not record it
 as `Breach: none` pending data. Verifiability is about what the **reader** can check,
 not about what the advertiser holds: a perfectly sound internal study does not make an
 undefined comparator verifiable, so no amount of evidence cures it. The fix is to name
@@ -205,14 +205,14 @@ the market can tell who is meant.
 
 ## Workflow
 
-### Step 1 — Extract every claim
+### Step 1: Extract every claim
 
 List every phrase asserting a fact, making a comparison, promising an outcome, or
 implying a clinical benefit. Include image captions, alt text, headline claims, and
 badge/seal graphics. Pure puffery with no clinical or performance content need not
 be listed.
 
-### Step 2 — Classify and call
+### Step 2: Classify and call
 
 For each claim:
 
@@ -220,27 +220,27 @@ For each claim:
 **Claim:** "[exact quote]"
 **Breach:** [MDR Art. 7(a)|(b)|(c)|(d) | HWG § 3 no. X | HWG § 11(1) no. X | UWG § 5(2) no. X | UWG § 6(2) no. X | **none**]
 **Why:** [one line tying the quote to the provision's operative words]
-**Evidence needed:** [what would substantiate it, or "n/a — cannot be cured by evidence"]
-**Also engaged:** [optional — provisions contingent on a fact you lack, with the condition]
+**Evidence needed:** [what would substantiate it, or "n/a, cannot be cured by evidence"]
+**Also engaged:** [optional, provisions contingent on a fact you lack, with the condition]
 **Call:** [OK | Verify | Needs substantiation | Needs rewording | Cut]
 **Suggested fix:** "[revised phrasing that keeps the intent]"
 ```
 
 **`Also engaged:`** is an optional fourth line for provisions that would bite only if
-a fact you do not have goes the wrong way — the market is Germany, the count is stale,
+a fact you do not have goes the wrong way. The market is Germany, the count is stale,
 the certificate is narrower. Put them there with the condition named, not in `Breach:`.
 `Breach:` is for what the copy breaches on the material in front of you.
 
 ```markdown
 **Breach:** none
-**Also engaged:** HWG § 3 no. 3(b), UWG § 5(2) no. 3 — if the "40 hospitals" count is
+**Also engaged:** HWG § 3 no. 3(b), UWG § 5(2) no. 3, if the "40 hospitals" count is
 not current, or counts pilots as customers
 **Call:** Verify
 ```
 
 **`Breach: none` with `Call: Verify` is a valid and frequently correct combination.**
 Use it when a claim is not misleading on the material supplied but rests on something
-you have not seen — a duration, a performance figure, a certificate scope. That is an
+you have not seen. A duration, a performance figure, a certificate scope. That is an
 open question for the technical file, **not** a breach. Do not promote it to a breach
 to make the review look thorough.
 
@@ -255,25 +255,25 @@ something trains the reader to ignore it. If the only honest output is "no breac
 identified; two items to verify against the technical file", that is the output.
 
 Distinguish the two cure paths. A limb (a) overclaim can often be cured by
-**evidence**. A limb (d) intended-purpose breach usually **cannot** — it is cured by
+**evidence**. A limb (d) intended-purpose breach usually **cannot**. It is cured by
 narrowing the claim or by extending the conformity assessment, not by data.
 
-### Step 3 — Output
+### Step 3: Output
 
 ```markdown
 # Device Claims Review: [asset]
 
 **Reviewed:** [date]
-**Device / IVD:** [name] — [class if known]
-**Intended purpose (as assessed):** [quoted, or "NOT SUPPLIED — limb (d) not assessed"]
-**Audience:** [Fachkreise | Publikum | ambiguous — assumed X, confirm]
+**Device / IVD:** [name], [class if known]
+**Intended purpose (as assessed):** [quoted, or "NOT SUPPLIED, limb (d) not assessed"]
+**Audience:** [Fachkreise | Publikum | ambiguous, assumed X, confirm]
 **Markets:** [EU | DE | other]
 
 ## Summary
 
 [N] claims reviewed. [N] cut, [N] reword, [N] substantiate, [N] OK.
 
-**Ready to publish:** [Yes | With changes below | No — rewrite needed]
+**Ready to publish:** [Yes | With changes below | No, rewrite needed]
 
 ## Findings
 [claim blocks, ordered Cut > Reword > Substantiate > OK]
@@ -297,10 +297,10 @@ paste-ready, not a description of what to change.
 
 Two tiers only. Do not invent others.
 
-- **`[verified]`** — the provision appears verbatim in the reference texts below. MDR Art. 7,
+- **`[verified]`**: the provision appears verbatim in the reference texts below. MDR Art. 7,
   IVDR Art. 7, HWG §§ 1, 3, 3a, 11, UWG §§ 5, 6. These were retrieved from EUR-Lex
   and gesetze-im-internet on 2026-09-09 and can be re-checked against those sources.
-- **`[verify]`** — anything else. Case law, MDCG guidance, national enforcement
+- **`[verify]`**: anything else. Case law, MDCG guidance, national enforcement
   decisions, notified-body practice, other statutes. Tag it and say it is unverified.
 
 **No silent supplement.** If the analysis needs a source outside the reference texts below, stop
@@ -313,7 +313,7 @@ and say so:
 Never state how a German court would decide. The references are statute text; the
 case law that shapes their application is out of scope.
 
-Correcting the premise is still supplementing. "There is no leading case on that — the
+Correcting the premise is still supplementing. "There is no leading case on that, the
 standard comes from the general line on health-related advertising" is a claim about
 case law made without a citation anyone can check. It is the same act as naming a
 docket number, minus the number, and it feels like honesty, which is what makes it easy
@@ -348,7 +348,7 @@ instead:
 > to counsel: [asset, claims cleared, provisions checked, open questions, the three
 > things to ask].
 
-"With changes below" and "No — rewrite needed" are review calls, not approvals, and
+"With changes below" and "No, rewrite needed" are review calls, not approvals, and
 do not require this gate.
 
 ---
@@ -359,7 +359,7 @@ Verbatim statute text. Every finding must cite a provision that appears here.
 
 ## hwg.md
 
-# HWG — Heilmittelwerbegesetz (German advertising law for health products)
+# HWG: Heilmittelwerbegesetz (German advertising law for health products)
 
 **Source:** gesetze-im-internet.de, `heilmwerbg`
 <https://www.gesetze-im-internet.de/heilmwerbg/>
@@ -376,7 +376,7 @@ Wettbewerbsverband rather than as a regulator's letter.
 
 ---
 
-## § 1(1) no. 1a — devices are in scope
+## § 1(1) no. 1a: devices are in scope
 
 > (1) Dieses Gesetz findet Anwendung auf die Werbung für
 > [...]
@@ -390,7 +390,7 @@ No separate qualification test.
 
 ---
 
-## § 3 — misleading advertising (the core prohibition)
+## § 3: misleading advertising (the core prohibition)
 
 > **Unzulässig ist eine irreführende Werbung.** Eine Irreführung liegt insbesondere
 > dann vor,
@@ -417,10 +417,10 @@ No separate qualification test.
 
 | HWG § 3 | Overlaps MDR Art. 7 | Adds beyond Art. 7 |
 |---|---|---|
-| no. 1 (effects it does not have) | (a), (b) | — essentially the same test |
-| no. 2(a) **guaranteed success** | — | **Yes.** Art. 7 has no explicit guarantee limb |
+| no. 1 (effects it does not have) | (a), (b) | n/a essentially the same test |
+| no. 2(a) **guaranteed success** | n/a | **Yes.** Art. 7 has no explicit guarantee limb |
 | no. 2(b) **no harmful effects** | (c), loosely | **Yes.** Explicit no-side-effects prohibition |
-| no. 3(b) claims about the maker | — | **Yes.** Overstating credentials or track record |
+| no. 3(b) claims about the maker | n/a | **Yes.** Overstating credentials or track record |
 
 **no. 2(a) and no. 2(b) are the two most commonly tripped in device marketing** and
 neither has a clean MDR Art. 7 equivalent. Copy that promises certainty of outcome,
@@ -429,19 +429,19 @@ Art. 7 is arguably satisfied.
 
 ---
 
-## § 11(1) — advertising outside professional circles (Publikumswerbung)
+## § 11(1): advertising outside professional circles (Publikumswerbung)
 
 § 11 restricts advertising directed at the general public rather than **Fachkreise**
 (healthcare professionals, trade).
 
-**Critical scoping rule — read this before applying § 11 to a device.** The closing
+**Critical scoping rule, read this before applying § 11 to a device.** The closing
 sentence of § 11(1) states:
 
 > **Für Medizinprodukte gilt Satz 1 Nr. 7 bis 9, 11 und 12 entsprechend.**
 
 So for medical devices, **only nos. 7, 8, 9, 11 and 12 apply.** The remaining items
-in § 11(1) — including no. 2 (professional endorsements) and no. 5 (depictions of
-bodily change) — do **not** apply to devices. Applying them to a device is a false
+in § 11(1), including no. 2 (professional endorsements) and no. 5 (depictions of
+bodily change), do **not** apply to devices. Applying them to a device is a false
 positive, and it is the single easiest way to discredit a review.
 
 The five that do apply to devices:
@@ -451,7 +451,7 @@ The five that do apply to devices:
 | **7** | "mit Werbeaussagen, die nahelegen, dass die Gesundheit durch die **Nichtverwendung** des Arzneimittels beeinträchtigt oder durch die **Verwendung verbessert** werden könnte" | Fear-of-not-using framing, and health-improvement-by-use framing |
 | **8** | "durch **Werbevorträge**, mit denen ein Feilbieten oder eine Entgegennahme von Anschriften verbunden ist" | Webinars/talks that collect addresses or sell in the room |
 | **9** | "mit Veröffentlichungen, deren **Werbezweck mißverständlich oder nicht deutlich erkennbar** ist" | Native advertising, unlabelled sponsored content, advertorial |
-| **11** | "mit **Äußerungen Dritter**, insbesondere mit Dank-, Anerkennungs- oder Empfehlungsschreiben [...] wenn diese in missbräuchlicher, abstoßender oder irreführender Weise erfolgen" | Testimonials — but only where abusive, repulsive, or misleading |
+| **11** | "mit **Äußerungen Dritter**, insbesondere mit Dank-, Anerkennungs- oder Empfehlungsschreiben [...] wenn diese in missbräuchlicher, abstoßender oder irreführender Weise erfolgen" | Testimonials n/a but only where abusive, repulsive, or misleading |
 | **12** | "mit Werbemaßnahmen, die sich **ausschließlich oder überwiegend an Kinder unter 14 Jahren** richten" | Copy targeted at under-14s |
 
 Note the qualifier on no. 11: testimonials are **not** flatly banned for devices.
@@ -463,7 +463,7 @@ your heart health with X" are both no. 7 shapes.
 
 ---
 
-## § 3a — not usually relevant to devices
+## § 3a: not usually relevant to devices
 
 > Unzulässig ist eine Werbung für **Arzneimittel**, die der Pflicht zur Zulassung
 > unterliegen und die nicht [...] zugelassen sind [...]
@@ -478,9 +478,9 @@ authorisation). It does not apply to devices. Do not cite it in a device review.
 § 11 applies only **außerhalb der Fachkreise**. Before raising a § 11 finding,
 establish the audience:
 
-- **Fachkreise** — manufacturers, notified bodies, regulatory consultants,
+- **Fachkreise**: manufacturers, notified bodies, regulatory consultants,
   clinicians, procurement. § 11 does not apply. § 3 still does.
-- **Publikum** — patients, carers, general public, and any public-facing web page
+- **Publikum**: patients, carers, general public, and any public-facing web page
   with no gating. § 11 applies (nos. 7-9, 11, 12 only).
 
 A B2B page that anyone can read is not automatically Fachkreise. Ask.
@@ -495,7 +495,7 @@ See `../SKILL.md` § Limits.
 
 ## mdr-ivdr-art7.md
 
-# MDR Article 7 / IVDR Article 7 — Claims
+# MDR Article 7 / IVDR Article 7: Claims
 
 **Source:** EUR-Lex, Regulation (EU) 2017/745 (MDR), CELEX 32017R0745
 <https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32017R0745>
@@ -553,7 +553,7 @@ test. A claim can be entirely true and still breach (d) if the use it suggests
 falls outside the intended purpose that the conformity assessment covered. The
 anchor is the **intended purpose as assessed**, not what the device can factually do.
 
-Limb (c) is likewise not a truthfulness test — it is an **omission** test. Copy
+Limb (c) is likewise not a truthfulness test. It is an **omission** test. Copy
 that says nothing false can still breach (c).
 
 ## Scope note
@@ -573,7 +573,7 @@ verifies. See `../SKILL.md` § Limits.
 
 ## uwg.md
 
-# UWG — Gesetz gegen den unlauteren Wettbewerb
+# UWG: Gesetz gegen den unlauteren Wettbewerb
 
 **Source:** gesetze-im-internet.de, `uwg_2004`
 <https://www.gesetze-im-internet.de/uwg_2004/>
@@ -595,7 +595,7 @@ UWG matters here for two reasons:
 
 ---
 
-## § 5 — misleading commercial practices
+## § 5: misleading commercial practices
 
 > **(1)** Unlauter handelt, wer eine **irreführende geschäftliche Handlung** vornimmt,
 > die geeignet ist, den Verbraucher oder sonstigen Marktteilnehmer zu einer
@@ -631,16 +631,16 @@ UWG matters here for two reasons:
 
 ### The device-specific hooks in § 5(2)
 
-- **no. 1 "Zwecktauglichkeit / Verwendungsmöglichkeit"** — fitness for purpose and
+- **no. 1 "Zwecktauglichkeit / Verwendungsmöglichkeit"**: fitness for purpose and
   possible use. This is the UWG mirror of MDR Art. 7(d) intended-purpose drift.
-- **no. 1 "von der Verwendung zu erwartende Ergebnisse"** — expected results.
+- **no. 1 "von der Verwendung zu erwartende Ergebnisse"**: expected results.
   Outcome claims land here.
-- **no. 1 "Tests"** — claims about test results and their essential components.
+- **no. 1 "Tests"**: claims about test results and their essential components.
   Cherry-picked clinical or bench data lands here.
-- **no. 3 — the trader.** "die **Person, Eigenschaften oder Rechte des Unternehmers**
+- **no. 3, the trader.** "die **Person, Eigenschaften oder Rechte des Unternehmers**
   wie [...] **Status, Zulassung**". This reaches claims about the *company*: its
   qualifications, memberships, authorisations.
-- **no. 4 — the goods.** "Aussagen oder Symbole, die [...] sich auf eine **Zulassung des
+- **no. 4, the goods.** "Aussagen oder Symbole, die [...] sich auf eine **Zulassung des
   Unternehmers oder der Waren oder Dienstleistungen** beziehen". This is the CE-marking
   hook: copy implying a class, notified-body involvement, or a certification **the device
   does not hold**.
@@ -656,7 +656,7 @@ trivially wrong detail nobody buys on is not automatically a § 5 breach.
 
 ---
 
-## § 6 — comparative advertising
+## § 6: comparative advertising
 
 > **(1)** Vergleichende Werbung ist jede Werbung, die unmittelbar oder mittelbar
 > einen **Mitbewerber** oder die von einem Mitbewerber angebotenen Waren oder
@@ -683,14 +683,14 @@ trivially wrong detail nobody buys on is not automatically a § 5 breach.
 ### How to apply § 6 to a comparison page
 
 Comparative advertising is **lawful in Germany** when it satisfies § 6(2). It is not
-banned. The test is cumulative — a comparison must clear every limb.
+banned. The test is cumulative. A comparison must clear every limb.
 
 The two that fail most often on a SaaS/device comparison page:
 
-- **§ 6(2) no. 1 — same need or same purpose.** Comparing products with different
+- **§ 6(2) no. 1, same need or same purpose.** Comparing products with different
   intended purposes fails here before you reach accuracy. Two devices in different
   MDR classes or with different intended purposes are often not comparable at all.
-- **§ 6(2) no. 2 — objective, essential, relevant, verifiable, typical.**
+- **§ 6(2) no. 2, objective, essential, relevant, verifiable, typical.**
   "Verifiable" (*nachprüfbar*) is the sharp edge: the reader must be able to check
   the claim. A comparison table cell that cannot be verified from public
   information fails no. 2 even if it is accurate.
@@ -701,7 +701,7 @@ Anonymised comparisons are still comparative advertising.
 
 ---
 
-## Abmahnung — why this is the expensive failure mode
+## Abmahnung: why this is the expensive failure mode
 
 A UWG breach is typically enforced by a competitor sending an **Abmahnung**
 demanding a **strafbewehrte Unterlassungserklärung** (a cease-and-desist undertaking

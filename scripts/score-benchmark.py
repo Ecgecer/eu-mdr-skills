@@ -13,7 +13,7 @@ judgment is an error, not a zero, for the same reason an errored run is not a fa
 
 Usage:
   python3 scripts/score-benchmark.py --emit <run.json>     # blank judgments skeleton
-  python3 scripts/score-benchmark.py --score <run.json> [<run2.json> ...]
+  python3 scripts/score-benchmark.py --score <run.json> [<run2.json>...]
 """
 import argparse
 import json
@@ -45,7 +45,7 @@ def emit(run_file):
     p = judgment_path(run_file)
     p.write_text(json.dumps(out, indent=2) + "\n")
     n = sum(len(v) for v in out["judgments"].values())
-    print(f"  wrote {p.relative_to(ROOT)} — {n} response(s) awaiting judgment")
+    print(f"  wrote {p.relative_to(ROOT)}, {n} response(s) awaiting judgment")
     return 0
 
 
@@ -59,7 +59,7 @@ def score(run_files):
             continue
         j = json.loads(jp.read_text())
         if not j.get("judge"):
-            problems.append(f"{jp.name}: 'judge' is unset — say who or what scored these")
+            problems.append(f"{jp.name}: 'judge' is unset, say who or what scored these")
         arm = d.get("arm") or "baseline"
         for r in d["responses"]:
             got = j["judgments"].get(r["case"], {}).get(str(r["run"]))
@@ -85,7 +85,7 @@ def score(run_files):
         for a in sorted(arms):
             runs = arms[a].get(c, [])
             if len(runs) < 3:
-                cells.append(f"— ({len(runs)} runs)")
+                cells.append(f"n/a ({len(runs)} runs)")
                 vals[a] = None
             else:
                 v = sum(runs) / len(runs)
@@ -97,7 +97,7 @@ def score(run_files):
             deltas.append(dl)
             cells.append(f"**{dl:+.2f}**")
         else:
-            cells.append("—")
+            cells.append("n/a")
         print(f"| `{c}` | {' | '.join(cells)} |")
     print()
     for a in sorted(arms):
