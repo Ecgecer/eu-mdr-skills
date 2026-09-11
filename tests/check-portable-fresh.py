@@ -124,4 +124,36 @@ print(rt.stdout.rstrip())
 if rt.returncode:
     failed = 1
 
+# 7. the worked example either matches the skill that produced it, or says it does not
+#
+# examples/ is the shop window: it is what someone reads before deciding to install.
+# Its transcripts are verbatim and must never be edited -- that promise is the only
+# reason they are worth anything -- so the drift is handled by disclosure, not by
+# rewriting. The stamp records the skill text they were produced from. The warning is
+# required while they differ and forbidden once they match, so regenerating the example
+# also clears the notice instead of leaving it to rot.
+import importlib.util as _ilu
+_spec = _ilu.spec_from_file_location("_re", ROOT / "scripts" / "report-evals.py")
+_re = _ilu.module_from_spec(_spec); _spec.loader.exec_module(_re)
+
+ex_readme = ROOT / "examples" / "README.md"
+ex_stamp = ROOT / "examples" / ".skill-version.json"
+MARK = "produced by an earlier version of the skill"
+if ex_stamp.exists() and ex_readme.exists():
+    import json as _json
+    st = _json.loads(ex_stamp.read_text())
+    stale = st.get("sha256") != _re.content_hash(st["plugin"])
+    warned = MARK in ex_readme.read_text()
+    if stale and not warned:
+        print(f"\n  examples/ was produced by a {st['plugin']} version that no longer ships,")
+        print("  and README.md does not say so. Regenerate the transcripts and update")
+        print("  examples/.skill-version.json, or add the notice. Never edit a transcript.")
+        failed = 1
+    elif warned and not stale:
+        print("\n  examples/ matches the current skill but still carries the staleness")
+        print("  notice. Remove the notice from examples/README.md.")
+        failed = 1
+    else:
+        print("  worked example: " + ("current" if not stale else "stale, and says so"))
+
 sys.exit(failed)
