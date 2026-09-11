@@ -10,9 +10,9 @@ Do not hand-edit the table.
 | `fsn-language` | 1.00 | 1.00 | **+0.00** | 3×2 | 2026-09-11 |
 | `not-german-market` | 0.67 | 0.33 | **+0.33** | 3×2 | 2026-09-11 |
 | `outside-carried-sections` | 1.00 | 0.00 | **+1.00** | 3×2 | 2026-09-11 |
-| `professional-user-exception` | 1.00 | — | **—** | 3×2 | 2026-09-11 ⚠ |
+| `professional-user-exception` | 1.00 | 0.33 | **+0.67** | 3×2 | 2026-09-11 |
 
-**Mean delta +0.50** across 4 case(s) with both arms measured.
+**Mean delta +0.53** across 5 case(s) with both arms measured.
 
 ### Every other stored run for these cases
 
@@ -20,7 +20,7 @@ Do not hand-edit the table.
 - `fsn-language` — earlier runs: 2026-09-10 1.00/1.00; 2026-09-10 —/— (6 errored); 2026-09-10 1.00/— (2 errored)
 - `not-german-market` — earlier runs: 2026-09-10 0.67/0.67; 2026-09-10 —/— (4 errored); 2026-09-10 0.00/0.33
 - `outside-carried-sections` — earlier runs: 2026-09-10 1.00/0.00; 2026-09-10 —/— (6 errored); 2026-09-10 1.00/0.00
-- `professional-user-exception` — earlier runs: 2026-09-10 1.00/0.67; 2026-09-10 1.00/0.33; 2026-09-10 1.00/0.67
+- `professional-user-exception` — earlier runs: 2026-09-10 1.00/0.67; 2026-09-10 1.00/0.33; 2026-09-10 1.00/0.67; 2026-09-11 1.00/— (1 errored)
 
 Listed because publishing only the most favourable run of several is how the earlier tables went wrong.
 
@@ -76,11 +76,18 @@ was required to have three. Three valid runs in both arms now, and the answer is
 this repo keeps finding: the baseline already knows a Field Safety Notice for the German
 market must be in German.
 
-`professional-user-exception` is **not measured**. The harness reported it as +0.67 and
-scored it into a suite mean of +0.533; its baseline arm has two valid runs of three, the
-third having died on `API Error: Repeated 529 Overloaded errors`. Two runs is not
-evidence, so this table reads "—" and the suite mean here is **+0.50 across the four
-cases that are measured**.
+`professional-user-exception` measures **+0.67**, and it is worth saying how it got there.
+The suite run reported it as +0.67 and folded that into a mean of +0.533 — off a baseline
+arm with two valid runs of three, the third having died on `API Error: Repeated 529
+Overloaded errors`. The table refused it, the case was re-run on its own for $1.16, and
+the answer came back **1.00 / 0.33, exactly +0.67**.
+
+So the refused number was right. That is the honest version, and it is not an argument
+against refusing it: two runs cannot be known to be representative *in advance*, which is
+the whole reason for a threshold. The same rule caught `fsn-language` published at +1.00
+off a single baseline run, where the completed measurement is **+0.00**. One rule, two
+cases, right both times — once by rejecting a good number, once by rejecting a bad one,
+and no way to tell which was which without running them.
 
 That rule was written after a billing failure was counted as a score of zero. This is the
 first time it has caught something else — an overloaded API is a different accident with

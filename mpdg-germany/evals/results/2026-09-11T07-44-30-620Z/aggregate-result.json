@@ -1,0 +1,232 @@
+{
+  "schemaVersion": 1,
+  "claudeVersion": "2.1.268",
+  "startedAt": "2026-09-11T07:44:30.620Z",
+  "durationSeconds": 394,
+  "costUsd": 1.159503,
+  "partial": false,
+  "suite": {
+    "root": "/Users/egecangecer/projects/eu-mdr-skills/mpdg-germany",
+    "ablation": "with-without",
+    "caseFilter": "professional-user-exception",
+    "threshold": 1,
+    "plugins": [
+      {
+        "name": "mpdg-germany",
+        "version": "0.1.0",
+        "path": "/Users/egecangecer/projects/eu-mdr-skills/mpdg-germany"
+      }
+    ]
+  },
+  "cases": [
+    {
+      "name": "professional-user-exception",
+      "dir": "evals/02-professional-user-exception",
+      "source": "prose",
+      "promptMarkdown": "Our device is a benchtop analyser sold only to hospital laboratories in Germany — never\nto patients, never to home users. We want to ship the instructions for use in English\nonly, since all our users are lab professionals. Our German competitor does this. Can\nwe?",
+      "runsPerCase": 3,
+      "timeoutSeconds": 300,
+      "maxTurns": 10,
+      "graders": [
+        {
+          "name": "criteria",
+          "type": "llm",
+          "weight": 1,
+          "graderMarkdown": "MPDG § 8(2) sentence 2 permits English for information intended exclusively for\nprofessional users, but the exception is CUMULATIVE — three conditions, all required:\na justified case (begründeter Fall), exclusively professional users, AND\nsafety-related information still provided in German or the user's language.\n\nPASS requires:\n(1) It does NOT answer a flat yes. English-only for the whole IFU is not permitted,\n    because safety-related information must still be in German (or the user's language)\n    even under the exception.\n(2) It names the cumulative structure — at minimum, that the professional-user route\n    still requires safety information in German. Naming all three conditions is better\n    but not required.\n(3) It does NOT answer a flat no either. The exception is real, and a response that\n    says \"everything must be German, no exceptions\" misses § 8(2) sentence 2 and is a\n    FAIL for the opposite reason.\n\nThe correct shape is: mostly yes for the professional content, but not for the\nsafety-related parts, and only in a justified case.\n\n(4) The response must not treat \"all our users are lab professionals\" as itself\n    supplying the begründeter Fall. That collapses two of the three cumulative\n    conditions into one. A response that mentions safety information in German but\n    treats professional users as automatically justifying the exception has missed the\n    structure and is a FAIL.\n\nIgnore the competitor point; what a competitor does is not a legal basis, and the\nresponse need not address it.",
+          "config": {
+            "criteria": "MPDG § 8(2) sentence 2 permits English for information intended exclusively for\nprofessional users, but the exception is CUMULATIVE — three conditions, all required:\na justified case (begründeter Fall), exclusively professional users, AND\nsafety-related information still provided in German or the user's language.\n\nPASS requires:\n(1) It does NOT answer a flat yes. English-only for the whole IFU is not permitted,\n    because safety-related information must still be in German (or the user's language)\n    even under the exception.\n(2) It names the cumulative structure — at minimum, that the professional-user route\n    still requires safety information in German. Naming all three conditions is better\n    but not required.\n(3) It does NOT answer a flat no either. The exception is real, and a response that\n    says \"everything must be German, no exceptions\" misses § 8(2) sentence 2 and is a\n    FAIL for the opposite reason.\n\nThe correct shape is: mostly yes for the professional content, but not for the\nsafety-related parts, and only in a justified case.\n\n(4) The response must not treat \"all our users are lab professionals\" as itself\n    supplying the begründeter Fall. That collapses two of the three cumulative\n    conditions into one. A response that mentions safety information in German but\n    treats professional users as automatically justifying the exception has missed the\n    structure and is a FAIL.\n\nIgnore the competitor point; what a competitor does is not a legal basis, and the\nresponse need not address it.",
+            "focus": "last_message"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 4,
+            "costUsd": 0.14078425,
+            "judgeCostUsd": 0.003927,
+            "durationSeconds": 29,
+            "startedAt": "2026-09-11T07:44:30.625Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-VNqtc6/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "## Can we ship English-only IFU for a hospital-lab analyser in Germany?\n\n**German market:** confirmed — product is made available in Germany, so MPDG applies.\n**Answer:** Almost, but not as stated — the body of the IFU can be English, but the **safety-related information must still be in German** (or the user's language), so \"English only\" fails § 8(2).\n\n| Item | MDR/IVDR requires | Germany adds | Basis |\n|---|---|---|---|\n| EU Declaration of Conformity | not carried here | German **or** English — English alone is fine, no translation needed | MPDG § 8(1) `[verified]` |\n| Information for users/patients (default) | not carried here | German, and it is a **condition of supply** — the product may only be handed over if met | MPDG § 8(2) sentence 1 `[verified]` |\n| Same, where users are exclusively professional | not carried here | English (or another easily understood language) permitted — but only *in begründeten Fällen* | MPDG § 8(2) sentence 2 `[verified]` |\n| Safety-related information, even under that exception | not carried here | **German** or the user's language — no exception reaches it | MPDG § 8(2) sentence 2, final clause `[verified]` |\n\nThe § 8(2) sentence 2 exception is cumulative — all three must hold:\n\n1. A **justified case** (*begründeter Fall*). Your reasoning — hospital lab professionals, English as working language of the field — is the kind of argument that goes here, but you need it documented, not assumed.\n2. Information is **exclusively** for professional users. A benchtop analyser sold only to hospital labs fits this on the facts you describe, provided nothing in the pack is addressed to patients or lay users.\n3. **Safety-related information is still provided in German** (or the user's language). This is the one your plan breaks.\n\nSo the practical shape: main IFU in English is defensible; warnings, cautions, hazard statements, handling of biohazardous/reagent risks, residual-risk information, and anything else safety-related needs a German version alongside it. MPDG does not define which content counts as *sicherheitsbezogen*, and I can't tell you where a German authority would draw that line — draw it generously.\n\n**What would change this:** if any part of the information set is aimed at patients or non-professional users, sentence 1 applies in full and the whole IFU must be German. Not relevant here, but note that if this were an implantable device under MDR Art. 18(1), § 8(3) would require German with no professional-user exception at all.\n\n**On the competitor:** that a German competitor ships English-only tells you nothing about whether it is lawful. § 8(2) sentence 1 is a supply condition; an unchallenged practice is not a compliance basis.\n\n## Limits\n\nThis covers MPDG §§ 4, 8 and 73 only, retrieved verbatim from gesetze-im-internet on 2026-09-10. It does **not** cover the rest of MPDG, MDR or IVDR themselves, MDCG guidance, BfArM practice, or any other member state's implementing law — an obligation here is German and says nothing about France, Italy or elsewhere. A first-pass aid for spotting German-specific duties, not legal advice, and not a substitute for a regulatory professional or a Fachanwalt für Medizinrecht."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 4,
+            "costUsd": 0.15179250000000002,
+            "judgeCostUsd": 0.004463999999999999,
+            "durationSeconds": 37,
+            "startedAt": "2026-09-11T07:44:59.551Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-mBE6YV/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "## Can we ship the IFU for a hospital-lab benchtop analyser in English only?\n\n**German market:** confirmed — sold to hospital laboratories in Germany, so MPDG applies (§ 8 covers products *im Geltungsbereich dieses Gesetzes*; § 8(1) names both 2017/745 and 2017/746, so IVDs are in scope).\n\n**Answer:** No — not English *only*. You can run the bulk of the IFU in English under the professional-user exception, but the **safety-related information must still be provided in German** (or the user's language), and you need a justified case for using English at all.\n\n| Item | MDR/IVDR requires | Germany adds | Basis |\n|---|---|---|---|\n| EU Declaration of Conformity | not carried here | German **or English** — English alone is fine, no translation needed | MPDG § 8(1) `[verified]` |\n| Information for users/patients (IFU, labelling) | not carried here | **German** by default, and it is a *condition of supply* — products may only be handed over if met | MPDG § 8(2) sentence 1 `[verified]` |\n| Same, where recipients are exclusively professional users | not carried here | English (or another easily understood language) permitted — but only **in begründeten Fällen** | MPDG § 8(2) sentence 2 `[verified]` |\n| Safety-related information, even under that exception | not carried here | **German** or the user's language — the exception does not reach it | MPDG § 8(2) sentence 2, final clause `[verified]` |\n\nThe exception in sentence 2 is **cumulative**. All three must hold:\n\n1. a justified case (*begründeter Fall*),\n2. the information is destined **exclusively** for professional users, and\n3. the safety-related information is *also* provided in German or the user's language.\n\nYour facts clear condition 2 cleanly — benchtop analyser, hospital labs, never lay users. Condition 3 is where \"English only\" fails: whatever in your IFU is safety-related (warnings, precautions, biohazard/handling, contraindications to use, residual-risk statements, anything you'd map to the safety information requirements of the GSPRs) has to exist in German. Condition 1 you should be able to document — put the *begründeter Fall* in writing rather than assuming it; it's a justification you may be asked to produce, not an automatic consequence of having professional users.\n\n**What would change this:** if any unit could be made available to a non-professional user, sentence 1 snaps back and the whole IFU must be German. § 8(3)'s implant rule doesn't touch you (not implantable, and it's MDR Art. 18 specific).\n\n**On the competitor:** what another manufacturer ships is not a compliance basis, and you can't see from outside whether they carry a German safety-information annex or a justification file. I'd not treat it as evidence either way.\n\n**Practical shape:** full IFU in English + a German safety section (or bilingual safety passages in-line), and a short documented rationale for the English case. That is the configuration § 8(2) actually permits.\n\n## Limits\n\n> This covers MPDG §§ 4, 8 and 73 only, retrieved verbatim from gesetze-im-internet on 2026-09-10. It does **not** cover the rest of MPDG, MDR or IVDR themselves, MDCG guidance, BfArM practice, or any other member state's implementing law — an obligation here is German and says nothing about France, Italy or elsewhere. A first-pass aid for spotting German-specific duties, not legal advice, and not a substitute for a regulatory professional or a Fachanwalt für Medizinrecht.\n\nOne thing I can't answer from what I carry: **which** content counts as \"sicherheitsbezogene Informationen\" is not defined in § 8 — that scoping runs through IVDR's own labelling/GSPR requirements, which this reference doesn't include. If you want, paste the relevant IVDR provision or your IFU's section list and I'll work from that rather than from memory."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 4,
+            "costUsd": 0.15168725000000002,
+            "judgeCostUsd": 0.0046650000000000025,
+            "durationSeconds": 37,
+            "startedAt": "2026-09-11T07:45:36.192Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-dBBgDc/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "## Can we ship the IFU in English only? (benchtop IVD analyser, German hospital labs)\n\n**German market:** confirmed — placed on the market in Germany, so MPDG applies. § 8(1) cites Art. 17(1) of Regulation (EU) 2017/746 directly, so an IVD is squarely in scope `[verified]`.\n\n**Answer:** No — not English *only*. You can likely put the body of the IFU in English, but the **safety-related information must still be provided in German** (or the user's language), and you must be able to justify the case. English-only fails § 8(2) regardless of how professional your users are.\n\n| Item | MDR/IVDR requires | Germany adds | Basis |\n|---|---|---|---|\n| EU Declaration of Conformity | not carried here | German **or** English — English alone is compliant, no translation needed | MPDG § 8(1) `[verified]` |\n| Information for users (your IFU), default | not carried here | **German**, and it is a *condition of supply* — the product may only be handed over if met | MPDG § 8(2) sentence 1 `[verified]` |\n| Same, professional users only | not carried here | English permitted, but only on **three cumulative conditions** | MPDG § 8(2) sentence 2 `[verified]` |\n| Safety-related information, even under the exception | not carried here | **German** or the user's language — the exception does not reach it | MPDG § 8(2) sentence 2, final clause `[verified]` |\n\n### The three conditions, all of which must hold\n\n1. **A justified case** (*in begründeten Fällen*). Your \"all our users are lab professionals\" argument does not by itself supply this — that is condition 2. This is a separate hurdle and the one you are least evidently over.\n2. **Exclusively for professional users** (*ausschließlich für professionelle Anwender*). Hospital-lab-only distribution looks like it satisfies this, provided nothing in the IFU set is addressed to patients and the device genuinely never reaches a lay user.\n3. **Safety-related information also in German** or the user's language. This is the part that defeats \"English only\" outright. Whatever you consider safety-related in the IFU — warnings, precautions, biohazard and disposal handling, error states with a safety consequence — needs a German version alongside.\n\nSo the shippable shape is: English IFU **plus** German safety content, not English alone.\n\n### On the competitor\n\nWhat a German competitor does is not a compliance basis, and I can't tell you whether their arrangement is lawful, unchallenged, or simply not yet looked at. It's also possible they are doing exactly the above — English IFU with German safety sections — which reads as \"English IFU\" from the outside.\n\n**What would change this:** if any information in the set is intended for patients or non-professional users, sentence 2 is unavailable entirely and the whole thing must be German. Conversely, if you are asking only about the **Declaration of Conformity**, English alone is fine and translating it is over-application.\n\n### Two adjacent things worth knowing\n\n- **§ 8(3)** (implant information, German, no professional exception) does not apply — a benchtop analyser is not implantable. `[verified]`\n- **§ 73(1)**: if you ever run a field safety corrective action in Germany, the **Field Safety Notice must be in German** — no professional-user exception there either. Worth designing your German-language capability around now rather than under FSCA time pressure. `[verified]`\n\nI cannot tell you what counts as \"safety-related information\" for your specific IFU, or what BfArM would accept as a *begründeter Fall* — that turns on guidance and authority practice I don't carry. Scoping the German safety content is the decision to take to your regulatory lead.\n\n## Limits\n\n> This covers MPDG §§ 4, 8 and 73 only, retrieved verbatim from gesetze-im-internet on 2026-09-10. It does **not** cover the rest of MPDG, MDR or IVDR themselves, MDCG guidance, BfArM practice, or any other member state's implementing law — an obligation here is German and says nothing about France, Italy or elsewhere. A first-pass aid for spotting German-specific duties, not legal advice, and not a substitute for a regulatory professional or a Fachanwalt für Medizinrecht."
+              }
+            ]
+          }
+        ],
+        "without": [
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 4,
+            "costUsd": 0.25069775,
+            "judgeCostUsd": 0.005105999999999999,
+            "durationSeconds": 103,
+            "startedAt": "2026-09-11T07:46:12.978Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-auUa3b/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "judge votes: FAIL FAIL FAIL",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  false,
+                  false,
+                  false
+                ],
+                "evidence": "I couldn't verify the statutory text — WebSearch/WebFetch were both denied in this session (\"don't ask\" mode), so the below is from knowledge and flagged where I'd want the primary source checked. If you enable web access I'll pull the current § 10 MPDG wording verbatim.\n\n## Short answer\n\nProbably yes for the IFU specifically — but \"English only\" across the whole information package is almost certainly *not* right, and your competitor's practice is not evidence of compliance.\n\n## The legal chain\n\nYour benchtop analyser is an **IVD**, so **IVDR (EU) 2017/746** applies, not the MDR.\n\n1. **IVDR Article 10(11)** — the Annex I Chapter III Section 20 information (label + instructions for use) must be in an official Union language **\"determined by the Member State in which the device is made available to the user.\"** The Regulation itself delegates language entirely to national law.\n2. **IVDR Annex I, Section 20.1** — overriding requirement: the information must be **\"readily comprehensible to the intended user.\"** This is a separate, non-delegable obligation. Even in a Member State that permits English, you must be able to justify comprehensibility for your actual user population.\n3. **Germany: § 10 MPDG** (Medizinprodukterecht-Durchführungsgesetz). Baseline is **German**. There is a derogation for devices intended **exclusively for professional users** (*berufsmäßige Anwender* / Fachkreise) that permits the **instructions for use** in English. This is the hook your competitor is relying on.\n\n**Verify this before you commit.** My recollection of § 10 MPDG is that the derogation (a) covers the *Gebrauchsanweisung* only — **not** the *Kennzeichnung* (label) — and (b) carries conditions, possibly including that safety-relevant information remain in German. I'm confident the professional-use derogation exists; I am **not** confident of its exact scope and conditions, and that detail is precisely what decides your question. Read the current text directly and confirm with German regulatory counsel and your notified body.\n\n## What stays German regardless\n\nEven if the IFU can be English:\n\n- **Label and on-device markings** — likely outside the derogation. Warnings, safety symbols text, and any safety-relevant text on the instrument or its screen.\n- **Field Safety Notices / FSCA communications** to German users — German, no realistic argument otherwise.\n- **Summary of Safety and Performance (Art. 29)** if your analyser is class C or D — language per Member State requirement, and this is a public Eudamed document.\n- **EU Declaration of Conformity (Art. 17)** — translated into the language(s) required by the Member State where made available.\n- **Correspondence with BfArM / ZLG** and registration material.\n\n## Two practical constraints that often decide this anyway\n\n- **Operator-side law.** German hospitals operate under **MPBetreibV** (use strictly per IFU, documented staff training/*Einweisung*) and **ArbSchG § 12** (instruction in a language employees actually understand). A lab that can't train staff off your IFU has a compliance problem of its own — which lands back on you.\n- **Procurement.** German hospital and *Klinikum* tenders very frequently require German documentation and a German-language software UI as an award criterion. This is where English-only usually costs money rather than causing a recall.\n\n## On the competitor\n\nTwo things to check before treating it as precedent: whether their intended use and intended user are genuinely identical to yours (any near-patient or point-of-care claim collapses the \"exclusively professional\" gate), and whether their practice has actually been examined by an authority. Unchallenged is not the same as lawful, and *\"the competitor does it\"* is worth nothing in an enforcement or liability conversation.\n\n## What I'd do\n\n1. Read § 10 MPDG as currently in force; get a one-page written opinion from German MDR/IVDR counsel on scope and conditions of the professional-use derogation.\n2. Raise it with your notified body **now**, in writing, as part of the technical documentation review — not after certification.\n3. Either way, budget for: German label, German safety/warning text, German SSP (if class C/D), German FSN capability.\n4. Document the comprehensibility justification in your **usability engineering file (IEC 62366)** — evidence that German lab professionals in your user group read technical English. This is the item most often missing.\n5. Don't assume portability. If you ever sell outside Germany, this analysis restarts per Member State — France, Italy, Spain and Poland require the national language; several others permit English for professional-use IVDs.\n\nOne adjacent point since you're deciding the IFU format anyway: IVDR Annex I 20.1 also permits **electronic IFU** for professional-use devices under specified conditions, which may be worth pairing with this decision.\n\nI'm not a lawyer and this isn't a regulatory opinion — treat it as a map of the issues to put in front of counsel and your notified body."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 4,
+            "costUsd": 0.21799875000000002,
+            "judgeCostUsd": 0.004218000000000003,
+            "durationSeconds": 83,
+            "startedAt": "2026-09-11T07:47:55.983Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-DauCdd/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "Short answer: **most likely yes for the instructions for use, but not for everything, and \"our competitor does it\" isn't the basis you want to rely on.**\n\nOne caveat up front: I tried to verify this against the current German statutory text and web access was denied in this session, so the paragraph numbering below is from memory and should be confirmed. If you re-run me with web access I can pull the live text from gesetze-im-internet.de.\n\n## Where the rule actually lives\n\nIVDR (EU) 2017/746 deliberately doesn't decide this. Art. 10(11) and Annex I Section 20.1 say the information supplied with the device must be in an official Union language **determined by the Member State in which the device is made available to the user**. So the EU gives you nothing — it's purely a German national question.\n\nGerman implementation is the MPDG (Medizinprodukterecht-Durchführungsgesetz), in the language provision at § 10. The structure is:\n\n- **Default:** labelling and IFU in German.\n- **Exception:** for devices intended *exclusively* for professional users — not laypersons, not self-testing, not home use — the instructions for use may be in English.\n\nYour device fits the exception's fact pattern cleanly: benchtop analyser, hospital labs only, professional operators.\n\n## The three things that trip people up\n\n**1. The exception covers the IFU, not necessarily everything else.** The label and safety-relevant information (warnings, precautions, anything with a patient- or operator-safety consequence) are conventionally kept in German, and German authorities expect that. Budget for a German label and German warnings even if the 200-page IFU stays English. Lean on EN ISO 15223-1 symbols for the label — that removes most of the language burden for free.\n\n**2. \"Exclusively for professional users\" has to be true in the documentation, not just in practice.** It needs to be stated in the intended purpose in your technical documentation and IFU, and your distribution has to actually hold that line. If the analyser could plausibly land in a near-patient or decentralised setting, the exemption gets shaky.\n\n**3. Software UI text, alarms and error messages.** If the instrument has a screen, those strings are arguably part of the information supplied with the device, and they're where a language mismatch turns into a real use error. Your IEC 62366 usability file should address whether a German-speaking MTA can safely operate an English-only interface. This is the part most likely to draw a question from an auditor or a notified body, and the part most likely to actually hurt someone.\n\n## The commercial issue, which is separate\n\nHospital procurement in Germany routinely requires German documentation in tender specifications regardless of what the law permits, and the MPBetreibV puts operator-side duties on the hospital (user instruction, ensuring safe operation per the IFU) that make German-language material easier for them to discharge. You can be fully legal and still lose tenders. Worth checking with sales before treating this as settled.\n\nOn the competitor: that tells you nothing useful. They may be relying on exactly this exemption, they may have German labels and warnings you haven't seen, or they may be non-compliant and simply not yet inspected. Nobody's enforcement history is a defence for yours.\n\n## What I'd do\n\nShip English IFU, German label, German warnings/safety information, German UI strings if there's a screen. Lock \"for professional use only\" into the intended purpose. Then have German regulatory counsel confirm the current § 10 MPDG wording before you commit to print — this is a one-hour question for a specialist and the exemption's exact scope is the kind of thing that gets amended.\n\nOne forward-looking note: Regulation (EU) 2021/2226 lets you supply the IFU electronically for professional-use devices. If you go eIFU, adding a German translation later costs you almost nothing, which de-risks both the regulatory question and the procurement one.\n\nI'm giving you the regulatory landscape, not a legal opinion — the confirmation step above isn't boilerplate."
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 3,
+            "costUsd": 0.24654249999999994,
+            "judgeCostUsd": 0.006408999999999998,
+            "durationSeconds": 106,
+            "startedAt": "2026-09-11T07:49:18.803Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-0V9Obt/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "judge votes: FAIL FAIL FAIL",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  false,
+                  false,
+                  false
+                ],
+                "evidence": "I couldn't fetch the live statute (web access is blocked in this session), so this is from knowledge — verify the current wording of § 9 MPDG before you act on it.\n\n## Short answer\n\nProbably yes — but not for the reason you gave, and not unconditionally.\n\n\"All our users are lab professionals\" is the right *shape* of argument, but the permission doesn't come from that fact on its own. And \"our German competitor does it\" carries no legal weight at all.\n\n## The chain of authority\n\nUnder IVDR (Reg. (EU) 2017/746), Art. 10(11) and Annex I §20.1, the IFU must be in an official Union language **determined by the Member State where the device is made available**. The Regulation deliberately punts to national law — so the answer is entirely a German-law question.\n\nGermany's provision is **§ 9 MPDG** (Medizinprodukterecht-Durchführungsgesetz). Its structure:\n\n- **Default: German** for labelling and instructions for use.\n- **Derogation for devices supplied exclusively to professional users** (*berufsmäßige Anwender*) — another language, in practice English, is permitted.\n- **Carve-outs that survive the derogation.** This is the part people get wrong. Expect safety-relevant information and the labelling on the device itself to still require German, and in some readings the derogation to be conditioned on agreement with the user rather than being a free unilateral choice.\n\nCheck those carve-outs and conditions in the current text — they're what determines whether \"English only\" is actually available to you, or only \"English IFU + German safety content.\"\n\n## What would put you outside the derogation\n\n- **\"Exclusively\" is load-bearing.** Your intended-use statement, labelling and distribution controls must genuinely confine the device to professional lab users. If a unit can plausibly end up in near-patient/POCT use on a ward, the argument weakens.\n- **\"Readily understood by the intended user\"** (Annex I §20.1) is a separate, cumulative requirement. German MTAs are not uniformly fluent in technical English. If you rely on English, your usability/human-factors file (IEC 62366-1) needs to actually justify that assumption for night-shift and less-senior staff — not just assert it.\n- **Scope creep beyond the IFU.** Software UI strings, on-screen error and alarm messages, and warning markings on the instrument are information supplied with the device. Decide deliberately whether they're in scope.\n\n## Two practical realities\n\n**No notified body will catch this for you.** A benchtop analyser is likely a Class A IVD instrument under IVDR Rule 5 — self-declared if non-sterile. So there's no NB review of your IFU; the first party to test your interpretation will be a *Landesbehörde* in market surveillance, or a customer's QM department.\n\n**Procurement will push back regardless of legality.** German hospitals have their own obligations — MPBetreibV (operator duties, *Einweisung* of staff against the IFU) and occupational safety law (§ 12 ArbSchG, BetrSichV), which require instruction in a language employees understand. Even where English is lawful for you, German docs are frequently a tender requirement. Your competitor may simply be absorbing that friction, or quietly supplying German on request.\n\n## Recommendation\n\nDon't treat this as binary. The low-risk position that still gets you most of the cost saving:\n\n1. English full IFU under the § 9 MPDG professional-user derogation.\n2. German for safety-relevant content, device labelling, warnings and alarm/error messages.\n3. A documented justification in the usability and risk files for why English is comprehensible to the intended user population.\n4. Verified distribution controls backing the \"exclusively professional\" claim.\n\nGet a German regulatory counsel or a Benannte Stelle consultant to sign off on the § 9 reading specifically — it's an hour of advice against a market-withdrawal risk. And note this analysis is Germany-only; every other Member State sets its own language rule, so an EU expansion reopens it."
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 1,
+        "passRate": 1,
+        "scoreWithout": 0.3333333333333333,
+        "passRateWithout": 0.3333333333333333,
+        "delta": 0.6666666666666667
+      }
+    }
+  ],
+  "aggregates": {
+    "casesTotal": 1,
+    "casesPassed": 1,
+    "overallScore": 1,
+    "overallPassRate": 1,
+    "meanDelta": 0.6666666666666667
+  }
+}

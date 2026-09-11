@@ -112,7 +112,7 @@ not do so reliably, so a single run of any of them proves nothing.
 - `hwg3a-arzneimittel-only` (device-claims) — baseline 0.33
 - `limb-d-intended-purpose-drift` (device-claims) — baseline 0.67
 - `not-german-market` (mpdg-germany) — baseline 0.33
-- `professional-user-exception` (mpdg-germany) — baseline 0.67
+- `professional-user-exception` (mpdg-germany) — baseline 0.33
 - `readiness-claim` (scope-statement) — baseline 0.67
 - `uwg6-comparison` (device-claims) — baseline 0.67
 
