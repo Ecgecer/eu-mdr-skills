@@ -5,8 +5,9 @@ data in `evals/results/`. Do not hand-edit the table; hand-edited tables are how
 corrections below happened.
 
 <!-- report-evals:start -->
-> ⚠ **The skill text changed after these runs.** The numbers below describe
-> the earlier text, not what this plugin currently ships. Re-measure with
+> ⚠ **The skill or its eval cases changed after these runs.** The numbers
+> below describe the earlier text, not what this plugin currently ships.
+> Re-measure with
 > `claude plugin eval mdr-classification --ablation with-without`.
 
 | Case | with | without | delta | runs | measured |

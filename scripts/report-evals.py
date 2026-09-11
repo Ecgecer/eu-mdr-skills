@@ -39,11 +39,19 @@ def plugins():
                    for f in glob.glob(str(ROOT / "*/skills/*/SKILL.md"))})
 
 def content_hash(plugin):
-    """Hash of every byte of skill text the evals exercise, path included so that
-    renaming or splitting a reference counts as a change."""
+    """Hash of everything a score depends on: the skill text AND the cases that score it.
+
+    Skill text alone was not enough. A grader rewrite changes what the same response
+    scores -- no-case-law-supplement's grader failed three correct refusals for
+    containing the words they were rejecting -- so numbers measured under the old grader
+    describe a test that no longer exists, exactly as numbers measured under old skill
+    text do. Paths are hashed too, so renaming or splitting a file counts as a change.
+    """
     h = hashlib.sha256()
     files = sorted(glob.glob(str(ROOT / plugin / "skills/*/SKILL.md")) +
-                   glob.glob(str(ROOT / plugin / "skills/*/references/*.md")))
+                   glob.glob(str(ROOT / plugin / "skills/*/references/*.md")) +
+                   glob.glob(str(ROOT / plugin / "evals/*/prompt.md")) +
+                   glob.glob(str(ROOT / plugin / "evals/*/graders/*.md")))
     if not files:
         return None
     for f in files:
@@ -206,7 +214,7 @@ def do_check():
             bad = 1; continue
         want = json.loads(sp.read_text()).get("sha256")
         if want != content_hash(pl):
-            print(f"  {pl}: skill text changed since it was measured.")
+            print(f"  {pl}: skill or eval text changed since it was measured.")
             print(f"    The published table describes the old text. Re-measure with")
             print(f"    `claude plugin eval {pl} --ablation with-without`, then --stamp.")
             bad = 1
@@ -253,8 +261,9 @@ def stale_banner(plugin):
     sp = stamp_path(plugin)
     if sp.exists() and json.loads(sp.read_text()).get("sha256") == content_hash(plugin):
         return []
-    return ["> ⚠ **The skill text changed after these runs.** The numbers below describe",
-            "> the earlier text, not what this plugin currently ships. Re-measure with",
+    return ["> ⚠ **The skill or its eval cases changed after these runs.** The numbers",
+            "> below describe the earlier text, not what this plugin currently ships.",
+            "> Re-measure with",
             f"> `claude plugin eval {plugin} --ablation with-without`.", ""]
 
 def current(case_runs):

@@ -13,7 +13,7 @@ Measured across 5 suites, 30 cases:
 
 | Suite | Mean delta | Cases measured | Content |
 |---|---|---|---|
-| `device-claims` | **+0.60** | 10 | MDR/IVDR Art. 7 **plus HWG and UWG** |
+| `device-claims` | **+0.63** | 10 | MDR/IVDR Art. 7 **plus HWG and UWG** |
 | `mpdg-germany` | **+0.50** | 4 | German national law only |
 | `mdr-classification` | +0.17 | 6 | EU-level only |
 | `scope-statement` | +0.11 | 3 | domain-general |
