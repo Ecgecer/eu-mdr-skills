@@ -19,6 +19,25 @@ and two of these cases were mis-scored here for exactly that reason.
 `baseline_pass_rate` is what **Claude** scored with no reference material and no
 web access, three runs, measured rather than estimated.
 
+There is a runner in the parent repo that does the sending and stores the raw
+answers, so generation and judging stay separate steps — mixing them is how you
+end up unable to tell a model failure from a grader failure:
+
+```
+# every case, three runs each
+GEMINI_API_KEY=...  python3 scripts/run-benchmark.py --provider gemini --model gemini-2.5-pro
+OPENAI_API_KEY=...  python3 scripts/run-benchmark.py --provider openai --model gpt-4o
+
+# just the cases Claude failed in every run — the ones that discriminate
+python3 scripts/run-benchmark.py --provider gemini --model gemini-2.5-pro --hard-only
+
+python3 scripts/run-benchmark.py --list          # cases and their measured baselines
+```
+
+It writes `benchmark/runs/<model>-<timestamp>.json` with every response and the
+retrieval condition. Judge those against each case's `correct_answer_criteria`,
+and do not let the model judge itself.
+
 ### One model has been tested
 
 Every number here comes from Claude, run through Claude Code 2.1.266/267 with an
