@@ -143,6 +143,16 @@ so a size threshold seemed reasonable — and it flagged every good source as a 
 because gesetze-im-internet legitimately serves each section as its own 3–8 KB page. Key
 on status code and extracted-text length.
 
+**Predicting where a skill will earn.** Four times now: classification would show a large
+delta because the rules interact (it did not), Article 120 would because the model's
+recall was stale (it was not), the two Art. 7 limb cases would because the limbs are
+subtle (they did not), and MPBetreibV would because it binds the operator rather than the
+manufacturer (the model corrects that premise unasked, 3 of 3). Every prediction was
+plausible, argued from the structure of the law, and wrong. The fourth one cost $5.25 to
+settle because two cases were written before anything was built; the first three cost a
+suite each. **Write the two hardest cases first and run them against no plugin at all.**
+It is the cheapest question in this method and it has changed the answer every time.
+
 **Propagating a fix by pattern-match.** A demand for information ate the deliverable in
 three places — a missing intended purpose stopped a claims review instead of narrowing
 it, a declined case-law citation still supplied the doctrine, a missing schema version

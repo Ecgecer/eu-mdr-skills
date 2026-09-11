@@ -70,9 +70,38 @@ where a manufacturer asks what they must do and the answer is "these are operato
 not yours", and one asking whether STK applies to a device outside the listed categories.
 If the baseline fails those in 3 of 3 runs, build the skill. If it passes, do not.
 
-**The two cases are written.** [`mpdg-germany/roadmap-probe/`](mpdg-germany/roadmap-probe/)
-holds them, outside `evals/` so nothing here reaches a published table. One command
-decides it, and it costs about a dollar:
+### Measured 2026-09-11. The answer is no.
+
+Both cases, three runs each, no plugin carrying MPBetreibV:
+
+| Case | baseline |
+|---|---|
+| `operator-duties-not-manufacturer` | **1.00** — passes 3 of 3 |
+| `stk-listed-categories` | **1.00** — passes 3 of 3 |
+
+The rule set above says build it only if the baseline fails 3 of 3. It passes 3 of 3, on
+both traps, and it corrects the premise without being asked:
+
+> **Short answer: MPBetreibV does not land on you.** MPBetreibV is addressed to
+> *Betreiber* (operators) and *Anwender* (users) — hospitals, clinics, practices.
+
+On the STK case it declines to supply an interval it cannot verify, flags that web access
+was blocked, and names the sections to check. That is the behaviour the skill would have
+been built to produce.
+
+**So the sixth skill does not get built**, and that is the fourth prediction this repo has
+made about where a skill would earn and lost. The prior three were classification, Article
+120 and the two limb cases. The decision cost **$5.25** and forty minutes. Building the
+skill and discovering it measured zero would have cost a week.
+
+The cases stay in the repo. They are the evidence for the decision, and if a future model
+regresses on either trap they are already written.
+
+---
+
+**The two cases.** [`mpdg-germany/roadmap-probe/`](mpdg-germany/roadmap-probe/) holds them,
+outside `evals/` so nothing here reaches a published table. One command reproduces the
+decision:
 
 ```
 cd mpdg-germany && claude plugin eval . --eval-dir roadmap-probe --ablation with-without

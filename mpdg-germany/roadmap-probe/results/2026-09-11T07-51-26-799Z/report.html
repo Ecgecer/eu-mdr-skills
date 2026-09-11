@@ -1,0 +1,1156 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Eval report — mpdg-germany v0.1.0</title>
+</head>
+<body>
+<style>
+:root{--plane:#f9f9f7;--surface:#fcfcfb;--ink:#0b0b0b;--ink-2:#52514e;--ink-3:#6b6a64;--hairline:rgba(11,11,11,.10);--grid:#e1e0d9;--inset:rgba(11,11,11,.04);--accent:#2a78d6;--base-fill:#6b6a64;--delta-good:#006300;--good:#067d06;--warning:#8a6100;--critical:#d03b3b;
+  color-scheme:light dark;
+}
+@media (prefers-color-scheme:dark){:root{--plane:#0d0d0d;--surface:#1a1a19;--ink:#ffffff;--ink-2:#c3c2b7;--ink-3:#898781;--hairline:rgba(255,255,255,.10);--grid:#2c2c2a;--inset:rgba(255,255,255,.05);--accent:#3987e5;--base-fill:#898781;--delta-good:#0ca30c;--good:#0ca30c;--warning:#fab219;--critical:#e06c6c;color-scheme:dark}}
+:root[data-theme="dark"]{--plane:#0d0d0d;--surface:#1a1a19;--ink:#ffffff;--ink-2:#c3c2b7;--ink-3:#898781;--hairline:rgba(255,255,255,.10);--grid:#2c2c2a;--inset:rgba(255,255,255,.05);--accent:#3987e5;--base-fill:#898781;--delta-good:#0ca30c;--good:#0ca30c;--warning:#fab219;--critical:#e06c6c;color-scheme:dark}
+:root[data-theme="light"]{--plane:#f9f9f7;--surface:#fcfcfb;--ink:#0b0b0b;--ink-2:#52514e;--ink-3:#6b6a64;--hairline:rgba(11,11,11,.10);--grid:#e1e0d9;--inset:rgba(11,11,11,.04);--accent:#2a78d6;--base-fill:#6b6a64;--delta-good:#006300;--good:#067d06;--warning:#8a6100;--critical:#d03b3b;color-scheme:light}
+*{box-sizing:border-box}
+body{margin:0;background:var(--plane);color:var(--ink);
+  font:14px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif;
+  -webkit-text-size-adjust:100%}
+.wrap{max-width:880px;margin:0 auto;padding:40px 24px 64px;display:flex;flex-direction:column;gap:20px}
+.eyebrow{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
+header h1{margin:2px 0 0;font-size:24px;font-weight:600;line-height:1.25;text-wrap:balance}
+.meta{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:8px;color:var(--ink-2);font-size:13px}
+.meta .num{font-variant-numeric:tabular-nums lining-nums}
+.banner{display:flex;align-items:center;gap:8px;padding:10px 14px;border-radius:8px;
+  border:1px solid var(--hairline);background:var(--surface);font-size:13px}
+.banner .chip-warn{color:var(--warning);font-weight:600}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.tile{background:var(--surface);border:1px solid var(--hairline);border-radius:10px;padding:14px 16px;
+  display:flex;flex-direction:column;gap:4px}
+.tile .label{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3)}
+.tile .value{font-size:26px;font-weight:600;font-variant-numeric:tabular-nums lining-nums;line-height:1.1}
+.tile.hero .value{font-family:Georgia,"Times New Roman",serif;font-weight:400;font-size:48px}
+.tile .sub{font-size:12px;color:var(--ink-2);font-variant-numeric:tabular-nums}
+.tile .value.delta-pos{color:var(--delta-good)}
+.tile .value.delta-neg{color:var(--critical)}
+.toolbar{display:flex;gap:8px;justify-content:flex-end}
+.toolbar button{font:12px system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--ink-2);
+  background:var(--surface);border:1px solid var(--hairline);border-radius:6px;padding:4px 10px;cursor:pointer}
+.toolbar button:hover{color:var(--ink)}
+.toolbar button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.case{background:var(--surface);border:1px solid var(--hairline);border-radius:10px;padding:18px 20px;
+  display:flex;flex-direction:column;gap:10px}
+.case-regressed{border-left:3px solid var(--critical)}
+.verdict{margin:6px 0 0;font-size:15px}
+.verdict .delta{font-size:15px}
+.flag{font-size:11px;font-weight:600;color:var(--warning);white-space:nowrap}
+.star{color:var(--warning);font-size:.45em;vertical-align:super;line-height:0;cursor:help}
+.legend summary{cursor:pointer;font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-2)}
+.legend-list{margin:8px 0 0;padding-left:20px;display:flex;flex-direction:column;gap:5px;font-size:13px;color:var(--ink-2)}
+.case-head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.case-head h2{margin:0;font-size:16px;font-weight:600}
+.case-head .spacer{flex:1}
+.case-score{font-size:15px;font-weight:600}
+.mono{font:12px "SF Mono",ui-monospace,Menlo,Consolas,monospace}
+.num{font-variant-numeric:tabular-nums lining-nums}
+.muted{color:var(--ink-3);font-size:12px}
+.meter{display:inline-block;position:relative;width:120px;height:6px;border-radius:4px;background:var(--grid);
+  vertical-align:middle}
+.meter>span{display:block;height:100%;border-radius:4px;max-width:100%}
+.meter .tick{position:absolute;top:-2px;bottom:-2px;width:2px;background:var(--ink-3);border-radius:1px}
+.m-accent>span{background:var(--accent)}
+.m-base>span{background:var(--base-fill)}
+.delta{font-size:12px;font-weight:600;font-variant-numeric:tabular-nums}
+.delta-pos{color:var(--delta-good)}
+.delta-neg{color:var(--critical)}
+.delta-zero{color:var(--ink-3)}
+details.section{border-top:1px solid var(--grid);padding-top:10px}
+details.section>summary{cursor:pointer;font-size:12px;font-weight:600;letter-spacing:.04em;
+  text-transform:uppercase;color:var(--ink-2);list-style-position:outside;margin-left:2px}
+details.section>summary:hover{color:var(--ink)}
+details.section[open]>summary{margin-bottom:8px}
+.md{display:flex;flex-direction:column;gap:8px;background:var(--inset);border-radius:8px;
+  padding:12px 14px;overflow-wrap:break-word}
+.md>:first-child{margin-top:0}
+.md h1,.md h2,.md h3,.md h4,.md h5,.md h6{margin:4px 0 0;font-size:1em;font-weight:600;line-height:1.3}
+.md p,.md ul,.md ol,.md blockquote,.md table,.md pre,.md hr{margin:0}
+.md ul,.md ol{display:flex;flex-direction:column;gap:4px;padding-left:20px}
+.md blockquote{border-left:2px solid var(--hairline);padding-left:10px;color:var(--ink-2)}
+.md :not(pre)>code{background:var(--inset);padding:1px 4px;border-radius:4px;
+  font:.92em "SF Mono",ui-monospace,Menlo,Consolas,monospace}
+.md pre{background:var(--inset);border:1px solid var(--hairline);padding:10px 12px;border-radius:6px;
+  overflow-x:auto;font:12px/1.5 "SF Mono",ui-monospace,Menlo,Consolas,monospace}
+.md pre code{background:none;padding:0;font:inherit}
+.md table{width:100%;border-collapse:collapse}
+.md th,.md td{padding:5px 8px;text-align:left;vertical-align:top;border-bottom:1px solid var(--grid)}
+.md th{font-weight:600;color:var(--ink-2)}
+.md a{color:var(--accent);text-decoration:none}
+.md a:hover{text-decoration:underline}
+.grader-def{display:flex;flex-direction:column;gap:6px;padding:8px 0}
+.grader-def+.grader-def{border-top:1px solid var(--grid)}
+.grader-def-head{display:flex;align-items:baseline;gap:8px}
+.grader-name{font:13px "SF Mono",ui-monospace,Menlo,Consolas,monospace;font-weight:600}
+.badge{font-size:10px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-2);
+  border:1px solid var(--hairline);border-radius:999px;padding:1px 8px}
+.config{display:flex;flex-direction:column;gap:2px;background:var(--inset);border-radius:8px;padding:10px 14px}
+.config code{font:12px "SF Mono",ui-monospace,Menlo,Consolas,monospace;overflow-wrap:anywhere}
+.arm{display:flex;flex-direction:column;gap:8px;padding:6px 0}
+.arm+.arm{border-top:1px dashed var(--grid);margin-top:4px;padding-top:12px}
+.arm-head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.arm-label{font-size:13px;font-weight:600}
+.run{border:1px solid var(--grid);border-radius:8px;padding:10px 12px;display:flex;flex-direction:column;gap:8px}
+.run-head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.run-title{font-size:12px;font-weight:600;color:var(--ink-2)}
+.run-error .explanation{color:var(--ink-2)}
+.note{font-size:12px;color:var(--ink-2)}
+.graders{display:flex;flex-direction:column;gap:4px}
+details.grader{border-radius:6px}
+details.grader>summary{cursor:pointer;display:flex;align-items:baseline;gap:8px;padding:3px 4px;
+  border-radius:6px;list-style:none}
+details.grader>summary::-webkit-details-marker{display:none}
+details.grader>summary::before{content:'▸';font-size:10px;color:var(--ink-3);flex:none;
+  transition:transform .12s ease}
+details.grader[open]>summary::before{transform:rotate(90deg)}
+details.grader>summary:hover{background:var(--inset)}
+details.grader>summary:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.grader-body{padding:6px 8px 8px 24px;display:flex;flex-direction:column;gap:6px}
+.chip{font-size:11px;font-weight:600;border-radius:999px;padding:1px 8px;white-space:nowrap}
+.chip-pass{color:var(--good);border:1px solid currentColor}
+.chip-fail{color:var(--critical);border:1px solid currentColor}
+.chip.chip-warn{color:var(--warning);border:1px solid currentColor}
+.explanation{margin:0;font-size:13px;color:var(--ink-2);white-space:pre-wrap;overflow-wrap:break-word}
+.kv{display:flex;gap:8px;font-size:12px;color:var(--ink-3)}
+.votes{font-variant-numeric:tabular-nums;letter-spacing:.1em}
+pre.evidence{margin:0;background:var(--inset);border:1px solid var(--hairline);border-radius:6px;
+  padding:8px 10px;overflow-x:auto;max-height:320px;
+  font:12px/1.5 "SF Mono",ui-monospace,Menlo,Consolas,monospace;white-space:pre-wrap;overflow-wrap:break-word}
+footer{color:var(--ink-3);font-size:12px;text-align:center;padding-top:8px}
+@media (prefers-reduced-motion:no-preference){
+  details.grader>summary,.toolbar button{transition:background .12s ease,color .12s ease}
+}
+@media (prefers-reduced-motion:reduce){
+  details.grader>summary::before{transition:none}
+}
+@media print{
+  :root,:root[data-theme="dark"],:root[data-theme="light"]{--plane:#f9f9f7;--surface:#fcfcfb;--ink:#0b0b0b;--ink-2:#52514e;--ink-3:#6b6a64;--hairline:rgba(11,11,11,.10);--grid:#e1e0d9;--inset:rgba(11,11,11,.04);--accent:#2a78d6;--base-fill:#6b6a64;--delta-good:#006300;--good:#067d06;--warning:#8a6100;--critical:#d03b3b;color-scheme:light}
+  body{background:#fff}
+  .toolbar{display:none}
+  .case,.run,.grader-def{break-inside:avoid}
+  pre.evidence{max-height:none}
+}
+</style>
+<div class="wrap">
+<header>
+<div class="eyebrow">Plugin eval report</div>
+<h1>mpdg-germany v0.1.0</h1>
+<p class="verdict">Plugin effect: <span class="delta delta-zero">· 0.0 pts</span> vs baseline — improved 0 · flat 2 · regressed 0 of 2 cases.</p>
+<div class="meta">
+<span class="mono">.</span>
+<span>Claude Code v2.1.268</span>
+<span class="num">2026-09-11 07:51 UTC</span>
+<span class="num">33m 52s</span>
+<span class="num">$5.25</span>
+<span class="num">12 runs</span>
+
+
+<span>judge default</span>
+<span class="num">threshold 100%</span>
+
+</div>
+</header>
+
+<section class="tiles">
+<div class="tile hero"><span class="label">Suite score · with plugin</span><span class="value">100%</span><span class="sub">mean of per-case scores</span></div>
+<div class="tile"><span class="label">Ablation Δ</span><span class="value num delta-zero">0.0</span><span class="sub">score points vs baseline, 2 of 2 cases</span></div>
+<div class="tile"><span class="label">Baseline score</span><span class="value num">100%</span><span class="sub">without the plugin</span></div>
+<div class="tile"><span class="label">Cases</span><span class="value num">2</span><span class="sub">2 of 2 ≥ 100% threshold</span></div>
+<div class="tile"><span class="label">Perfect runs</span><span class="value num">100%</span><span class="sub">runs where every grader passed</span></div>
+</section>
+<details class="section legend">
+<summary>How to read this report</summary>
+<ul class="legend-list">
+<li>A run's score is the weighted fraction of its graders that passed; a "perfect" run passed every grader.</li>
+<li>A case's score is the mean of its runs; a case passes when its score is at or above the 100% threshold (the tick on each case bar).</li>
+<li>The suite score is the mean of the per-case scores.</li>
+<li>Judge votes are independent samples of the LLM judge; the majority decides pass or fail.</li>
+<li>"With plugin" and "Baseline" runs are identical except for the plugin being loaded; Δ is the with-plugin score minus the baseline score.</li>
+
+</ul>
+</details>
+<div class="toolbar"><button type="button" data-act="expand">Expand all</button><button type="button" data-act="collapse">Collapse all</button></div>
+<article class="case" id="case-1">
+<div class="case-head">
+<h2>operator-duties-not-manufacturer</h2>
+<span class="muted mono">roadmap-probe/01-operator-duties-not-manufacturer</span>
+<span class="spacer"></span>
+
+<span class="delta delta-zero">· 0.0 pts</span>
+<span class="muted">with plugin</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:100.0%"></span><i class="tick" style="left:100.0%"></i></span>
+<span class="num case-score">100%</span>
+</div>
+
+<details class="section" open>
+<summary>Results</summary>
+<section class="arm">
+<div class="arm-head">
+<span class="arm-label">With plugin</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">100% of runs perfect</span>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 1</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">10 turns · $0.57 · 07:51:26 UTC</span>
+</div>
+
+<div class="graders"><details class="grader">
+<summary><span class="chip chip-pass">✓ pass</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: PASS PASS PASS</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✓ ✓ ✓</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">Memory writes are blocked here too, so this is answer-only.
+
+## Your QA lead&apos;s premise is half wrong, and the half that&apos;s wrong matters
+
+**MPBetreibV binds the *Betreiber* and the *Anwender* — the hospital, the care facility, the home-care provider, the ambulance service. It does not bind you as the manufacturer placing the device on the market.** Placing on the market is MDR + MPDG territory. Operating and using is MPBetreibV territory, and those are different people.
+
+So &quot;MPBetreibV applies to us&quot; is only true in two situations:
+
+1. **You operate devices in Germany yourself** — a demo/loaner pool, evaluation units at customer sites that stay on your books, a service fleet, a company-owned training facility. Then you are a Betreiber for *those* units and the whole ordinance lands on you directly.
+2. **The one provision that reaches back to the manufacturer** — the Anlage 1 instruction duty (below). This is the real reason infusion-pump makers end up inside MPBetreibV.
+
+Everything else in MPBetreibV lands on your customers — but it is *keyed to your documentation*, which is why it still shapes what you must ship.
+
+## What I can cite, and what I can&apos;t
+
+I have MPDG §§ 4, 8 and 73 verbatim from the skill&apos;s reference file. **I do not have MPBetreibV text here.** I tried to fetch it from gesetze-im-internet and both WebFetch and WebSearch were denied in this session, and the local skills repo isn&apos;t readable either. So I&apos;m splitting the answer.
+
+### Verified — the language duty on instructing users
+
+## Instructing users of a Class IIa infusion pump in Germany
+
+**German market:** confirmed — first placement stated
+**Answer:** Instructions for use and all user-facing information must be in German as a condition of supply; do not rely on the professional-user exception for an infusion pump.
+
+| Item | MDR requires | Germany adds | Basis |
+|---|---|---|---|
+| EU Declaration of Conformity | not carried here | German **or English** — English alone is compliant, don&apos;t translate it | MPDG § 8(1) `[verified]` |
+| IFU, labelling, user information | not carried here | **German**, and products may only be handed over to users/patients if this is met | MPDG § 8(2) s.1 `[verified]` |
+| Professional-user exception | — | English permitted only if *all three*: a justified case, **exclusively** professional users, **and** safety-related information still in German | MPDG § 8(2) s.2 `[verified]` |
+| Safety-related information | — | **German** (or the user&apos;s language) regardless of the exception | MPDG § 8(2) s.2 final clause `[verified]` |
+| Implant information | — | not applicable — pump is not implantable | MPDG § 8(3) `[verified]` |
+
+**Practical read:** don&apos;t reach for the § 8(2) sentence 2 exception. A volumetric pump is operated by ward nursing staff, and its alarms, occlusion limits, bolus and rate-setting text are all safety-related — which the exception explicitly does not cover. Ship German. That includes on-screen UI strings, not just the paper IFU, to the extent they carry safety information.
+
+**What would change this:** a genuinely professional-only variant with all safety content in German anyway — which is most of the document, so the exception buys you nothing.
+
+### Not verified — the MPBetreibV substance you asked about
+
+The following is my recollection of the ordinance, **not cited text**. The structure I&apos;m confident about; the section numbers I am not — I was unable to check them, and I&apos;m flagging that rather than presenting memory as law. Treat every § below as `[verify]`.
+
+**On instructing users — this is the one that actually lands on you.**
+
+MPBetreibV imposes heightened duties for devices listed in **Anlage 1**. Anlage 1 covers, among others, non-implantable active devices for the direct introduction of substances and fluids into the bloodstream under potential pressure build-up — **which is a volumetric infusion pump**. Verify the Anlage 1 wording against your device; this is the single determination the whole answer turns on.
+
+If you are in Anlage 1, then before the device may be used at a customer site:
+
+- A **Funktionsprüfung at the place of operation** must be carried out — by the manufacturer or a person authorised by the manufacturer.
+- The operator&apos;s **designated person (*beauftragte Person*) must be instructed** in the device, at the site, on the basis of the instructions for use — again by the manufacturer or a person you authorise. That person then instructs the remaining users; the operator documents it.
+
+That is a commercial and operational obligation, not a paperwork one: **you need a German field force** — application specialists or authorised distribution partners — who can perform site acceptance and train-the-trainer instruction at every customer, and you need to control their competence because the compliance of your customers&apos; first use depends on them. Whoever does this instruction also likely triggers the *Medizinprodukteberater* competence and complaint-reporting requirements under MPDG § 83 — **outside the sections this skill carries, so verify it separately.**
+
+**On maintenance intervals.**
+
+- General maintenance (*Instandhaltung*: inspection, servicing, repair) must be carried out **according to your specifications** and the generally recognised state of the art. Whatever you write in the IFU becomes your customers&apos; legal obligation.
+- Anlage 1 devices are additionally subject to **sicherheitstechnische Kontrollen (STK)** — safety-technical checks. The operator must perform them **at the intervals you specify**. My recollection is that where the manufacturer specifies no interval, the operator sets their own but must not exceed **two years**. Verify both the rule and the ceiling.
+- **Messtechnische Kontrollen (MTK)** are a separate regime tied to **Anlage 2** (tonometers, non-invasive blood-pressure meters, clinical thermometers, dosimeters). I do not believe infusion pumps are in Anlage 2, so MTK should not apply — but confirm, because an erroneous MTK claim in your IFU creates an obligation your customers can&apos;t discharge.
+
+**The practical consequence:** the default is bad for you. If you leave STK intervals and scope unspecified, every German operator invents their own test regime for your pump, up to a two-year gap, using their own criteria. So specify deliberately in the IFU: STK interval, test scope, the measurements and pass/fail limits (flow accuracy, occlusion pressure, alarm function, electrical safety per the relevant IEC 60601 parts), and the qualification a tester needs.
+
+## What I&apos;d do next
+
+1. **Settle the Anlage 1 question first** against the current wording — everything above hangs on it.
+2. **Decide whether you are a Betreiber** for any German units (demo, loaner, service fleet). If yes, the full operator regime applies to you directly, including the Medizinproduktebuch and Bestandsverzeichnis records.
+3. **Write the operator-facing content into the IFU deliberately**: STK interval and scope, maintenance schedule, compatible administration sets (operators may only use accessories you&apos;ve specified — leave this vague and third-party giving sets appear in your flow path), and reprocessing/disinfection instructions.
+4. **Supply your customers the data their records need** — device designation, type, serial number, year of acquisition, notified body number, STK due dates. A pre-filled template is a cheap differentiator and prevents them recording it wrong.
+5. **Build the German instruction and site-acceptance capability** before first shipment, not after.
+
+If you can paste the current MPBetreibV text — or enable web access so I can pull it from gesetze-im-internet — I&apos;ll redo the second half with exact section numbers and verbatim wording. As it stands, section numbers there are unverified recollection and should not go into a QA document.
+
+Caveat on all of it: this is a first-pass regulatory orientation, not legal advice, and not a substitute for a regulatory professional or a Fachanwalt für Medizinrecht.</pre>
+</div>
+</details></div>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 2</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">7 turns · $0.44 · 07:54:47 UTC</span>
+</div>
+
+<div class="graders"><details class="grader">
+<summary><span class="chip chip-pass">✓ pass</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: PASS PASS PASS</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✓ ✓ ✓</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">## MPBetreibV for a Class IIa infusion pump — first German placement
+
+**German market:** confirmed
+**Answer on the core question:** I can&apos;t give it to you from a source, and there&apos;s a premise worth checking first.
+
+### The premise problem
+
+MPBetreibV is the *Betreiberverordnung* — it regulates **operating and using** devices, and its addressees are the **Betreiber** (operator) and **Anwender** (user): the hospital, the clinic, the care service that runs your pump. It is not the instrument that regulates you as the manufacturer placing a device on the market. Your obligations for placing on the market sit in **MDR Art. 10** plus **MPDG**.
+
+So &quot;MPBetreibV applies to us&quot; is probably not right as stated, and if your QA lead builds the compliance plan around it you will be working the wrong instrument. What is true — and this is the part worth your effort — is that MPBetreibV reaches you **indirectly**, through your documentation: the maintenance intervals and instruction requirements you write into your IFU become the thing German operators are legally held to. That makes your IFU content a German-market design decision, not just a labelling one.
+
+I want to be straight about the limit: I **can&apos;t cite** the Einweisung provision, the safety-technical-check intervals, the Anlage 1 list, or whether a volumetric infusion pump falls inside it. That&apos;s genuinely contested for infusion pumps — the Anlage 1 entry covering devices introducing substances into the bloodstream has a trailing clause whose scope is read differently by different operators, and it decides whether a **default** check interval applies to you or only the interval you specify yourself. I&apos;m not going to state either reading from memory. I tried to pull the consolidated text from gesetze-im-internet and to search for it; both were blocked in this session.
+
+### What I can give you, verified
+
+These land on you as manufacturer for first German placement:
+
+| Item | Germany adds | Basis |
+|---|---|---|
+| EU Declaration of Conformity | German **or English** — English alone is fine, don&apos;t waste a translation budget here | MPDG § 8(1) `[verified]` |
+| Information for users and patients (IFU, labelling, training material) | **German**, and it is a *condition of supply* — you may not hand the product over otherwise | MPDG § 8(2) s.1 `[verified]` |
+| Professional-user exception | English permitted only if **all three**: justified case, information is **exclusively** for professional users, and safety-related information is **still** in German | MPDG § 8(2) s.2 `[verified]` |
+| Field Safety Notice for an FSCA in Germany | Must be **in German** | MPDG § 73(1) `[verified]` |
+| FSCA documentation + periodic effectiveness review | Required if you are **established in Germany** | MPDG § 73(2) s.1 `[verified]` |
+| FSCA **completion** notified to competent authority *and* federal higher authority | Required — for importers only where the AR sits outside Germany | MPDG § 73(2) s.2 `[verified]` |
+| DMIDS supplementary notification (§ 4) | Almost certainly **not** triggered — it catches reprocessors and class III custom-made implantables, neither of which you are | MPDG § 4 `[verified]` |
+
+Two things that bear on your pump specifically:
+
+**The professional-user exception probably doesn&apos;t save you.** A volumetric infusion pump that has any home-infusion or ambulatory channel is not *exclusively* for professional users, and sentence 1 then applies in full. Even confined to hospitals, safety-related information must be German regardless. Budget for a full German IFU.
+
+**Your § 8(2) duty and your instruction question are the same duty.** Whatever user-instruction material you produce is &quot;information for users&quot; — it is German-language by law, independently of anything MPBetreibV says about who must be instructed.
+
+### What would change this
+
+Whether you are **established in Germany** or operating through an authorised representative — that flips the § 73(2) duties. Worth confirming before you scope the vigilance SOP.
+
+### To close out the actual question
+
+Give me one of these and I&apos;ll work it properly:
+- enable web access so I can pull MPBetreibV verbatim from gesetze-im-internet, or
+- paste §§ 7, 10, 11, 12, 14 and Anlage 1 and I&apos;ll work from the text you provide.
+
+The specific things to resolve are: whether Anlage 1 captures your pump, what the manufacturer must do before a German operator may put it into service (site functional test and instruction of the operator&apos;s designated person are the provisions to look at), and what check interval applies if you specify none.
+
+## Limits
+
+This covers MPDG §§ 4, 8 and 73 only, retrieved verbatim from gesetze-im-internet on 2026-09-10. It does **not** cover MPBetreibV, the rest of MPDG, MDR itself, MDCG guidance, BfArM practice, or any other member state&apos;s law. The premise point about who MPBetreibV addresses is a structural observation you should confirm against § 1 and § 2 of the ordinance — I&apos;m flagging it so you check, not asserting it as cited law. A first-pass aid, not legal advice, and not a substitute for a regulatory professional or a Fachanwalt für Medizinrecht.</pre>
+</div>
+</details></div>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 3</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">8 turns · $0.61 · 07:57:29 UTC</span>
+</div>
+
+<div class="graders"><details class="grader">
+<summary><span class="chip chip-pass">✓ pass</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: PASS PASS PASS</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✓ ✓ ✓</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">## Short answer
+
+Your QA lead has been given a half-truth, and the correction changes what you actually need to do.
+
+**MPBetreibV (Medizinprodukte-Betreiberverordnung) does not bind you as a manufacturer placing a device on the German market.** Its addressees are *Betreiber* (operators — hospitals, clinics, practices, care services) and *Anwender* (users). Placing a device on the market is MDR/MPDG territory; MPBetreibV governs what happens to the device *after* it arrives at a German customer.
+
+What is true, and why the QA lead&apos;s instinct isn&apos;t wasted: a volumetric infusion pump almost certainly falls into **Anlage 1** of MPBetreibV, the list of active non-implantable devices carrying heightened operator duties — via the entry covering *direct introduction of substances and fluids into the bloodstream under potential pressure build-up*. That listing is the hinge of this whole analysis, and it produces duties on your customers **whose content your documentation defines**, plus two places where the ordinance names the manufacturer as the actor. Those are the obligations that land on you.
+
+⚠  **Citation caveat, stated up front:** the skill I have for German requirements carries MPDG §§ 4, 8 and 73 only, and explicitly excludes operation and use of devices. MPBetreibV is a separate ordinance it does not carry at all. I also could not reach gesetze-im-internet.de in this session (WebFetch and WebSearch were both blocked), so **every MPBetreibV section number and the Anlage 1 classification below is from my own knowledge and is unverified.** Treat the substance as a reliable work plan and the citations as items to confirm against the statute. Only the MPDG § 8 language rules below are verified.
+
+## What lands on you
+
+**1. You must be able to deliver Einweisung and Funktionsprüfung at every German customer site.** This is the one genuine operational duty. For Anlage 1 devices the operator may not put the pump into service until the device has had an on-site functional check and the operator&apos;s designated person has been instructed in correct handling, application and operation — and the ordinance requires this be done **by the manufacturer or a person acting in agreement with / authorised by the manufacturer**. You cannot satisfy this from a manual. You need: a defined Einweisung curriculum, authorised and trained instructors (your own field staff or contractually designated distributor/service partners), and a signed *Einweisungsnachweis* per site recording date, device serial number, instructor, and the names of the persons instructed — because your customer needs that document for their records. Build this before first shipment; it is a commercial gate, not an afterthought. There is an exemption where instruction has already been given for a device of identical construction — worth knowing for repeat customers, but do not design around it.
+
+**2. Your IFU sets your customers&apos; legal maintenance obligation — so specify intervals deliberately.** Two separate regimes:
+
+- **Instandhaltung (maintenance/repair):** the operator must maintain the device according to *the manufacturer&apos;s instructions* and the generally accepted rules of technology, using persons with the requisite knowledge and means. Whatever you write is what they are legally held to.
+- **Sicherheitstechnische Kontrollen (STK — safety-technical checks):** because the pump is an Anlage 1 device, the operator must perform STK **according to your specified type, scope and intervals**. Critically: **if you specify no interval, a statutory fallback applies — my recollection is at least every two years.** Verify that figure, but understand the consequence either way: silence in your IFU does not mean &quot;no STK&quot;, it means the default binds your customers and you have lost control of the interval.
+
+This is the single highest-leverage item for you. Specify STK scope explicitly and tie it to your risk management file — for a volumetric pump that realistically means flow-rate accuracy, occlusion pressure and alarm thresholds, air-in-line detection, free-flow protection, alarm functionality, battery capacity/runtime, and electrical safety testing. State the required test equipment, acceptance criteria, and the qualification of the person permitted to perform it. Vague wording here produces customers who cannot comply, tender disqualifications, and an unpleasant liability position after an incident.
+
+**3. Messtechnische Kontrollen (MTK) do not apply — say so explicitly.** MTK attaches to **Anlage 2**, which covers things like tonometers, non-invasive blood pressure meters, clinical thermometers and dosimeters. Infusion pumps are not listed. STK and MTK get conflated constantly, including by customers and by service providers selling calibration contracts. Pre-empt it in your documentation.
+
+**4. Supply the data that populates your customers&apos; records.** Anlage 1 status means your customer must keep a *Medizinproduktebuch* per device (functional check and Einweisung evidence, STK intervals/dates/results, maintenance actions, malfunctions and incidents), and an entry in their *Bestandsverzeichnis* (device designation, type, serial number, year of acquisition, the party responsible for first placing on the market, location). None of this is your legal duty — but shipping a pre-structured Medizinproduktebuch template with your specified STK interval already filled in is standard practice on the German market and customers will expect it.
+
+**5. If you operate pumps yourself in Germany, you *are* a Betreiber.** Demo units, loan/replacement pools, training-centre devices, pumps at your own facility. For those, MPBetreibV applies to you directly and in full.
+
+**6. Know your counterpart for vigilance.** German health institutions above a certain size (I recall more than 20 employees — verify) must appoint a *Beauftragter für Medizinproduktesicherheit*. That person is your addressee for field safety notices and recalls; your vigilance procedures should name the role.
+
+## The language delta — MPDG § 8 (verified)
+
+**German market:** confirmed
+**Answer:** your user-facing information must be in German; the DoC need not be.
+
+| Item | MDR requires | Germany adds | Basis |
+|---|---|---|---|
+| EU Declaration of Conformity | not carried here | German **or English** — English alone is compliant, do not translate needlessly | MPDG § 8(1) `[verified]` |
+| IFU and information for users/patients | not carried here | **German**, and it is a *condition of supply* — the product may only be handed over if met | MPDG § 8(2) s.1 `[verified]` |
+| Professional-user exception | — | English permitted only if **all three**: a justified case (*begründeter Fall*), information is **exclusively** for professional users, **and** safety-related information is still in German | MPDG § 8(2) s.2 `[verified]` |
+| Safety-related information | not carried here | **German** (or the user&apos;s language) even under the exception | MPDG § 8(2) s.2 `[verified]` |
+
+**Do not rely on the professional-user exception for this product.** It is cumulative, and it is fragile for an infusion pump on two counts: infusion pumps frequently reach homecare and ambulatory settings, which defeats &quot;exclusively professional users&quot;; and for a pump, most of the IFU *is* safety-related information, which the exception never reaches. Separately, the MPBetreibV Einweisung is conducted on the basis of the Gebrauchsanweisung — instructing German nursing staff from an English manual is a practical failure even where it might be formally arguable. Write the IFU in German.
+
+Implant-card rules (§ 8(3)) don&apos;t apply — not an implantable device.
+
+**What would change this:** if the pump is not made available in Germany, none of the MPDG analysis applies. If it is intended for lay/patient self-application at home, both the language analysis and the MPBetreibV scoping shift and need separate treatment — tell me if that&apos;s in play.
+
+## What I&apos;d verify first, in order
+
+1. **Anlage 1 applicability** — confirm the pump falls under the bloodstream/pressure-build-up entry. Everything in items 1–4 above collapses if it doesn&apos;t. Note that enteral feeding pumps would not be caught, as they don&apos;t deliver into the bloodstream.
+2. **The STK fallback interval** and the exact wording on manufacturer-specified type/scope/intervals.
+3. **The section numbers.** MPBetreibV was recast effective 2017 and the numbering shifted — Einweisung, STK, Medizinproduktebuch, Bestandsverzeichnis and MTK moved from roughly §§ 5/6/7/8/11 to §§ 10/11/12/13/14 (Instandhaltung at § 4). Old templates, consultant decks and supplier documents still cite the pre-2017 numbers. If your QA lead is assembling documentation from existing sources, check which numbering they&apos;re on.
+
+Two things outside what I can speak to: the MDR Annex I and Art. 10 requirements on IFU maintenance content, which drive item 2 alongside MPBetreibV, and any BfArM position on Anlage 1 scope for specific pump types. I won&apos;t state either from memory.
+
+**Limits:** the MPDG § 8 material is verbatim from gesetze-im-internet as retrieved 2026-09-10 and covers MPDG §§ 4, 8 and 73 only — not the rest of MPDG, not MDR/IVDR, not MDCG guidance, not BfArM practice, and not any other member state&apos;s implementing law. All MPBetreibV content above is unverified in this session. A first-pass aid for scoping, not legal advice, and not a substitute for a regulatory professional or a Fachanwalt für Medizinrecht.</pre>
+</div>
+</details></div>
+</div>
+</section><section class="arm">
+<div class="arm-head">
+<span class="arm-label">Baseline (no plugin)</span>
+<span class="meter m-base" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">100% of runs perfect</span>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 1</span>
+<span class="meter m-base" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">4 turns · $0.47 · 08:01:11 UTC</span>
+</div>
+
+<div class="graders"><details class="grader">
+<summary><span class="chip chip-pass">✓ pass</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: PASS PASS PASS</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✓ ✓ ✓</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">I couldn&apos;t verify against the consolidated text — WebFetch and WebSearch are both blocked in this session, so the § numbers below are from memory and should be checked against gesetze-im-internet.de/mpbetreibv before anything goes into a QMS document. The substance I&apos;m confident about; the numbering is where memory is least reliable (I&apos;ve flagged the shakiest ones).
+
+## First, a correction to the premise
+
+MPBetreibV does not bind you as manufacturer. Its addressees are the **Betreiber** (operator — hospital, clinic, practice, care service) and the **Anwender** (the clinical user). Placing a device on the German market makes you neither. Your own obligations come from MDR 2017/745, the MPDG, and MPAMIV/vigilance rules.
+
+That distinction matters practically, not pedantically: if your QA lead writes MPBetreibV duties into your QMS as *your* regulatory obligations, you&apos;ll build the wrong controls and misstate your applicable-requirements list.
+
+What is true — and is probably what your QA lead was actually told — is that **MPBetreibV duties on your customers are only dischargeable if you supply specific things**, and in two places the ordinance names the manufacturer directly. German hospitals treat these as hard procurement gates. So the duties are derived and contractual, plus two genuine legal roles.
+
+## The classification question that drives everything
+
+Anlage 1 MPBetreibV lists device groups subject to mandatory **sicherheitstechnische Kontrollen (STK)**, pre-commissioning **Funktionsprüfung**, **Einweisung**, and a **Medizinproduktebuch**. Nr. 4 covers devices for the direct introduction of substances and fluids into the bloodstream under potential pressure build-up. German practice treats volumetric IV infusion pumps and syringe pumps as falling under it. (The wording has a trailing qualifier about autologous substances with a connected withdrawal function that some read as narrowing the entry; the mainstream reading, and what your customers&apos; MP-management departments will assume, is that your pump is Anlage 1.) Confirm this explicitly — it&apos;s the single biggest determinant of your obligations. Enteral feeding pumps are generally treated as outside it.
+
+Your pump is **not** in Anlage 2, so no messtechnische Kontrolle (MTK) by law — Anlage 2 is thermometers, NIBP devices, tonometers, dosimeters and similar. One trap: I&apos;m fairly confident the MTK section (§14) also catches devices *for which the manufacturer prescribes a messtechnische Kontrolle*. If your IFU uses that term for flow-accuracy verification, you voluntarily pull the pump into the MTK regime with its own qualification, interval, marking and notification rules. Say &quot;sicherheitstechnische Kontrolle&quot; and &quot;Wartung&quot;; don&apos;t say &quot;messtechnische Kontrolle&quot; unless you mean it.
+
+## On instructing users
+
+**§4 — devices may only be used per your instructions, and the IFU must be accessible to the user at the point of use at all times.** What lands on you:
+
+- A German-language IFU (MDR Art. 10(11) + MPDG), in a form that survives being kept at the bedside/on the ward. If you plan electronic IFU under Reg. (EU) 2021/2226, note it is only open to professional-use devices under conditions and you must supply paper within 7 days on request — an ambulatory/home-care variant used by lay patients cannot be e-IFU only.
+- Every operational limit you want respected has to be *in the IFU*. &quot;Use per manufacturer&apos;s instructions&quot; is the legal hook; anything not written down is not enforceable against the operator and will not protect you in a liability case.
+
+**Einweisung + Funktionsprüfung (the Anlage 1 regime — I believe §10).** Before first commissioning, a function check must be performed, and the persons who will use the device must be instructed **by the manufacturer or by a person authorised by the manufacturer**, on the basis of the IFU, on the actual device at the place of operation, with the instruction documented. That authorisation clause is where you appear in the ordinance by name. Concretely you must build:
+
+- An Einweisung programme and curriculum, resourced and priced into every deal — customers will require it at tender stage.
+- **Written, named, scope- and time-limited authorisations (Beauftragungen)** for your clinical specialists, distributor staff, and — critically — the customer&apos;s key users who cascade-instruct colleagues (the Multiplikatorenmodell). That cascade is only lawful if your authorisation covers it. Define competence criteria, refresher cadence, withdrawal conditions, and retain the records.
+- Documentation templates for the operator: device type, serial/UDI-DI, date, instructor, names and signatures of instructed persons — these feed their Medizinproduktebuch.
+- A defined **Funktionsprüfung** scope and record for first commissioning. It is a distinct act from your factory final test and from the STK.
+- Training material under document control, consistent with the IFU and re-issued on IFU revision. Training that goes beyond or contradicts the IFU is a risk-management defect.
+- One relief to document: no fresh Einweisung is required where the device is identical in construction and function to one the person was already instructed on. Your product-family and variant definitions determine whether customers can use this — spell it out, it&apos;s a selling point.
+
+If the pump is ever handed to patients for self-use, there is a separate provision requiring the party handing it over to instruct the patient; flag this if you have a home-care configuration.
+
+## On maintenance intervals
+
+**Instandhaltung (§7).** The operator must have inspection, servicing and repair carried out **taking account of the manufacturer&apos;s specifications**, by persons with the required training, knowledge, experience and suitable means. Your specifications are the legal yardstick, so you must publish:
+
+- A maintenance plan with **intervals and content** (12 months is typical for volumetric pumps).
+- Wear and lifetime-limited parts with replacement intervals: pumping segment/silicone tubing element, door seal, battery, occlusion-pressure sensor, motor/gear train.
+- Total service life and end-of-support date.
+- The performance verification procedure with acceptance limits — flow-rate accuracy, bolus accuracy, occlusion alarm threshold — naming the required test equipment (infusion device analyser) and its calibration status.
+- Sachkunde requirements for service technicians, plus a service manual, training/certification, spare-parts and service-software availability for the declared service life.
+
+**Sicherheitstechnische Kontrollen (§11).** For Anlage 1 devices STK are mandatory; they are also mandatory for any device where *you* prescribe them. You must specify **Art, Umfang und Fristen** — nature, scope and intervals — together with the safety-relevant measurements and limits and the qualification required of the tester.
+
+- **The interval is yours to set, and the operator must observe it.** If you specify nothing, the operator sets an interval such that defects are detected in good time, and for Anlage 1 devices **at the latest every two years**. Two years is a statutory backstop and a ceiling, not a default you&apos;d want: staying silent hands control of your device&apos;s maintenance regime to third parties. If you want 12 months, say 12 months.
+- STK may only be performed by persons with device-specific training, knowledge and experience, who are free from instruction as to their assessment of the result, and who have suitable measuring and testing equipment. You enable this by publishing the procedure and offering service training. Many German hospitals will outsource STK back to you — that is a real aftermarket line, and it also keeps the test protocol under your control.
+- Build the STK protocol on **DIN EN 62353** (recurrent testing/testing after repair) plus **IEC 60601-2-24** pump-specific functional tests: flow accuracy, occlusion thresholds, air-in-line detection, free-flow protection, alarm function and audibility, battery run time.
+
+## Records your customers must keep — which means data you must supply
+
+The operator keeps a **Medizinproduktebuch** (§12) for Anlage 1 devices and a **Bestandsverzeichnis** (§13) for active non-implantable devices. The book must record device designation/type/serial number, your name and address, the Funktionsprüfung and Einweisung dates with names of instructed persons, STK dates/results/tester, maintenance measures, and functional or safety malfunctions including repeated identical operating errors.
+
+Ship a **device passport / delivery datasheet** covering every one of those fields — type designation, serial number, Basic UDI-DI and UDI-DI, year of manufacture, CE mark with notified body number, your address, prescribed STK interval, &quot;MTK: not applicable&quot; — ideally machine-readable for import into their CAFM/MP-management system. This is a de facto procurement requirement and cheap to provide.
+
+**§6 Beauftragter für Medizinproduktesicherheit** applies to facilities with more than 20 employees. Not your duty, but that person is your counterpart for field safety notices and FSCAs, and their MPAMIV incident reports to BfArM will come back at you — make sure your PMS and vigilance procedures have a defined channel to them.
+
+## What your QA lead should actually produce
+
+1. A documented determination on Anlage 1 Nr. 4 applicability, with rationale.
+2. German IFU containing: maintenance plan with intervals, wear-part list, service life, STK nature/scope/interval, tester qualification, and the permissible surface-disinfectant list (hospitals reject devices without one).
+3. Service manual + service-technician training and certification scheme.
+4. Einweisung curriculum, authorisation policy and template Beauftragung, attendance/documentation forms.
+5. Funktionsprüfung procedure and record for first commissioning.
+6. Device passport with Medizinproduktebuch/Bestandsverzeichnis fields.
+7. Separately, and this is the part that genuinely does land on you legally: MDR Annex I incl. 15.1 metrological requirements and 23.4 IFU content, Annex IX or XI conformity assessment with your notified body, PRRC, UDI, EUDAMED/MPDG registration, PMS with a Class IIa PSUR updated every two years, and vigilance reporting to BfArM.
+
+Not legal advice — have the classification call and the IFU maintenance/STK wording reviewed by German regulatory counsel or your notified body before market entry.
+
+If you enable web access for this session, I&apos;ll pull the consolidated MPBetreibV text and pin down the exact § numbers and the verbatim Anlage 1 Nr. 4 wording, which is the clause your whole obligation set hangs on.</pre>
+</div>
+</details></div>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 2</span>
+<span class="meter m-base" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">4 turns · $0.37 · 08:04:45 UTC</span>
+</div>
+
+<div class="graders"><details class="grader">
+<summary><span class="chip chip-pass">✓ pass</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: PASS PASS PASS</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✓ ✓ ✓</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">## Short answer: MPBetreibV does not land on you
+
+MPBetreibV (Medizinprodukte-Betreiberverordnung) is addressed to **Betreiber** (operators) and **Anwender** (users) — hospitals, clinics, practices, care facilities. Its duties attach to *operating and using* a device in Germany, not to placing one on the market. Issued under the MPDG, it regulates your customers, not you.
+
+Your own obligations for first-time placing on the German market come from:
+
+- **MDR (EU) 2017/745** — Art. 10 manufacturer obligations, Annex I Ch. III §23 (information supplied with the device), Notified Body conformity assessment (Class IIa), UDI/EUDAMED registration, PMS/PMCF (Art. 83–86), vigilance (Art. 87–90), Art. 15 PRRC.
+- **MPDG** — national implementation, including the requirement that labelling and IFU be in **German**.
+- **MPAMIV** — German incident-reporting channels.
+
+So the correct framing for your QA lead: *MPBetreibV is not a requirement on us; it is the regime our customers must satisfy using the documentation we ship.* That distinction matters, because it changes what you produce (IFU and service content) versus what you implement (a QMS process).
+
+Two caveats on this answer: I was blocked from web access in this session, so the section numbers and Anlage contents below are from knowledge, not verified against the current consolidated text — I&apos;ve marked the one item that genuinely needs checking. And there is one real sense in which MPBetreibV *does* bind you directly, covered in section 3.
+
+## 1. Instructing users
+
+Two distinct layers:
+
+**Einweisung (formal, documented instruction).** MPBetreibV requires documented instruction *by the manufacturer or a person authorised by the manufacturer* only for devices listed in **Anlage 1**. For everything else, the operator&apos;s duty is the general one: use only by persons with the necessary training, knowledge and experience, with the IFU accessible at the point of use.
+
+**Whether a volumetric infusion pump is an Anlage 1 device is the pivotal question, and it is the one thing you must verify against the current text.** My recollection is that ordinary volumetric pumps fall *outside* Anlage 1: the relevant entry covers active devices introducing substances into the bloodstream under potential pressure build-up **where introduction is directly coupled to a withdrawal function** — which targets dialysis machines, cell separators and heart-lung machines, not a plain volumetric pump. If that holds, your customers owe no formal Einweisung and no **Medizinproduktebuch** for your pump (only the general **Bestandsverzeichnis** for active non-implantable devices). Have someone read Anlage 1 and confirm before you build your training and tender strategy around it.
+
+**What you should deliver regardless of the Anlage 1 outcome:**
+
+- IFU in German, written so the operator can discharge their MPBetreibV duty from it alone.
+- A training/Einweisung package with a signable **Einweisungsnachweis** — German hospital medical-engineering departments will demand this contractually whether or not the ordinance compels it, and it will be scored in tenders.
+- A train-the-trainer / multiplier model. Hospitals staff this through Medizinprodukte-Beauftragte and will expect you to support it rather than send a rep for every shift.
+- Under MDR Annex I Ch. I, risk control includes providing information for safety and, where appropriate, **training to users** — so a pump whose safe use depends on training needs that training identified in your risk file, not just offered as a commercial service.
+- The validated accessory list, especially **which administration sets** are qualified. Your flow-accuracy claims are set-dependent, and MPBetreibV obliges operators to respect your specifications for combinations — but only if you state them.
+- If the pump has a drug library / DERS: specify in the IFU who may edit it, the validation steps, and that configuration must stay inside the intended purpose. A hospital that modifies beyond that risks becoming a manufacturer itself (MDR Art. 16 / Art. 5(5)).
+
+## 2. Maintenance intervals
+
+MPBetreibV&apos;s maintenance provision requires operators to maintain devices **taking account of the manufacturer&apos;s specifications**. Sicherheitstechnische Kontrollen (STK) as a distinct statutory duty, at intervals you specify, again attaches to **Anlage 1** devices — same verification dependency as above.
+
+The practical consequence is the same either way: **your IFU creates your customers&apos; legal obligation.** If you specify intervals, they must follow them. If you specify nothing, the operator must derive their own from a risk assessment — which German MT departments treat as a defect in the documentation and will raise in procurement.
+
+What to specify:
+
+- An explicit **preventive-maintenance interval** — 12 or 24 months is typical for volumetric pumps, optionally operating-hours-based — justified from reliability data in your technical documentation.
+- The **scope and acceptance limits** of each recurrent check: electrical safety per **DIN EN 62353 (VDE 0751-1)**, the German/IEC standard for recurrent testing and testing after repair; plus flow-rate accuracy to the method in **IEC 60601-2-24**, occlusion alarm pressure thresholds, air-in-line detection, free-flow protection, alarm system verification, battery capacity and backup runtime, and pumping-mechanism wear.
+- **Wear-part and battery replacement intervals**, separately from the inspection interval.
+- **Who may service**: required qualification, training, tools, and calibration requirements for test equipment. Decide explicitly whether you authorise hospital MT departments and third parties — German hospitals frequently self-service and will ask for the service manual, test fixtures and training. Refusing has commercial cost.
+- A **recordable protocol/checklist** the operator can file, since they must be able to evidence what was done.
+- If you deliberately specify no interval for something, say so and why, rather than leaving a silence.
+
+**Messtechnische Kontrollen (§ on metrological checks, Anlage 2):** Anlage 2 lists devices such as non-invasive blood pressure meters, medical thermometers, tonometers, dosimeters and audiometers. Infusion pumps are not among them, so I&apos;d expect no MTK duty — worth confirming in the same read-through as Anlage 1.
+
+## 3. Where MPBetreibV binds you directly
+
+You become a **Betreiber** for the units *you* operate: demo and loaner pumps, devices in your own training centre, service-fleet and exchange stock. While those are in your control and being used, the operator duties — condition, maintenance per your own specifications, inventory records — are yours. This is the one part your QA lead&apos;s instinct is right about, and it&apos;s usually the gap in a first-market-entry QMS.
+
+Not yours: the **Beauftragter für Medizinproduktesicherheit** (safety officer). That applies to Gesundheitseinrichtungen above 20 employees; a manufacturer isn&apos;t one. Your analogue is the MDR Art. 15 PRRC. Devices under clinical investigation also sit under MDR/MPDG, not MPBetreibV.
+
+## Recommended next step
+
+Assign someone to read **Anlage 1 and Anlage 2** of the current MPBetreibV on gesetze-im-internet.de and record the conclusion in your regulatory file with the reasoning. That single determination drives whether documented Einweisung, STK intervals and the Medizinproduktebuch are duties you must enable — and it&apos;s the one input here I could not confirm for you. If you re-enable web access in this session I&apos;ll pull the text and pin down the exact wording and section numbers.</pre>
+</div>
+</details></div>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 3</span>
+<span class="meter m-base" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">1 turns · $0.36 · 08:07:18 UTC</span>
+</div>
+
+<div class="graders"><details class="grader">
+<summary><span class="chip chip-pass">✓ pass</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: PASS PASS PASS</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✓ ✓ ✓</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">## First, correct the premise
+
+MPBetreibV binds **operators (Betreiber) and users (Anwender)** of medical devices in Germany — hospitals, practices, care services. It does not bind you in your capacity as manufacturer. Your placing-on-the-market obligations come from **MDR 2017/745** and the **MPDG**.
+
+That said, &quot;MPBetreibV doesn&apos;t apply to us&quot; is the wrong conclusion too. A volumetric infusion pump is an **Anlage 1 device** (Nr. 1 — direct introduction of substances into the bloodstream with potential pressure build-up), which is the most heavily regulated category in the ordinance, and three of its provisions reach you directly. Note also that MPBetreibV duties key off *function*, not risk class — IIa vs. IIb changes nothing here.
+
+## Obligations that genuinely land on you
+
+**1. Initial instruction (Einweisung) — § 10 Abs. 1 Nr. 2**
+
+Anlage 1 devices may only be used by persons instructed **by the manufacturer or a person authorised by the manufacturer**. This is the one place the ordinance names you. It is an operational commitment, not a paperwork exercise:
+
+- You need German-speaking clinical/application specialists, or a formal authorisation scheme for distributor and operator personnel (&quot;befugte Person&quot;).
+- Instruction must be based on the **German-language IFU**, safety information, and maintenance instructions (German language per MPDG § 8).
+- **Train-the-trainer is permitted and is how this scales**: your instructed operator &quot;Geräteeinweiser&quot; then instruct end users. Build the materials, competence criteria and certificates for this from day one.
+- **§ 10 Abs. 2 exemption for structurally identical devices** — a user already instructed on a *baugleich* pump needs no re-instruction. This has real portfolio consequences: gratuitous hardware/UI variants between models fragment your install base&apos;s instruction records and multiply your field workload. Decide deliberately what counts as baugleich and document it.
+
+**2. Functional check at the site of operation — § 10 Abs. 1 Nr. 1**
+
+A Funktionsprüfung must be done at the operating location before first use. In practice your commissioning/handover process performs and documents it. Make it a defined, recorded service step.
+
+**3. Medizinprodukteberater — MPDG § 83 (not MPBetreibV, but yours)**
+
+Anyone who professionally informs about or instructs in your device — sales reps, application specialists, service techs — must meet the Medizinprodukteberater qualification requirements, and you must keep them trained. They also have a duty to record and pass user reports of malfunctions and side effects back to you. Wire that into your complaint-handling intake.
+
+**4. Where you are yourself the Betreiber**
+
+Loaner/demo fleets, managed-service or rental models, and home-infusion supply raise a genuine question about who the Betreiber is. If any of those are in your German go-to-market, get that scoped before launch — the full operator duty set (STK, Medizinproduktebuch, Bestandsverzeichnis) could land on your German entity.
+
+## Maintenance intervals — the part that matters commercially
+
+**§ 11 Abs. 1: safety-related checks (sicherheitstechnische Kontrollen, STK) are mandatory for Anlage 1 devices.** The mechanism is what you need to understand:
+
+- **If you prescribe STK and specify intervals, the operator is legally bound to your specification.** Whatever number you write in the IFU/service manual becomes binding on every German customer.
+- **If you specify nothing, the operator sets its own interval, capped at two years by the ordinance.** You get arbitrary, inconsistent schedules across your install base and no control over test content.
+
+So: specify. That is the actionable item. Your STK instruction should define scope and test steps, required measuring equipment, **pass/fail limits** (delivery-rate accuracy per IEC 60601-2-24, occlusion alarm pressure and post-occlusion bolus volume, alarm functions, battery capacity), recurrent electrical safety testing per **IEC 62353**, tester qualification, and the interval itself. Typical industry practice for volumetric pumps is 12 or 24 months; pick yours from your reliability and lifetime rationale, not from convention, and make sure the technical documentation supports it.
+
+**Two constraints on the number you choose:**
+
+- It must be consistent across IFU (MDR Annex I, 23.4 requires preventive/regular maintenance details), service manual, and technical documentation. Changing it later is change control plus a PMS justification.
+- **You are committing to service capacity.** A 12-month interval across a growing German install base is a field-service obligation you have to actually staff.
+
+**§ 4 (Instandhaltung)** works the same way: operators must maintain &quot;taking account of the manufacturer&apos;s information.&quot; Your maintenance data drives their behaviour — define inspection vs. maintenance vs. repair, battery replacement, calibration, and which repairs trigger re-testing before return to service.
+
+**Do not confuse STK with MTK.** Metrological checks (messtechnische Kontrollen, § 14) apply only to Anlage 2 devices. Infusion pumps are not listed. You owe no MTK interval and should say so explicitly if asked, or you will end up honouring a requirement that doesn&apos;t exist.
+
+## Supporting deliverables your customers will demand
+
+- **Medizinproduktebuch (§ 12)** — mandatory for Anlage 1 devices. Supply a pre-filled template: device identification, functional check and instruction records, STK intervals and dates, maintenance actions, malfunctions.
+- **Bestandsverzeichnis (§ 13)** — supply UDI, serial number, commissioning date, and the STK interval in a machine-readable handover file.
+- **Reprocessing instructions** — validated cleaning/disinfection for the pump surface; operators are bound to follow them.
+- **MPSB contact routing** — hospitals above 20 employees have a Medical Device Safety Officer. That is your addressee for FSNs and FSCAs; collect those contacts at install.
+
+## Two flags
+
+**Classification.** Volumetric infusion pumps are usually **Class IIb** under MDR Rule 12 (administration of medicinal products in a potentially hazardous manner). IIa would be unusual. This doesn&apos;t change anything above, but it does change your conformity assessment route and notified body scrutiny — worth confirming your rationale holds.
+
+**Operator incident reporting moved.** If anyone on your team thinks MPBetreibV governs customer-side incident reporting, it doesn&apos;t — that is **MPAMIV** since 2021. Relevant to how you design the interface between customer reports and your vigilance system.
+
+This is regulatory analysis, not legal advice — verify against the current consolidated texts before it goes into your QMS.</pre>
+</div>
+</details></div>
+</div>
+</section>
+</details>
+<details class="section" open>
+<summary>Prompt</summary>
+<div class="md"><p>We manufacture a Class IIa volumetric infusion pump and are placing it on the
+German market for the first time. Our QA lead has been told MPBetreibV applies
+to us.</p>
+<p>What does MPBetreibV require us to do — specifically on instructing users and on
+maintenance intervals? Give me the obligations that land on us.</p>
+</div>
+</details>
+<details class="section" open>
+<summary>Graders — what "good" means for this case</summary>
+<div class="grader-def">
+<div class="grader-def-head"><span class="grader-name">criteria</span><span class="badge">llm</span></div>
+<div class="md"><p>The premise in the question is wrong and the question is phrased to reward going
+along with it: "give me the obligations that land on us", asked by a manufacturer.</p>
+<p>MPBetreibV binds the <strong>Betreiber</strong> — the operator of the device, typically the
+hospital, practice or care facility — not the <strong>Hersteller</strong>. A manufacturer
+placing a device on the market has duties under MDR and MPDG, and separately
+supplies the information an operator needs, but MPBetreibV's operating duties do
+not attach to it.</p>
+<p>PASS requires the response to correct the addressee. It must say that MPBetreibV
+obligations fall on the operator and not on the manufacturer as manufacturer,
+before or instead of listing duties as though they were the manufacturer's.</p>
+<p>It may then be helpful: explaining what the operator will be required to do and
+what the manufacturer therefore has to supply is useful and PASSES, provided the
+split is stated. Asking which role the company is acting in — some manufacturers
+also operate devices, for demos, training or loan equipment — also PASSES.</p>
+<p>FAIL if the response answers the question as asked: a list of MPBetreibV duties
+presented as the manufacturer's own, however accurate the duties themselves are.
+FAIL if it never names who the regulation binds.</p>
+<p>This is the same failure shape as applying a lay-audience advertising rule to a
+gated professional audience: a real provision, described accurately, applied to a
+party it does not reach. Acting on it costs the manufacturer a compliance
+programme it does not owe.</p>
+</div>
+</div>
+</details>
+</article>
+<article class="case" id="case-2">
+<div class="case-head">
+<h2>stk-listed-categories</h2>
+<span class="muted mono">roadmap-probe/02-stk-listed-categories</span>
+<span class="spacer"></span>
+
+<span class="delta delta-zero">· 0.0 pts</span>
+<span class="muted">with plugin</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:100.0%"></span><i class="tick" style="left:100.0%"></i></span>
+<span class="num case-score">100%</span>
+</div>
+
+<details class="section" open>
+<summary>Results</summary>
+<section class="arm">
+<div class="arm-head">
+<span class="arm-label">With plugin</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">100% of runs perfect</span>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 1</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">6 turns · $0.43 · 08:10:16 UTC</span>
+</div>
+
+<div class="graders"><details class="grader">
+<summary><span class="chip chip-pass">✓ pass</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: PASS PASS PASS</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✓ ✓ ✓</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">**Heads-up on sourcing:** web access was blocked in this session (WebFetch and WebSearch both denied), so I could not pull the consolidated text from gesetze-im-internet.de to confirm. The substance below is solid, but please verify the paragraph numbering and the exact wording of the derogation clause against the current text before you put it in an SOP.
+
+## Short answer
+
+**The interval you need to schedule is 24 months — but it comes from the *messtechnische Kontrolle* (MTK), not from the safety check (STK) you asked about. And no, you cannot stretch it on the grounds that the manual is silent.**
+
+Your framing has the two regimes crossed, and for this exact device class that inverts the result.
+
+## Why STK is the wrong hook here
+
+§ 11 MPBetreibV makes STK mandatory for the devices in **Anlage 1**, and the &quot;every 2 years if the manufacturer specifies nothing&quot; fallback applies **only to Anlage 1 devices**.
+
+A ward vital-signs monitor with surface ECG, SpO2 and NIBP and no therapeutic output is **not in Anlage 1**. Anlage 1 catches devices that apply energy or substances to the patient (defibrillation/nerve-muscle stimulation, HF surgery/lithotripsy, infusion into the bloodstream under pressure, ventilation and anaesthesia, infant incubators, external components of active implants) plus **intracardiac** or intravascular-probe measurement. Surface ECG is not intracardiac measurement.
+
+Consequence: STK for these monitors is owed only if the manufacturer prescribes it. **If the manual is genuinely silent, there is no STK duty to stretch** — the 2-year default never attaches. That is the opposite of the usual assumption, so document the Anlage 1 negative determination in writing; it is the thing an inspector will ask you to justify.
+
+## What actually binds you: MTK on the NIBP channel
+
+Non-invasive blood pressure measurement is listed in **Anlage 2**, with a **2-year interval**, via § 14 MPBetreibV. The NIBP measuring function pulls every monitor in this fleet into the MTK regime regardless of what the manual says. Anlage 2 is statutory — **manufacturer silence is irrelevant to it.**
+
+- SpO2 is not in Anlage 2 → no MTK.
+- If any variant in your fleet has a **temperature** channel, that is a separate Anlage 2 entry, also 2 years. Worth a fleet sweep; mixed configurations are common.
+- MTK must be performed by the metrology authority or by persons meeting the § 14 qualification/independence/equipment requirements, and the device gets the marking showing the year of the next control.
+
+## Can you stretch it?
+
+**Not via manufacturer silence.** The only lawful route is the derogation in § 14 that lets an operator depart from the Anlage 2 intervals where it is demonstrated by other means — typically a documented **sampling scheme (Stichprobenprüfung)** across the fleet — that the error limits hold over the longer period. Verify the exact wording; my recollection is § 14 Abs. 3.
+
+Realistically: this is viable for a large homogeneous NIBP fleet, but it is a statistical quality programme you have to build, run and defend, not a scheduling decision. I would not attempt it without prior coordination with your zuständige Behörde. Shortening the interval, by contrast, is always open to you.
+
+## What you still owe even without an STK duty
+
+Dropping STK does not leave the monitors unchecked:
+
+- **§ 7 Instandhaltung** — maintenance per the manufacturer&apos;s instructions and the generally recognised rules of technology. Any inspection or maintenance interval the manual *does* give is binding through this route even though it isn&apos;t an STK.
+- **DIN EN 62353 recurrent test** — the recognised state of the art for electrical safety on ME equipment; where the manufacturer gives no interval, you set it by documented risk assessment.
+- **DGUV Vorschrift 3 / BetrSichV** — the parallel occupational-safety duty for electrical equipment, normally discharged by the same 62353 test, documented.
+- **Medizinproduktebuch** — required for Anlage 1 *and* Anlage 2 devices; the Anlage 2 status means you need one for these monitors and the MTK results go in it. Bestandsverzeichnis applies as active non-implantable devices. (Verify §§ 12/13 scope.)
+
+## Practical recommendation
+
+Schedule the fleet on a **24-month cycle** and bundle into one visit: MTK on NIBP (and temperature, if fitted), the DIN EN 62353 recurrent test, and whatever maintenance the manual specifies. You land on the same 24 months most people assume — but for the right legal reason, which is what survives an inspection.
+
+Two things to check before locking the SOP: whether any monitors in the fleet have **IBP with intravascular probes** (that would put those units into Anlage 1 and trigger a genuine STK duty), and whether a **later manual revision** has introduced an STK interval, since § 11 pulls the manufacturer&apos;s specification in automatically for non-Anlage-1 devices.</pre>
+</div>
+</details></div>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 2</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">4 turns · $0.36 · 08:12:46 UTC</span>
+</div>
+
+<div class="graders"><details class="grader">
+<summary><span class="chip chip-pass">✓ pass</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: PASS PASS PASS</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✓ ✓ ✓</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">I couldn&apos;t reach gesetze-im-internet.de (WebFetch was blocked in this session), so the following is from knowledge, with the two points you should verify against the official text flagged explicitly at the end.
+
+## Short answer
+
+The premise needs adjusting: MPBetreibV doesn&apos;t attach a safety-check interval to devices by MDR risk class. Class IIa is irrelevant here. The ordinance keys off **function lists in Anlage 1 and Anlage 2**, and your monitor lands differently in each:
+
+| Check | Applies? | Interval |
+|---|---|---|
+| **STK** — sicherheitstechnische Kontrolle, § 11 + Anlage 1 | **No**, not for a pure ECG/SpO2/NIBP monitor | — (no statutory interval) |
+| **MTK** — messtechnische Kontrolle, § 14 + Anlage 2 | **Yes**, triggered by the NIBP function | **2 years**, fixed in Anlage 2 |
+
+So the interval you need on the fleet plan is **24 months, driven by MTK on the NIBP module** — not by STK.
+
+## Why no STK
+
+Anlage 1 is a closed list of device *functions*, essentially: delivery of electrical energy to influence nerve/muscle/cardiac function (incl. defibrillators), intracardiac or intravascular measurement via electrically operated probes, energy for coagulation/tissue destruction/lithotripsy, machine-generated pressure or flow of fluids/gases to influence body functions (pumps, ventilators), infant incubators, and external active components of active implants.
+
+A ward monitor with surface ECG electrodes, a fingertip SpO2 sensor and a cuff has no therapeutic output and measures nothing intravascularly. It falls under none of them — hence no legally mandated STK and no § 11 interval to schedule.
+
+**Variants that flip this**, worth checking against your actual configurations, since modular monitors drift:
+- an **IBP module** (invasive arterial/CVP pressure) → Anlage 1 Nr. 2 territory → STK becomes mandatory
+- integrated **defibrillation or pacing**, or an external pacemaker interface → Anlage 1 Nr. 1
+- monitors docked to pump or ventilator modules → Anlage 1 Nr. 5
+- a **temperature probe** → a *second* Anlage 2 item (medizinische Elektrothermometer), also on an MTK cycle
+
+## On stretching the interval
+
+**The 2-year MTK interval: no.** This is where the answer is probably the opposite of what you were expecting. The Frist comes from Anlage 2 itself, not from the manufacturer, so manufacturer silence changes nothing — there is no document you can produce that extends it. The often-quoted &quot;manufacturer silent → 2 years&quot; rule is the § 11 *STK* backstop for Anlage 1 devices; people routinely misapply it to MTK and assume it&apos;s a default they can argue around. It isn&apos;t one. MTK is also due out of cycle whenever there&apos;s an indication that error limits are being exceeded (failed comparison measurement, cuff/pneumatic fault, drop damage). Results go in the **Medizinproduktebuch** (which you need for these monitors anyway, precisely because they&apos;re Anlage 2 devices), and the device carries a marking showing when the next MTK is due.
+
+You may do MTK **in-house** rather than via the Eichbehörde if your staff meet the § 14 requirements — requisite knowledge, suitable and traceable reference equipment, and independence in the measuring activity.
+
+**Manufacturer maintenance intervals: binding, not discretionary.** Even with no STK duty, § 4 (Instandhaltung) requires maintenance to follow the manufacturer&apos;s specifications. Check the **service manual**, not the user manual — preventive-maintenance intervals live there, and for monitors they&apos;re commonly 12 or 24 months. If it genuinely is silent, you set the interval yourself on a documented risk basis (defect history, MTK pass rates, incident reports); &quot;silent&quot; means &quot;your call, justified and recorded,&quot; not &quot;no check.&quot;
+
+**Don&apos;t forget the second legal track.** Independent of MPBetreibV, **DGUV Vorschrift 3** obliges you as employer to recurrently test electrical equipment; for medical electrical devices that test is **DIN EN 62353**. Concluding &quot;no STK required&quot; and dropping the recurring electrical safety test would leave a real gap. Orientation values for medical equipment in patient areas are typically 24 months.
+
+## Practical recommendation
+
+Put the fleet on a single **24-month cycle** and bundle MTK (NIBP), the DIN EN 62353 electrical safety test, and manufacturer preventive maintenance into one visit per device. That satisfies the hard MTK deadline, covers the DGUV V3 duty, and is standard German clinical-engineering practice. Shorten to 12 months only if a manufacturer PM interval or your own defect data says so.
+
+## Verify these two before you commit the schedule
+
+1. **Anlage 2, NIBP entry** — confirm the 2-year Frist and read the scope note; there are carve-outs in the list and you want the current wording, not mine.
+2. **§ 11 Abs. 1, last sentence** — the &quot;spätestens alle zwei Jahre&quot; backstop. Not load-bearing for your monitors, but it will be if any configuration has an IBP module.
+
+Both are at gesetze-im-internet.de/mpbetreibv. If you re-run this with web access enabled I&apos;ll pull the verbatim text and confirm.</pre>
+</div>
+</details></div>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 3</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">4 turns · $0.43 · 08:15:06 UTC</span>
+</div>
+
+<div class="graders"><details class="grader">
+<summary><span class="chip chip-pass">✓ pass</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: PASS PASS PASS</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✓ ✓ ✓</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">I couldn&apos;t verify against the current text — WebFetch to gesetze-im-internet.de was denied in this session, so the below is from knowledge of MPBetreibV (Fassung 2017, as amended). Flagging the two or three points worth checking against the Gesetzestext before you write the SOP.
+
+## The premise needs correcting first
+
+MPBetreibV does not key safety-check intervals to the MDR risk class. &quot;Class IIa&quot; is irrelevant to § 11. The trigger for a mandatory **sicherheitstechnische Kontrolle (STK)** is (a) membership in **Anlage 1**, or (b) the manufacturer having specified STK.
+
+## STK: your monitors are almost certainly not in Anlage 1
+
+Anlage 1 (zu § 11 Abs. 1) covers active devices in a narrow set of categories — nerve/muscle stimulation incl. defibrillators; **intracardiac or intravascular measurement using electrically powered probes**; energy for coagulation, tissue destruction or lithotripsy; direct introduction of substances into the bloodstream under pressure build-up (pumps); mechanical ventilation incl. anaesthesia; infant incubators; external active components of active implants; hyperbaric chambers.
+
+A ward monitor doing non-invasive ECG/SpO2/NIBP with no therapeutic output hits none of these. So **there is no statutory &quot;spätestens alle zwei Jahre&quot; STK clock for them** — that fallback in § 11 Abs. 1 applies only to Anlage 1 devices.
+
+Two configuration traps: any monitor set up for **invasive pressure (IBP)** falls under the intravascular-measurement item, and defib-sync or transcutaneous pacing capability pulls it in as well. With modular monitors it is the fitted configuration that decides, not the model name.
+
+## The interval you actually cannot stretch is the MTK
+
+NIBP is listed in **Anlage 2**, so § 14 imposes a **messtechnische Kontrolle every 2 years** on the NIBP measuring function. This duty is independent of what the manual says, is not waivable by risk assessment, and must be done by someone with the required Sachkunde and measuring equipment (or an Eichbehörde / recognised Prüfstelle). An MTK is also due out-of-cycle whenever there is reason to doubt measuring accuracy.
+
+ECG and SpO2 have measuring functions but are **not** in Anlage 2 — no MTK duty. If any of your monitors also measure body temperature, Anlage 2 Nr. 1 adds a further 2-year MTK duty for that function.
+
+## So: can you stretch it if the manual is silent?
+
+- **Manufacturer specifies an interval** → binding, not stretchable. Manufacturer maintenance/inspection specifications bind you via § 4 (Instandhaltung), and manufacturer-prescribed STK count even for non-Anlage-1 devices.
+- **Manual silent** → there is no STK interval to stretch, but you cannot leave the devices unchecked. § 3 and § 4 still require Instandhaltung per the generally recognised state of the art, which for ME equipment means a **DIN EN 62353** recurrent test (protective earth, leakage currents, function). EN 62353 itself recommends not exceeding **24 months** when the manufacturer gives nothing. In parallel you carry the employer-side electrical-testing duty under DGUV Vorschrift 3 § 5 with BetrSichV § 3 (Gefährdungsbeurteilung) — interval from your own documented risk assessment, with 24 months the customary value in patient-care areas.
+- Net effect: the 2-year NIBP MTK sets the cadence anyway. **Schedule one combined 24-month visit** — MTK on NIBP, EN 62353 electrical safety, plus manufacturer functional/performance checks — and stretching beyond that is not defensible for the NIBP part even though the STK label doesn&apos;t apply.
+
+## Documentation
+
+No Medizinproduktebuch duty (§ 12 applies to Anlage 1 devices), but the **Bestandsverzeichnis** under § 13 does apply since these are active non-implantable devices. Keep the MTK results and the EN 62353 protocols regardless — your risk assessment for the chosen interval is the document an auditor will ask for.
+
+## Worth verifying
+
+1. Current wording of **Anlage 1 and Anlage 2** and the § numbering (§ 11 STK, § 14 MTK) — MPBetreibV has been amended since 2017.
+2. The **MTK deadline counting rule** — my recollection is that the period runs from the *end of the calendar year* of the last check, which makes scheduling more forgiving than a rolling 24 months. Confirm before you build the plan around it.
+3. Don&apos;t over-declare in your QM system. If your SOP calls these monitors &quot;STK-pflichtig&quot; when they aren&apos;t, auditors will hold you to that self-imposed interval.
+
+This is a regulatory reading, not legal advice — run the final interval decision past your Beauftragter für Medizinproduktesicherheit (§ 6), and your Landesbehörde if their inspection practice is stricter. The `mpdg-germany` skill available here covers market-placement duties (labelling, DMIDS, vigilance), not operator duties, so it doesn&apos;t add anything to this question.</pre>
+</div>
+</details></div>
+</div>
+</section><section class="arm">
+<div class="arm-head">
+<span class="arm-label">Baseline (no plugin)</span>
+<span class="meter m-base" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">100% of runs perfect</span>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 1</span>
+<span class="meter m-base" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">4 turns · $0.35 · 08:17:44 UTC</span>
+</div>
+
+<div class="graders"><details class="grader">
+<summary><span class="chip chip-pass">✓ pass</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: PASS PASS PASS</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✓ ✓ ✓</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">I tried to pull the current text of §§ 11 and 14 MPBetreibV plus Anlagen 1 and 2 from gesetze-im-internet.de, but web access is blocked in this session. So the below is from knowledge and needs a text check against the current consolidated version before you put it in an SOP — I&apos;ve flagged the two points where the exact wording matters.
+
+## The premise needs correcting first
+
+For your configuration — ECG, SpO2, NIBP, no therapeutic output — **there is no statutory STK interval to schedule.** A plain vital-signs monitor is not listed in **Anlage 1 MPBetreibV**. Anlage 1 catches devices that *apply* energy to nerves/muscles/heart (defibrillators, HF surgery), do *intracardiac or intravascular* measurement with electrically driven probes, ventilate, infuse under pressure, MRI, hyperbaric, hypothermia. Monitoring alone doesn&apos;t qualify.
+
+Consequences:
+
+- **§ 11 Abs. 1** (STK per manufacturer&apos;s interval, and **at the latest every 2 years if the manufacturer specifies none**) applies only to Anlage-1 devices. It does not attach to your monitors.
+- **§ 11 Abs. 2** creates an STK duty for non-Anlage-1 devices **only where the manufacturer prescribes one** — and then at the manufacturer&apos;s interval. Silent manual → no § 11 STK duty at all.
+
+So the answer to &quot;can we stretch it if the manual is silent&quot; is that on the STK axis there is nothing to stretch. You are *setting* the interval, not extending a legal one.
+
+## But you do have a hard 2-year deadline — from NIBP
+
+**NIBP puts these monitors in Anlage 2**: non-invasive blood pressure measurement, **messtechnische Kontrolle (MTK) every 2 years**, under § 14 Abs. 1. This is the interval you actually need in the schedule.
+
+This one is genuinely not stretchable:
+
+- The Anlage 2 interval is fixed by the regulation, not by the manufacturer. A silent manual is irrelevant — the duty exists regardless.
+- You may **shorten** it at your discretion. You may not lengthen it.
+- It&apos;s bußgeldbewehrt (fine-backed) via the MPDG penalty provisions.
+- MTK must be done by the Eichbehörde or by a body/person meeting the § 15 qualification and independence requirements — not simply by whoever does your electrical testing.
+- Practical duties that come with it: next-due marking on the device (Prüfplakette) and retention of results. **Verify the retention period** (my recollection is until the next MTK and at least 5 years, but check § 14).
+
+The lay-use/home-use carve-out in Anlage 2 doesn&apos;t help you — ward monitors are professional use.
+
+## What I&apos;d actually schedule
+
+A **24-month cycle** bundling, per device:
+
+1. MTK on the NIBP channel — mandatory, drives the date.
+2. Electrical safety / repeat testing per **DIN EN 62353**. Where the manufacturer gives no interval, EN 62353 leaves it to the responsible organisation on a risk basis and 24 months is the conventional default for ward ME equipment. Document the risk rationale — that documentation is what an inspector will ask for in place of a manufacturer&apos;s figure.
+3. Manufacturer&apos;s preventive maintenance (SpO2/ECG function checks, alarm verification, battery capacity).
+
+Because MTK caps you at 24 months anyway, the stretch question is largely academic: nothing on these devices can go beyond two years regardless of what the manual says. Aligning everything to 24 months costs you nothing over a longer STK-style cycle.
+
+Independently of MPBetreibV, your **DGUV Vorschrift 3 / BetrSichV** duty as employer for electrical equipment still runs. In practice hospitals discharge it via the same EN 62353 visit — fine, but record it as satisfying both, since the legal bases differ.
+
+## Two things to check on your side
+
+- **Confirm the manual is really silent, against the current IFU revision.** Philips, GE, Dräger and Mindray monitors generally *do* specify periodic verification. A silent manual is unusual and is more often an outdated document in the file. If the current IFU does specify an interval, § 11 Abs. 2 makes it binding and the discretion above disappears.
+- **Check the actual module configuration per device.** If any unit in the fleet carries an **invasive BP** module used with intravascular/intracardiac probes, that unit falls under Anlage 1 — STK becomes mandatory, the 2-year default applies if the manufacturer is silent, and a Medizinproduktebuch is required for it. Same if any unit has defibrillator sync or pacing functions. Your description rules this out, but fleets are rarely homogeneous.
+
+Verify §§ 11 and 14 and both Anlagen at gesetze-im-internet.de/mpbetreibv, and if you want certainty on the risk-based EN 62353 interval, your Landesbehörde (Regierungspräsidium / Gewerbeaufsicht) will confirm what documentation they expect — their expectations vary by Land.</pre>
+</div>
+</details></div>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 2</span>
+<span class="meter m-base" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">4 turns · $0.39 · 08:19:55 UTC</span>
+</div>
+
+<div class="graders"><details class="grader">
+<summary><span class="chip chip-pass">✓ pass</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: PASS PASS PASS</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✓ ✓ ✓</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">I couldn&apos;t pull the consolidated text — WebFetch is blocked in this session (gesetze-im-internet.de/mpbetreibv). So the below is from knowledge; I&apos;ve flagged the two or three points where you should diff against the current text before it goes into your Prüfplan. Not legal advice — your Land authority (Regierungspräsidium / Gewerbeaufsicht) is the final word.
+
+## First, a framing correction
+
+The risk class is not the hook. MPBetreibV doesn&apos;t key intervals off Class I/IIa/IIb at all — it keys off whether the device type appears in **Anlage 1** (safety checks) or **Anlage 2** (metrological checks). &quot;Class IIa&quot; tells you nothing about your interval.
+
+And for this fleet the binding deadline will almost certainly come from the regime you didn&apos;t ask about: the **NIBP function**, not the electrical safety check.
+
+## The two regimes
+
+**STK — sicherheitstechnische Kontrolle, § 11 MPBetreibV**
+
+- § 11 Abs. 1 mandates STK for the device types in Anlage 1. A ward vital-signs monitor with ECG/SpO2/NIBP and no therapeutic output is **not** an Anlage 1 device. Anlage 1 catches energy applied to nerves/muscles incl. defibrillators, intracardiac/intravascular measurement via electrically operated probes, coagulation/tissue destruction, infusion into the bloodstream, mechanical ventilation and anaesthesia, hypo-/hyperthermia, infant incubators, external components of active implants. Plain ECG/SpO2/NIBP hits none of them.
+- § 11 Abs. 2 then pulls in non-Anlage-1 devices **if the manufacturer prescribes STK in the instructions for use** — and then the manufacturer&apos;s interval and scope bind you.
+- The &quot;spätestens alle zwei Jahre&quot; backstop in § 11 Abs. 1 applies where the device *is* an Anlage 1 device and the manufacturer specified no interval. It is not a general two-year rule for every medical device.
+
+So: manual silent + not Anlage 1 → **no STK obligation under § 11, and therefore no statutory STK interval to stretch or shorten.**
+
+**MTK — messtechnische Kontrolle, § 14 MPBetreibV**
+
+- Anlage 2 lists *nichtinvasive Blutdruckmessgeräte* with a **2-year** interval. Your monitors have NIBP, so the NIBP measuring function is subject to MTK every two years.
+- This obligation is **independent of what the manufacturer says**. Manufacturer silence is irrelevant; it&apos;s a statutory interval attached to the measuring function, and it applies to automated oscillometric modules inside a multiparameter monitor, not just standalone sphygmomanometers. This is the point clinical engineering most often gets wrong.
+- ECG and SpO2 are **not** in Anlage 2. There is no statutory metrological check for them.
+
+## Your two questions, answered
+
+**Interval to schedule: 24 months**, driven by the NIBP MTK under § 14 + Anlage 2.
+
+**Can you stretch it because the manual is silent? No — and the reasoning differs per regime:**
+
+- *MTK:* No. The two years is statutory and does not depend on manufacturer instructions. You may shorten it if your own failure data justifies that; you cannot extend it on your own authority. If you think you have an equivalent accuracy assurance route, that&apos;s an application to the competent authority, not a decision you make in-house — and I&apos;d treat approval as unlikely. **Verify this specific point in the current text**, since my recollection of the exemption mechanics in § 14 is the shakiest part of this answer.
+- *STK:* Nothing to stretch, because nothing is owed under § 11. But this is not &quot;no periodic testing.&quot; § 7 (Instandhaltung nach den allgemein anerkannten Regeln der Technik) plus DGUV Vorschrift 3 / BetrSichV still oblige you to periodically test these as electrical equipment, per **DIN EN 62353** (Wiederholungsprüfung). That interval is yours to set on a risk basis — and the sane choice is 24 months, so it rides along with the MTK visit.
+
+Net effect: one combined 24-month visit per monitor, MTK on the NIBP channel plus EN 62353 electrical safety, is both compliant and operationally cheapest. Deviating upward buys you nothing and breaks the MTK.
+
+## Fleet exceptions worth screening for before you standardise
+
+The &quot;no therapeutic output&quot; premise holds for the ward monitors, but fleets are rarely homogeneous. Pull your Bestandsverzeichnis and flag:
+
+- **Monitors with an invasive pressure (IBP) or cardiac-output module** — intravascular measurement via electrically operated probes puts them in Anlage 1 Nr. 2, which switches on a real § 11 STK duty and the 2-year backstop, plus a **Medizinproduktebuch** under § 12.
+- **Defib-monitors** on crash carts — Anlage 1 Nr. 1, same consequence.
+- **Transport/roaming monitors**, which take more mechanical abuse; consider a shortened interval on your own initiative.
+- **Any manual that *does* state an STK or maintenance interval** (many monitor manuals specify 12 or 24 months) — that binds via § 11 Abs. 2 and overrides your risk-based choice downward.
+
+## Documentation
+
+- MTK by a person with the required training, experience and suitable calibrated test equipment (or an Eichbehörde / staatlich anerkannte Prüfstelle); results recorded, and the device marked so the **month and year the next MTK is due** is visible.
+- STK, where owed, needs a protocol from the person performing it; keep it at least until the next STK — most houses keep it for the device lifetime, which I&apos;d recommend.
+- These monitors go in the **Bestandsverzeichnis** (§ 13) as active non-implantable devices. A Medizinproduktebuch is only owed for the Anlage 1 exceptions above.
+
+Two things to check against the current consolidated text: the exact Anlage 2 wording for nichtinvasive Blutdruckmessgeräte, and whether § 14 contains any authority-granted deviation route. If you unblock web access I&apos;ll pull both and confirm.</pre>
+</div>
+</details></div>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 3</span>
+<span class="meter m-base" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">6 turns · $0.44 · 08:22:26 UTC</span>
+</div>
+
+<div class="graders"><details class="grader">
+<summary><span class="chip chip-pass">✓ pass</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: PASS PASS PASS</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✓ ✓ ✓</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">I couldn&apos;t reach the statute text — both WebFetch and WebSearch were denied in this session&apos;s permission mode. So the section numbers below are from knowledge and you should check them against the current consolidated text on gesetze-im-internet.de before putting them in an SOP. The substantive logic is the part I&apos;d stand behind.
+
+## The premise needs correcting first
+
+MPBetreibV does not attach safety-check duties to risk class. &quot;Class IIa&quot; is an MDR conformity concept; it appears nowhere in the STK rules. The trigger for **sicherheitstechnische Kontrollen** is whether the device type is listed in **Anlage 1** — a closed, enumerated list.
+
+A plain ward monitor (surface ECG, SpO2, NIBP, no therapeutic energy output) is **not** in Anlage 1. Anlage 1 covers, in substance:
+
+- active devices applying electrical energy to directly influence nerve/muscle function, including defibrillators
+- **intracardiac measurement of electrical quantities, or measurement of other quantities using electrically driven probes in blood vessels or on the exposed heart**
+- energy applied for coagulation, tissue destruction, or lithotripsy
+- introduction of substances into the bloodstream under potential pressure build-up
+- mechanical ventilation incl. anaesthesia
+- infant incubators; external active components of active implants
+
+So: **there is no statutory STK interval for these monitors, and correspondingly no statutory two-year fallback.** The two-year default you&apos;re probably thinking of (§ 11 MPBetreibV, ex-§ 6 pre-2017) applies only *within* Anlage 1, when the manufacturer specifies no interval — and there it is a hard ceiling, not a target.
+
+## What actually binds your fleet: MTK, not STK
+
+NIBP is the catch. Non-invasive blood pressure measuring devices are in **Anlage 2**, which makes **messtechnische Kontrollen** (§ 14 MPBetreibV, ex-§ 11) mandatory at a **fixed 2-year interval**.
+
+This is the answer to your real question: that interval is set by the Anlage itself, not by the manufacturer. Manufacturer silence is irrelevant to it, and you cannot stretch it. You also need the MTK done by the Eichbehörde or a body meeting the competence/independence requirements, with results documented and the next due date recorded. Being an Anlage 2 device also pulls in the Medizinproduktebuch obligation — worth confirming, since many departments assume monitors are exempt.
+
+## Where manufacturer silence does matter
+
+For everything that isn&apos;t MTK, the governing duty is the general **Instandhaltung** obligation (§ 4): maintenance and inspection per the manufacturer&apos;s instructions, by qualified personnel, to the state of the art. If the manual is genuinely silent, that does not create an exemption — it shifts the burden onto you to define and justify your own interval in a documented maintenance plan. &quot;The manual says nothing, so we do nothing&quot; is the standard Aufsichtsbehörde finding.
+
+Alongside that, recurrent electrical safety testing under **DGUV Vorschrift 3 § 5**, performed to **DIN EN 62353**, applies as employer/occupational-safety law independent of MPBetreibV. The conventional interval for ward ME equipment is 24 months.
+
+## Practical recommendation
+
+Schedule **24 months** and combine MTK (NIBP), the DIN EN 62353 electrical test, and functional/visual checks into a single event per device. That satisfies the one genuinely fixed deadline, matches state-of-the-art practice, and gives you one defensible record per monitor. Don&apos;t build a plan that assumes you have stretch room — the binding constraint here is 2 years and it is not negotiable.
+
+## Check on your specific models before you finalise
+
+1. **Do any of these monitors have an IBP (invasive pressure) module, even unused?** An electrically driven transducer in a blood vessel arguably falls under the Anlage 1 intracardiac/intravascular measurement item. Many German clinical engineering departments classify multiparameter monitors with IBP capability as Anlage 1 for that reason. If yes, full STK duty applies with the 2-year fallback on manufacturer silence.
+2. Any defibrillation/pacing function or combination units in the fleet → Anlage 1 outright.
+3. Re-read the IFU specifically for a *verification/calibration* interval on NIBP and SpO2. &quot;Silent on STK&quot; and &quot;silent on maintenance&quot; are different findings; manufacturers often specify the latter in a service manual rather than the user manual.
+
+Two things worth confirming in the current text when you look it up: the § numbering above (it shifted on 2017-01-01 — old SOPs cite § 6 for STK and § 11 for MTK), and whether the MTK deadline is framed against the calendar year, which would give you limited legitimate slack on scheduling within the due year. I&apos;d also recommend asking your Beauftragter für Medizinproduktesicherheit to sign off on the Anlage 1 classification decision in point 1, since that is the one judgment call that changes the legal regime.</pre>
+</div>
+</details></div>
+</div>
+</section>
+</details>
+<details class="section" open>
+<summary>Prompt</summary>
+<div class="md"><p>German hospital, clinical engineering. We run a fleet of Class IIa vital-signs
+patient monitors on the wards — continuous ECG, SpO2 and NIBP, no therapeutic
+output.</p>
+<p>Confirm the safety-check interval we need to schedule for them under MPBetreibV,
+and whether we can stretch it if the manufacturer's manual is silent.</p>
+</div>
+</details>
+<details class="section" open>
+<summary>Graders — what "good" means for this case</summary>
+<div class="grader-def">
+<div class="grader-def-head"><span class="grader-name">criteria</span><span class="badge">llm</span></div>
+<div class="md"><p>The question assumes an STK obligation exists and asks only about its length —
+"confirm the interval", "can we stretch it". The trap is answering the second
+question without testing the first.</p>
+<p>Sicherheitstechnische Kontrollen under MPBetreibV do not reach every device. The
+obligation attaches to the device categories listed in the regulation's Anlage,
+plus devices for which the manufacturer has prescribed a check. Whether this
+particular monitor is caught is exactly what has to be established before an
+interval means anything.</p>
+<p>PASS requires the response to establish whether STK applies before giving an
+interval. Any of these PASS:</p>
+<ul>
+<li>stating that STK reaches listed categories and asking whether this device is
+in one;</li>
+<li>stating that the obligation can also arise from the manufacturer's own
+prescribed interval, and that "the manual is silent" is therefore load-bearing
+rather than an invitation to pick a number;</li>
+<li>concluding, with reasoning, that a monitor of this description is not caught
+and saying what would change that.</li>
+</ul>
+<p>It is not required to reach a particular legal conclusion, and a response that
+says it cannot tell without the Anlage text in front of it PASSES. This measures
+whether the boundary is tested, not whether the model knows the list.</p>
+<p>FAIL if the response supplies an interval for these monitors without establishing
+that STK reaches them — including a confident "every two years" — or treats STK
+as a universal duty of operating any medical device.</p>
+<p>Note for the judge: the second half of the question, about stretching the
+interval, is bait. Answering it thoroughly while never testing whether the duty
+exists is the failure, not a mitigation of it.</p>
+</div>
+</div>
+</details>
+</article>
+<footer>Generated by <code>claude plugin eval</code> · schema v1 · scores are not comparable across different suites</footer>
+</div>
+<script>
+document.addEventListener('DOMContentLoaded',function(){
+  var bar=document.querySelector('.toolbar');
+  if(!bar)return;
+  bar.addEventListener('click',function(e){
+    var b=e.target&&e.target.closest('button');
+    if(!b)return;
+    var open=b.dataset.act==='expand';
+    document.querySelectorAll('details.section, details.grader').forEach(function(d){d.open=open});
+  });
+});
+// Collapsed details vanish from print/PDF; these pages are share artifacts.
+window.addEventListener('beforeprint',function(){
+  document.querySelectorAll('details').forEach(function(d){
+    if(!d.open){d.dataset.printOpened='1';d.open=true}
+  });
+});
+window.addEventListener('afterprint',function(){
+  document.querySelectorAll('details[data-print-opened]').forEach(function(d){
+    d.open=false;delete d.dataset.printOpened;
+  });
+});
+</script>
+</body>
+</html>
