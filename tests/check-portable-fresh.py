@@ -274,4 +274,23 @@ if mk.exists():
     else:
         print(f"  marketplace lists all {len(on_disk)} plugin(s), sources resolve")
 
+# 11. the rules that turn stored runs into published numbers still behave
+#
+# Every guard above checks that a generated file matches what report-evals.py currently
+# produces. Change a rule and the files change with it, and all of them still pass --
+# that is a freshness check, not a correctness one. These pin the behaviour: an arm needs
+# three surviving runs, and an aborted run must not supersede a real measurement. Both
+# rules exist because of a published error.
+rl = subprocess.run([sys.executable, str(ROOT / "tests" / "test-report-logic.py")],
+                    capture_output=True, text=True)
+if rl.returncode:
+    print("\n  The reporting rules changed behaviour:")
+    out = rl.stdout.strip().splitlines()
+    bad = out[out.index("FAILED:") + 1:] if "FAILED:" in out else out[-8:]
+    print("\n".join("  " + l for l in bad))
+    failed = 1
+else:
+    n = sum(1 for l in rl.stdout.splitlines() if l.strip().startswith("ok  "))
+    print(f"  {n} reporting-logic assertions hold")
+
 sys.exit(failed)
