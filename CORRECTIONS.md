@@ -229,14 +229,18 @@ sentence "it escalated a device class on half of a two-part condition" was withd
 2026-09-10 and was still the opening pitch of README.md a day later, because nothing
 asked where else it lived.
 
-These are the exact strings that must not reappear. `tests/check-portable-fresh.py` fails
+These are the strings that must not reappear. `retracted:` is a literal;
+`retracted-re:` is a regular expression, which exists because the literal list missed
+"German law applied to a French-market asset" — the same withdrawn claim with two words
+swapped, sitting in ROADMAP.md. A retraction that only catches the phrasing you happened
+to use is barely a retraction. `tests/check-portable-fresh.py` fails
 if one shows up in any Markdown file other than this one and the listed exceptions, which
 are the places that quote the claim in order to retract it.
 
 <!-- retracted: "escalated home blood-pressure trending to IIb" | mdr-classification/evals/README.md -->
 <!-- retracted: "escalated a device class on half of a two-part condition" -->
-<!-- retracted: "applying German law to a French-market asset" -->
-<!-- retracted: "applied German law to a French-market asset" -->
+<!-- retracted-re: "(applying|applied|apply) German law to a French-market asset" -->
+<!-- retracted-re: "German law applied to a French-market asset" -->
 <!-- retracted: "All ten score 1.00 with the skill" -->
 <!-- retracted: "7/7 cases pass" -->
 

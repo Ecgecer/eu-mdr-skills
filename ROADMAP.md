@@ -23,10 +23,11 @@ measure between +0.07 and +0.14, because Claude already knows the Regulations â€
 implementing rule 3.3 verbatim, cites 2023/607 by number, gets the suture carve-out right.
 
 So the pattern is not "EU MDR is hard". It is **national law a model reaches for and
-misapplies**. Four of the five cases measuring +1.00 are exactly that: a German
-advertising item cited against a device it does not reach, a lay-audience rule applied to
-a gated professional audience, German law applied to a French-market asset, and a
-Declaration of Conformity sent for translation that Germany accepts in English.
+misapplies**. The cases measuring +1.00 are exactly that: a German advertising item
+cited against a device it does not reach, a lay-audience rule applied to a gated
+professional audience, French advertising rules asserted without a citation once German
+law was correctly ruled out, and a Declaration of Conformity sent for translation that
+Germany accepts in English.
 
 Any sixth skill should be aimed there or it will measure zero.
 

@@ -163,16 +163,19 @@ if ex_stamp.exists() and ex_readme.exists():
 # pitch for a day, because retracting a claim where you found it is not retracting it.
 # CORRECTIONS.md now registers the exact strings; this refuses to let them come back.
 reg = (ROOT / "CORRECTIONS.md").read_text()
-retracted = re.findall(r'<!--\s*retracted:\s*"([^"]+)"\s*(?:\|([^>]*?))?-->', reg)
+retracted = [(p, a, False) for p, a in re.findall(r'<!--\s*retracted:\s*"([^"]+)"\s*(?:\|([^>]*?))?-->', reg)] + \
+            [(p, a, True) for p, a in re.findall(r'<!--\s*retracted-re:\s*"([^"]+)"\s*(?:\|([^>]*?))?-->', reg)]
 hits = []
-for phrase, allow in retracted:
+for phrase, allow, is_re in retracted:
     allowed = {a.strip() for a in allow.split(",") if a.strip()} if allow else set()
     allowed.add("CORRECTIONS.md")
     for f in sorted(ROOT.rglob("*.md")):
         rel = str(f.relative_to(ROOT))
         if rel in allowed or "/results/" in rel or rel.startswith("dist/"):
             continue
-        if phrase in f.read_text():
+        body = f.read_text()
+        found = re.search(phrase, body) if is_re else (phrase in body)
+        if found:
             hits.append((rel, phrase))
 if hits:
     print("\n  Retracted wording found outside its retraction:")
