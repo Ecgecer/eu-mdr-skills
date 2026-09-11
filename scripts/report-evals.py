@@ -159,6 +159,46 @@ def suite_summary():
 
 SUMMARY_FILES = ["ROADMAP.md", "README.md"]
 
+
+def cost_summary():
+    """What running these suites has actually cost, from the stored runs.
+
+    Typed by hand this said "$30 for three skills and 20 cases" and "the single largest
+    run was $10.56", all three of which were out of date within a day. Someone deciding
+    whether to copy this method needs a real number, and the runs record one.
+    """
+    total, biggest, runs = 0.0, None, 0
+    for f in glob.glob(str(ROOT / "*/evals/results/*/aggregate-result.json")):
+        d = json.loads(Path(f).read_text())
+        c = d.get("costUsd") or 0
+        total += c
+        runs += 1
+        cases = len(d.get("cases", []))
+        if cases and (biggest is None or c > biggest[0]):
+            # parts: <plugin>/evals/results/<ts>/aggregate-result.json -- plugin is -5.
+            biggest = (c, cases, d.get("durationSeconds") or 0, Path(f).parts[-5])
+    n_cases = sum(len(list((ROOT / pl / "evals").glob("*/prompt.md"))) for pl in plugins())
+    out = [f"**${total:,.0f} of eval spend so far**, across {runs} stored runs of "
+           f"{len(plugins())} suites and {n_cases} cases, at 3 runs per case per arm."]
+    if biggest:
+        c, cases, secs, pl = biggest
+        out.append(f"The largest single run — `{pl}`, {cases} cases, both arms — was "
+                   f"**${c:.2f}** and took {round(secs / 60)} minutes.")
+    return " ".join(out)
+
+
+def splice_cost():
+    S, E = "<!-- eval-cost:start -->", "<!-- eval-cost:end -->"
+    f = ROOT / "METHOD.md"
+    if not f.exists():
+        return None, None
+    txt = f.read_text()
+    if S not in txt or E not in txt:
+        return f, None
+    head, rest = txt.split(S, 1)
+    _, tail = rest.split(E, 1)
+    return f, f"{head}{S}\n{cost_summary()}\n{E}{tail}"
+
 def splice_summary():
     """Yield (path, wanted_text) for every file carrying the suite-summary markers."""
     S, E = "<!-- suite-summary:start -->", "<!-- suite-summary:end -->"
@@ -188,6 +228,9 @@ def do_write():
     for rf, rnew in splice_summary():
         if rnew is not None and rf.read_text() != rnew:
             rf.write_text(rnew); print(f"  {rf.name}: suite summary rewritten")
+    cf, cnew = splice_cost()
+    if cnew is not None and cf.read_text() != cnew:
+        cf.write_text(cnew); print("  METHOD.md: eval cost rewritten")
     return 0
 
 def do_check_tables():
@@ -202,6 +245,13 @@ def do_check_tables():
             bad = 1
         else:
             print(f"  {pl}: published table matches the stored runs")
+    cf, cnew = splice_cost()
+    if cnew is None:
+        print("  METHOD.md: no eval-cost markers"); bad = 1
+    elif cf.read_text() != cnew:
+        print("  METHOD.md: eval cost does not match the stored runs."); bad = 1
+    else:
+        print("  METHOD.md: eval cost matches the stored runs")
     for rf, rnew in splice_summary():
         if rnew is None:
             print(f"  {rf.name}: no suite-summary markers"); bad = 1

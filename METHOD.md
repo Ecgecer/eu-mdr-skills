@@ -165,9 +165,13 @@ since; its current figure is in its own eval README rather than restated here. T
 
 ## What it costs
 
-Roughly $30 of eval spend for three skills and 20 cases, at 3 runs per case per arm.
-The single largest run — 7 cases, both arms — was $10.56 and took an hour. Budget for
-re-running after every substantive change, because that is when a suite earns its keep.
+<!-- eval-cost:start -->
+**$118 of eval spend so far**, across 34 stored runs of 5 suites and 30 cases, at 3 runs per case per arm. The largest single run — `device-claims`, 10 cases, both arms — was **$15.92** and took 93 minutes.
+<!-- eval-cost:end -->
+
+Budget for re-running after every substantive change, because that is when a suite earns
+its keep — and for re-running after a **grader** change too, which is easy to forget and
+invalidates the numbers just as thoroughly.
 
 ## The shortest version
 
