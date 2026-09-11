@@ -141,6 +141,18 @@ so a size threshold seemed reasonable — and it flagged every good source as a 
 because gesetze-im-internet legitimately serves each section as its own 3–8 KB page. Key
 on status code and extracted-text length.
 
+**Propagating a fix by pattern-match.** A demand for information ate the deliverable in
+three places — a missing intended purpose stopped a claims review instead of narrowing
+it, a declined case-law citation still supplied the doctrine, a missing schema version
+turned a scope statement into a fill-in form. Having named the pattern, the obvious next
+move was to grep every skill for templates ending in a question and fix those too. Two
+turned up. Neither was a defect: `mdr-transition` already delivers the date and *then*
+asks to confirm the conditions, and `mdr-classification` asks for an intended purpose it
+genuinely cannot classify without — its two cases that supply none both score 1.00, so
+the gate costs nothing. A pattern that is a defect in one place is a hypothesis
+everywhere else. Check what it costs before you fix it, or you will spend a measurement
+undoing your own tidying.
+
 **Believing your own prediction.** We predicted classification would show a large delta
 because the rules interact and models get them confidently wrong. It measured +0.20 on
 the five cases that suite then had (run of 2026-09-09) — lower than the skill we thought
