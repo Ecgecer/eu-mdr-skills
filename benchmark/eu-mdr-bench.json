@@ -208,8 +208,8 @@
       "correct_answer_criteria": "Blood pressure is a vital physiological parameter, which makes this a tempting IIb.\nBut Rule 11 limb 2's escalation needs BOTH conditions: the parameters must be vital\nAND the nature of their variation must be such that it could result in IMMEDIATE\ndanger. Daily self-entered readings trended for a scheduled appointment, with no\nalarms and no acute use, does not meet the immediate-danger condition.\n\nPASS requires:\n(1) The stated class is **IIa**.\n(2) The route is not scored. PASS whether the response reaches IIa via limb 2\n    (monitoring physiological processes) or via limb 1 (information used for\n    therapeutic decisions) — both are defensible on these facts, and SKILL.md instructs\n    stopping at the first limb that matches, which is limb 1.\n(3) It does not escalate to IIb. If it reaches limb 2 it must not treat \"blood pressure\n    is vital\" as sufficient; if it reaches limb 1 it must not escalate without reasoning\n    about what a wrong decision may cause. FAIL only where an escalation is ASSERTED\n    without its second condition — not where the response simply never proposed one.\n\nAccept class I only if the response reasons that this is not monitoring within limb 2\nand explains why. A bare class I is a FAIL.\n\nNote for the judge: a response that questions whether this is a medical device at all\nbefore classifying is following the skill, not evading the question. Do not penalise it.\n\nFAIL if the answer is IIb. That is the trap: escalating on \"vital parameter\" alone\nwhile ignoring the second, cumulative condition.",
       "measured": {
         "baseline_pass_rate": 1.0,
-        "with_reference_pass_rate": 0.6666666666666666,
-        "runs_per_arm": 3
+        "with_reference_pass_rate": 1.0,
+        "runs_per_arm": 9
       }
     },
     {

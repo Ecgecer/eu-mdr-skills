@@ -1,0 +1,568 @@
+{
+  "schemaVersion": 1,
+  "claudeVersion": "2.1.268",
+  "startedAt": "2026-09-11T07:24:01.972Z",
+  "durationSeconds": 1209,
+  "costUsd": 3.3190454999999996,
+  "partial": false,
+  "suite": {
+    "root": "/Users/egecangecer/projects/eu-mdr-skills/mdr-classification",
+    "ablation": "with-without",
+    "caseFilter": "limb2-both-conditions",
+    "threshold": 1,
+    "plugins": [
+      {
+        "name": "mdr-classification",
+        "version": "0.1.0",
+        "path": "/Users/egecangecer/projects/eu-mdr-skills/mdr-classification"
+      }
+    ]
+  },
+  "cases": [
+    {
+      "name": "limb2-both-conditions",
+      "dir": "evals/03-limb2-both-conditions",
+      "source": "prose",
+      "promptMarkdown": "MDR class for this?\n\nStandalone app, not connected to any device. Patients with chronic kidney disease\nenter their weight and blood pressure once a day at home, and the app trends the\nreadings over weeks and shows the trend to the patient and their nephrologist at the\nnext appointment. There are no alarms and it is not used for any acute decision.\nIntended purpose: \"to record and trend patient-entered weight and blood pressure over\ntime for review during scheduled nephrology consultations.\"",
+      "runsPerCase": 3,
+      "timeoutSeconds": 300,
+      "maxTurns": 10,
+      "graders": [
+        {
+          "name": "criteria",
+          "type": "llm",
+          "weight": 1,
+          "graderMarkdown": "Blood pressure is a vital physiological parameter, which makes this a tempting IIb.\nBut Rule 11 limb 2's escalation needs BOTH conditions: the parameters must be vital\nAND the nature of their variation must be such that it could result in IMMEDIATE\ndanger. Daily self-entered readings trended for a scheduled appointment, with no\nalarms and no acute use, does not meet the immediate-danger condition.\n\nPASS requires:\n(1) The stated class is **IIa**.\n(2) The route is not scored. PASS whether the response reaches IIa via limb 2\n    (monitoring physiological processes) or via limb 1 (information used for\n    therapeutic decisions) — both are defensible on these facts, and SKILL.md instructs\n    stopping at the first limb that matches, which is limb 1.\n(3) It does not escalate to IIb. If it reaches limb 2 it must not treat \"blood pressure\n    is vital\" as sufficient; if it reaches limb 1 it must not escalate without reasoning\n    about what a wrong decision may cause. FAIL only where an escalation is ASSERTED\n    without its second condition — not where the response simply never proposed one.\n\nAccept class I only if the response reasons that this is not monitoring within limb 2\nand explains why. A bare class I is a FAIL.\n\nNote for the judge: a response that questions whether this is a medical device at all\nbefore classifying is following the skill, not evading the question. Do not penalise it.\n\nFAIL if the answer is IIb. That is the trap: escalating on \"vital parameter\" alone\nwhile ignoring the second, cumulative condition.",
+          "config": {
+            "criteria": "Blood pressure is a vital physiological parameter, which makes this a tempting IIb.\nBut Rule 11 limb 2's escalation needs BOTH conditions: the parameters must be vital\nAND the nature of their variation must be such that it could result in IMMEDIATE\ndanger. Daily self-entered readings trended for a scheduled appointment, with no\nalarms and no acute use, does not meet the immediate-danger condition.\n\nPASS requires:\n(1) The stated class is **IIa**.\n(2) The route is not scored. PASS whether the response reaches IIa via limb 2\n    (monitoring physiological processes) or via limb 1 (information used for\n    therapeutic decisions) — both are defensible on these facts, and SKILL.md instructs\n    stopping at the first limb that matches, which is limb 1.\n(3) It does not escalate to IIb. If it reaches limb 2 it must not treat \"blood pressure\n    is vital\" as sufficient; if it reaches limb 1 it must not escalate without reasoning\n    about what a wrong decision may cause. FAIL only where an escalation is ASSERTED\n    without its second condition — not where the response simply never proposed one.\n\nAccept class I only if the response reasons that this is not monitoring within limb 2\nand explains why. A bare class I is a FAIL.\n\nNote for the judge: a response that questions whether this is a medical device at all\nbefore classifying is following the skill, not evading the question. Do not penalise it.\n\nFAIL if the answer is IIb. That is the trap: escalating on \"vital parameter\" alone\nwhile ignoring the second, cumulative condition.",
+            "focus": "last_message"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 4,
+            "costUsd": 0.18225899999999998,
+            "judgeCostUsd": 0.005622,
+            "durationSeconds": 52,
+            "startedAt": "2026-09-11T07:24:01.982Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-ZIlMd1/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "# MDR Software Classification: CKD home weight & BP trending app\n\n**Intended purpose (as stated):** *\"to record and trend patient-entered weight and blood pressure over time for review during scheduled nephrology consultations.\"*\n**Qualified as a device:** **not established** — see note below. This matters more than usual here.\n\n## Class: IIa\n\n**Route:** 3.3 independent → Rule 11, limb 2 (monitoring physiological processes), no escalation.\n\n## Reasoning\n\n| Step | Question | Answer | Basis |\n|---|---|---|---|\n| 3.1 | Intended purpose | \"to record and trend patient-entered weight and blood pressure over time for review during scheduled nephrology consultations\" | `[verified]` |\n| 3.3 | Drives or influences another device? | **No.** Readings are patient-entered, not taken from a connected sphygmomanometer or scale. Nothing is driven, no parameter set, no device operation changed. Classified in its own right. | `[verified]` |\n| Rule 11 | Which limb | **Limb 2** — trending blood pressure and weight over weeks in a diagnosed CKD population, for clinical review, is software intended to monitor a physiological process. Base **IIa**. Limb 1 is arguably also engaged (the nephrologist uses the trend in consultation decisions) — same base class, so it does not change the outcome. | `[verified]` |\n| Rule 11 | Escalation | **None.** Limb 2's escalation needs *both* vital parameters *and* variation that could cause immediate danger. Blood pressure may be a vital parameter, but once-daily readings, no alarms, and review deferred to a scheduled appointment mean the second condition fails. Both are required. On limb 1, a wrong trend at a scheduled non-acute consultation does not carry death, irreversible or serious deterioration, or surgery as the decision's impact. | `[verified]` |\n| 3.5 | Could a stricter rule apply? | No obvious candidate — no therapeutic function, no substance administration. Rules 1–10 and 12–22 are not carried here, so this is \"nothing visible\", not \"nothing exists\". | `[verified]` |\n\nThe facts you led with — no alarms, no acute use, not connected — do real work, but they defeat the **escalation to IIb**, not the base class. They do not get you to class I.\n\n## The two things that could move this\n\n**1. Qualification (the prior question).** If this is genuinely a logbook — the patient types numbers in, the app draws a line, no interpretation, no flagging, no risk scoring — there is a real argument it does not meet the Art. 2(1) device definition at all, and then there is no class. That is a different analysis and this skill does not carry Art. 2(1). `[verify]` It is worth settling before you accept IIa, because the gap between \"not a device\" and \"class IIa with a notified body\" is the whole regulatory programme.\n\n**2. Whether \"record and trend\" is \"monitoring\".** This is the live fault line. The counter-argument — that simple storage and display of patient-entered data is not monitoring under Rule 11 — turns on **MDCG 2019-11**, which is Commission guidance, not the regulation, and which I do not verify. The Annex VIII text applied to your stated purpose takes me to IIa. Point me at the passage if you want me to work against it.\n\nSpecific facts that would move the class:\n\n- **Any interpretation added to the trend** (flagging a rising trend, computing a fluid-overload indicator, comparing against thresholds) hardens limb 1 and makes IIa firmer, not softer.\n- **Adding alarms or between-visit notification**, or any use in acute fluid-status decisions, opens the limb 2 escalation to IIb.\n- **Connecting a BP cuff or scale** flips you into 3.3 — you would take that device's class instead.\n- **A narrower intended purpose** (\"a patient diary; readings are not intended for clinical decision-making\") is the honest route to arguing lower — but your current wording says \"for review during scheduled nephrology consultations\", which points the other way. Note the tension: you describe it as not used for decisions, while the stated purpose puts it in front of a nephrologist at a consultation. Those need to be reconciled in the documentation.\n\n## Before you build on this\n\nThis is the Annex VIII text applied to the intended purpose as you stated it. The class drives your conformity route, whether you need a notified body, and the depth of your technical documentation, so confirm it with your regulatory lead or notified body first. The three things to put in front of them:\n\n1. **The Art. 2(1) qualification call** — is this a device at all, or a logbook?\n2. **The limb 2 call** — does \"record and trend\" amount to monitoring a physiological process, and the MDCG 2019-11 argument against it.\n3. **The escalation reasoning** — that no-alarms/non-acute defeats \"immediate danger\", so IIb is not reached.\n\n## Limits\n\n> This classifies software under MDR Annex VIII implementing rules 3.1–3.7 and Rule 11, retrieved verbatim from EUR-Lex on 2026-09-09. It does **not** cover Art. 2(1) qualification, Rules 1–10 or 12–22, Annex XVI, IVDR, MDCG guidance, notified-body practice, or national interpretation. Rule 11 is a floor: under 3.5 a stricter rule this skill does not carry may raise the class. A structured first pass and an audit aid, not legal or regulatory advice, and not a substitute for your notified body or a qualified regulatory professional."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 4,
+            "costUsd": 0.20201275,
+            "judgeCostUsd": 0.0058140000000000015,
+            "durationSeconds": 60,
+            "startedAt": "2026-09-11T07:24:53.560Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-5TDPxK/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "# MDR Software Classification: CKD weight & BP trending app\n\n**Intended purpose (as stated):** *\"to record and trend patient-entered weight and blood pressure over time for review during scheduled nephrology consultations.\"*\n**Qualified as a device:** **not established — see note below.** This one matters here, and it's tangled with the class.\n\n## Class: **IIa** — most likely, via Rule 11 limb 1 (and limb 2 reaches the same place)\n\n**Route:** 3.3 independent → Rule 11 limb 1, no escalation. Class I is arguable but harder than it looks, for the reason in the note.\n\n## Reasoning\n\n| Step | Question | Answer | Basis |\n|---|---|---|---|\n| 3.1 | Intended purpose | *\"to record and trend patient-entered weight and blood pressure over time for review during scheduled nephrology consultations\"* | `[verified]` |\n| 3.3 | Drives or influences another device? | **No** — data is patient-keyed, the app sets nothing on the BP monitor or scale and doesn't change how they're operated. Classified in its own right. | `[verified]` |\n| Rule 11 | Which limb | **1** — information used to take decisions with diagnosis or therapeutic purposes. A nephrologist reviewing a weight and BP trend at a CKD consultation is reviewing it *to decide something*: fluid status, antihypertensive titration. Limb 1 carries no urgency requirement, so \"no alarms, not acute\" doesn't take you out of it. Limb 2 (monitoring physiological processes) would also give IIa if you preferred it. | `[verified]` |\n| Rule 11 | Escalation | **None → IIa.** Test is the impact of the decision, not CKD's severity. Decisions are made at a scheduled appointment, by a clinician, alongside in-clinic measurement; a wrong trend plausibly produces a suboptimal dose adjustment, not death, irreversible or serious deterioration, or surgery. Worth pressure-testing rather than assuming — see below. | `[verified]` |\n| 3.5 | Could a stricter rule apply? | **No obvious candidate** on this purpose — no therapeutic function, no substance administration. But I don't carry Rules 1–10 or 12–22, so I can't close this. | `[verify]` |\n\n## The trap in this one\n\nYour intended purpose is drafted to sound like record-keeping — \"record and trend … for review.\" That phrasing is the whole argument for limb 3 and class I. But it cuts both ways:\n\n- If the app genuinely only **stores and displays** patient data and informs nothing, then it likely isn't a medical device under **Art. 2(1)** at all `[verify]`, and there is no class to assign.\n- If it **is** a medical device, that's because the trend informs clinical management of CKD — which is limb 1, i.e. **IIa**.\n\nThe comfortable middle (\"it's a device, but only class I\") is the position that's hardest to hold. Decide which of the two you're actually claiming before you build the documentation around it.\n\nAlso note this is **Art. 2(1) qualification, which this skill does not carry** — if you haven't settled it, that's the prior question, and I'd settle it first.\n\n## What would change this\n\n- **Qualification.** If Art. 2(1) is answered \"not a device,\" classification never runs.\n- **What the trend is for, in writing.** If your IFU/labelling says the trend supports fluid-management or antihypertensive decisions, limb 1 is locked and IIa follows. If it says the output is not for clinical decision-making, you have a class I argument — but then justify why it's a device.\n- **Any derived output.** Adding a threshold flag, a \"dry weight\" estimate, a risk score, or a colour-coded status turns \"trend\" into decisive information and removes the class I argument entirely. Note 3.7 on decisive information.\n- **Escalation facts.** If the trend is the *primary* basis for dose decisions with no independent in-clinic measurement, test the IIb limb (serious deterioration) rather than assuming none.\n- **Alarms.** Keep them out. Adding acute alerting on BP invites the limb 2 IIb test (vital parameter + immediate danger).\n- **Capability beyond purpose.** If the app can already do more than trend, that's not a class finding under 3.1 — but it's a sign the intended purpose may be understated, which a reviewer will notice.\n\n## Limits\n\n> This classifies software under MDR Annex VIII implementing rules 3.1–3.7 and Rule 11, retrieved verbatim from EUR-Lex on 2026-09-09. It does **not** cover Art. 2(1) qualification, Rules 1–10 or 12–22, Annex XVI, IVDR, MDCG guidance, notified-body practice, or national interpretation. Rule 11 is a floor: under 3.5 a stricter rule this skill does not carry may raise the class. A structured first pass and an audit aid, not legal or regulatory advice, and not a substitute for your notified body or a qualified regulatory professional.\n\nThis is the Annex VIII text applied to the intended purpose as you stated it. The class drives your conformity route, whether you need a notified body, and the depth of your technical documentation, so confirm it with your regulatory lead or notified body before building on it. Three things to put in front of them:\n\n1. **The Art. 2(1) qualification call** — and the coupling above, that arguing class I weakens the case that it's a device.\n2. **The limb 1 vs limb 3 call** — whether \"review during consultations\" is information used to take therapeutic decisions. I say yes; this is the decision point between I and IIa.\n3. **The escalation test** — why a wrong trend doesn't reach serious deterioration, given CKD fluid and BP management."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 4,
+            "costUsd": 0.20222949999999998,
+            "judgeCostUsd": 0.00579,
+            "durationSeconds": 60,
+            "startedAt": "2026-09-11T07:25:53.149Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-voc4A9/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "# MDR Software Classification: CKD weight & BP trending app\n\n**Intended purpose (as stated):** \"to record and trend patient-entered weight and blood pressure over time for review during scheduled nephrology consultations.\"\n**Qualified as a device:** **not established** — see the note below. This bites here more than usual.\n\n## Class: IIa\n\n**Route:** 3.3 independent → Rule 11 limb 2 (monitoring physiological processes), no escalation.\n\n## Reasoning\n\n| Step | Question | Answer | Basis |\n|---|---|---|---|\n| 3.1 | Intended purpose | \"to record and trend patient-entered weight and blood pressure over time for review during scheduled nephrology consultations\" | `[verified]` |\n| 3.3 | Drives or influences another device? | No. Readings are hand-entered; the app sets no parameter on the BP monitor or scale and does not change how either is operated. Classified in its own right. | `[verified]` |\n| Rule 11 | Which limb | Limb 2 — intended to monitor physiological processes. Limb 1 is also arguably engaged and lands in the same place. | `[verified]` |\n| Rule 11 | Escalation | None. IIb needs **both** vital parameters **and** variation that could result in immediate danger. Once-daily self-entry, trended over weeks, no alarms, not used for acute decisions — the immediate-danger condition fails, so the second cumulative condition is not met and it stays IIa. | `[verified]` |\n| 3.5 | Could a stricter rule apply? | Not on this intended purpose — no active therapeutic function, no control of substance administration. | `[verified]` |\n\nThe load-bearing judgement is the **limb 2 / limb 3 line**, not the escalation. Following weight and BP over weeks and presenting the trend for clinical review is monitoring a physiological process on the ordinary reading of the text. The absence of alarms and real-time acquisition does not take you out of limb 2 — it defeats the *escalation* to IIb, which is a different test.\n\nThere is a real argument for **class I** under limb 3: that this is a logbook, a transcription of readings the patient already has, adding no clinical interpretation. I don't think it survives the stated purpose. \"Trend… for review during nephrology consultations\" is disease-specific, clinician-facing, and aimed at exactly the two parameters that drive CKD management. That reading also pulls limb 1 into play — a nephrologist reviewing BP and weight trends in CKD is reviewing them to decide something (antihypertensive titration, fluid status, dry weight). Limb 1 would also give IIa here, because the escalation looks at what a wrong decision may cause, and a slow trend reviewed at a scheduled visit alongside everything else in the consultation is not plausibly the cause of death or irreversible deterioration. So IIa is robust to which of the two limbs you go through, which is the main reason I'd put weight on it.\n\n## What would change this\n\n- **Qualification (Art. 2(1)).** If this is genuinely a passive record with no interpretation, whether it is a medical device at all is a live question, and the honest answer may be \"not a device\" rather than \"class I\". That is the prior question and this skill does not answer it. It matters more than the I-vs-IIa argument, because it decides whether you are in the regulation.\n- **Anything that acts on the data between visits.** Thresholds, flags, \"call your clinic\" prompts, or trend-based alerts move you decisively into limb 1 and put the IIb escalation genuinely in play — a missed fluid-overload signal in CKD can cause serious deterioration. Right now \"no alarms\" is doing a lot of work for you; treat it as a classification-relevant design constraint, not a feature gap.\n- **Titration use.** If the trend is used to adjust diuretic or antihypertensive dosing, say so in the intended purpose and re-run limb 1 with the escalation test.\n- **Any device link.** If you later ingest readings directly from a connected cuff or scale, re-run 3.3 first — that is a different analysis, not a refinement of this one.\n\nOne drafting note rather than a classification finding: your intended purpose says \"for review\", which is narrower than what a nephrologist will actually do with a BP and weight trend. Under 3.1 the stated purpose governs, but a purpose that visibly understates real use invites the challenge that it is stated incorrectly. Worth deciding deliberately whether you mean to claim decision support or to exclude it, and making the app match.\n\n## Limits\n\n> This classifies software under MDR Annex VIII implementing rules 3.1–3.7 and Rule 11, retrieved verbatim from EUR-Lex on 2026-09-09. It does **not** cover Art. 2(1) qualification, Rules 1–10 or 12–22, Annex XVI, IVDR, MDCG guidance, notified-body practice, or national interpretation. Rule 11 is a floor: under 3.5 a stricter rule this skill does not carry may raise the class. A structured first pass and an audit aid, not legal or regulatory advice, and not a substitute for your notified body or a qualified regulatory professional.\n\nThis is the Annex VIII text applied to the intended purpose as you stated it. The class drives your conformity route, whether you need a notified body, and the depth of your technical documentation, so confirm it with your regulatory lead or notified body before building on it. The three things to put in front of them: (1) the Art. 2(1) qualification call, since a pure logbook may not be a device at all; (2) the limb 2 vs limb 3 line — monitoring versus mere recording — which is what separates IIa from I here; and (3) the confirmation that no alarm or threshold function exists, since that is what keeps the IIb escalation out of play."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 4,
+            "costUsd": 0.20127375,
+            "judgeCostUsd": 0.005547,
+            "durationSeconds": 61,
+            "startedAt": "2026-09-11T07:26:52.667Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-bfzfQv/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "# MDR Software Classification: CKD home weight & BP trending app\n\n**Intended purpose (as stated):** *\"to record and trend patient-entered weight and blood pressure over time for review during scheduled nephrology consultations.\"*\n**Qualified as a device:** **not established** — see note below.\n\n## Class: IIa (Rule 11, second limb) — with a real class I argument that you should settle deliberately\n\n**Route:** 3.3 independent → Rule 11, limb 2 (monitoring physiological processes), no escalation.\n\n## Reasoning\n\n| Step | Question | Answer | Basis |\n|---|---|---|---|\n| 3.1 | Intended purpose governs | Quoted above; classification runs on it, not on capability | `[verified]` |\n| 3.3 | Drives or influences another device? | **No** — standalone, manual patient entry, no device coupling. Classified in its own right | `[verified]` |\n| Rule 11 | Which limb | **Limb 2** on the stated purpose: trending weight and BP over weeks is monitoring physiological processes. Limb 1 is arguable and also lands at IIa | `[verified]` |\n| Rule 11 | Escalation | **None.** Limb 2's IIb needs *both* vital parameters *and* variation that could cause immediate danger. BP is a vital parameter, but the purpose is weeks-long trending with no alarms and no acute use — the \"immediate danger\" condition fails, and both are cumulative | `[verified]` |\n| 3.5 | Could a stricter rule apply? | No obvious candidate — no therapeutic function, no substance administration, no device control. Rules 1–10 and 12–22 are not carried here, so this is a \"nothing in the stated purpose points that way\" rather than a clearance | `[verify]` |\n\n**The genuine crux — IIa vs I.** Your intended purpose is drafted to stay out of limb 1: it says *record and trend for review*, not *support decisions*. If the app is truly a logbook plus a display of what the patient typed, limb 3 applies and the class is I. What pulls it to IIa is the word **trend**: a weeks-long trend of BP and weight in CKD is new information about a physiological state, generated by the software, and presented for clinical review. On the Annex VIII wording alone, \"intended to monitor physiological processes\" reaches that. I'd put IIa in front of your notified body as the position to defend or rebut, not assume I.\n\nThe \"simple storage and display is not monitoring\" argument is usually run through **MDCG 2019-11**, which is Commission guidance rather than the regulation, and which I do not verify. If your case rests on it, point me at the passage and I'll work from the text.\n\n## What would change this\n\n- **A trend that interprets** — reference ranges, colour coding, \"your weight is rising\", dry-weight targets, or any suggested action. That moves you squarely into limb 1 and makes IIa hard to argue down.\n- **Any alarm, threshold, or notification**, even a gentle one, and even patient-facing only. It would also reopen the limb 2 escalation, because it asserts the variation matters urgently.\n- **Between-appointment clinician review** — if the nephrologist is expected to look at the data outside scheduled consultations and act on it, the \"not used for acute decisions\" premise weakens and the escalation question genuinely reopens.\n- **Automatic import from a connected BP cuff or scale.** That is a 3.3 question, and the answer would become \"same class as that device\", not a Rule 11 class.\n- **Pure logbook framing** — no computed trend, only a chronological list of entries the patient typed — is the fact that would support class I.\n\n## On qualification\n\nI've classified on the assumption that Art. 2(1) qualification is already established. For this product that assumption is doing real work: a diary that records self-entered readings can sit either side of the device definition, and it's the same \"is trending more than storage\" question that decides IIa vs I here. Art. 2(1) is outside what this skill carries. If qualification isn't settled, that is the prior question and worth resolving first — the answer will largely determine the class too.\n\n## Before you build on this\n\nThis is the Annex VIII text applied to the intended purpose as you stated it. The class drives your conformity route, whether you need a notified body, and the depth of your technical documentation, so have your regulatory lead or notified body confirm it. Three things to put in front of them:\n\n1. the 3.3 call (independent — no device coupling, manual entry only);\n2. the limb 2 call and the absence of escalation (no alarms, weeks-long trending, no immediate danger) — and whether they'd instead argue limb 3 / class I on a storage-and-display reading;\n3. that no rule outside Rule 11 appears to reach this purpose, which they should verify against the rules this analysis does not carry.\n\n> This classifies software under MDR Annex VIII implementing rules 3.1–3.7 and Rule 11, retrieved verbatim from EUR-Lex on 2026-09-09. It does **not** cover Art. 2(1) qualification, Rules 1–10 or 12–22, Annex XVI, IVDR, MDCG guidance, notified-body practice, or national interpretation. Rule 11 is a floor: under 3.5 a stricter rule this skill does not carry may raise the class. A structured first pass and an audit aid, not legal or regulatory advice, and not a substitute for your notified body or a qualified regulatory professional."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 4,
+            "costUsd": 0.205714,
+            "judgeCostUsd": 0.005448000000000005,
+            "durationSeconds": 61,
+            "startedAt": "2026-09-11T07:27:54.014Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-m3CWju/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "# MDR Software Classification: CKD home weight/BP trending app\n\n**Intended purpose (as stated):** *\"to record and trend patient-entered weight and blood pressure over time for review during scheduled nephrology consultations.\"*\n**Qualified as a device:** **not established** — see note below. The class below assumes qualification; if it isn't a device, none of this applies.\n\n## Class: IIa\n\n**Route:** 3.3 independent → Rule 11 limb 1 (and limb 2 lands in the same place), no escalation.\n\n## Reasoning\n\n| Step | Question | Answer | Basis |\n|---|---|---|---|\n| 3.1 | Intended purpose | \"to record and trend patient-entered weight and blood pressure over time for review during scheduled nephrology consultations\" | `[verified]` |\n| 3.3 | Drives or influences another device? | **No.** Readings are patient-entered, not taken from a connected BP monitor or scale. The app doesn't set a parameter on, gate, or change how any device is operated → classified in its own right | `[verified]` |\n| Rule 11 | Which limb | **Limb 1.** The output is intended to be reviewed by a nephrologist at a consultation — i.e. to provide information used to take therapeutic decisions (antihypertensive and fluid management in CKD). Limb 2 (monitoring a physiological process over weeks) also arguably applies; both give base **IIa**, so 3.5 doesn't change anything | `[verified]` |\n| Rule 11 | Escalation | **None → IIa.** Limb 1: a wrong decision here is a med or fluid adjustment made by a clinician in a scheduled visit with independent data (in-clinic BP, labs), on a slow timescale and reversible at the next visit — I don't read that as \"serious deterioration\" or \"surgical intervention\", still less death/irreversible. Limb 2: escalation needs *vital* parameters **and** variation causing **immediate danger**, cumulatively; once-daily readings trended over weeks with no alarms fails the second limb | `[verified]` |\n| 3.5 | Could a stricter rule apply? | Probably not — the purpose is purely informational, with no therapeutic function, no substance administration, nothing invasive. But I do not carry Rules 1–10 or 12–22 and cannot verify that | `[verify]` |\n\nThe thing worth being explicit about: **\"no alarms, not used for any acute decision\" does not get you to class I.** Those facts defeat the *escalation* — they're why this is IIa and not IIb — but they don't stop limb 1 from being engaged. Rule 11's limb 1 asks whether the information is used to take a diagnostic or therapeutic decision, not whether it's used urgently.\n\n## What would change this\n\n- **Class I** is only reachable if the app is genuinely a passive logbook — it stores and redisplays what the patient typed, and creates no new information. The word doing the work against you is **\"trend\"**: deriving a trajectory over weeks is processing that produces information the patient didn't enter, aimed at a clinician who will act on it. If the product truly just lists the readings in date order, say that in the intended purpose and limb 1/2 get much harder to engage.\n- **IIb** becomes arguable if someone characterises a misleading trend as capable of driving a diuretic or antihypertensive change that causes serious deterioration. I don't think that survives the fact that a nephrologist takes the decision with independent clinical data, but it's the escalation argument you'll be asked about.\n- **3.1 flag (not a classification finding):** if the app is in practice used — or marketed — to spot fluid overload between visits, or if patients are told to act on the trend, the stated intended purpose is understating the product. That's a question about whether the intended purpose is written correctly, and it should be settled before the class is.\n- **3.3 flag:** if a future version pulls readings directly from a connected BP cuff or scale, re-run gate 3.3 first. Merely *displaying* device output usually stays independent, but that's the question that would need asking again.\n\n## Limits\n\n> This classifies software under MDR Annex VIII implementing rules 3.1–3.7 and Rule 11, retrieved verbatim from EUR-Lex on 2026-09-09. It does **not** cover Art. 2(1) qualification, Rules 1–10 or 12–22, Annex XVI, IVDR, MDCG guidance, notified-body practice, or national interpretation. Rule 11 is a floor: under 3.5 a stricter rule this skill does not carry may raise the class. A structured first pass and an audit aid, not legal or regulatory advice, and not a substitute for your notified body or a qualified regulatory professional.\n\n**Two things before you build on this.** First, qualification: whether a record-and-trend app is a medical device under Art. 2(1) at all is a genuine prior question here, and it's one I don't carry — if it isn't qualified, there's no class. Second, the class drives your conformity route, whether you need a notified body, and the depth of your technical documentation, so it should be confirmed by your regulatory lead or notified body. Put these three in front of them: **the 3.3 independence call**, **limb 1 engagement and the IIa-vs-I line around \"trend\"**, and **the absence of escalation to IIb**."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 4,
+            "costUsd": 0.20354824999999996,
+            "judgeCostUsd": 0.006207000000000001,
+            "durationSeconds": 61,
+            "startedAt": "2026-09-11T07:28:54.518Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-TIZibv/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "## Before the class: one prior question\n\nNothing you've given me settles whether this is a medical device at all under Art. 2(1). A daily weight-and-BP diary could be qualified either way, and that analysis is separate from — and prior to — classification. I'll classify on the assumption qualification is established; if it isn't, that's the question to answer first.\n\n# MDR Software Classification: CKD home weight/BP trending app\n\n**Intended purpose (as stated):** \"to record and trend patient-entered weight and blood pressure over time for review during scheduled nephrology consultations.\"\n**Qualified as a device:** not established — see note above\n\n## Class: I — but the limb 2 call is close, and it is the whole answer\n\n**Route:** 3.3 independent → Rule 11 limb 3 (all other software)\n\n## Reasoning\n\n| Step | Question | Answer | Basis |\n|---|---|---|---|\n| 3.1 | Intended purpose | \"to record and trend patient-entered weight and blood pressure over time for review during scheduled nephrology consultations\" | `[verified]` |\n| 3.3 | Drives or influences another device? | No. Readings are keyed in by the patient; the app sets no parameter on a BP monitor or scale and does not change how either is operated. Independent, classified in its own right. | `[verified]` |\n| Rule 11 | Which limb | 3, on the stated purpose — but see the limb 1 and limb 2 tests below | `[verified]` |\n| Rule 11 | Escalation | None reached, because no limb escalates | `[verified]` |\n| 3.5 | Could a stricter rule apply? | Not obviously — no therapeutic function, no substance administration. Rules 1–10 and 12–22 are not carried here. | `[verified]` |\n\n**Limb 1 — information used to take diagnostic or therapeutic decisions?** On the words as written, no: the purpose claimed is recording and trending *for review*, not supplying information to decide with. But \"for review during scheduled nephrology consultations\" is load-bearing, and a consultation is where therapeutic decisions get made. If the trend is intended to inform dry-weight targets or antihypertensive adjustment, limb 1 engages and the base class is **IIa**. The absence of alarms and of acute use would keep it at IIa rather than IIb or III — the escalation asks what a wrong decision may cause, and a slow trend reviewed in clinic, with the clinician also examining the patient, does not on its face carry death, irreversible or serious deterioration, or surgery.\n\n**Limb 2 — monitoring physiological processes?** This is the closer call and the one I'd put in front of your regulatory lead first. Blood pressure is a physiological process, and trending it daily over weeks looks like monitoring in ordinary language. What keeps this out of limb 2 on the stated purpose is that the app observes nothing itself and asserts nothing about the readings — it stores what the patient types and draws it over time. Where that line sits between a logbook and \"intended to monitor\" is not decided by the Annex VIII text.\n\nIf limb 2 does engage, the class is **IIa**, not IIb: escalation needs both that the parameters are vital **and** that the nature of their variation could result in immediate danger. Even reading blood pressure as a vital parameter, a weeks-long trend with no alarms and no acute use fails the second condition. Both are required.\n\n> The class I / IIa line for storage-and-display versus interpretation turns substantially on MDCG 2019-11, which is Commission guidance rather than the regulation, and which I do not verify. The Annex VIII text applied to your stated purpose takes me to class I. If you want that pinned down, point me at the passage and I'll work from it.\n\n## What would change this\n\n- **The app computes or characterises anything**, rather than plotting what was entered — a rate of weight gain, a moving average flagged as high, a \"your BP is trending up\" message, a target line. That pushes toward limb 1 or limb 2 and a base class of IIa.\n- **Any alarm, alert, notification or threshold**, including one that only emails the clinic. You've said there are none; that fact is doing real work and should be explicit in the technical documentation, not just true of the current build.\n- **Use between appointments.** \"Scheduled consultations\" is what keeps immediacy out of the picture. If the nephrologist is expected to look between visits, or the patient is told to act on what they see, limb 2's immediate-danger condition becomes arguable.\n- **The intended purpose being understated (3.1).** If in practice the nephrologist titrates antihypertensives or fluid management off these trends, then the purpose as written may not describe what the software is for. A capability outside the intended purpose does not raise the class — but a purpose stated more narrowly than the actual use is a different problem, and a worse one.\n- **Readings arriving automatically** from a connected cuff or scale rather than being typed. That reopens 3.3.\n\n## Limits\n\n> This classifies software under MDR Annex VIII implementing rules 3.1–3.7 and Rule 11, retrieved verbatim from EUR-Lex on 2026-09-09. It does **not** cover Art. 2(1) qualification, Rules 1–10 or 12–22, Annex XVI, IVDR, MDCG guidance, notified-body practice, or national interpretation. Rule 11 is a floor: under 3.5 a stricter rule this skill does not carry may raise the class. A structured first pass and an audit aid, not legal or regulatory advice, and not a substitute for your notified body or a qualified regulatory professional.\n\n---\n\nThis is the Annex VIII text applied to the intended purpose as you stated it. The class drives your conformity route, whether you need a notified body, and the depth of your technical documentation, so it should be confirmed by your regulatory lead or notified body before you build on it. The three things to put in front of them:\n\n1. **The 3.3 call** — independent, because readings are manually entered.\n2. **Limb 2 versus limb 3** — whether \"record and trend for review\" is \"intended to monitor physiological processes\". This is the decision; class I and IIa are both defensible readings of the same sentence, and it partly turns on MDCG 2019-11.\n3. **That no escalation is reached either way** — no alarms, no acute use, no immediate-danger variation — so the realistic worst case here is IIa, not IIb."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 4,
+            "costUsd": 0.19377650000000002,
+            "judgeCostUsd": 0.0055620000000000044,
+            "durationSeconds": 55,
+            "startedAt": "2026-09-11T07:29:55.422Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-kgaekX/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "# MDR Software Classification: CKD home weight & BP trending app\n\n**Intended purpose (as stated):** *\"to record and trend patient-entered weight and blood pressure over time for review during scheduled nephrology consultations.\"*\n**Qualified as a device:** not established — see note below\n\n## Class: IIa\n\n**Route:** 3.3 independent → Rule 11, limb 2 (monitoring physiological processes), no escalation\n\n## Reasoning\n\n| Step | Question | Answer | Basis |\n|---|---|---|---|\n| 3.1 | Intended purpose | *\"to record and trend patient-entered weight and blood pressure over time for review during scheduled nephrology consultations\"* | `[verified]` |\n| 3.3 | Drives or influences another device? | No. Readings are keyed in by the patient; the app sets no parameter on a cuff or scale and does not change how either is operated. Classified in its own right. | `[verified]` |\n| Rule 11 | Which limb | Limb 2. Trending blood pressure and weight over weeks is monitoring a physiological process — the app computes a trend, it does not merely store entries. | `[verified]` |\n| Rule 11 | Escalation | None. Limb 2's escalation to IIb needs **both** vital parameters **and** variation that could cause *immediate* danger. Once-daily readings trended over weeks, no alarms, no acute use — the second condition fails, so it stays IIa. | `[verified]` |\n| 3.5 | Could a stricter rule apply? | Nothing in this description points to one — no therapeutic function, no substance administration. But I only carry Rule 11. | `[verified]` |\n\n### The close call you should know about\n\nThere is a real argument for **class I** here, and it is worth putting on the table rather than burying:\n\n- **Limb 1 is not clearly engaged on your wording.** \"For review during scheduled nephrology consultations\" stops short of \"to inform treatment decisions\". If the stated purpose said the trend is used to adjust antihypertensives or fluid management, limb 1 would engage directly — still base IIa, since a wrong decision from a weeks-long trend reviewed in clinic is not obviously in death/irreversible or serious-deterioration territory.\n- **The class I argument runs through limb 3**: that this is a diary — storage and display of numbers the patient typed — and that \"trending\" is presentation, not monitoring. That reading depends on where you draw the line between recording and monitoring, and that line is drawn in **MDCG 2019-11**, which is Commission guidance rather than the regulation and which I do not verify here. The Annex VIII text alone, applied to a product that computes and presents trends in BP and weight for clinical review, takes me to IIa. If you want to press the class I reading, point me at the guidance passage and I'll work from it.\n\n## What would change this\n\n- **Making the clinical use explicit** (\"to support the nephrologist in adjusting antihypertensive or fluid management\") — moves the route to limb 1, class stays IIa, but the escalation test then has to be argued properly.\n- **Adding any alarm, threshold, or notification** — if the app flags a reading or trend as needing attention, both the limb-2 \"immediate danger\" question and the limb-1 escalation reopen, and IIb comes into range.\n- **Auto-importing from a connected cuff or scale** — 3.3 would need rerunning; if the app influenced how that device is used, it would take the device's class instead.\n- **Narrowing the purpose to pure record-keeping** — strip the trending and the clinical-review framing, and the limb 3 / class I reading gets much stronger. But that is a product decision, not a wording trick; the stated purpose has to match what you ship.\n\n### Note on qualification\n\nYou haven't told me the product is qualified as a medical device under Art. 2(1), and I don't carry that analysis. I've classified on the assumption it is. If qualification is still open, that is the prior question — and note that it is the same \"is trending a diary or a monitoring function\" fact pattern that decides it, so the two will likely resolve together.\n\n---\n\nThis is the Annex VIII text applied to the intended purpose as you stated it. The class drives your conformity route, whether you need a notified body, and the depth of your technical documentation, so it should be confirmed by your regulatory lead or notified body before you build on it. The three things to put in front of them:\n\n1. **The 3.3 call** — independent, since data is manually entered.\n2. **The limb choice and the IIa/I split** — limb 2 monitoring vs limb 3 \"all other software\", and the MDCG 2019-11 question underneath it. This is the whole decision; IIa means a notified body and class I does not.\n3. **No 3.5 rule apparent**, but confirm nothing in Rules 1–10 or 12–22 reaches it.\n\n> This classifies software under MDR Annex VIII implementing rules 3.1–3.7 and Rule 11, retrieved verbatim from EUR-Lex on 2026-09-09. It does **not** cover Art. 2(1) qualification, Rules 1–10 or 12–22, Annex XVI, IVDR, MDCG guidance, notified-body practice, or national interpretation. Rule 11 is a floor: under 3.5 a stricter rule this skill does not carry may raise the class. A structured first pass and an audit aid, not legal or regulatory advice, and not a substitute for your notified body or a qualified regulatory professional."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 4,
+            "costUsd": 0.20914325,
+            "judgeCostUsd": 0.006053999999999997,
+            "durationSeconds": 61,
+            "startedAt": "2026-09-11T07:30:50.324Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-j79LM8/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "# MDR Software Classification: CKD weight & BP trending app\n\n**Intended purpose (as stated):** \"to record and trend patient-entered weight and blood pressure over time for review during scheduled nephrology consultations.\"\n**Qualified as a device:** **not established** — see the note below; this is the prior question and it is live here.\n\n## Class: IIa\n\n**Route:** 3.3 independent → Rule 11, **limb 2** (monitoring physiological processes), no escalation.\n\n## Reasoning\n\n| Step | Question | Answer | Basis |\n|---|---|---|---|\n| 3.1 | Intended purpose | \"to record and trend patient-entered weight and blood pressure over time for review during scheduled nephrology consultations\" | `[verified]` |\n| 3.3 | Drives or influences another device? | **No.** Standalone; readings are keyed in by the patient. Even if the patient reads them off a BP monitor, the app does not set a parameter on it, gate an alarm, or change how it is operated. Classified in its own right. | `[verified]` |\n| Rule 11 | Which limb | **Limb 2.** Weight and blood pressure tracked day to day over weeks is monitoring of physiological processes. Limb 1 is not reached on the stated purpose — \"for review\" stops short of \"information used to take diagnostic or therapeutic decisions\" — but see the fork below. | `[verified]` |\n| Rule 11 | Escalation | **None → IIa.** IIb needs both cumulative conditions: vital parameters **and** variation of a nature that could cause immediate danger. Blood pressure is arguably vital, but once-daily entry, trended over weeks, no alarms, no acute use fails the second condition outright. | `[verified]` |\n| 3.5 | Could a stricter rule apply? | No indication. No active therapeutic function, no administration of a substance, no physical action on the body. But I do not carry Rules 1–10 or 12–22, so I cannot exclude them from the text. | `[verified]` for 3.5; `[verify]` for the other rules |\n\n## The fork you actually have to resolve\n\nThe qualification question and the limb question are the same question, pointing opposite ways:\n\n- Read it as a **record-keeper** — an electronic diary that stores numbers and draws them on an axis — and the honest answer is that it may not meet the Art. 2(1) device definition at all. If it is not a device, there is no class.\n- Read it as **monitoring** — and \"trend ... over time\" is monitoring language, deriving a representation of change rather than just storing values — and it is a device, limb 2 applies, and the class is IIa.\n\nYou cannot have it both ways: the trending feature is what pushes it past plain storage, and it is also what puts it in limb 2. Decide which product you are claiming, then state the intended purpose to match.\n\nAlso worth flagging under 3.1: in CKD, weight and blood pressure trends reviewed by a nephrologist are exactly the inputs to fluid-status and antihypertensive decisions. Your stated purpose says \"for review\", which is narrower than what the output will realistically be used for. That does not raise the class by itself — a capability or a use outside the intended purpose never does — but it does raise the question whether the intended purpose is stated correctly. If the real purpose is to support those decisions, you are in limb 1, still base IIa, with the escalation test then asking what a wrong trend could cause.\n\nNote on guidance: the \"simple storage and search is not a device\" line of argument comes from MDCG 2019-11, which is Commission guidance rather than the regulation, and which I do not verify. The Annex VIII text alone takes me to IIa once the product is qualified. If your position depends on that guidance, point me at the passage or put it to your notified body.\n\n## What would change this\n\n- **Adding any alert or threshold** (\"contact your clinic if weight rises 2 kg in three days\") — this undercuts \"not used for any acute decision\", moves you toward limb 1, and reopens the limb 2 escalation question on immediate danger.\n- **Automatic import from a connected scale or cuff** — receiving and displaying readings is still independent under 3.3; setting a measurement parameter or suppressing a device alarm is not, and would hand you that device's class instead.\n- **Any interpretation, scoring, or flagging of the trend** — decisive information for a diagnosis engages 3.7 and pushes firmly into limb 1.\n- **Rewording the intended purpose to name treatment decisions** — limb 1, base IIa; then the escalation turns on what a wrong decision may cause, e.g. a diuretic or antihypertensive adjustment causing serious deterioration would be IIb.\n- **Dropping trending, keeping only a log the patient shows the clinician** — strengthens the not-a-device reading.\n\n## Before you build on this\n\nThis is the Annex VIII text applied to the intended purpose as you stated it. The class drives your conformity route, whether you need a notified body, and the depth of your technical documentation, so it should be confirmed by your regulatory lead or notified body before you rely on it. The three things to put in front of them:\n\n1. **Qualification first** — is this a device under Art. 2(1), given that it only records and trends patient-entered numbers?\n2. **The 3.3 call** — independent, so classified in its own right, not off the back of a BP monitor.\n3. **The limb and escalation** — limb 2 monitoring, base IIa, with no IIb escalation because the \"immediate danger\" condition fails; plus whether your intended purpose should in fact be a limb 1 statement.\n\n> This classifies software under MDR Annex VIII implementing rules 3.1–3.7 and Rule 11, retrieved verbatim from EUR-Lex on 2026-09-09. It does **not** cover Art. 2(1) qualification, Rules 1–10 or 12–22, Annex XVI, IVDR, MDCG guidance, notified-body practice, or national interpretation. Rule 11 is a floor: under 3.5 a stricter rule this skill does not carry may raise the class. A structured first pass and an audit aid, not legal or regulatory advice, and not a substitute for your notified body or a qualified regulatory professional."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 4,
+            "costUsd": 0.2013455,
+            "judgeCostUsd": 0.0057960000000000095,
+            "durationSeconds": 60,
+            "startedAt": "2026-09-11T07:31:51.557Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-Nr6itv/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "# MDR Software Classification: CKD weight & BP trending app\n\n**Intended purpose (as stated):** *\"to record and trend patient-entered weight and blood pressure over time for review during scheduled nephrology consultations.\"*\n**Qualified as a device:** **not established** — see note below.\n\n## Class: IIa on the stated purpose, with a real class I reading if it is a pure logbook\n\n**Route:** 3.3 independent → Rule 11 limb 2 (monitoring physiological processes), base IIa, no escalation. Limb 1 may also be engaged; it lands in the same place.\n\n## Reasoning\n\n| Step | Question | Answer | Basis |\n|---|---|---|---|\n| 3.1 | Intended purpose | *\"to record and trend patient-entered weight and blood pressure over time for review during scheduled nephrology consultations\"* | `[verified]` |\n| 3.3 | Drives or influences another device? | **No.** Readings are typed in by the patient; the app sets no parameter on the sphygmomanometer or scale and does not change how either is operated. Classified in its own right. | `[verified]` |\n| Rule 11 | Which limb | **Limb 2** — trending blood pressure and weight over weeks is intended to monitor physiological processes. Limb 1 is arguably also engaged, since the output exists to be reviewed by a nephrologist in consultation. | `[verified]` |\n| Rule 11 | Escalation | **None → IIa.** Limb 2's IIb escalation is cumulative: the parameters must be vital **and** their variation such that it could result in immediate danger. Blood pressure is arguably vital, but weeks-long trending with no alarms and no acute use does not meet the immediate-danger condition. On limb 1, a wrong trend feeds a scheduled, clinician-mediated decision with other data available — not death, irreversible deterioration, serious deterioration, or surgery on the face of the stated purpose. | `[verified]` |\n| 3.5 | Could a stricter rule apply? | Nothing obviously stricter on this intended purpose — no therapeutic function, no substance administration. But I do not carry Rules 1–10 or 12–22, so I cannot close that out. | `[verified]` for 3.5; rules themselves `[verify]` |\n\nThe honest crux is limb 2 versus limb 3. Your stated purpose has two verbs: **record** (storage, which points at limb 3) and **trend** (processing physiological parameters over time for clinical review, which points at limb 2). Because \"trend\" is in the intended purpose and the output is destined for a nephrologist, limb 2 is the better reading, and 3.5 tells you the higher of two applicable sub-rules wins. Class I would require that the app genuinely does nothing but store and redisplay what the patient typed.\n\nIf you want to argue class I, you are arguing that simple storage and display is not \"monitoring\". That argument runs through MDCG 2019-11, which is Commission guidance rather than the regulation and which I do not verify — the Annex VIII text alone takes me to IIa. I can flag the guidance question, or you can point me at the passage and I will work from it.\n\n## What would change this\n\n- **What \"trend\" actually renders.** A plotted line of raw entries is weaker than a computed slope, rolling average, deviation-from-baseline, or dry-weight estimate. The more the app derives, the firmer limb 2 gets and the more limb 1 comes into play.\n- **Whether the nephrologist uses it to take decisions.** If the trend informs antihypertensive or diuretic dosing or dry-weight targets, limb 1 is engaged directly. Base class stays IIa; it would only escalate if a wrong trend could cause serious deterioration, which is worth testing explicitly rather than assuming away.\n- **Any threshold, flag, colour change, or \"call your clinic\" prompt.** You say there are no alarms. Adding one would undercut the \"no immediate danger\" finding that keeps this at IIa rather than IIb.\n- **The wording of the intended purpose itself.** \"Record and trend … for review\" is doing a lot of work. If the app can do more than that, 3.1 means the capability does not raise the class — but it does raise whether the intended purpose is stated correctly, and that is the question a reviewer will ask.\n\n## Note on qualification\n\nClassification presumes qualification. Before class, the product has to be a medical device under Art. 2(1), and nothing you have given me settles that — a home diary of self-measured readings is precisely where that question bites. That is a separate analysis this skill does not carry. If qualification is already established, the above stands; if not, it comes first.\n\n## Before treating this as settled\n\nThis is the Annex VIII text applied to the intended purpose as you stated it. The class drives your conformity route, whether you need a notified body, and the depth of your technical documentation, so it should be confirmed by your regulatory lead or notified body before you build on it. The three things to put in front of them: the 3.3 independence call, the limb 2 versus limb 3 question (and whether limb 1 is also engaged via the nephrologist's use), and confirmation that no rule outside Rule 11 reaches this under 3.5.\n\n## Limits\n\n> This classifies software under MDR Annex VIII implementing rules 3.1–3.7 and Rule 11, retrieved verbatim from EUR-Lex on 2026-09-09. It does **not** cover Art. 2(1) qualification, Rules 1–10 or 12–22, Annex XVI, IVDR, MDCG guidance, notified-body practice, or national interpretation. Rule 11 is a floor: under 3.5 a stricter rule this skill does not carry may raise the class. A structured first pass and an audit aid, not legal or regulatory advice, and not a substitute for your notified body or a qualified regulatory professional."
+              }
+            ]
+          }
+        ],
+        "without": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 1,
+            "costUsd": 0.16810049999999999,
+            "judgeCostUsd": 0.004904999999999993,
+            "durationSeconds": 77,
+            "startedAt": "2026-09-11T07:32:51.672Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-im2QR9/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "## Bottom line\n\nTwo defensible answers, and the split matters a lot commercially:\n\n- **Not a medical device at all** (out of MDR scope) — viable but fragile as you've worded it.\n- **Class IIa under Rule 11** — the likely outcome if it does qualify. There is no realistic Class I landing spot here.\n\n## Hinge 1: does it qualify as MDSW?\n\nRun MDCG 2019-11's decision steps. Everything turns on Step 3: does the software perform an action on data **beyond** storage, archival, communication, simple search, or lossless compression?\n\n- **Argument for \"no device\":** the patient types in two numbers, the app stores them and draws them on an axis. Displaying data as recorded creates no new medical information — the nephrologist does 100% of the interpretation. That's an electronic patient diary, which MDCG 2019-11 treats as outside scope.\n- **Argument for \"device\":** \"trend\" is doing work in your intended purpose. If you compute anything — moving averages, a regression/trend line, rate-of-change, percent change from baseline, a \"your weight is rising\" summary — you're deriving new information from the inputs, which is an action beyond storage. Combined with a named disease population (CKD) and explicit clinical review, that lands inside Article 2(1) \"monitoring of disease.\"\n\nPractically: a plain scatter/line plot of exactly what was entered is arguably non-device. Anything that summarises or characterises the trajectory is not. Competent authorities tend to read disease-specific + clinician-review framing as a device, so don't plan on the non-device route without deliberately building for it.\n\n## Hinge 2: if it's a device, which class?\n\nRule 11, first indent — software providing information used to take decisions for diagnostic or therapeutic purposes. Weight and BP trends in CKD feed volume status and antihypertensive/diuretic decisions, so the trigger is met. Then the severity escalators:\n\n- **Class III?** No — the decision isn't of a kind that may cause death or irreversible deterioration. Non-acute, scheduled, clinician-in-the-loop, and the nephrologist has independent access to the underlying clinical picture.\n- **Class IIb?** Arguable but weak — \"serious deterioration of a state of health\" is a stretch for a scheduled review with no alarms and no acute use.\n- **Class IIa.** ✅\n\nCross-check via the second indent (monitoring of physiological processes): BP is a vital physiological parameter, but the IIb escalator requires variations whose nature could cause *immediate danger*. Once-daily home readings trended over weeks, no alarms, no acute decisions → **IIa**, not IIb.\n\nNote the Class I bucket in Rule 11 (\"all other software\") is nearly empty by construction: software that neither informs clinical decisions nor monitors physiological processes usually fails the device definition in the first place. This is the well-known Rule 11 over-classification problem — there's no MDR equivalent of IMDRF's \"informs clinical management in a non-serious situation\" middle tier.\n\n## What the two answers cost you\n\n**IIa** means a notified body — Annex IX Ch. I+III or Annex XI Part A — plus ISO 13485 QMS, ISO 14971, IEC 62304 (software safety class likely A, arguably B), IEC 82304-1, IEC 62366-1 usability, clinical evaluation with PMCF, UDI, PMS, EUDAMED registration. **Non-device** means GDPR and national health-app rules only. That's the real decision, not the classification letter.\n\n## If you want to defend the non-device position\n\nYour current intended purpose works against you on both hinges — \"trend\" implies derivation, and \"for review during scheduled nephrology consultations\" asserts clinical decision use. To stay out of scope you'd need to actually build a diary, not just reword it: display readings as entered, no derived trend metrics, no baselines or thresholds, no clinical interpretation anywhere in the UI or marketing, and no claim that the output supports clinical decisions. Even then, expect to have to argue it, and note that reworded-but-unchanged claims are exactly what authorities look for. Document the qualification rationale against MDCG 2019-11 either way — you'll need it whichever direction you go.\n\nMy recommendation: if the trend view is genuinely the product's value, plan for **Class IIa** and stop fighting it. Trying to thread the non-device needle usually means shipping a product no nephrologist wants.\n\nThis is a reasoned read of MDR Annex VIII and MDCG 2019-11, not regulatory advice — get your notified body or a regulatory consultant to sign off on the intended purpose wording before you commit to a route, since that one sentence drives everything above."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 1,
+            "costUsd": 0.17879325000000001,
+            "judgeCostUsd": 0.004854000000000004,
+            "durationSeconds": 82,
+            "startedAt": "2026-09-11T07:34:08.830Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-ZfoKol/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "## Bottom line\n\nThe classification question is easy; the **qualification** question is the whole ballgame.\n\n- **If it's a medical device under MDR Art. 2(1) → Class IIa under Rule 11.** Both limbs of Rule 11 land there, so there's no realistic IIa-vs-I argument once you're inside scope.\n- **The only route to \"not IIa\" is arguing it isn't an MDSW at all** (i.e. out of scope entirely). Class I is essentially unreachable here.\n\n## Why Rule 11 gives IIa, not IIb or III\n\nRule 11, first limb — *software providing information used to take decisions with diagnostic or therapeutic purposes* → IIa by default. A nephrologist reviewing BP/weight trends at a consult is making therapy decisions (antihypertensive titration, diuretic dosing, dry-weight targets). That's squarely \"information used for therapeutic decisions.\"\n\nIt does **not** escalate:\n- **IIb/III** require the decision's impact to be serious deterioration / surgery, or death / irreversible deterioration. Here the clinician has independent in-clinic BP, labs and examination; the app contributes one non-authoritative input to a scheduled, non-acute decision.\n\nRule 11, second limb — *monitoring of physiological processes* → IIa, escalating to IIb only for **vital physiological parameters where the nature of the variations could cause immediate danger**. Blood pressure is a vital parameter, but once-daily self-entered readings, no alarms, no acute use ≠ immediate danger. So IIa again.\n\nNote that your \"no alarms, not for acute decisions\" facts are exactly what holds the IIb door shut. That has to live in the IFU and in the product, not just in the pitch.\n\n## The qualification argument (where you actually have room)\n\nMDCG 2019-11 says software is **not** MDSW if it performs no action on data, or only *storage, archival, communication, simple search, or lossless compression*. The defensible position is:\n\n> It's an electronic logbook. The patient enters numbers; the app stores them and renders them back unaltered on a time axis. A plot is a display of stored data, not an action on it.\n\nThat argument is real but narrow, and three things cut against it:\n\n1. **Disease-specific intended purpose.** You're targeting CKD patients and nephrology review. Disease-specific targeting is strong evidence of a medical purpose; a generic \"BP logbook\" is a much easier non-device story than \"CKD fluid-status and BP trending.\"\n2. **\"Trending\" is a loaded word.** Raw scatter of entered values = display. Moving averages, fitted slopes, rate-of-change, weekly deltas, colour-coding against targets, baseline comparison = an action on data → MDSW.\n3. **The stated purpose names clinical review.** \"For review during scheduled nephrology consultations\" is close to an admission that the output feeds clinical decisions.\n\n**My recommendation:** plan for **Class IIa**. If you want to pursue the out-of-scope route, it's viable only if you can document that the app does literally zero derivation — and I'd expect a competent authority to push back given the CKD framing.\n\n## What flips the answer\n\n**Pushes firmly into IIa (or higher) — avoid if you want the non-device argument:**\n- Any threshold, flag, colour zone, or \"contact your clinic\" nudge\n- Any computed metric (trend slope, 7-day average, weight change vs. dry weight)\n- Any claim about detecting fluid overload, hypertension control, or CKD progression\n- Device connectivity (a paired BP cuff also drags in Annex VIII implementing rule 3.3)\n\n**Supports the non-device position:**\n- Rewriting the intended purpose to drop disease specificity and clinical-decision framing\n- Explicit IFU statement: raw patient-entered data, displayed unmodified, no interpretation, not for diagnosis or treatment decisions\n- No derived values anywhere in the UI\n\n## Practical consequences of IIa\n\nNotified body involvement (Annex IX ch. I+III, or Annex XI), ISO 13485 QMS, IEC 62304 (likely software safety class A, arguably B if you claim any clinical influence), ISO 14971, IEC 62366-1, clinical evaluation with a PMCF plan, PMS, UDI, EUDAMED registration. That's a materially different programme from self-certification — worth resolving the qualification question deliberately and early rather than by default.\n\nOne caveat: this is a regulatory reasoning walkthrough, not legal advice. Given how much rides on the qualification call, get it confirmed by your notified body or competent authority before you commit the roadmap."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 1,
+            "costUsd": 0.1443105,
+            "judgeCostUsd": 0.004890000000000019,
+            "durationSeconds": 62,
+            "startedAt": "2026-09-11T07:35:30.536Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-XpDp98/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "## Short answer\n\nTwo questions, in order: **does it qualify as a device at all**, and only then **what class**.\n\n- **Qualification: genuinely borderline, and as worded it's defensible as *not* a medical device** — it looks like a patient logbook (storage + display of the patient's own raw readings).\n- **If it does qualify, it's Class IIa under Rule 11** — not Class I. The \"all other software → Class I\" catch-all is hard to hold once you say a nephrologist uses the output.\n\n## Step 1 — Qualification (MDCG 2019-11)\n\nThe decision step that decides your case: does the software perform an action on data **beyond storage, archival, communication, simple search, or lossless compression**?\n\n- Plotting entered values against time, with no interpretation, no reference ranges, no flags, no derived indices — arguable that this is presentation of raw data, not creation of new medical information. That's the non-device reading.\n- The counter-argument a notified body or competent authority may make: your target population is a defined patient group (CKD), the parameters are clinically meaningful (weight ≈ fluid status, BP ≈ hypertension control), and the stated point of the trend is clinical review. That reads as *monitoring* under Art. 2(1), which is a medical purpose.\n\nSo the qualification hinges entirely on the intended purpose wording and your claims — not on the code. Yours is written carefully in the right direction (\"record and trend … for review\"), which helps.\n\n**Stays non-device if you hold the line:** no reference ranges or colour bands, no \"normal/high\" labels, no thresholds or notifications, no slope/average/variability metrics presented as clinically meaningful, no wording about detecting fluid overload, assessing BP control, or supporting treatment decisions, no dry-weight targets.\n\n**Tips into device territory immediately if you add:** any flag/alert (even non-urgent), any target or threshold entered by the clinician, any computed indicator (e.g. % weight change over 3 days), or any claim about detecting deterioration.\n\n## Step 2 — Classification, if it qualifies\n\nRule 11, Annex VIII:\n\n- **First indent** — software providing information used to take decisions for diagnostic or therapeutic purposes → **Class IIa**. Note there is no immediacy requirement here. \"No alarms, not for acute decisions\" limits the *severity* escalation but doesn't get you out of IIa; it only keeps you out of IIb (serious deterioration / surgical intervention) and III (death / irreversible deterioration).\n- **Second indent** — software intended to monitor physiological processes → **Class IIa**. IIb would require monitoring of vital physiological parameters where variation could cause *immediate* danger. Once-daily home readings reviewed at the next appointment clearly aren't that.\n- **Third indent** — all other software → Class I. This is the only route to Class I, and it requires that the software neither informs diagnostic/therapeutic decisions nor monitors physiological processes. Hard to sustain when your own intended purpose says the nephrologist reviews the trend at a consultation.\n\nNet: **non-device, or Class IIa**. There is no realistic Class I landing spot here, and that matters — IIa means a notified body, which is a completely different cost and timeline from self-certification.\n\n## Practical advice\n\n1. **Pick a side deliberately and document it.** If you're going non-device, write a formal qualification rationale walking MDCG 2019-11 Figure 1 step by step, and treat it as a controlled document — it's what you'll show a regulator, an app store, or a hospital procurement team. Don't leave it implicit.\n2. **Lock the non-device posture into your requirements and change control**, not just the marketing copy. The realistic failure mode is a well-meaning feature request (\"can we highlight readings above 140?\") silently converting you into a IIa device.\n3. **Watch the whole label**, not just the intended purpose sentence: screenshots, website copy, onboarding text, and any clinician-facing material all count as claims.\n4. **Expect national divergence.** Some competent authorities read \"monitoring\" more expansively than others; if you're multi-market, the most conservative authority sets your effective answer.\n5. If the clinician-facing side is where the value is, be aware that the moment you build anything clinician-configurable, you're in IIa — so it's worth deciding now whether you *want* IIa rather than discovering it later in the roadmap.\n\nOne caveat worth stating plainly: this is my read of the framework, not regulatory advice, and borderline qualification calls are exactly where notified body and competent authority opinions vary. Given the non-device/IIa gap is the difference between self-declaration and a conformity assessment, this is worth a short paid opinion from a regulatory consultant before you commit the roadmap."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 1,
+            "costUsd": 0.19786625000000002,
+            "judgeCostUsd": 0.005052000000000015,
+            "durationSeconds": 89,
+            "startedAt": "2026-09-11T07:36:32.424Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-mf2XRd/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "## Bottom line\n\nThe class isn't the hard part — **qualification** is. Two defensible outcomes:\n\n- **Not a medical device** (a health diary / logbook), if \"trend\" really means plotting the raw numbers on a time axis, or\n- **Class IIa** under MDR Annex VIII **Rule 11**, if the trend is presented as clinical information for the nephrologist to act on.\n\nYour facts (\"no alarms\", \"not used for acute decisions\") keep you out of Class IIb. They do **not** get you to Class I.\n\n## Step 1 — Is it MDSW at all?\n\nRun MDCG 2019-11's decision steps. Step 1 (software) and Step 2 (not an accessory, standalone) are fine. Step 3 is the fight:\n\n> Does the software perform an action on data beyond **storage, archival, communication, simple search, or lossless compression**?\n\n- A time-series chart of the values the patient typed in is arguably just *presentation* of stored data. MDCG 2019-11 explicitly says altering the representation of data for **embellishment/cosmetic** purposes is not an action in this sense.\n- But that same guidance draws the line at representation changes made **to support medical interpretation**. Your intended purpose says the trend exists \"for review during scheduled nephrology consultations\" — i.e. a clinician looks at the shape of the curve to manage fluid status and antihypertensives. Most notified bodies and several competent authorities read that as the medical side of the line.\n\nAnything beyond a raw plot — moving averages, slope/rate-of-change, reference bands, colour coding, \"% change over 4 weeks\", weight-gain-since-baseline — settles the question: **device**.\n\n## Step 2 — If it's a device: Rule 11\n\nRule 11 has two relevant limbs:\n\n1. *Information used to take decisions with diagnostic or therapeutic purposes* → **IIa**, escalating to IIb (serious deterioration / surgery) or III (death / irreversible deterioration). Trend review at a scheduled appointment, with the clinician holding all other data, is not plausibly IIb/III.\n2. *Monitoring physiological processes* → **IIa**, escalating to IIb only for **vital physiological parameters where variations could cause immediate danger**. Blood pressure is a vital physiological parameter, but \"once a day, reviewed at the next appointment, no alarms\" defeats the *immediate danger* qualifier. So IIa, not IIb.\n\nEither route lands on **Class IIa** → notified body involvement, Annex IX QMS + technical documentation assessment. That's the real cost step, so the qualification analysis in Step 1 is worth doing properly rather than assuming.\n\nMDCG 2019-11 also carries the IMDRF-style matrix (significance of information × seriousness of the healthcare situation) that notified bodies actually apply. Your app sits in the \"inform clinical management\" row; whether the CKD population counts as \"serious\" or \"non-serious\" is what decides IIa vs. the Rule 11 residual Class I bucket. I'd expect a reviewer to call CKD serious and land on IIa — I'd check the exact cell values against the current MDCG 2019-11 text before relying on them, since that table is where these arguments are won or lost.\n\n## If you want to stay non-device (or argue Class I)\n\nThis is achievable but requires discipline in both the product and the claims:\n\n- Display raw entered values only. No derived metrics, no smoothing, no thresholds, no traffic lights, no reference ranges, no \"your trend is worsening.\"\n- No alarms, notifications, or prompts to contact a clinician.\n- Rewrite the intended purpose so the app is a **record-keeping tool for the patient**, not a source of clinical information: something like \"to allow patients to record their own weight and blood pressure readings and view their own history; it does not analyse, interpret, or provide clinical information or recommendations.\" The current wording (\"trend … for review during scheduled nephrology consultations\") frames the output as clinical decision input.\n- Say so explicitly in the labelling/IFU, and keep marketing copy aligned — claims drive qualification, and \"helps your nephrologist manage your kidney disease\" in an app-store listing will override anything in your technical file.\n\nNote the MDD trap if this is a legacy product: under MDD Annex IX Rule 12 this would very likely have been Class I self-certified. Rule 11 is the classic MDR up-classification.\n\n## Caveats\n\nThis is a regulatory reasoning sketch, not legal advice, and the qualification call here is genuinely borderline. Document your rationale against MDCG 2019-11 step by step, and if you're building a business case on \"not a device,\" consider a borderline/qualification enquiry to your competent authority rather than relying on an internal determination.\n\nI can pull the current MDCG 2019-11 text and check the matrix cells and the Step 3 wording verbatim if you want the analysis nailed down."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 1,
+            "costUsd": 0.17730900000000002,
+            "judgeCostUsd": 0.0050010000000000054,
+            "durationSeconds": 78,
+            "startedAt": "2026-09-11T07:38:01.424Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-Dwp1yO/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "## Bottom line\n\nIf it qualifies as a medical device at all, it's **Class IIa under Rule 11** — and it hits Rule 11 twice over. The genuinely arguable question here is *qualification* (is it MDSW?), not classification. There is no realistic Class I path: the \"all other software is class I\" fallback almost never survives Rule 11 for something with this intended purpose.\n\n## Step 1 — Qualification (MDCG 2019-11)\n\nNot an accessory (standalone, no device connection), so it's classified in its own right per Annex VIII implementing rule 3.3. The decisive question is MDCG 2019-11's decision step 3: does it act on data beyond **storage, archival, communication, simple search, or lossless compression**?\n\n- A pure diary that stores values and shows them back → not MDSW.\n- **Trending** is the problem word. The guidance carves out altering representation for cosmetic/compatibility reasons, but computing and presenting a trend over weeks *for the purpose of clinical review* is creating new information from the inputs, not re-displaying them. Anything beyond a raw scatter of entered values — moving averages, slope, smoothing, baseline comparison, colour-coded ranges — is squarely an action on data.\n\nCombined with an intended purpose that names a disease (CKD), a specialty (nephrology), and a clinical use occasion (the consultation), this reads as **monitoring** under Art. 2(1). Expect a notified body or competent authority to qualify it.\n\n## Step 2 — Classification (Annex VIII, Rule 11)\n\n| Limb | Applies? | Class |\n|---|---|---|\n| Information used to take diagnostic/therapeutic decisions | Yes — the nephrologist uses the trend to adjust antihypertensives, dry weight, fluid targets | **IIa** |\n| …where decisions could cause death/irreversible deterioration | No — scheduled review, no acute use | not III |\n| …where decisions could cause serious deterioration or surgery | Arguable but weak given the intended purpose | not IIb |\n| Monitoring physiological processes | Yes — BP and weight over time | **IIa** |\n| …monitoring vital physiological parameters where variation could cause *immediate danger* | No — once daily, no alarms, explicitly not for acute decisions | not IIb |\n\nBoth limbs land on IIa. Rule 3.5 (highest applicable class) doesn't push it higher.\n\nTwo arguments that *don't* work, and you'll hear both:\n- **\"The clinician decides, not the app.\"** Human-in-the-loop does not exempt you from Rule 11's first limb. Information intended to inform a clinical decision is enough.\n- **\"We only show what the patient typed.\"** This works only if it's literally true — the moment you add trend computation you've left it behind.\n\n## What would change the answer\n\n**To stay out of MDR scope**, you'd need to commit to all of these, not pick from them:\n- No derived values at all — raw entries, plotted or tabulated, nothing computed.\n- No reference ranges, no colour coding, no \"your BP is trending up.\"\n- Intended purpose rewritten as a general record-keeping / lifestyle diary, with the disease and specialty references removed. That's a real product change, because \"for review during scheduled nephrology consultations\" is doing most of the work in qualifying this.\n\nNote that even then, MDCG 2019-11 says intended purpose governs, so marketing copy, screenshots, and app-store category all have to match. In practice, if CKD patients are the target population, the non-device position is fragile.\n\n**Anything you might be tempted to add later** — alerts on rapid weight gain, thresholds, dialysis-interval flags — flips the immediate-danger analysis and moves you to **IIb**. Worth deciding the roadmap before you pick a class.\n\n## Practical consequences of IIa\n\nNotified body involvement (Annex IX Chapter I+III, or Annex XI), ISO 13485 QMS, clinical evaluation per MDCG 2020-1 (which is demanding for MDSW with a \"supporting information\" claim), IEC 62304 with a software safety class justification, IEC 62366-1, ISO 14971, Annex I §17 GSPRs, UDI, PMS/PMCF plan, EUDAMED registration. Budget 9–18 months for the notified body route and check queue times early — that's usually the schedule driver, not the technical file.\n\nOne flag: if this was previously CE-marked Class I under MDD Rule 12, it's up-classified under MDR and the Article 120 transitional provisions don't apply to a new device without a prior certificate.\n\nI'd treat this as an informed engineering read rather than a regulatory opinion — the qualification call in particular is one your regulatory lead should sign off on, and it's worth a pre-submission conversation with your notified body given how much rides on the trending feature."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 1,
+            "costUsd": 0.13910625,
+            "judgeCostUsd": 0.0043169999999999875,
+            "durationSeconds": 58,
+            "startedAt": "2026-09-11T07:39:19.699Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-cT1gxe/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "## Bottom line\n\n**Class IIa under MDR Rule 11** — assuming it qualifies as a medical device at all, which it probably does as worded. The \"no alarms, not for acute decisions\" framing keeps you out of IIb/III, but it does **not** get you to Class I.\n\n## Step 1 — Is it a device? (MDCG 2019-11)\n\nTwo things push it in:\n\n- **It has a medical purpose.** Article 2(1) lists *monitoring* of a disease. Weight and BP trended in a CKD population, reviewed by a nephrologist, is monitoring of a condition — not general wellness. The intended-purpose sentence you drafted says the quiet part out loud: \"for review during scheduled nephrology consultations.\"\n- **The action-on-data test is the only real escape hatch.** MDCG 2019-11 excludes software doing only storage, archival, communication, simple search, or lossless compression. If your \"trend\" is literally plotting the entered values on a time axis with no derived quantity, you have an arguable case that it's display-only and therefore not MDSW. The moment you compute a moving average, a slope, a percent change from baseline, a \"dry weight\" reference, or any highlighting of outliers, that argument is gone.\n\nRealistically: a product whose stated value is *trending for clinical review* will be read by a notified body or competent authority as MDSW. I would not build a regulatory strategy on the display-only argument.\n\nThat it's standalone and not connected to a BP cuff is irrelevant — manual entry vs. device connection doesn't change qualification, and MDSW is classified in its own right.\n\n## Step 2 — Rule 11\n\nBoth limbs of Rule 11 land on IIa here:\n\n| Limb | Applies? | Class |\n|---|---|---|\n| Information used to take decisions with diagnostic or therapeutic purposes | Yes — the nephrologist reviews the trend and adjusts antihypertensives / fluid management | **IIa** |\n| Monitoring of physiological processes | Yes | **IIa** |\n\nThe escalations don't bite. Death/irreversible deterioration (III) and serious deterioration or surgical intervention (IIb) require the *decisions* to carry that impact; a scheduled consultation with a clinician in the loop and no acute use doesn't. For the monitoring limb, BP is a vital physiological parameter, but IIb needs variations \"of such a nature that it could result in immediate danger\" — once-daily home readings with no alarm function fails that test.\n\n\"All other software is class I\" only catches software that does neither of the above. Under MDCG 2019-11's reading that set is nearly empty, and this product isn't in it.\n\n## What actually matters commercially\n\n- **IIa means a notified body.** No self-certification. Budget 12–18 months and expect capacity constraints, plus ISO 13485 QMS, IEC 62304 lifecycle, IEC 62366 usability, clinical evaluation, PMS/PMCF, UDI.\n- **Don't add features that escalate you.** Any alarm, threshold flag, \"contact your doctor\" trigger, or titration suggestion moves you toward IIb and changes the clinical evidence burden.\n- **If Class I / non-device is the goal,** the only honest route is a genuinely different product: no CKD-specific claims, no clinician-review framing, no derived trend metrics — a general logbook. That likely destroys the value proposition, and you can't rely on intended-purpose wording alone if actual use and marketing say otherwise.\n- Not IVDR — no specimens involved.\n\nOne caveat worth stating plainly: MDR classification for this category is genuinely contested at the margins, and national competent authorities differ on how aggressively they apply Rule 11's first sentence. If the IIa/Class I distinction is load-bearing for your business case, this is worth a written opinion from a regulatory consultant or an informal enquiry to your target competent authority before you commit to a pathway."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 1,
+            "costUsd": 0.18238325,
+            "judgeCostUsd": 0.004419000000000006,
+            "durationSeconds": 82,
+            "startedAt": "2026-09-11T07:40:17.558Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-UJY7y6/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "## Short answer\n\nAs described, this sits right on the qualification line. Two defensible landing zones, and no realistic middle:\n\n- **Not a medical device** — if the app only stores raw patient entries and draws a plain time-series chart.\n- **Class IIa** under Annex VIII, Rule 11 — if it qualifies as MDSW at all.\n\nThere is effectively no Class I option here. That's the key thing to internalise before you design further.\n\n## Why it's binary\n\n**Step 1 — qualification (MDCG 2019-11 decision tree).** The deciding step is: *does the software perform an action on data beyond storage, archival, communication, simple search or lossless compression?*\n\nPure logging plus a literal plot of the values the patient typed in is arguably display of stored data — no calculation, no derived parameter, no comparison against a norm, no interpretation. On that reading you fail the step and never reach classification.\n\nBut \"trends the readings over weeks\" is doing a lot of work in your description. If the app computes **anything** — a regression/trend line, a rolling or weekly average, rate of weight gain per day, percent change, MAP, colour coding, or comparison to a target or reference range — that is an action on data, and combined with a CKD population and clinician review you have a medical purpose (monitoring of a disease under Art. 2(1)). Then you're MDSW.\n\n**Step 2 — classification, if MDSW.** Rule 11, first limb: software providing information used to take decisions with diagnostic or therapeutic purposes → **Class IIa**. Your stated intended purpose — \"for review during scheduled nephrology consultations\" — is decision-support framing. A nephrologist reviewing BP and weight trends in CKD is adjusting antihypertensives and fluid/dry-weight management. That's therapeutic.\n\nThe escalations don't bite, and that's exactly because of your design:\n- Class III needs potential death or irreversible deterioration.\n- Class IIb needs serious deterioration or surgical intervention.\n- Rule 11's monitoring limb escalates to IIb only where variation in a vital physiological parameter could cause *immediate danger*. BP is a vital parameter, but no alarms, non-acute use, and a clinician who also has clinic measurements means no immediate danger.\n\nSo the no-alarm, non-acute design **caps you at IIa** — it doesn't exempt you.\n\nRule 11's third limb (\"all other software → Class I\") is sometimes argued for patient diaries, but notified bodies rarely accept it once physiological parameters are being presented to a clinician for therapy decisions. Don't build a plan around it.\n\n## Recommendation\n\nDecide which product you're actually building, and commit:\n\n**If you want non-device status**, constrain the build deliberately: raw entered values only, plain chart, no derived figures, no reference ranges, no thresholds or highlighting, no device connectivity. Then write the qualification rationale against the MDCG 2019-11 steps and keep it in your technical file equivalent. Tighten the claims too — drop \"monitoring,\" avoid anything resembling \"management of CKD,\" and reconsider naming the consultation use, since that phrasing is what invites a competent authority to read it as decision support. Note that this position is fragile: any of the features above, plus risk scores or dosing suggestions, flips you to IIa.\n\n**If the trending is genuinely analytic**, plan for IIa now: notified body conformity assessment (Annex IX or XI), ISO 13485, IEC 62304 (likely software safety class A or B given no alarms), IEC 82304-1, clinical evaluation with PMCF, UDI and EUDAMED registration. Retrofitting this after launch is considerably more expensive than building into it.\n\nOne aside: because the app is standalone and not connected to a cuff, you avoid the accessory/component analysis entirely. If you later add Bluetooth BP cuff or scale integration, revisit — that changes the assessment independently of everything above.\n\nThis is my reading of the regulation, not regulatory advice; get your rationale confirmed by a regulatory consultant or your notified body before you rely on it, since the qualification call is the kind of thing authorities differ on."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 1,
+            "costUsd": 0.16478525,
+            "judgeCostUsd": 0.005270999999999984,
+            "durationSeconds": 76,
+            "startedAt": "2026-09-11T07:41:39.136Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-4GdP2O/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "## Short answer\n\nAs written, this is **most defensibly *not* a medical device at all** — it's a patient diary. If you can't sustain that position (or you add anything interpretive), it lands at **Class IIa under Rule 11**, not Class I. There is essentially no realistic Class I outcome here, so the decision is binary: non-device, or IIa with a notified body.\n\n## Step 1 — Qualification, before classification\n\nRun MDCG 2019-11's decision steps, not Rule 11 first.\n\nThe gating question is whether the software **performs an action on data beyond storage, archival, communication, simple search or lossless compression**. Your description says: record what the patient types, plot it, show it. That is storage plus display. A paper diary the patient hands the nephrologist isn't a device, and re-implementing it in software doesn't change the qualification. No alarms, no thresholds, no acute use all support this.\n\nThe weak point is your own intended-purpose wording: *\"for review during scheduled nephrology consultations.\"* That states on its face that a clinician uses the output in clinical review, which is exactly the hook a conservative competent authority or notified body pulls on to argue the software provides information used for therapeutic decisions. It's also a CKD-specific context where daily weight is a recognised fluid-status proxy — so \"monitoring of a disease\" under Art. 2(1) is arguable even though you've disclaimed it.\n\nI'd call this genuinely borderline but winnable on the non-device side, provided the build matches the claim.\n\n## Step 2 — If it is in scope: Rule 11 → IIa\n\n- **First limb:** software providing information used to take decisions for diagnostic or therapeutic purposes → **IIa**, escalating to IIb/III only where the decision could cause serious deterioration or death. Nephrology consult decisions (dry weight, antihypertensive titration) are not \"immediate danger\" territory → stays IIa.\n- **Second limb:** software intended to monitor physiological processes → IIa; IIb only for **vital** physiological parameters where variation could cause **immediate danger**. Blood pressure is a vital parameter, but \"once a day, no alarms, reviewed weeks later\" defeats immediate danger → IIa, not IIb.\n- **\"All other software → Class I\"** is a near-empty set under Rule 11 as MDCG reads it. Don't plan around it.\n\nIIa means a notified body, Annex IX or XI conformity assessment, ISO 13485, IEC 62304, clinical evaluation, PMS/PMCF. That's a different company, not a different checkbox — which is why Step 1 is worth doing properly.\n\n## Tripwires that flip you from non-device to IIa\n\nAny one of these ends the diary argument:\n\n- Derived values: 7-day moving averages, rate of change, slope/regression on the trend, % change since baseline\n- Colour-coding, zones, \"normal/high\" shading, reference ranges on the axis\n- Any threshold logic, flag, nudge or notification — including \"you haven't logged in 3 days\" if it's framed clinically\n- Text interpretation (\"your weight is trending up\")\n- Pulling readings automatically from a cuff or scale (also makes you an accessory / brings in the connected device)\n- Marketing copy that says \"monitor your fluid status,\" \"detect fluid overload,\" \"helps your nephrologist adjust treatment.\" Under Art. 7, your website and app-store listing are part of the intended purpose — the regulator reads those, not just your IFU.\n\nPlotting the raw entered points and connecting them is display. Computing anything the patient didn't type is new information.\n\n## What I'd do\n\n1. **Tighten the intended purpose.** Drop the clinical-use framing. Something closer to: *\"a personal record-keeping tool allowing users to log their own weight and blood pressure readings and view them chronologically. It does not analyse, interpret or provide recommendations on the data, and is not intended for diagnosis, monitoring, prevention or treatment of any disease.\"* Then add an explicit negative claim in-app.\n2. **Write and sign a qualification rationale** now — walk the MDCG 2019-11 decision steps in a dated document, with screenshots showing no derived metrics or ranges. If a competent authority queries you in two years, you want the contemporaneous file, not a reconstruction. Check the examples annex in the current revision of MDCG 2019-11 against your exact screens.\n3. **Put a design control on the tripwire list.** The realistic failure mode isn't the launch build, it's v1.4 when someone ships a red band at 140/90 because a clinician asked for it. That single change makes you an unregistered Class IIa manufacturer.\n4. **If the product vision actually needs interpretation** — and for CKD it probably will — stop optimising the diary argument and budget for IIa from the start. Retrofitting a QMS and clinical evaluation onto a shipped consumer app is far more expensive than building into it.\n\nAlso check separately for UK (UK MDR 2002, different software classification rules) and Switzerland if you're selling there — the non-device conclusion generally travels, but the fallback class doesn't.\n\nThis is my read of the framework, not regulatory advice — get the qualification rationale reviewed by a regulatory consultant before launch, since the whole strategy rests on that one document."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 1,
+            "costUsd": 0.16508875,
+            "judgeCostUsd": 0.0046619999999999995,
+            "durationSeconds": 76,
+            "startedAt": "2026-09-11T07:42:54.799Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-60Su53/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "## Short answer\n\nAs worded, this most likely sits **outside** the MDR — it's a patient diary, not a device. But the margin is thin, and if you land inside, it's **Class IIa under Rule 11**. There's no realistic Class I outcome.\n\n## Step 1 — qualification is the real question here\n\nClassification only matters after Article 2(1) is met. Run MDCG 2019-11's decision steps:\n\n- **Is it software?** Yes, and it's standalone (MDSW candidate), not an accessory, not driving a device.\n- **Does it perform an action on data beyond storage, archival, communication, simple search or lossless compression?** This is the hinge. Capturing patient-entered numbers and drawing them on a time axis is, on the strict reading of the guidance, *storage plus display*. A line chart is a representation of the data, not a calculation, interpretation, or creation of new information.\n- **Is it for the benefit of individual patients?** Yes.\n\nSo the defensible position is: no action on data → not MDSW → **not a medical device**. That's the same logic under which EHRs, BP logbooks and appointment-prep tools sit outside MDR. The \"no alarms, no acute use\" facts support it, and your intended-purpose sentence is already drafted in the right register (\"record and trend… for review\").\n\n## Step 2 — if it is a device, it's IIa\n\nRule 11, first indent: software providing information used to take decisions with diagnostic or therapeutic purposes → **Class IIa**, unless the decision could cause death or irreversible deterioration (III) or serious deterioration / surgical intervention (IIb). A nephrologist adjusting dry weight or antihypertensives off a multi-week trend, at a scheduled visit, with the patient in front of them and other clinical data available, does not get you to IIb — the harm pathway is mediated, non-urgent and correctable.\n\nRule 11, second indent (monitoring physiological processes) also lands at IIa here. Blood pressure *is* a vital physiological parameter, but the IIb carve-out requires variation that \"could result in immediate danger\" — daily home entry reviewed weeks later, with no alarms, plainly isn't that.\n\nClass I (\"all other software\") is not credible: the whole stated purpose is clinician review, which is decision support by another name.\n\n## What flips it into device territory\n\nAny of these and you're MDSW at IIa — treat them as a feature freeze list, because they're easy to add without anyone noticing the regulatory consequence:\n\n- Flags, colour-coding, thresholds, or \"out of range\" indications\n- Computed outputs presented as clinically meaningful — rolling averages, trend slopes, variability indices, % change vs. baseline, projected values\n- Anything about fluid status, dry weight, oedema, hypertension control, or CKD progression\n- Alerts, reminders tied to readings, or clinician notifications\n- Later connecting a BP cuff or scale (accessory / data-integrity claims follow)\n- Marketing that goes beyond the intended purpose — Article 7 bites on claims regardless of what the IFU says\n\n## Recommendation\n\nHold the non-device position, but hold it deliberately rather than by default:\n\n1. **Write the qualification rationale down now** — a short documented Article 2(1) / MDCG 2019-11 analysis, versioned, referenced from your product requirements. If a competent authority or a hospital procurement team asks, \"we decided it isn't one\" is not an answer; the reasoning is.\n2. **Bind the intended purpose to the UI.** Your sentence is good — make sure no screen, no app store listing, no sales deck says more than it. This is where non-device positions usually die.\n3. **Put a regulatory gate on the backlog.** The moment someone asks for a red/amber trend indicator, you're in a IIa conformity assessment with a notified body, a QMS to ISO 13485, IEC 62304, clinical evaluation, PMS — a 12–18 month programme. Cheap to plan for, expensive to discover.\n4. **Consider taking IIa on purpose** if the product roadmap clearly heads toward interpretation, or if your buyers are hospitals that will demand a CE mark anyway. Retrofitting a QMS mid-flight costs more than starting with one.\n\nWorth a paid regulatory opinion before launch — this is exactly the borderline case where a one-page consultant sign-off is cheap insurance, and national competent authorities differ in how expansively they read \"action on data.\""
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 1,
+        "passRate": 1,
+        "scoreWithout": 1,
+        "passRateWithout": 1,
+        "delta": 0
+      }
+    }
+  ],
+  "aggregates": {
+    "casesTotal": 1,
+    "casesPassed": 1,
+    "overallScore": 1,
+    "overallPassRate": 1,
+    "meanDelta": 0
+  }
+}

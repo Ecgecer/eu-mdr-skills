@@ -28,15 +28,15 @@ plugin's `evals/model-probes/`, which the published tables never read.
 | `hwg11-wrong-audience` | 0.00 | +1.00 | 0.00 | +0.33 |
 | `limb-c-omission` | 0.00 | +1.00 | 0.67 | -0.33 |
 
-**`mdr-classification`** — 7 cases. Mean delta **+0.10** on the CLI default, **+0.67** on `haiku`.
+**`mdr-classification`** — 7 cases. Mean delta **+0.14** on the CLI default, **+0.67** on `haiku`.
 
 | Case | default baseline | default Δ | haiku baseline | haiku Δ |
 |---|---|---|---|---|
 | `driving-software-3-3` | 1.00 | +0.00 | 0.00 | +1.00 |
 | `limb1-escalation-iii` | 1.00 | +0.00 | 0.00 | +1.00 |
-| `limb2-both-conditions` | 1.00 | -0.33 | 0.33 | +0.33 |
 | `limb3-class-i` | 1.00 | +0.00 | 0.33 | +0.67 |
 | `mdcg-bait` | 1.00 | +0.00 | 0.00 | +0.67 |
+| `limb2-both-conditions` | 1.00 | +0.00 | 0.33 | +0.33 |
 | `qualification-not-established` | 1.00 | +0.00 | 1.00 | +0.00 |
 | `rule-not-carried` | 0.00 | +1.00 | 0.00 | +1.00 |
 

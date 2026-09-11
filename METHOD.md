@@ -166,7 +166,7 @@ since; its current figure is in its own eval README rather than restated here. T
 ## What it costs
 
 <!-- eval-cost:start -->
-**$148 of eval spend so far**, across 37 stored runs of 5 suites and 30 cases, at 3 runs per case per arm. The largest single run — `device-claims`, 10 cases, both arms — was **$16.39** and took 97 minutes.
+**$151 of eval spend so far**, across 38 stored runs of 5 suites and 30 cases, at 3 runs per case per arm. The largest single run — `device-claims`, 10 cases, both arms — was **$16.39** and took 97 minutes.
 <!-- eval-cost:end -->
 
 Budget for re-running after every substantive change, because that is when a suite earns
