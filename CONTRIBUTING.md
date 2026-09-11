@@ -68,14 +68,31 @@ as failures and both were caught by luck.
 ## Before opening a PR
 
 ```
-python3 scripts/build-portable.py        # regenerate bundles (discovers skills)
-python3 tests/check-portable-fresh.py    # must exit 0
+claude plugin eval . --ablation with-without    # measure first; three runs per arm
+
+python3 scripts/report-evals.py --stamp <plugin>   # record what the numbers describe
+python3 scripts/report-evals.py --write            # eval tables, README/ROADMAP, cost
+python3 scripts/export-benchmark.py                # benchmark, case counts, METHOD table
+python3 scripts/build-portable.py                  # bundles, GEMINI.md, reference table
+python3 scripts/build-example.py                   # worked example, if you re-ran it
+
+python3 tests/check-portable-fresh.py    # must exit 0 — runs every check CI runs
 python3 scripts/verify-sources.py        # must not report DRIFTED
-claude plugin eval . --ablation with-without
 ```
 
-Never hand-edit anything in `dist/` or `GEMINI.md`. They are generated, and CI fails if
-they drift from the skills.
+**Measure before you stamp.** `--stamp` records a hash of the skill text *and its eval
+cases*, and the published table carries a visible warning until they match. It refuses to
+stamp a plugin edited after the run it would be stamped against, because blessing an
+unmeasured edit is the failure the mechanism exists to catch. A **grader** change counts:
+it changes what the same response scores, so it invalidates the numbers exactly as a
+skill change does.
+
+Never hand-edit a generated block. `dist/`, `GEMINI.md`, `AGENTS.md`, every eval results
+table, the suite summaries in `README.md` and `ROADMAP.md`, the failure table and cost
+line in `METHOD.md`, the reference table in `README.md`, and `benchmark/` are all
+generated, and CI fails if they drift. Three of those tables said "generated, do not
+hand-edit" while being hand-edited, which is why the checks exist rather than the
+instruction alone.
 
 ## Scope of this repo
 
