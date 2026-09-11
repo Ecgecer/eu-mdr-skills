@@ -113,6 +113,52 @@ def splice(plugin):
     _, tail = rest.split(END, 1)
     return f"{head}{START}\n{table(plugin).rstrip()}\n{END}{tail}"
 
+CONTENT = {
+    "device-claims":      "MDR/IVDR Art. 7 **plus HWG and UWG**",
+    "mpdg-germany":       "German national law only",
+    "mdr-classification": "EU-level only",
+    "scope-statement":    "domain-general",
+    "mdr-transition":     "EU-level only",
+}
+
+def suite_summary():
+    """The cross-suite table for ROADMAP.md.
+
+    Hand-typed it said +0.14 and +0.07 for suites the stored runs put elsewhere, and the
+    prose under it asserted a range those numbers no longer sat in. The roadmap's whole
+    argument is "aim a sixth skill where the measurements point", which is worth nothing
+    if the measurements it quotes are last week's.
+    """
+    rows, counted = [], 0
+    for pl in plugins():
+        runs = load(pl)
+        ds = []
+        for name in runs:
+            cur = current(runs[name])
+            w, wo = cur["arms"]["with"]["score"], cur["arms"]["without"]["score"]
+            if w is not None and wo is not None:
+                ds.append(w - wo)
+        counted += len(runs)
+        mean = sum(ds) / len(ds) if ds else None
+        rows.append((pl, mean, len(ds)))
+    rows.sort(key=lambda r: (r[1] is None, -(r[1] or 0)))
+    out = [f"Measured across {len(rows)} suites, {counted} cases:", "",
+           "| Suite | Mean delta | Cases measured | Content |", "|---|---|---|---|"]
+    for pl, mean, n in rows:
+        val = "—" if mean is None else (f"**{mean:+.2f}**" if mean >= 0.5 else f"{mean:+.2f}")
+        out.append(f"| `{pl}` | {val} | {n} | {CONTENT.get(pl, '')} |")
+    return "\n".join(out)
+
+def splice_roadmap():
+    S, E = "<!-- suite-summary:start -->", "<!-- suite-summary:end -->"
+    f = ROOT / "ROADMAP.md"
+    if not f.exists(): return None, None
+    txt = f.read_text()
+    if S not in txt or E not in txt: return f, None
+    head, rest = txt.split(S, 1)
+    _, tail = rest.split(E, 1)
+    return f, f"{head}{S}\n{suite_summary()}\n{E}{tail}"
+
 def do_write():
     for pl in plugins():
         new = splice(pl)
@@ -123,6 +169,9 @@ def do_write():
             print(f"  {pl}: already current")
         else:
             f.write_text(new); print(f"  {pl}: table rewritten from stored runs")
+    rf, rnew = splice_roadmap()
+    if rnew is not None and rf.read_text() != rnew:
+        rf.write_text(rnew); print("  ROADMAP.md: suite summary rewritten")
     return 0
 
 def do_check_tables():
@@ -137,6 +186,13 @@ def do_check_tables():
             bad = 1
         else:
             print(f"  {pl}: published table matches the stored runs")
+    rf, rnew = splice_roadmap()
+    if rnew is None:
+        print("  ROADMAP.md: no suite-summary markers"); bad = 1
+    elif rf.read_text() != rnew:
+        print("  ROADMAP.md: suite summary does not match the stored runs."); bad = 1
+    else:
+        print("  ROADMAP.md: suite summary matches the stored runs")
     return bad
 
 def do_check():

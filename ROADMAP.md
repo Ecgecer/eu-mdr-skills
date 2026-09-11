@@ -8,19 +8,21 @@ week.
 
 ## The evidence any new skill has to answer to
 
-Measured across five suites, 30 cases:
+<!-- suite-summary:start -->
+Measured across 5 suites, 30 cases:
 
-| Suite | Mean delta | Content |
-|---|---|---|
-| `device-claims` | **+0.60** | MDR/IVDR Art. 7 **plus HWG and UWG** |
-| `mpdg-germany` | **+0.60** | German national law only |
-| `mdr-classification` | +0.14 | EU-level only |
-| `scope-statement` | +0.11 | domain-general |
-| `mdr-transition` | +0.07 | EU-level only |
+| Suite | Mean delta | Cases measured | Content |
+|---|---|---|---|
+| `device-claims` | **+0.60** | 10 | MDR/IVDR Art. 7 **plus HWG and UWG** |
+| `mpdg-germany` | **+0.50** | 4 | German national law only |
+| `mdr-classification` | +0.17 | 6 | EU-level only |
+| `scope-statement` | +0.11 | 3 | domain-general |
+| `mdr-transition` | +0.08 | 4 | EU-level only |
+<!-- suite-summary:end -->
 
-**The two that earn are the two carrying German national law.** The three EU-only skills
-measure between +0.07 and +0.14, because Claude already knows the Regulations — it quotes
-implementing rule 3.3 verbatim, cites 2023/607 by number, gets the suture carve-out right.
+**The two that earn are the two carrying German national law.** The EU-only skills trail
+them because Claude already knows the Regulations — it quotes implementing rule 3.3
+verbatim, cites 2023/607 by number, gets the suture carve-out right.
 
 So the pattern is not "EU MDR is hard". It is **national law a model reaches for and
 misapplies**. The cases measuring +1.00 are exactly that: a German advertising item
