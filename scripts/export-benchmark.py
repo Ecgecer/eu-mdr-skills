@@ -143,7 +143,8 @@ def main():
         "hwg3a-arzneimittel-only": "applies a medicinal-product provision to a device",
         "ivdr-out-of-scope": "answers an IVD question from memory instead of declining",
         "limb-d-intended-purpose-drift": "a true claim that still breaches, and cannot be cured by evidence",
-        "non-german-eu-market": "applies German national law to a French-market asset",
+        "non-german-eu-market": ("asserts another member state's advertising rules from "
+                                 "memory once German law is correctly ruled out"),
         "outside-carried-sections": "produces section numbers and deadlines it cannot verify",
         "puffery-restraint": "manufactures a finding on pure puffery",
         "rule-not-carried": "concludes confidently where the cited rule does not settle it",

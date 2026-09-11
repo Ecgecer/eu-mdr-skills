@@ -222,6 +222,42 @@ are spliced in from the data and checked in CI.
 
 ---
 
+## 2026-09-11 — one withdrawn claim, five files
+
+**Published:** after retracting "applied German law to a French-market asset" and
+correcting README.md, the guard built to enforce that retraction reported the repo
+clean.
+
+**Actually:** the claim was in five places, and the guard found three of them only after
+being made progressively less literal:
+
+| Where | Phrasing | Why the guard missed it |
+|---|---|---|
+| `README.md` | applied German law to a French-market asset | — found by hand |
+| `scripts/export-benchmark.py` | applying German law to a French-market asset | — found by hand |
+| `ROADMAP.md` | German law **applied to** a French-market asset | word order |
+| `device-claims/evals/README.md` | applied German **national** law to a French-market asset | one inserted word |
+| `METHOD.md` | **Applied** German law to a French-market asset | capital letter |
+
+The same pass found a second withdrawn claim, "escalated a device class on half of a
+two-part condition", alive in METHOD.md's summary table with a capital E — retracted on
+2026-09-10, corrected in README.md on 2026-09-11, and still published in a third file
+because an exact match is case-sensitive.
+
+METHOD.md's table was wrong twice over: it also gave the French-market case as "2 of 3
+runs" when the stored baseline fails it 3 of 3.
+
+**Fix:** the register takes regular expressions, matches case-insensitively, and escapes
+literals so a "." in "1.00" is not a wildcard. All four phrasings and the capitalised
+variant are mutation-tested.
+
+**What this says about the method:** a retraction is not a fact about one file. Each time
+the guard was loosened it found another copy, which means the first two versions of it
+would have certified the repo clean while three false claims were live. A checker that
+only catches the wording you thought of measures your imagination, not the repo.
+
+---
+
 ## Retracted wording, enforced
 
 A retraction that only edits the file where the claim was found is not a retraction. The
@@ -232,15 +268,18 @@ asked where else it lived.
 These are the strings that must not reappear. `retracted:` is a literal;
 `retracted-re:` is a regular expression, which exists because the literal list missed
 "German law applied to a French-market asset" — the same withdrawn claim with two words
-swapped, sitting in ROADMAP.md. A retraction that only catches the phrasing you happened
-to use is barely a retraction. `tests/check-portable-fresh.py` fails
+swapped, sitting in ROADMAP.md. Then the widened pattern missed "applied German
+**national** law to a French-market asset" in device-claims' eval README, because one
+extra word defeats an exact phrase. Three phrasings, three files, one withdrawn claim. A
+retraction that only catches the wording you happened to think of is barely a retraction,
+so these patterns are written to tolerate the words a writer would naturally vary. `tests/check-portable-fresh.py` fails
 if one shows up in any Markdown file other than this one and the listed exceptions, which
 are the places that quote the claim in order to retract it.
 
 <!-- retracted: "escalated home blood-pressure trending to IIb" | mdr-classification/evals/README.md -->
 <!-- retracted: "escalated a device class on half of a two-part condition" -->
-<!-- retracted-re: "(applying|applied|apply) German law to a French-market asset" -->
-<!-- retracted-re: "German law applied to a French-market asset" -->
+<!-- retracted-re: "German\s+(national\s+)?law\s+(to|applied to)\s+a\s+French-market asset" -->
+<!-- retracted-re: "(applying|applied|apply(ing)?)\s+German\s+(national\s+)?law\s+to\s+a\s+French-market asset" -->
 <!-- retracted: "All ten score 1.00 with the skill" -->
 <!-- retracted: "7/7 cases pass" -->
 

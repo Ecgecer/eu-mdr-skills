@@ -23,9 +23,9 @@ What it got wrong was where rules **stop**:
 | It did this | In |
 |---|---|
 | Cited a German advertising provision against a device that provision does not reach | 3 of 3 runs |
-| Applied German law to a French-market asset | 2 of 3 runs |
+| Asserted French advertising rules it cannot cite, having correctly ruled out German law | 3 of 3 runs |
 | Applied a medicinal-product provision to a device | 2 of 3 runs |
-| Escalated a device class on half of a two-part condition | 3 of 3 runs |
+| Applied a lay-audience advertising rule to a gated professional audience | 3 of 3 runs |
 | Answered "plan for a notified body" to a question the cited rule does not settle | 3 of 3 runs |
 | Manufactured findings on clean copy | 3 of 3 runs |
 | Invented an authority rather than asking which rule set was meant | 2 of 3 runs |

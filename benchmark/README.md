@@ -54,7 +54,7 @@ Untested on other models:
   <sub>mdr-transition</sub>
 - **`no-case-law-supplement`** — Device: Class IIa wound dressing, German market. Copy: "Heals wounds 40% faster.  
   <sub>device-claims</sub>
-- **`non-german-eu-market`** — applies German national law to a French-market asset  
+- **`non-german-eu-market`** — asserts another member state's advertising rules from memory once German law is correctly ruled out  
   <sub>device-claims</sub>
 - **`outside-carried-sections`** — produces section numbers and deadlines it cannot verify  
   <sub>mpdg-germany</sub>

@@ -192,7 +192,11 @@ for phrase, allow, is_re in retracted:
         if rel in allowed or "/results/" in rel or rel.startswith("dist/"):
             continue
         body = f.read_text()
-        found = re.search(phrase, body) if is_re else (phrase in body)
+        # Case-insensitive both ways: the literal register held "escalated a device
+        # class ..." and METHOD.md opened a table row with "Escalated", which an exact
+        # match walked straight past.
+        pat = phrase if is_re else re.escape(phrase)
+        found = re.search(pat, body, re.I)
         if found:
             hits.append((rel, phrase))
 if hits:

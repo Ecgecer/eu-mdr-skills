@@ -65,7 +65,8 @@ and `puffery-restraint`. With no reference material Claude, in **3 of 3 runs eac
 - cited HWG § 11(1) Nr. 2 against a medical device — a provision that reaches devices
   only through nos. 7, 8, 9, 11 and 12
 - applied a lay-audience rule to a gated professional audience
-- applied German national law to a French-market asset
+- asserted French advertising rules it cannot cite, having correctly ruled German
+  law out of a French-market asset
 - manufactured a finding on pure puffery
 
 None of that is a knowledge failure. Every provision it cited is real and it described
