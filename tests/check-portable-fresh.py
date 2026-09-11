@@ -156,4 +156,32 @@ if ex_stamp.exists() and ex_readme.exists():
     else:
         print("  worked example: " + ("current" if not stale else "stale, and says so"))
 
+# 8. a retracted claim must not survive anywhere else
+#
+# "It escalated a device class on half of a two-part condition in 3 of 3" was retracted
+# in CORRECTIONS.md and in the suite's own eval README, and stayed in README.md's opening
+# pitch for a day, because retracting a claim where you found it is not retracting it.
+# CORRECTIONS.md now registers the exact strings; this refuses to let them come back.
+reg = (ROOT / "CORRECTIONS.md").read_text()
+retracted = re.findall(r'<!--\s*retracted:\s*"([^"]+)"\s*(?:\|([^>]*?))?-->', reg)
+hits = []
+for phrase, allow in retracted:
+    allowed = {a.strip() for a in allow.split(",") if a.strip()} if allow else set()
+    allowed.add("CORRECTIONS.md")
+    for f in sorted(ROOT.rglob("*.md")):
+        rel = str(f.relative_to(ROOT))
+        if rel in allowed or "/results/" in rel or rel.startswith("dist/"):
+            continue
+        if phrase in f.read_text():
+            hits.append((rel, phrase))
+if hits:
+    print("\n  Retracted wording found outside its retraction:")
+    for rel, phrase in hits:
+        print('    ' + rel + ': ' + repr(phrase))
+    print("  A claim withdrawn in CORRECTIONS.md cannot stand anywhere else. Rewrite it,")
+    print("  or add the file to that entry's allow list if it is quoting to retract.")
+    failed = 1
+elif retracted:
+    print(f"  {len(retracted)} retracted claim(s) absent outside their retraction")
+
 sys.exit(failed)

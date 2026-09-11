@@ -222,6 +222,26 @@ are spliced in from the data and checked in CI.
 
 ---
 
+## Retracted wording, enforced
+
+A retraction that only edits the file where the claim was found is not a retraction. The
+sentence "it escalated a device class on half of a two-part condition" was withdrawn on
+2026-09-10 and was still the opening pitch of README.md a day later, because nothing
+asked where else it lived.
+
+These are the exact strings that must not reappear. `tests/check-portable-fresh.py` fails
+if one shows up in any Markdown file other than this one and the listed exceptions, which
+are the places that quote the claim in order to retract it.
+
+<!-- retracted: "escalated home blood-pressure trending to IIb" | mdr-classification/evals/README.md -->
+<!-- retracted: "escalated a device class on half of a two-part condition" -->
+<!-- retracted: "applying German law to a French-market asset" -->
+<!-- retracted: "applied German law to a French-market asset" -->
+<!-- retracted: "All ten score 1.00 with the skill" -->
+<!-- retracted: "7/7 cases pass" -->
+
+---
+
 ## What these have in common
 
 Every one is the same failure: **a claim asserted from something other than the thing it
