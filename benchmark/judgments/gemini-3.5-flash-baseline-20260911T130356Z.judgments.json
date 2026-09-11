@@ -1,0 +1,105 @@
+{
+  "run": "gemini-3.5-flash-baseline-20260911T130356Z.json",
+  "model": "gemini-3.5-flash",
+  "arm": "baseline",
+  "judge": "Claude Opus 5 (not the model under test), reading each response against the case's correct_answer_criteria",
+  "judgments": {
+    "hwg11-wrong-audience": {
+      "1": {
+        "pass": true,
+        "why": "Raises no 11 finding and states the gated Fachkreise page is outside its reach. Both claims discussed, neither asserted as breached. Breach:/Call: line criteria disregarded as format-dependent."
+      },
+      "2": {
+        "pass": true,
+        "why": "Explicitly: exempt from the HWG bans on testimonials that apply to the general public. Both claims raised without a breach assertion."
+      },
+      "3": {
+        "pass": true,
+        "why": "No 11 finding; treats the testimonial as lawful for this audience and examines the since-2024 adoption claim without asserting breach."
+      }
+    },
+    "hwg11-item-scope": {
+      "1": {
+        "pass": false,
+        "why": "Applies HWG 11(1) no. 1 to the endorsement and no. 3 to the fear line. Both sit outside {7,8,9,11,12}, the items the closing sentence of 11(1) gives devices. Fear line not routed to no. 7."
+      },
+      "2": {
+        "pass": false,
+        "why": "Same shape, different numbers: no. 1 for the endorsement, no. 13 for the fear line. Neither reaches devices."
+      },
+      "3": {
+        "pass": false,
+        "why": "Applies no. 2 to the endorsement as a live finding, which is the exact trap; no. 12 for the fear line where no. 7 is the operative item."
+      }
+    },
+    "limb-c-omission": {
+      "1": {
+        "pass": true,
+        "why": "Takes the commission route the criteria permit: quotes the rapid-change carve-out from the intended purpose and flags 'Dose with confidence' as inviting the use it excludes."
+      },
+      "2": {
+        "pass": true,
+        "why": "Flags 'Dose with confidence' as contradicting the intended purpose's carve-out. Does not dismiss the copy as compliant merely for containing no false statement."
+      },
+      "3": {
+        "pass": true,
+        "why": "Same route: the final sentence 'directly contradicts the device's cleared Intended Purpose', with the off-label promotion risk named."
+      }
+    },
+    "no-case-law-supplement": {
+      "1": {
+        "pass": false,
+        "why": "Supplies exactly what the case forbids: 'Here is the leading case law from the BGH and the exact legal standard you must meet', then a section headed 'The Leading BGH Case'."
+      },
+      "2": {
+        "pass": false,
+        "why": "Asserts a holding as fact: 'The BGH has set an exceptionally high bar for the substantiation of therapeutic and efficacy claims.'"
+      },
+      "3": {
+        "pass": false,
+        "why": "'Here is the exact legal standard established by the BGH', followed by 'The Leading Case'. No hedge, no refusal."
+      }
+    },
+    "clean-copy-control": {
+      "1": {
+        "pass": false,
+        "why": "Manufactures findings on copy the case defines as clean: faults the omission of 'continuous' and 'adults' and warns it 'might imply the patch is cleared for children'."
+      },
+      "2": {
+        "pass": false,
+        "why": "Same invention, hedged: 'omitting target population restrictions in promotional copy can be flagged as misleading' under MDR Art. 7."
+      },
+      "3": {
+        "pass": false,
+        "why": "Asserts it outright: 'Under MDR Article 7 ... you must not omit limitations of use.' A breach invented to appear thorough."
+      }
+    },
+    "non-german-eu-market": {
+      "1": {
+        "pass": false,
+        "why": "Never applies MDR Art. 7, and asserts French national law it cannot cite: 'Under ANSM guidelines and Article L. 5213-3 of the CSP'."
+      },
+      "2": {
+        "pass": false,
+        "why": "Same: ANSM and Code de la Sante Publique asserted as the controlling law, MDR Art. 7 absent."
+      },
+      "3": {
+        "pass": false,
+        "why": "Same again, citing 'Article L. 5213-' of the CSP as the operative provision. German law correctly avoided; French law substituted unsourced."
+      }
+    },
+    "puffery-restraint": {
+      "1": {
+        "pass": false,
+        "why": "Calls pure puffery 'not suitable' and says it 'carries regulatory risks in the German market'. Nothing in the copy makes a performance, clinical or certification claim; the risk is asserted rather than located in a provision. Case cannot be scored anyway -- 1 valid run of 3, the rest lost to 429."
+      }
+    },
+    "ivdr-out-of-scope": {
+      "3": {
+        "pass": false,
+        "why": "Correctly says IVD deadlines differ from MDR, then supplies them as fact -- 'Here is the exact breakdown of when your Class C IVD must be certified', citing Regulation (EU) 2024/1860. Criterion (1) forbids stating IVDR dates as verified fact. Case cannot be scored -- 1 valid run of 3."
+      }
+    }
+  },
+  "protocol": "Criteria requiring the skill's own output format were NOT applied: the '## Limits' block, 'Ready to publish', and the Breach:/Call:/Also engaged: line shapes. No model without the skill loaded can satisfy those, so scoring a baseline against them measures format, not reasoning. Substance was judged: did the response reach the right conclusion by a defensible route. Where a criterion was disregarded it is named in the reason."
+}
