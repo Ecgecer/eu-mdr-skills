@@ -234,4 +234,36 @@ if broken:
 else:
     print("  every script parses; run-benchmark --list runs")
 
+# 10. the marketplace lists exactly the plugins that exist
+#
+# A skill directory that is not in marketplace.json does not install, and an entry
+# pointing at a directory that is gone breaks the marketplace for every plugin in it.
+# Neither shows up until someone tries to install, which is the worst time to find out.
+# This matters most for the skill that does not exist yet: ROADMAP plans a sixth.
+import json as _j
+mk = ROOT / ".claude-plugin" / "marketplace.json"
+if mk.exists():
+    listed, problems = {}, []
+    for entry in _j.loads(mk.read_text()).get("plugins", []):
+        listed[entry["name"]] = entry.get("source", "")
+    # parent is .claude-plugin/; the plugin directory is its parent.
+    on_disk = {d.parent.parent.name for d in ROOT.glob("*/.claude-plugin/plugin.json")}
+    for name in sorted(on_disk - set(listed)):
+        problems.append(f"{name}/ has a plugin.json but is not in marketplace.json")
+    for name in sorted(set(listed) - on_disk):
+        problems.append(f"marketplace.json lists {name}, which has no plugin.json")
+    for name, src in sorted(listed.items()):
+        if src and not (ROOT / src.lstrip("./")).is_dir():
+            problems.append(f"marketplace.json points {name} at {src}, which is not a directory")
+        pj = ROOT / name / ".claude-plugin" / "plugin.json"
+        if pj.exists() and _j.loads(pj.read_text()).get("name") != name:
+            problems.append(f"{name}/plugin.json declares a different name")
+    if problems:
+        print("\n  Marketplace and plugin directories disagree:")
+        for pr in problems:
+            print(f"    {pr}")
+        failed = 1
+    else:
+        print(f"  marketplace lists all {len(on_disk)} plugin(s), sources resolve")
+
 sys.exit(failed)
