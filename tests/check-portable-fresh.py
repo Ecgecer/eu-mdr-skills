@@ -87,13 +87,23 @@ else:
 # discipline. A tag is not permission to answer. mdr-transition produced a full set of
 # IVDR Article 110 dates that way, on a case whose correct answer was "I do not carry
 # that" -- and IVDR is not what it carries.
-missing_rule = []
+missing_rule, missing_disclaimer = [], []
 for skill_md in sorted(_glob.glob(str(ROOT / "*/skills/*/SKILL.md"))):
     d = Path(skill_md).parent
     if not (d / "references").is_dir():
         continue                      # domain-general skills carry no statute
-    if "No silent supplement" not in open(skill_md).read():
+    body = open(skill_md).read()
+    if "No silent supplement" not in body:
         missing_rule.append(str(Path(skill_md).relative_to(ROOT)))
+    # The disclaimer has to live in the skill, not only in README.md: dist/*.bundle.md
+    # is built to be pasted into a chat on its own, and the README does not travel with
+    # it. Matched after collapsing blockquote wrapping, because in device-claims the
+    # phrase breaks across "not legal" / "> advice" and a line-wise grep reports a false
+    # negative -- which is how this check nearly became a fix for a problem that was not
+    # there.
+    flat = re.sub(r"\s+", " ", re.sub(r"\s*\n>\s*", " ", body))
+    if not re.search(r"not legal( or regulatory)? advice", flat, re.I):
+        missing_disclaimer.append(str(Path(skill_md).relative_to(ROOT)))
 if missing_rule:
     print("\n  Statute-backed skills without the no-silent-supplement rule:")
     for m in missing_rule:
@@ -102,6 +112,14 @@ if missing_rule:
     failed = 1
 else:
     print("  every statute-backed skill refuses to supplement from memory")
+if missing_disclaimer:
+    print("\n  Statute-backed skills without a not-legal-advice line in their Limits:")
+    for m in missing_disclaimer:
+        print(f"    {m}")
+    print("  The bundle is pasted on its own; the README does not travel with it.")
+    failed = 1
+else:
+    print("  every statute-backed skill carries its own disclaimer")
 
 # 5. the exported benchmark matches the eval cases it is generated from
 rb = subprocess.run([sys.executable, str(ROOT / "scripts" / "export-benchmark.py"), "--check"],
