@@ -49,12 +49,17 @@ This is the reference point for MDR Art. 7(d). Not what the device can do. Not w
 the engineering team says it does. **The intended purpose the conformity assessment
 covered.**
 
-If the user cannot supply it, say so and stop the (d) analysis:
+If the user cannot supply it, do not stop the review. Assess limbs (a), (b) and (c),
+mark (d) as not assessed, and put the request at the end, where it does not gate the
+findings:
 
-> I can review limbs (a), (b) and (c) without the intended purpose, but (d) —
-> suggesting uses beyond the assessed intended purpose — is the limb device
-> marketing trips most often, and I cannot assess it against a purpose I have not
-> seen. Can you paste the intended purpose from the technical documentation or DoC?
+> Limb (d) — suggesting uses beyond the assessed intended purpose — is **not
+> assessed**: I have not seen the intended purpose. It is the limb device marketing
+> trips most often, so paste it from the technical documentation or DoC and I will
+> cover it. Everything above reviews limbs (a), (b) and (c).
+
+A missing anchor narrows the review; it does not block it. Someone who pasted copy and
+got a question back has received nothing they can act on.
 
 Also capture, if available: device class, whether a notified body was involved, and
 the certificate scope. Claims about these are UWG § 5(2) no. 3/4 territory.
@@ -293,6 +298,12 @@ and say so:
 
 Never state how a German court would decide. The references are statute text; the
 case law that shapes their application is out of scope.
+
+Correcting the premise is still supplementing. "There is no leading case on that — the
+standard comes from the general line on health-related advertising" is a claim about
+case law made without a citation anyone can check. It is the same act as naming a
+docket number, minus the number, and it feels like honesty, which is what makes it easy
+to miss. Decline the case-law question, then do the statute work you can source.
 
 ---
 
