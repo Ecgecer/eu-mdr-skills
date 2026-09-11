@@ -160,6 +160,56 @@ def suite_summary():
 SUMMARY_FILES = ["ROADMAP.md", "README.md"]
 
 
+def probe_rows():
+    """Compare each model-probe run against the published CLI-default numbers.
+
+    model-probes/ holds runs pinned with --model. The harness records no model id, so the
+    model is taken from the directory prefix the probe script writes (`haiku-<stamp>`),
+    and these files are never globbed into a published table.
+    """
+    out = {}
+    for f in sorted(glob.glob(str(ROOT / "*/evals/model-probes/*/aggregate-result.json"))):
+        d = json.loads(Path(f).read_text())
+        plugin = Path(f).parts[-5]
+        model = Path(f).parts[-2].rsplit("-", 1)[0]
+        pub = load(plugin)
+        for c in d.get("cases", []):
+            arms = {}
+            for a in ("with", "without"):
+                ok = [r for r in c["arms"].get(a, []) if not r.get("error")]
+                arms[a] = (sum(r.get("score", 0) for r in ok) / len(ok)
+                           if len(ok) >= MIN_VALID_RUNS else None)
+            if arms["with"] is None or arms["without"] is None:
+                continue
+            ref = pub.get(c["name"])
+            if not ref:
+                continue
+            cur = current(ref)
+            rw, rwo = cur["arms"]["with"]["score"], cur["arms"]["without"]["score"]
+            if rw is None or rwo is None:
+                continue
+            out.setdefault((plugin, model), []).append(
+                (c["name"], rwo, rw - rwo, arms["without"], arms["with"] - arms["without"]))
+    return out
+
+
+def probe_table():
+    blocks = []
+    for (plugin, model), rows in sorted(probe_rows().items()):
+        rows.sort(key=lambda r: (-(r[4] - r[2]), r[0]))
+        d_def = sum(r[2] for r in rows) / len(rows)
+        d_probe = sum(r[4] for r in rows) / len(rows)
+        blocks.append(f"**`{plugin}`** — {len(rows)} cases. Mean delta **{d_def:+.2f}** on "
+                      f"the CLI default, **{d_probe:+.2f}** on `{model}`.\n")
+        blocks.append("| Case | default baseline | default Δ | "
+                      f"{model} baseline | {model} Δ |")
+        blocks.append("|---|---|---|---|---|")
+        for name, bwo, bd, pwo, pd in rows:
+            blocks.append(f"| `{name}` | {bwo:.2f} | {bd:+.2f} | {pwo:.2f} | {pd:+.2f} |")
+        blocks.append("")
+    return "\n".join(blocks).rstrip()
+
+
 def cost_summary():
     """What running these suites has actually cost, from the stored runs.
 
