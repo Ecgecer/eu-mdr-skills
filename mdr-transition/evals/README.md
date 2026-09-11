@@ -28,7 +28,7 @@ Do not hand-edit the table.
 
 Listed because publishing only the most favourable run of several is how the earlier tables went wrong.
 
-<sub>Claude Code 2.1.267, 2.1.268. The harness records the CLI version, not the model; these runs used the CLI default. A run pinned to another model with `--model` belongs in `evals/model-probes/`, which this table does not read.</sub>
+<sub>Claude Code 2.1.267, 2.1.268. The harness records the CLI version, not the model; these runs used the CLI default. A run pinned to another model with `--model` belongs in `evals/model-probes/`, which this table does not read. Each row is that case's most recent run with a scorable arm, so rows can come from different runs and the mean is a composite rather than any single run's figure — the dates say which.</sub>
 <!-- report-evals:end -->
 
 ---

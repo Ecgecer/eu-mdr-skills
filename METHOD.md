@@ -142,9 +142,10 @@ because gesetze-im-internet legitimately serves each section as its own 3–8 KB
 on status code and extracted-text length.
 
 **Believing your own prediction.** We predicted classification would show a large delta
-because the rules interact and models get them confidently wrong. It measured +0.20,
-lower than the skill we thought was weaker, and the baseline got four of five right
-unaided. The measurement is the point. If you are confident enough not to run it, run it.
+because the rules interact and models get them confidently wrong. It measured +0.20 on
+the five cases that suite then had (run of 2026-09-09) — lower than the skill we thought
+was weaker, with the baseline getting four of five right unaided. The suite has grown
+since; its current figure is in its own eval README rather than restated here. The measurement is the point. If you are confident enough not to run it, run it.
 
 ---
 
