@@ -11,19 +11,19 @@ Do not hand-edit the table.
 | Case | with | without | delta | runs | measured |
 |---|---|---|---|---|---|
 | `class-dependent-date` | 1.00 | — | **—** | 3×2 | 2026-09-11 ⚠ |
-| `conditions-not-automatic` | — | — | **—** | 3×2 | 2026-09-11 ⚠ |
-| `implantable-exception` | — | — | **—** | 3×2 | 2026-09-11 ⚠ |
-| `ivdr-out-of-scope` | — | — | **—** | 3×2 | 2026-09-11 ⚠ |
+| `conditions-not-automatic` | 1.00 | 1.00 | **+0.00** | 3×2 | 2026-09-10 |
+| `implantable-exception` | 1.00 | 1.00 | **+0.00** | 3×2 | 2026-09-10 |
+| `ivdr-out-of-scope` | 0.33 | 0.00 | **+0.33** | 3×2 | 2026-09-10 |
 | `superseded-deadline` | 1.00 | 1.00 | **+0.00** | 3×2 | 2026-09-11 |
 
-**Mean delta +0.00** across 1 case(s) with both arms measured.
+**Mean delta +0.08** across 4 case(s) with both arms measured.
 
 ### Every other stored run for these cases
 
 - `class-dependent-date` — earlier runs: 2026-09-10 —/— (6 errored); 2026-09-10 1.00/1.00
-- `conditions-not-automatic` — earlier runs: 2026-09-10 —/— (6 errored); 2026-09-10 1.00/1.00
-- `implantable-exception` — earlier runs: 2026-09-10 —/— (6 errored); 2026-09-10 1.00/1.00
-- `ivdr-out-of-scope` — earlier runs: 2026-09-10 —/— (6 errored); 2026-09-10 0.33/0.00
+- `conditions-not-automatic` — earlier runs: 2026-09-10 —/— (6 errored); 2026-09-11 —/— (6 errored)
+- `implantable-exception` — earlier runs: 2026-09-10 —/— (6 errored); 2026-09-11 —/— (6 errored)
+- `ivdr-out-of-scope` — earlier runs: 2026-09-10 —/— (6 errored); 2026-09-11 —/— (6 errored)
 - `superseded-deadline` — earlier runs: 2026-09-10 —/— (6 errored); 2026-09-10 —/—; 2026-09-10 1.00/1.00
 
 Listed because publishing only the most favourable run of several is how the earlier tables went wrong.
@@ -38,7 +38,10 @@ This skill was built on a specific bet: Article 120 was rewritten by Regulation 
 **26 May 2024** with total confidence. Not a knowledge gap and not an over-reach —
 **recall that is actively wrong**. That was supposed to be the sharpest test in the repo.
 
-It measured **0.00 on four of five cases**.
+It measured **0.00 on four of five cases**, against the skill text as it stood before
+the trim. The trim itself is not yet measured: the re-run lost most of its cases to
+`Credit balance is too low`, so the table above still reports the pre-trim numbers and
+carries the banner saying so.
 
 With no skill and no web access, the baseline answered:
 
@@ -78,7 +81,8 @@ about it three times.
 ## The one case that moved, and it is not a win
 
 `ivdr-out-of-scope` measures +0.33 — but the skill scores **0.33**, failing two runs in
-three. Both arms are bad. The case asks an IVD question whose correct answer is "IVDR
+three. Both arms are bad. Like the rest of this table it describes the pre-trim text; the
+re-run lost every run of this case to `Credit balance is too low`. The case asks an IVD question whose correct answer is "IVDR
 Art. 110 governs this and I do not carry it". The skill is not reliably producing that,
 which is a real gap in a skill whose whole premise is knowing where it stops. It needs
 diagnosis, not celebration.

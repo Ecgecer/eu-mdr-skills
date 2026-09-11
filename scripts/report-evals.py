@@ -199,6 +199,20 @@ def stale_banner(plugin):
             "> the earlier text, not what this plugin currently ships. Re-measure with",
             f"> `claude plugin eval {plugin} --ablation with-without`.", ""]
 
+def current(case_runs):
+    """The newest run that actually measured something.
+
+    A run aborted partway leaves every case after the failure with zero valid runs, and
+    such a run carries no information. Letting it supersede a complete earlier run
+    replaced a whole suite's table with dashes when a re-measure died on billing.
+    Staleness is the banner's job -- it says when the text moved. It is not a reason to
+    throw away the last real measurement.
+    """
+    rs = [r for r in case_runs if r["arms"]["with"]["n"] >= MIN_VALID_RUNS] or case_runs
+    scored = [r for r in rs if r["arms"]["with"]["score"] is not None
+                            or r["arms"]["without"]["score"] is not None]
+    return (scored or rs)[-1]
+
 def table(plugin):
     runs = load(plugin)
     if not runs:
@@ -208,9 +222,7 @@ def table(plugin):
            "|---|---|---|---|---|---|"]
     extra = []
     for name in sorted(runs):
-        rs = [r for r in runs[name] if r["arms"]["with"]["n"] >= 3]  # ablation runs only
-        rs = rs or runs[name]
-        cur = rs[-1]
+        cur = current(runs[name])
         w, wo = cur["arms"]["with"]["score"], cur["arms"]["without"]["score"]
         delta = "—" if (w is None or wo is None) else f"{w - wo:+.2f}"
         note = ""
@@ -223,12 +235,12 @@ def table(plugin):
                 f"{r['ts'][:10]} {fmt(r['arms']['with']['score'])}/{fmt(r['arms']['without']['score'])}"
                 + (f" ({r['arms']['with']['errored'] + r['arms']['without']['errored']} errored)"
                    if (r['arms']['with']['errored'] or r['arms']['without']['errored']) else "")
-                for r in runs[name][:-1])
+                for r in runs[name] if r is not cur)
             extra.append(f"- `{name}` — earlier runs: {others}")
     deltas = []
     for name in sorted(runs):
-        rs = [r for r in runs[name] if r["arms"]["with"]["n"] >= 3] or runs[name]
-        w, wo = rs[-1]["arms"]["with"]["score"], rs[-1]["arms"]["without"]["score"]
+        cur = current(runs[name])
+        w, wo = cur["arms"]["with"]["score"], cur["arms"]["without"]["score"]
         if w is not None and wo is not None: deltas.append(w - wo)
     if deltas:
         out.append("")

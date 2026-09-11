@@ -12,24 +12,24 @@ corrections below happened.
 | Case | with | without | delta | runs | measured |
 |---|---|---|---|---|---|
 | `driving-software-3-3` | 1.00 | — | **—** | 3×2 | 2026-09-11 ⚠ |
-| `limb1-escalation-iii` | — | — | **—** | 3×2 | 2026-09-11 ⚠ |
-| `limb2-both-conditions` | — | — | **—** | 3×2 | 2026-09-11 ⚠ |
-| `limb3-class-i` | — | — | **—** | 3×2 | 2026-09-11 ⚠ |
+| `limb1-escalation-iii` | 1.00 | 1.00 | **+0.00** | 3×2 | 2026-09-10 |
+| `limb2-both-conditions` | 1.00 | 1.00 | **+0.00** | 3×2 | 2026-09-10 |
+| `limb3-class-i` | 1.00 | 1.00 | **+0.00** | 3×2 | 2026-09-10 |
 | `mdcg-bait` | 1.00 | 1.00 | **+0.00** | 3×2 | 2026-09-10 |
-| `qualification-not-established` | — | — | **—** | 3×2 | 2026-09-11 ⚠ |
-| `rule-not-carried` | — | — | **—** | 3×2 | 2026-09-11 ⚠ |
+| `qualification-not-established` | 1.00 | 1.00 | **+0.00** | 3×2 | 2026-09-10 |
+| `rule-not-carried` | 1.00 | 0.00 | **+1.00** | 3×2 | 2026-09-10 |
 
-**Mean delta +0.00** across 1 case(s) with both arms measured.
+**Mean delta +0.17** across 6 case(s) with both arms measured.
 
 ### Every other stored run for these cases
 
 - `driving-software-3-3` — earlier runs: 2026-09-09 1.00/1.00; 2026-09-10 1.00/1.00
-- `limb1-escalation-iii` — earlier runs: 2026-09-09 1.00/1.00; 2026-09-10 1.00/1.00
-- `limb2-both-conditions` — earlier runs: 2026-09-09 1.00/0.00; 2026-09-10 1.00/1.00
-- `limb3-class-i` — earlier runs: 2026-09-09 1.00/1.00; 2026-09-10 1.00/1.00
+- `limb1-escalation-iii` — earlier runs: 2026-09-09 1.00/1.00; 2026-09-11 —/— (6 errored)
+- `limb2-both-conditions` — earlier runs: 2026-09-09 1.00/0.00; 2026-09-11 —/— (6 errored)
+- `limb3-class-i` — earlier runs: 2026-09-09 1.00/1.00; 2026-09-11 —/— (6 errored)
 - `mdcg-bait` — earlier runs: 2026-09-10 1.00/1.00
-- `qualification-not-established` — earlier runs: 2026-09-09 1.00/1.00; 2026-09-10 1.00/1.00
-- `rule-not-carried` — earlier runs: 2026-09-10 1.00/0.00; 2026-09-10 1.00/0.00
+- `qualification-not-established` — earlier runs: 2026-09-09 1.00/1.00; 2026-09-11 —/— (6 errored)
+- `rule-not-carried` — earlier runs: 2026-09-10 1.00/0.00; 2026-09-11 —/— (5 errored)
 
 Listed because publishing only the most favourable run of several is how the earlier tables went wrong.
 <!-- report-evals:end -->
@@ -57,9 +57,10 @@ IIa by a different and legitimate route — questioning device qualification fir
 Rule 11 — and never proposed the IIb escalation it was required to reject. The grader
 failed correct answers for using different words.
 
-So **this suite's only earning case is a grader artifact**, and `+1.00` measures which
-words were used rather than whether anything was over-applied. The grader is being
-rewritten; the number above will change when it is re-run.
+So that `+1.00` measured which words were used rather than whether anything was
+over-applied. The grader has since been rewritten and the case re-run: `limb2-both-
+conditions` now measures **+0.00**, both arms at 1.00. The artifact is gone from the
+table, which leaves `rule-not-carried` as this suite's one earning case.
 
 ## What still stands
 
@@ -67,7 +68,7 @@ rewritten; the number above will change when it is re-run.
 for a notified body" to a question Rule 11 does not settle, never mentioning implementing
 rule 3.5. That is a real over-conclusion, verified in the stored transcript.
 
-The four zeroes stand too, and they are the finding that matters: with no skill at all
+The zeroes stand too, and they are the finding that matters: with no skill at all
 the model recalled implementing rule 3.3 verbatim, applied Rule 11's escalations
 correctly, returned class I without inflating it, and refused to classify a non-device.
 **Claude already knows MDR Annex VIII.** A skill that explains the regulation earns
