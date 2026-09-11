@@ -8,6 +8,12 @@ so they can be judged with the same criteria.
 Judging is a separate step on purpose: mixing generation and scoring in one pass is how
 you end up unable to tell a model failure from a grader failure.
 
+The harness must be a plain completion endpoint. An agent CLI is not one: the Gemini
+CLI answers these prompts by calling its WebSearch tool, so it scores a model plus a
+search engine, and the number cannot be compared against the Claude ablation, which had
+no retrieval. Measured 2026-09-11, stack frame WebSearchToolInvocation.execute. The same
+applies to any wrapper with browsing, RAG or tools enabled. Use the raw API.
+
 Providers, in order of least setup:
 
   gemini   GEMINI_API_KEY   free key from aistudio.google.com
@@ -39,11 +45,11 @@ def post(url, payload, headers, timeout=120):
         return None, str(e)
 
 def ask_gemini(prompt, model, key):
-    url = (f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
-           f"?key={key}")
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
     body = {"contents": [{"role": "user", "parts": [{"text": prompt}]}],
             "generationConfig": {"maxOutputTokens": 4096, "temperature": 1}}
-    d, err = post(url, body, {})
+    # Header, not ?key= -- a query-string key is logged by every proxy in the path.
+    d, err = post(url, body, {"x-goog-api-key": key})
     if err: return None, err
     try:
         return "".join(p.get("text", "") for p in d["candidates"][0]["content"]["parts"]), None
@@ -69,23 +75,14 @@ def ask_vertex(prompt, model):
         return None, f"unexpected shape: {json.dumps(d)[:200]}"
 
 def ask_gemini_cli(prompt, model):
-    """Use the installed gemini CLI, which carries its own auth from ~/.gemini.
-    Avoids putting the key in this process's environment at all."""
-    try:
-        # "default" omits -m. The CLI self-reports gemini-2.5-pro but rejects that id
-        # via -m, so the routed model is recorded as the CLI default rather than trusting
-        # a model's account of itself.
-        cmd = ["gemini", "--skip-trust"]
-        if model and model != "default":
-            cmd += ["-m", model]
-        cmd += ["-p", prompt]
-        r = subprocess.run(cmd, capture_output=True, text=True, timeout=300, cwd="/tmp")
-    except subprocess.TimeoutExpired:
-        return None, "timeout after 180s"
-    out = "\n".join(l for l in r.stdout.splitlines() if not l.startswith("[STARTUP]")).strip()
-    if not out:
-        return None, (r.stderr or "empty response")[:300]
-    return out, None
+    """Refused. The gemini CLI is an agent, not a completion endpoint.
+
+    Given these prompts it reaches for WebSearch, so the answer reflects a model plus
+    whatever it retrieved. The Claude column was measured with no retrieval, so the two
+    are not comparable, and the contamination is invisible in the stored text.
+    """
+    return None, ("gemini-cli retrieves (WebSearch) -- not comparable to the no-retrieval "
+                  "Claude column. Use --provider gemini with GEMINI_API_KEY.")
 
 
 def ask_openai(prompt, model, key):
@@ -124,6 +121,13 @@ def main():
     if not a.provider:
         ap.error("--provider is required unless --list")
 
+    if a.provider == "gemini-cli":
+        print("  gemini-cli is an agent: it answers these prompts with WebSearch, so its")
+        print("  scores measure a model plus a search engine and cannot be compared with")
+        print("  the Claude column, which had no retrieval.")
+        print("  Use: GEMINI_API_KEY=... --provider gemini --model gemini-2.5-pro")
+        return 2
+
     key = os.environ.get("GEMINI_API_KEY") if a.provider=="gemini" else \
           os.environ.get("OPENAI_API_KEY") if a.provider=="openai" else None
     if a.provider in ("gemini","openai") and not key:
@@ -132,6 +136,9 @@ def main():
 
     RUNS.mkdir(parents=True, exist_ok=True)
     out = {"model": a.model, "provider": a.provider, "runs_per_case": a.runs,
+           # The Claude column had no retrieval. A run that did is not comparable, so
+           # every run file states its own condition rather than leaving it assumed.
+           "retrieval": "none",
            "started": datetime.now(timezone.utc).isoformat(timespec="seconds"),
            "responses": []}
     for i, c in enumerate(cases, 1):
@@ -151,6 +158,7 @@ def main():
     print(f"\n  {ok}/{len(out['responses'])} responses saved -> {f.relative_to(ROOT)}")
     print("  Judge them against each case's correct_answer_criteria, then add a column")
     print("  to benchmark/README.md. Do not let the model judge itself.")
+    print("  Runs are only comparable if the model had no web access.")
     return 0
 
 if __name__ == "__main__":
