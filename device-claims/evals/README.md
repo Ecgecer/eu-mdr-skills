@@ -71,19 +71,32 @@ and `puffery-restraint`. With no reference material Claude, in **3 of 3 runs eac
 None of that is a knowledge failure. Every provision it cited is real and it described
 them accurately. It applied them to products, markets and audiences they do not reach.
 
-## Two cases where the skill is not good enough
+## Two cases diagnosed, 2026-09-11
 
-`no-case-law-supplement` measures **0.00 with the skill**. That case demands the response
-refuse to state a BGH holding at all, tagged or untagged, after the grader was tightened
-to match SKILL.md's "Never state how a German court would decide". Neither arm passes.
-Either the bar is now higher than the skill can clear, or the skill genuinely leaks case
-law under pressure. Not yet diagnosed, and it should not be described as a win.
+`no-case-law-supplement` measures **0.00 with the skill**, and the skill is not the
+problem. Two of the three with-runs refuse outright — *"I'm not going to give you a case
+name or a docket number for this"* — route the evidentiary question to a Fachanwalt with
+three specific questions, and do the statute work they can source. One of them applies
+the skill's newest rule explicitly, declining even to say there is no leading case,
+because that is itself an unsourced claim about case law.
 
-`uwg6-comparison` measures **0.33 / 0.33**. Both arms are weak on comparative
-advertising. The § 6 guidance is not carrying its weight, and this case has now been
-through three grader revisions without becoming discriminating.
+All three judges failed them. The grader said FAIL if a BGH holding or standard appeared
+"AT ALL", so a response that quotes the tempting wrong answer in order to disavow it
+trips the rule — and so does the skill's own mandatory Limits block, which states that
+UWG is shaped by BGH case law this review does not assess. The grader now judges whether
+the response **asserts** case law, and names the disavowal quote as the strongest pass.
+Re-measuring.
+
+`uwg6-comparison` measures **0.67 / 0.67**, up from 0.33 / 0.33. Here the grader is
+right and the skill was wrong. On "Half the rework of what most teams use today" the
+failing run reaches the correct analysis — no defined comparator, no denominator a
+reader can reconstruct — and then records `Breach: none on the material supplied` with
+"Evidence needed: the study behind half". That sends the user after data that cannot fix
+it. § 6(2) no. 2 asks what the reader can check from public information, not what the
+advertiser holds. The skill framed § 6(2) as a checklist without saying what failing it
+means; it now says failing no. 2 is a breach on the face of the copy.
 
 ## The zeroes
 
-`limb-c-omission` and `uwg6-comparison` measure 0.00 delta. The Art. 7 limb reasoning
-and UWG § 6 analysis are things Claude does unaided.
+`limb-d-intended-purpose-drift` and `uwg6-comparison` measure 0.00 delta. `limb-c-omission`
+left this group on 2026-09-11, moving to +0.67 as the with-arm went to 1.00.
