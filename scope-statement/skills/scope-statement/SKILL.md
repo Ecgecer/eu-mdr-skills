@@ -99,8 +99,8 @@ intended purpose changing. A scope statement with no expiry gets quoted a year l
    > **Against:** our own pattern set and name dictionary, version not supplied — not an
    > external standard.
 
-   That is a finished sentence claiming no authority it cannot support. A bracket
-   `[pattern set version + date (fill this in]`) is an unfinished document: asked for a
+   That is a finished sentence claiming no authority it cannot support. A bracket like
+   `[pattern set version + date, fill this in]` is an unfinished document: asked for a
    scope statement, the reader gets a form to complete. Deliver the block, then ask
    underneath:
 

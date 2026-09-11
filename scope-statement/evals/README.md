@@ -11,17 +11,17 @@ Do not hand-edit the table.
 
 | Case | with | without | delta | runs | measured |
 |---|---|---|---|---|---|
-| `no-disclaimer` | 1.00 | 1.00 | **+0.00** | 3×2 | 2026-09-11 |
+| `no-disclaimer` | 0.67 | 1.00 | **-0.33** | 3×2 | 2026-09-11 |
 | `readiness-claim` | 1.00 | 0.67 | **+0.33** | 3×2 | 2026-09-11 |
 | `unpinned-basis` | 1.00 | 0.00 | **+1.00** | 3×2 | 2026-09-11 |
 
-**Mean delta +0.44** across 3 case(s) with both arms measured.
+**Mean delta +0.33** across 3 case(s) with both arms measured.
 
 ### Every other stored run for these cases
 
-- `no-disclaimer`, earlier runs: 2026-09-10 n/a/n/a (6 errored); 2026-09-10 1.00/n/a (1 errored); 2026-09-10 0.33/1.00
-- `readiness-claim`, earlier runs: 2026-09-10 0.67/1.00; 2026-09-10 n/a/n/a; 2026-09-10 1.00/1.00; 2026-09-10 1.00/0.67
-- `unpinned-basis`, earlier runs: 2026-09-10 n/a/n/a (6 errored); 2026-09-10 1.00/0.33; 2026-09-10 1.00/0.33
+- `no-disclaimer`, earlier runs: 2026-09-10 n/a/n/a (6 errored); 2026-09-10 1.00/n/a (1 errored); 2026-09-10 0.33/1.00; 2026-09-11 1.00/1.00
+- `readiness-claim`, earlier runs: 2026-09-10 0.67/1.00; 2026-09-10 n/a/n/a; 2026-09-10 1.00/1.00; 2026-09-10 1.00/0.67; 2026-09-11 1.00/0.67
+- `unpinned-basis`, earlier runs: 2026-09-10 n/a/n/a (6 errored); 2026-09-10 1.00/0.33; 2026-09-10 1.00/0.33; 2026-09-11 1.00/0.00
 
 Listed because publishing only the most favourable run of several is how the earlier tables went wrong.
 

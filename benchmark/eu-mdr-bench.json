@@ -511,7 +511,7 @@
       "criteria_assume_skill_format": false,
       "measured": {
         "baseline_pass_rate": 1.0,
-        "with_reference_pass_rate": 1.0,
+        "with_reference_pass_rate": 0.6666666666666666,
         "runs_per_arm": 3
       }
     }

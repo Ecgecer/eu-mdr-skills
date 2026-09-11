@@ -71,11 +71,11 @@ Measured across 5 suites, 30 cases:
 |---|---|---|---|
 | `device-claims` | **+0.77** | 10 | MDR/IVDR Art. 7 **plus HWG and UWG** |
 | `mpdg-germany` | **+0.53** | 5 | German national law only |
-| `scope-statement` | +0.44 | 3 | domain-general |
+| `scope-statement` | +0.33 | 3 | domain-general |
 | `mdr-transition` | +0.20 | 5 | EU-level only |
 | `mdr-classification` | +0.14 | 7 | EU-level only |
 
-**12 of those 30 cases measure a delta of 0.00**, the skill changes nothing. They are published case by case, because a suite that reports only what it earns is not reporting.
+**11 of those 30 cases measure a delta of 0.00**, the skill changes nothing. They are published case by case, because a suite that reports only what it earns is not reporting.
 <!-- suite-summary:end -->
 
 This table is spliced in from the stored run data by `scripts/report-evals.py` and CI
