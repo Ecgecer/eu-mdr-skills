@@ -1,0 +1,86 @@
+{
+  "schemaVersion": 1,
+  "claudeVersion": "2.1.266",
+  "startedAt": "2026-09-09T15:11:43.659Z",
+  "durationSeconds": 92,
+  "costUsd": 0.3748055,
+  "partial": false,
+  "suite": {
+    "root": "/Users/egecangecer/projects/device-claims-review/device-claims",
+    "ablation": "none",
+    "caseFilter": "hwg11-item-scope",
+    "threshold": 1,
+    "plugins": [
+      {
+        "name": "device-claims",
+        "version": "0.1.0",
+        "path": "/Users/egecangecer/projects/device-claims-review/device-claims"
+      }
+    ]
+  },
+  "cases": [
+    {
+      "name": "hwg11-item-scope",
+      "dir": "evals/03-hwg11-item-scope",
+      "source": "prose",
+      "promptMarkdown": "Review this copy. Device: Class IIa home blood-pressure monitor. Audience:\npublic consumer web page, no gating. Market: Germany.\n\nCopy: \"Recommended by Professor Schmidt, cardiologist. Don't gamble with your\nheart — check your pressure daily.\"",
+      "runsPerCase": 3,
+      "timeoutSeconds": 300,
+      "maxTurns": 10,
+      "graders": [
+        {
+          "name": "criteria",
+          "type": "llm",
+          "weight": 1,
+          "graderMarkdown": "This is Publikumswerbung for a MEDICAL DEVICE. Under HWG § 11(1) final\nsentence, only nos. 7, 8, 9, 11 and 12 apply to devices.\nPASS requires:\n(1) \"Don't gamble with your heart\" IS flagged under § 11(1) no. 7\n    (suggesting health is impaired by not using the device).\n(2) The professional endorsement is NOT cited under § 11(1) no. 2 —\n    no. 2 does NOT apply to devices. If the endorsement is raised at all it\n    must be under no. 11 (third-party statements, only where misleading/\n    abusive/repulsive) or under § 3 / UWG § 5, not no. 2.\nFAIL if § 11(1) no. 2 is cited against this device. This is the single most\nimportant false-positive check in the suite.",
+          "config": {
+            "criteria": "This is Publikumswerbung for a MEDICAL DEVICE. Under HWG § 11(1) final\nsentence, only nos. 7, 8, 9, 11 and 12 apply to devices.\nPASS requires:\n(1) \"Don't gamble with your heart\" IS flagged under § 11(1) no. 7\n    (suggesting health is impaired by not using the device).\n(2) The professional endorsement is NOT cited under § 11(1) no. 2 —\n    no. 2 does NOT apply to devices. If the endorsement is raised at all it\n    must be under no. 11 (third-party statements, only where misleading/\n    abusive/repulsive) or under § 3 / UWG § 5, not no. 2.\nFAIL if § 11(1) no. 2 is cited against this device. This is the single most\nimportant false-positive check in the suite.",
+            "focus": "last_message"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 6,
+            "costUsd": 0.3748055,
+            "judgeCostUsd": 0.008879999999999999,
+            "durationSeconds": 92,
+            "startedAt": "2026-09-09T15:11:43.665Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-UG5QAa/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "# Device Claims Review: consumer web page copy\n\n**Reviewed:** 2026-09-09\n**Device:** Home blood-pressure monitor — **Class IIa** (MDR)\n**Intended purpose (as assessed):** **NOT SUPPLIED — limb (d) not assessed**\n**Audience:** **Publikum** — ungated public consumer page, so HWG § 11 applies (nos. 7, 8, 9, 11, 12 only)\n**Markets:** EU + DE\n\n> I can review limbs (a), (b) and (c) without the intended purpose, but (d) — suggesting uses beyond the assessed intended purpose — is the limb device marketing trips most often, and I cannot assess it against a purpose I have not seen. Can you paste the intended purpose from the technical documentation or DoC? The specific question it settles: does the assessed purpose cover **daily** self-measurement by a lay user without clinician involvement, or is it framed as measurement on medical advice?\n\n## Summary\n\n3 claims reviewed. **1 cut, 1 reword, 1 substantiate, 0 OK.**\n\n**Ready to publish: No — rewrite needed.**\n\nThe second sentence is the serious one. \"Don't gamble with your heart — check your pressure daily\" is the textbook shape of HWG § 11(1) no. 7 in both directions at once: harm from *not* using, benefit from using. It also puts a protective, quasi-therapeutic effect on a device that measures and does not treat. That is the pairing that draws an Abmahnung.\n\n## Findings\n\n---\n\n**Claim:** \"Don't gamble with your heart\"\n**Breach:** HWG § 11(1) no. 7 `[verified]`\n**Why:** Fear framing that *nahelegt, dass die Gesundheit durch die Nichtverwendung […] beeinträchtigt* werden könnte — the reader is told that not measuring is a gamble with their heart. Audience is Publikum, and no. 7 is one of the five items that apply to devices.\n**Evidence needed:** n/a — cannot be cured by evidence. No data makes fear framing lawful in Publikumswerbung.\n**Call:** **Cut**\n**Suggested fix:** Remove entirely. Replace the motivation with a neutral statement of what the device does (see consolidated rewrite below).\n\n---\n\n**Claim:** \"check your pressure daily\" (read together with \"Don't gamble with your heart\")\n**Breach:** MDR Art. 7(b) `[verified]`; HWG § 3 no. 1 `[verified]`; HWG § 11(1) no. 7 `[verified]`\n**Why:** The two clauses together create a false impression regarding treatment — that daily self-measurement protects the heart. The device measures blood pressure; it does not reduce cardiovascular risk. Art. 7(b) catches the *impression* even though no single word is false. HWG § 3 no. 1 catches ascribing *Wirkungen, die sie nicht haben*. § 11 no. 7 catches the same sentence from the other side: health *durch die Verwendung verbessert*.\n**Evidence needed:** Partially curable — if the intended purpose and clinical evaluation support a stated measurement frequency, the frequency itself can stay. The protective implication cannot be cured by evidence; it has to be dropped.\n**Also engaged:** MDR Art. 7(d) and UWG § 5(2) no. 1 (*Zwecktauglichkeit, von der Verwendung zu erwartende Ergebnisse*) `[verified]` — if the assessed intended purpose does not cover unsupervised daily lay self-measurement, or if the IFU specifies a different measurement regimen. Cannot be resolved without the intended purpose.\n**Call:** **Needs rewording**\n**Suggested fix:** State the function, not the outcome, and route frequency to the clinician: *\"Messen Sie Ihren Blutdruck zu Hause. Wie oft Sie messen sollten, besprechen Sie mit Ihrer Ärztin oder Ihrem Arzt.\"*\n\n---\n\n**Claim:** \"Recommended by Professor Schmidt, cardiologist.\"\n**Breach:** none on the material supplied\n**Why:** Third-party endorsements are **not** flatly prohibited for devices. HWG § 11(1) no. 2 — endorsement by health professionals — is one of the items that does **not** apply to Medizinprodukte under the closing sentence of § 11(1). The applicable item is **no. 11**, which bites only where the *Äußerung Dritter* is *missbräuchlich, abstoßend oder irreführend*. I cannot tell from the copy whether it is misleading, because the endorsement is unverifiable as written: no first name, no institution, no specialty board, no date, no disclosure of any commercial relationship.\n**Evidence needed:** Written, signed confirmation from the named physician; proof of the *Professor* title and Facharzt für Kardiologie/Innere Medizin qualification; whether he is or was paid, a consultant, an investigator, or a shareholder.\n**Also engaged:** HWG § 11(1) no. 11 (*irreführend* limb) and HWG § 3 no. 3(b) (*Angaben über die Person, Vorbildung, Befähigung […] der für sie tätigen oder tätig gewesenen Personen*) and UWG § 5(1) `[verified]` — if the title or specialty is overstated, if the recommendation was not actually given for this device, or if a paid relationship exists and is not disclosed. A paid endorsement presented as an independent clinical recommendation is the specific fact pattern that would flip this from Verify to breach.\n**Call:** **Verify**\n**Suggested fix:** Keep only if fully substantiated and identified: *\"Prof. Dr. med. [Vorname Nachname], Facharzt für Kardiologie, [Klinik/Institution]\"* plus an explicit relationship disclosure where one exists (*\"bezahlte Kooperation\"* / *\"Mitglied des wissenschaftlichen Beirats\"*). If any element cannot be evidenced, cut the line — an unverifiable expert endorsement is expensive to defend even when true.\n\n---\n\n### Limb (c) — open question, not a finding\n\nThe copy surfaces no limitation at all. I can't tell from what I have whether the IFU records a **likely** risk associated with use in line with the intended purpose that belongs here. I am deliberately not raising an Art. 7(c) finding on inference from the device category — every benefit-framed ad omits some inferable risk, and a finding built that way is unfalsifiable.\n\nWorth checking against the IFU specifically: whether it records conditions under which readings are unreliable or must not be relied on, and whether it directs that results be interpreted by a clinician. If it does, a short pointer line is the proportionate fix and it is cheap to add — see the rewrite.\n\n### Not engaged\n\n- **UWG § 6** — no comparison, express or implied. No competitor is *erkennbar*.\n- **HWG § 3 no. 2(a)** guaranteed success — the copy implies protection but does not promise certainty. Close, but I would not call it.\n- **HWG § 3 no. 2(b)**, **§ 11 nos. 8, 9, 12**, **§ 3a** — not engaged. (§ 3a is Arzneimittel only.)\n- **UWG § 5(2) nos. 3/4** certification status — no class, CE, or notified-body claim is made.\n\n## Consolidated rewrite (paste-ready)\n\n**German:**\n\n> Blutdruckmessgerät für zu Hause. Messen Sie Ihre Werte einfach selbst und dokumentieren Sie sie für Ihren Arztbesuch. Wie oft Sie messen sollten und wie Ihre Werte zu bewerten sind, besprechen Sie bitte mit Ihrer Ärztin oder Ihrem Arzt. Gebrauchsanweisung beachten.\n\n**English equivalent:**\n\n> A blood-pressure monitor for home use. Take your own readings and record them for your next appointment. Talk to your doctor about how often to measure and how to interpret your readings. Read the instructions for use.\n\nThis keeps the intent — regular home measurement, medical credibility — while removing the fear framing, the protective implication, and the unsubstantiated frequency instruction. Add the Schmidt line back only if it clears the substantiation above. Check the final German wording against the assessed intended purpose before it goes live; \"dokumentieren Sie sie für Ihren Arztbesuch\" assumes the purpose covers record-keeping for clinical review.\n\n## Evidence to gather before publishing\n\n| Claim | Evidence needed | From whom |\n|---|---|---|\n| All (limb (d) baseline) | Intended purpose verbatim from the DoC / technical documentation | RA/QM |\n| \"check your pressure daily\" | Whether the IFU or clinical evaluation specifies a measurement frequency | RA/QM, clinical |\n| Limb (c) | Whether the IFU records a likely risk or limitation requiring surfacing | RA/QM |\n| \"Professor Schmidt\" | Signed endorsement, title and Facharzt verification, disclosure of any paid or advisory relationship | Marketing + legal |\n\n## Provisions cited\n\n- MDR Art. 7(b), (c), (d) — `references/mdr-ivdr-art7.md` `[verified]`\n- HWG § 3 no. 1, § 3 no. 3(b) — `references/hwg.md` `[verified]`\n- HWG § 11(1) nos. 7 and 11, and the device scoping sentence *\"Für Medizinprodukte gilt Satz 1 Nr. 7 bis 9, 11 und 12 entsprechend\"* — `references/hwg.md` `[verified]`\n- UWG § 5(1), § 5(2) no. 1 — `references/uwg.md` `[verified]`\n\n## Limits\n\n> This review checks copy against the verbatim text of MDR Art. 7, IVDR Art. 7, HWG §§ 3 and 11, and UWG §§ 5 and 6, retrieved from EUR-Lex and gesetze-im-internet on 2026-09-09. It does **not** cover case law, MDCG guidance, notified-body practice, national enforcement decisions, or any market outside the EU and Germany. UWG in particular is heavily shaped by BGH and OLG case law that this review does not assess. It is a drafting and risk-triage aid, not legal advice, and it is not a substitute for a Fachanwalt für Medizinrecht or Wettbewerbsrecht."
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 1,
+        "passRate": 1
+      }
+    }
+  ],
+  "aggregates": {
+    "casesTotal": 1,
+    "casesPassed": 1,
+    "overallScore": 1,
+    "overallPassRate": 1
+  }
+}

@@ -1,0 +1,86 @@
+{
+  "schemaVersion": 1,
+  "claudeVersion": "2.1.266",
+  "startedAt": "2026-09-09T19:18:48.031Z",
+  "durationSeconds": 87,
+  "costUsd": 0.31679124999999997,
+  "partial": false,
+  "suite": {
+    "root": "/Users/egecangecer/projects/device-claims-review/device-claims",
+    "ablation": "none",
+    "caseFilter": "hwg3a-arzneimittel-only",
+    "threshold": 1,
+    "plugins": [
+      {
+        "name": "device-claims",
+        "version": "0.1.0",
+        "path": "/Users/egecangecer/projects/device-claims-review/device-claims"
+      }
+    ]
+  },
+  "cases": [
+    {
+      "name": "hwg3a-arzneimittel-only",
+      "dir": "evals/09-hwg3a-arzneimittel-only",
+      "source": "prose",
+      "promptMarkdown": "Review this copy. Device: Class IIb drug-eluting coronary stent, CE marked, notified\nbody involved. Audience: interventional cardiologists at a congress booth\n(Fachkreise). Market: Germany.\n\nCopy: \"Our sirolimus-eluting stent delivers sustained drug release across the full\nlesion. Approved and available now.\"",
+      "runsPerCase": 3,
+      "timeoutSeconds": 300,
+      "maxTurns": 10,
+      "graders": [
+        {
+          "name": "criteria",
+          "type": "llm",
+          "weight": 1,
+          "graderMarkdown": "This is a MEDICAL DEVICE that carries a drug. It is not an Arzneimittel.\n\nHWG § 3a prohibits advertising a medicinal product that requires marketing\nauthorisation and does not have one. It applies to Arzneimittel only, and the\nreference file says so explicitly.\n\nPASS requires:\n(1) HWG § 3a is NOT applied to this device.\n      - PASS: § 3a is not mentioned, or is mentioned only to exclude it\n        (\"§ 3a covers Arzneimittel, not devices\").\n      - FAIL: § 3a appears in a Breach: line, or the response says the stent\n        needs a marketing authorisation it lacks.\n(2) HWG § 11 is NOT applied — the audience is Fachkreise.\n(3) \"Approved and available now\" is examined. Under UWG § 5(2) no. 3/4\n    (Status, Zulassung) an unqualified \"approved\" can mislead about certification\n    scope. Raising it as a Breach or as Verify are both acceptable; ignoring it\n    entirely is not.\n\nFAIL if § 3a is applied to a device. The drug-eluting framing is the bait.",
+          "config": {
+            "criteria": "This is a MEDICAL DEVICE that carries a drug. It is not an Arzneimittel.\n\nHWG § 3a prohibits advertising a medicinal product that requires marketing\nauthorisation and does not have one. It applies to Arzneimittel only, and the\nreference file says so explicitly.\n\nPASS requires:\n(1) HWG § 3a is NOT applied to this device.\n      - PASS: § 3a is not mentioned, or is mentioned only to exclude it\n        (\"§ 3a covers Arzneimittel, not devices\").\n      - FAIL: § 3a appears in a Breach: line, or the response says the stent\n        needs a marketing authorisation it lacks.\n(2) HWG § 11 is NOT applied — the audience is Fachkreise.\n(3) \"Approved and available now\" is examined. Under UWG § 5(2) no. 3/4\n    (Status, Zulassung) an unqualified \"approved\" can mislead about certification\n    scope. Raising it as a Breach or as Verify are both acceptable; ignoring it\n    entirely is not.\n\nFAIL if § 3a is applied to a device. The drug-eluting framing is the bait.",
+            "focus": "last_message"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 6,
+            "costUsd": 0.31679124999999997,
+            "judgeCostUsd": 0.008856,
+            "durationSeconds": 87,
+            "startedAt": "2026-09-09T19:18:48.042Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-BmbPpr/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "# Device Claims Review: congress booth copy — sirolimus-eluting stent\n\n**Reviewed:** 2026-09-09\n**Device:** Drug-eluting coronary stent (sirolimus) — Class IIb, CE marked, notified body involved\n**Intended purpose (as assessed):** **NOT SUPPLIED — limb (d) not assessed**\n**Audience:** Fachkreise (interventional cardiologists, congress booth) — HWG § 11 does **not** apply; HWG § 3 does\n**Markets:** DE (EU)\n\n> I can review limbs (a), (b) and (c) without the intended purpose, but (d) — suggesting uses beyond the assessed intended purpose — is the limb device marketing trips most often, and I cannot assess it against a purpose I have not seen. Can you paste the intended purpose from the technical documentation or DoC, including the assessed lesion-length and reference-vessel-diameter ranges? Two items below turn on it.\n\n## Summary\n\n5 claims reviewed. 0 cut, 2 reword, 1 substantiate, 1 verify, 1 OK.\n\n**Ready to publish:** With changes below.\n\n---\n\n## Findings\n\n### 1. \"across the full lesion\"\n\n**Claim:** \"delivers sustained drug release across the full lesion\"\n**Breach:** MDR Art. 7(a); HWG § 3 no. 1 `[verified]`; UWG § 5(2) no. 1 `[verified]`\n**Why:** A stent elutes drug over its own stented segment, not over \"the full lesion\" — whether the lesion is fully covered is a function of operator sizing and lesion length, not a property of the device. Art. 7(a) prohibits \"ascribing functions and properties to the device which the device does not have\"; HWG § 3 no. 1 catches \"Wirkungen, die sie nicht haben\"; UWG § 5(2) no. 1 covers *Zwecktauglichkeit* and *von der Verwendung zu erwartende Ergebnisse*. Full-lesion coverage is not a property the device carries on its own.\n**Evidence needed:** n/a — cannot be cured by evidence. Cured by narrowing the claim to the stented segment.\n**Also engaged:** MDR Art. 7(d) — if the assessed intended purpose restricts lesion length or requires a specific vessel-diameter range, \"full lesion\" also suggests use beyond the assessed purpose (e.g. long-lesion use, or a single-stent strategy the assessment did not cover). Cannot be confirmed without the intended purpose.\n**Call:** Needs rewording\n\n### 2. \"Approved\"\n\n**Claim:** \"Approved and available now.\"\n**Breach:** UWG § 5(2) no. 3 and no. 4 `[verified]`\n**Why:** § 5(2) no. 3 covers *Status, Zulassung* of the undertaking and no. 4 covers statements \"die sich auf eine **Zulassung** des Unternehmers oder der Waren [...] beziehen\". A Class IIb device is not *approved* or *zugelassen* — it undergoes conformity assessment and carries a CE mark. \"Approved\", and especially its natural German rendering \"zugelassen\", asserts a regulatory status that does not exist for devices, and it is capable of influencing a purchasing decision (§ 5(1) *geeignet*). The word is also bare: approved by whom, for what indication, in which market.\n**Evidence needed:** Certificate number, notified body name and identification number, and the certificate scope — so the claim can be stated accurately rather than removed.\n**Note:** HWG § 3a is **not** available here and should not be cited — it is limited to *Arzneimittel*. This is a UWG § 5 finding only.\n**Call:** Needs rewording\n\n### 3. \"sustained drug release\"\n\n**Claim:** \"delivers sustained drug release\"\n**Breach:** none — not misleading on the material supplied\n**Why:** \"Sustained\" is a real, standard performance attribute for a DES, but it is unquantified here. It is defensible if the elution profile is in the technical file; it is expensive to defend as an open-ended adjective.\n**Evidence needed:** The in-vivo/in-vitro elution profile from the technical documentation — release duration and the study it comes from. State the number.\n**Also engaged:** MDR Art. 7(a), HWG § 3 no. 1, UWG § 5(2) no. 1 (\"Tests\") — if the file does not support a sustained-release profile, or if the figure quoted at the booth differs from the assessed one.\n**Call:** Needs substantiation\n\n### 4. \"available now\"\n\n**Claim:** \"available now\"\n**Breach:** none\n**Why:** Availability is an express *wesentliches Merkmal* under UWG § 5(2) no. 1 (\"Verfügbarkeit\"), so it must be true in Germany on the day the panel is shown — not \"approved and shipping next quarter\".\n**Evidence needed:** Confirmation from commercial ops that the full size matrix shown at the booth is orderable and deliverable in DE as of the congress dates. If only some sizes are, say which.\n**Also engaged:** UWG § 5(2) no. 1 — if availability is partial, staged, or limited to certain sizes/centres.\n**Call:** Verify\n\n### 5. \"Our sirolimus-eluting stent\"\n\n**Claim:** \"Our sirolimus-eluting stent\"\n**Breach:** none\n**Why:** Composition/identity statement. Accurate on its face and matches a standard device description. Confirm the drug name matches the DoC wording (HWG § 3 no. 3(a) covers *Zusammensetzung oder Beschaffenheit*), but nothing in the phrasing is misleading.\n**Evidence needed:** n/a\n**Call:** OK\n\n---\n\n## Open question — limb (c)\n\nThe copy is benefit-only and surfaces no limitation, contraindication or warning. I am **not** raising a (c) breach: Art. 7(c) requires a **likely** risk associated with use in line with the intended purpose, and no IFU or risk material was supplied, so I cannot name one from what I have. Inferring one from \"drug-eluting stent\" would make the finding unfalsifiable.\n\n> Worth checking against the IFU: if it records a likely risk or a use condition (sizing, deployment, or a co-therapy requirement) that a reader of this panel would need in order to read the benefit claim correctly, the proportionate fix for booth copy is an IFU pointer, not patient-facing safety text. Trade-show copy for Fachkreise is not expected to carry the latter.\n\n**UWG § 6 is not engaged** — the copy makes no direct or indirect comparison and identifies no competitor.\n\n---\n\n## Paste-ready revised copy\n\n**EN:**\n\n> Our sirolimus-eluting stent provides controlled drug release over [X] days across the stented segment. CE-marked under Regulation (EU) 2017/745 (notified body [name], [NB number]); available in Germany now. For indications, contraindications and warnings, see the Instructions for Use.\n\n**DE:**\n\n> Unser Sirolimus-freisetzender Stent gibt den Wirkstoff über [X] Tage kontrolliert über das gestentete Segment ab. CE-gekennzeichnet gemäß Verordnung (EU) 2017/745 (Benannte Stelle [Name], [NB-Nummer]); ab sofort in Deutschland verfügbar. Indikationen, Kontraindikationen und Warnhinweise entnehmen Sie bitte der Gebrauchsanweisung.\n\nThree changes: \"full lesion\" → \"the stented segment\"; \"Approved\" → the CE-marking statement (avoid **\"zugelassen\"** in any German version — that is the word that creates the § 5 no. 4 problem); \"sustained\" → a number from the technical file. The IFU pointer is optional pending the (c) check above.\n\n---\n\n## Evidence to gather before publishing\n\n| Claim | Evidence needed | From whom |\n|---|---|---|\n| \"sustained drug release\" | Elution profile and duration, with the source study | RA / R&D (technical documentation) |\n| \"Approved\" | Certificate number, notified body name + ID, certificate scope | Regulatory Affairs |\n| \"across the full lesion\" | Intended purpose as assessed, incl. lesion-length and vessel-diameter ranges | Regulatory Affairs (DoC / technical file) |\n| \"available now\" | DE availability of the full size matrix on congress dates | Commercial operations |\n| (c) omission check | Whether the IFU records a likely risk or use condition relevant to this claim | Regulatory Affairs (IFU) |\n\n## Provisions cited\n\n- MDR Art. 7(a), 7(c), 7(d) — `references/mdr-ivdr-art7.md` `[verified]`\n- HWG § 3 no. 1, § 3 no. 3(a) — `references/hwg.md` `[verified]`\n- HWG § 3a — cited only to exclude it (Arzneimittel only) — `references/hwg.md` `[verified]`\n- HWG § 11 — not applicable (Fachkreise) — `references/hwg.md` `[verified]`\n- UWG § 5(1), § 5(2) nos. 1, 3, 4 — `references/uwg.md` `[verified]`\n- UWG § 6 — not engaged — `references/uwg.md` `[verified]`\n\n## Limits\n\n> This review checks copy against the verbatim text of MDR Art. 7, IVDR Art. 7, HWG §§ 3 and 11, and UWG §§ 5 and 6, retrieved from EUR-Lex and gesetze-im-internet on 2026-09-09. It does **not** cover case law, MDCG guidance, notified-body practice, national enforcement decisions, or any market outside the EU and Germany. UWG in particular is heavily shaped by BGH and OLG case law that this review does not assess. It is a drafting and risk-triage aid, not legal advice, and it is not a substitute for a Fachanwalt für Medizinrecht or Wettbewerbsrecht."
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 1,
+        "passRate": 1
+      }
+    }
+  ],
+  "aggregates": {
+    "casesTotal": 1,
+    "casesPassed": 1,
+    "overallScore": 1,
+    "overallPassRate": 1
+  }
+}

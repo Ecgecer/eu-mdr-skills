@@ -1,2 +1,8 @@
 .DS_Store
-device-claims/evals/results/
+
+# Eval evidence is tracked on purpose: report-evals.py builds the published tables
+# from aggregate-result.json, so a clone has to carry it or the numbers are unverifiable
+# assertions. device-claims was ignored wholesale, which meant the stamp check had
+# nothing to check for the one suite carrying the headline figure.
+# The HTML viewer beside it is regenerable and large, so new ones stay out.
+*/evals/results/*/report.html

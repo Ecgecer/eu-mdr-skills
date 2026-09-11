@@ -1,0 +1,232 @@
+{
+  "schemaVersion": 1,
+  "claudeVersion": "2.1.266",
+  "startedAt": "2026-09-09T20:00:15.813Z",
+  "durationSeconds": 513,
+  "costUsd": 1.48380775,
+  "partial": false,
+  "suite": {
+    "root": "/Users/egecangecer/projects/device-claims-review/device-claims",
+    "ablation": "with-without",
+    "caseFilter": "puffery-restraint",
+    "threshold": 1,
+    "plugins": [
+      {
+        "name": "device-claims",
+        "version": "0.1.0",
+        "path": "/Users/egecangecer/projects/device-claims-review/device-claims"
+      }
+    ]
+  },
+  "cases": [
+    {
+      "name": "puffery-restraint",
+      "dir": "evals/10-puffery-restraint",
+      "source": "prose",
+      "promptMarkdown": "Review this copy. Device: Class I reusable surgical retractor. Intended purpose:\n\"manual retraction of tissue to maintain surgical site exposure during open\nprocedures.\" Audience: hospital procurement (Fachkreise). Market: Germany.\n\nCopy: \"Surgeons love it. The retractor you'll actually enjoy using.\"",
+      "runsPerCase": 3,
+      "timeoutSeconds": 300,
+      "maxTurns": 10,
+      "graders": [
+        {
+          "name": "criteria",
+          "type": "llm",
+          "weight": 1,
+          "graderMarkdown": "This is pure puffery. It makes no performance claim, no clinical claim, no\ncomparison, and no statement about certification. \"Surgeons love it\" is subjective\npreference, not an assertion about what the device does.\n\nThe skill's own taxonomy says puffery with no clinical or performance content need\nnot be listed as a finding.\n\nPASS requires:\n(1) No provision appears in a Breach: line. Zero findings is the correct answer.\n(2) HWG § 11 is not applied (Fachkreise audience, and nothing in the copy engages\n    nos. 7-9, 11 or 12 in any case).\n(3) The response says plainly that there are no findings. It may note that\n    \"Surgeons love it\" would need substantiation if it were ever tightened into a\n    measurable claim, or raise it as Verify — both are fine.\n\nFAIL if any Art. 7 limb, HWG or UWG provision is asserted as breached. This tests\nwhether the skill can say \"nothing here\", which the no-skill baseline could not do\non the other clean-copy case.",
+          "config": {
+            "criteria": "This is pure puffery. It makes no performance claim, no clinical claim, no\ncomparison, and no statement about certification. \"Surgeons love it\" is subjective\npreference, not an assertion about what the device does.\n\nThe skill's own taxonomy says puffery with no clinical or performance content need\nnot be listed as a finding.\n\nPASS requires:\n(1) No provision appears in a Breach: line. Zero findings is the correct answer.\n(2) HWG § 11 is not applied (Fachkreise audience, and nothing in the copy engages\n    nos. 7-9, 11 or 12 in any case).\n(3) The response says plainly that there are no findings. It may note that\n    \"Surgeons love it\" would need substantiation if it were ever tightened into a\n    measurable claim, or raise it as Verify — both are fine.\n\nFAIL if any Art. 7 limb, HWG or UWG provision is asserted as breached. This tests\nwhether the skill can say \"nothing here\", which the no-skill baseline could not do\non the other clean-copy case.",
+            "focus": "last_message"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 6,
+            "costUsd": 0.30287375000000005,
+            "judgeCostUsd": 0.008088,
+            "durationSeconds": 90,
+            "startedAt": "2026-09-09T20:00:15.824Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-l89V6U/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "Both anchors are settled from your brief — intended purpose supplied, audience Fachkreise — so all four limbs plus the German overlay are assessable. References read.\n\n# Device Claims Review: tagline copy (2 sentences)\n\n**Reviewed:** 2026-09-09\n**Device:** Reusable surgical retractor — Class I (MDR)\n**Intended purpose (as assessed):** \"manual retraction of tissue to maintain surgical site exposure during open procedures\"\n**Audience:** Fachkreise (hospital procurement) — HWG § 11 does **not** apply; § 3 does\n**Markets:** DE (and EU via MDR Art. 7)\n\n## Summary\n\n2 claims reviewed. 0 cut, 0 reword, 0 substantiate, 2 OK — 2 items to verify.\n\n**No breaches identified** against the provisions this review verifies. The copy makes no performance, efficacy or outcome claim, and suggests no use outside the assessed intended purpose. What it has instead is a commercial weakness: for a procurement reader it carries nothing verifiable.\n\n**Ready to publish:** see the gate at the end — I can't clear copy for publication.\n\n## Findings\n\n**Claim:** \"Surgeons love it.\"\n**Breach:** none\n**Why:** Ascribes no function, property or therapeutic effect (MDR Art. 7(a), (b); HWG § 3 no. 1). It is a subjective sentiment statement, not an assertion about the device's intended purpose, safety or performance — which is the misleadingness gateway in the Art. 7 preamble. Audience is Fachkreise, so HWG § 11(1) no. 11 (Äußerungen Dritter) is out of scope entirely; even in Publikumswerbung it bites only where a testimonial is missbräuchlich, abstoßend or irreführend, which this is not. [verified]\n**Evidence needed:** none as pure puffery. If it fronts or is read as reporting survey/user-satisfaction data, the underlying data.\n**Also engaged:** UWG § 5(2) no. 1 (\"Tests\", \"von der Verwendung zu erwartende Ergebnisse\") — **if** the claim appears next to a figure, a star rating, a survey reference, or a seal, it stops being puffery and becomes a data claim needing the study behind it. HWG § 3 no. 3(b) — **if** the surrounding asset recasts this as the manufacturer's track record (\"trusted by X surgeons\"), that is an Angabe über die Erfolge des Herstellers and must be current and accurately counted. [verified]\n**Call:** Verify (context only — the sentence itself is fine)\n**Suggested fix:** none required.\n\n**Claim:** \"The retractor you'll actually enjoy using.\"\n**Breach:** none\n**Why:** No suggested use beyond the assessed intended purpose — \"retractor\", surgeon user, open-procedure framing all sit inside \"manual retraction of tissue to maintain surgical site exposure during open procedures\" (MDR Art. 7(d)). Nothing implies a laparoscopic/MIS setting, a self-retaining function, or a non-surgeon user. And note what this is *not*: \"you'll\" is not HWG § 3 no. 2(a) — that limb prohibits falsely creating the impression that **ein Erfolg** may be expected with certainty, i.e. a therapeutic outcome. Predicted enjoyment of handling is not an Erfolg. No § 3 no. 2(b) either: the copy makes no no-harmful-effects claim. [verified]\n**Evidence needed:** n/a — subjective handling preference is not a substantiable performance figure, and framing it as one would create exposure rather than cure it.\n**Also engaged:** UWG § 6 — \"actually\" implies a contrast with the incumbent alternative. § 6(1) engages only if a Mitbewerber or their goods are **erkennbar**; a diffuse contrast with the whole product category normally is not. **If** your German segment is narrow enough that procurement readers will read \"actually\" as pointing at one identifiable incumbent, § 6 engages and § 6(2) no. 2 is the problem: \"enjoy using\" is not objektiv on a wesentliche, relevante, **nachprüfbare** und typische Eigenschaft. [verified]\n**Call:** OK, with the § 6 recognizability question checked before launch.\n**Suggested fix:** none required. If you want to keep the register but remove the implied contrast, paste-ready:\n\n> Surgeons love it. The retractor built around how it feels in the hand.\n\n## Open question I can't close from what I have\n\nMDR Art. 7(c) is an omission test, and this copy is benefit-only — it surfaces no limitation. I am not raising it as a breach, because a (c) finding has to name a **likely** risk from the intended purpose, IFU or technical documentation, and I have none of those in front of me. Inferring one from \"reusable surgical retractor\" would produce an unfalsifiable finding. Worth checking against the IFU: if it records a likely risk in use per the intended purpose, or a reprocessing limit (validated cycle count, cleaning constraints) that a \"reusable\" claim in marketing could overshoot, the proportionate fix at this length is an IFU pointer, not patient-facing safety text. Trade-press copy is not expected to carry the latter.\n\n## Drafting note (not a finding)\n\nFor a procurement audience this copy is unusually thin: it names no intended purpose, no material, no reprocessing profile, no compatible instrument sets. Nothing in HWG, UWG or MDR Art. 7 requires those in a tagline. But everything that would actually move a procurement decision is absent, and the one sentiment claim is the piece most likely to attract an Abmahnung if a later draft dresses it up with numbers. A verifiable, narrow claim is cheap to defend; a broad unverifiable one is expensive even when true.\n\n## Evidence to gather before publishing\n\n| Claim | Evidence needed | From whom |\n|---|---|---|\n| \"Surgeons love it.\" | Any survey, rating or adoption figure that will appear near it, with method and date — or confirmation that it stands alone as puffery | Marketing / Market Access |\n| \"Surgeons love it.\" | If recast as a customer/adoption count: current figure, definition of \"customer\" (pilots counted?) | Sales Ops |\n| \"…actually enjoy using.\" | Whether one incumbent is identifiable to DE procurement from \"actually\" (§ 6(1) erkennbar) | Product Marketing DE |\n| (c) omission | IFU: likely risks in use per intended purpose; validated reprocessing limits | RA/QA |\n\n## Provisions cited\n\n- MDR Art. 7(a), (b), (c), (d) — `references/mdr-ivdr-art7.md` [verified]\n- HWG § 3 no. 1, no. 2(a), no. 2(b), no. 3(b) — `references/hwg.md` [verified]\n- HWG § 11(1) no. 11 — cited only to record that it is **out of scope** (Fachkreise) — `references/hwg.md` [verified]\n- UWG § 5(1), § 5(2) no. 1 — `references/uwg.md` [verified]\n- UWG § 6(1), § 6(2) no. 2 — `references/uwg.md` [verified]\n\n## Publication gate\n\nI can say the copy has no findings I can identify against the provisions I verify. I can't clear it for publication — that call needs someone qualified, because case law I don't assess can change the analysis. One-page brief to take to counsel:\n\n- **Asset:** two-sentence tagline for a Class I reusable surgical retractor, DE market, Fachkreise (hospital procurement).\n- **Claims cleared:** \"Surgeons love it.\" / \"The retractor you'll actually enjoy using.\" — no performance, efficacy, outcome, certification or intended-purpose claim.\n- **Provisions checked:** MDR Art. 7(a)–(d); HWG § 3; HWG § 11 (held inapplicable — Fachkreise); UWG §§ 5, 6.\n- **The three things to ask:**\n  1. Does German case law treat a bare \"Surgeons love it\" as non-actionable Werbeüberschwang for a Fachkreise audience, or as an Angabe requiring a factual basis?\n  2. Is \"actually\" enough to make a Mitbewerber erkennbar under UWG § 6(1) in a concentrated instrument segment — and if so, does \"enjoy using\" survive § 6(2) no. 2?\n  3. Does anything in HWG or MDR practice require the intended purpose to appear alongside a device tagline in trade advertising?\n\n## Limits\n\n> This review checks copy against the verbatim text of MDR Art. 7, IVDR Art. 7, HWG §§ 3 and 11, and UWG §§ 5 and 6, retrieved from EUR-Lex and gesetze-im-internet on 2026-09-09. It does **not** cover case law, MDCG guidance, notified-body practice, national enforcement decisions, or any market outside the EU and Germany. UWG in particular is heavily shaped by BGH and OLG case law that this review does not assess. It is a drafting and risk-triage aid, not legal advice, and it is not a substitute for a Fachanwalt für Medizinrecht or Wettbewerbsrecht."
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 6,
+            "costUsd": 0.2766615,
+            "judgeCostUsd": 0.005793000000000001,
+            "durationSeconds": 74,
+            "startedAt": "2026-09-09T20:01:45.636Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-6fpASy/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "judge votes: FAIL FAIL FAIL",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  false,
+                  false,
+                  false
+                ],
+                "evidence": "## Device Claims Review: retractor headline copy\n\n**Reviewed:** 2026-09-09\n**Device:** Reusable surgical retractor — Class I\n**Intended purpose (as assessed):** \"manual retraction of tissue to maintain surgical site exposure during open procedures.\"\n**Audience:** Fachkreise (hospital procurement) — HWG § 11 does **not** apply [verified]\n**Markets:** DE (EU rules apply cumulatively)\n\n## Summary\n\n2 claims reviewed. 0 cut, 1 reword, 1 substantiate, 0 OK.\n\n**Ready to publish:** With changes below.\n\nNothing here breaches MDR Art. 7 on the material supplied — the copy makes no clinical, performance or diagnostic claim at all, which is what keeps it clear of limbs (a), (b) and (d). The exposure is on the German side: an unsourced satisfaction assertion and an implied comparison, both unverifiable, which is the profile that is expensive to defend in an Abmahnung even when true.\n\n## Findings\n\n**Claim:** \"The retractor you'll actually enjoy using.\"\n**Breach:** none\n**Why:** No function or property is ascribed, so Art. 7(a) is not engaged; \"enjoy using\" is not a therapeutic *Erfolg*, so HWG § 3 no. 2(a) is not engaged either — don't let anyone tell you the certainty framing (\"you'll\") triggers the guarantee limb here. The live issue is \"**actually**\", which sets the device against the retractors the reader currently uses.\n**Also engaged:** UWG § 6(1) and § 6(2) no. 2 [verified] — if the market can tell who is meant. \"Erkennbar\" does not require naming a competitor. In a narrow retractor field, or if this headline sits next to a named incumbent in a deck or on a stand, it is comparative advertising, and \"enjoy using\" is subjective and not *nachprüfbar*, so it fails § 6(2) no. 2 regardless of accuracy.\n**Evidence needed:** n/a — a subjective comparison cannot be made verifiable by data; it is cured by dropping the comparison or replacing it with a measurable characteristic.\n**Call:** Needs rewording\n\n**Claim:** \"Surgeons love it.\"\n**Breach:** none\n**Why:** Not misleading on what I have. But it is an assertion of fact about user response, aimed at a procurement audience that buys on user acceptance, so § 5(1)'s materiality filter is comfortably met.\n**Also engaged:** UWG § 5(2) no. 1 [verified] (\"wesentliche Merkmale\", \"von der Verwendung zu erwartende Ergebnisse\") — if there is no survey, evaluation or structured user feedback behind it. HWG § 11(1) no. 11 (Äußerungen Dritter) does **not** apply, because the audience is Fachkreise.\n**Evidence needed:** The user-evaluation data — sample, sites, date, question asked.\n**Call:** Needs substantiation\n\n### Open question — limb (c)\n\nThe copy surfaces no limitation. I can't tell from what I have whether the IFU records a likely risk that belongs here. The device is reusable, so reprocessing and reuse limits are the obvious place to look — but I am not raising a (c) finding on a risk I inferred from the category rather than read in your documentation. Worth checking against the IFU. For a two-sentence headline, an IFU pointer would be the proportionate fix if it does bite; trade copy is not expected to carry patient-facing safety text.\n\n## Suggested fix — paste-ready\n\nPrimary (drops the comparison, anchors to the assessed intended purpose):\n\n> **Manual tissue retraction for stable surgical site exposure in open procedures. Reusable, and designed around how it sits in the hand.**\n\nIf you want to keep the surgeon-response angle, source it and narrow it:\n\n> **Manual tissue retraction for stable surgical site exposure in open procedures. In a [2025] evaluation at [n] hospitals, [x] of [y] surgeons rated handling better than their current retractor.**\n\nGerman rendering of the primary version (please have a native medical copywriter check the surgical register before use — this is a translation, not a separate review):\n\n> **Manuelle Gewebsretraktion zur Aufrechterhaltung der Situsexposition bei offenen Eingriffen. Wiederverwendbar, ergonomisch für die Handhabung im OP ausgelegt.**\n\n## Evidence to gather before publishing\n\n| Claim | Evidence needed | From whom |\n|---|---|---|\n| \"Surgeons love it.\" | User evaluation / satisfaction data: sample size, sites, date, question wording | Clinical affairs or marketing research |\n| \"you'll actually enjoy using\" | Whether any named or identifiable competitor appears alongside this headline in the same asset | Marketing / asset owner |\n| Limb (c) omission | Does the IFU record a likely risk or limitation (incl. reprocessing/reuse limits) for use in line with the intended purpose? | Regulatory affairs |\n\n## Provisions cited\n\n- MDR Art. 7(a)–(d) — `references/mdr-ivdr-art7.md` [verified]\n- HWG § 3 no. 2(a); § 11(1) scoping sentence for devices — `references/hwg.md` [verified]\n- UWG § 5(1), § 5(2) no. 1; § 6(1), § 6(2) no. 2 — `references/uwg.md` [verified]\n\nWhether \"actually\" makes a competitor *erkennbar* in your specific market turns on case law this skill does not verify. I've flagged it as an open question rather than stating how it would come out.\n\n## Limits\n\n> This review checks copy against the verbatim text of MDR Art. 7, IVDR Art. 7, HWG §§ 3 and 11, and UWG §§ 5 and 6, retrieved from EUR-Lex and gesetze-im-internet on 2026-09-09. It does **not** cover case law, MDCG guidance, notified-body practice, national enforcement decisions, or any market outside the EU and Germany. UWG in particular is heavily shaped by BGH and OLG case law that this review does not assess. It is a drafting and risk-triage aid, not legal advice, and it is not a substitute for a Fachanwalt für Medizinrecht or Wettbewerbsrecht."
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 6,
+            "costUsd": 0.26672699999999994,
+            "judgeCostUsd": 0.006917999999999997,
+            "durationSeconds": 76,
+            "startedAt": "2026-09-09T20:02:59.279Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-vFhxfO/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "judge votes: FAIL FAIL FAIL",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  false,
+                  false,
+                  false
+                ],
+                "evidence": "# Device Claims Review: headline copy (2 sentences)\n\n**Reviewed:** 2026-09-09\n**Device:** Class I reusable surgical retractor — Class I, self-certified (no notified body indicated)\n**Intended purpose (as assessed):** \"manual retraction of tissue to maintain surgical site exposure during open procedures.\"\n**Audience:** Fachkreise (hospital procurement) — as stated. See caveat below.\n**Markets:** DE (EU)\n\n## Summary\n\n2 claims reviewed. 0 cut, 0 reword required, 1 substantiate, 1 OK.\n\n**Ready to publish: With changes below.**\n\nHeadline: this copy is clean on the limbs that usually bite. It makes no performance claim, no clinical-benefit claim, and suggests no use outside the assessed intended purpose. The one live issue is substantiation of \"Surgeons love it\" as a statement of fact.\n\n## Findings\n\n**Claim:** \"Surgeons love it.\"\n**Breach:** none\n**Why:** It ascribes no function or property to the device (no Art. 7(a)), states nothing about treatment or diagnosis (no (b)), and suggests no use outside \"manual retraction of tissue... during open procedures\" (no (d)). It is a claim about *user sentiment*, not about the device's performance.\n**Also engaged:** UWG § 5(2) no. 1 [verified] — if this is presented as, or reads as, a factual finding about a body of surgeons (a survey, an evaluation, a user panel) and no such data exists, it is a \"zur Täuschung geeignete Angabe\" about the goods' essential characteristics, and in a procurement context it is plainly *geeignet* to influence a purchasing decision under § 5(1). Whether it reads as fact or as reklamehafte Übertreibung is exactly the line that case law draws, and this review does not assess case law.\n**Also engaged:** HWG § 3 no. 3(b) [verified] — only if the surrounding asset attributes the endorsement to named clinicians or institutions in a way that overstates the track record. Not engaged by these six words alone.\n**Not engaged:** HWG § 11(1) no. 11 (third-party statements). § 11 applies only outside Fachkreise. On the stated audience it does not apply at all — and even in Publikum copy, testimonials are prohibited only where missbräuchlich, abstoßend or irreführend, not per se.\n**Evidence needed:** The survey, evaluation or user-feedback dataset behind it — n, sampling, date, question wording. Or a decision to drop the factual register.\n**Call:** Needs substantiation\n**Suggested fix:** see paste-ready copy below.\n\n---\n\n**Claim:** \"The retractor you'll actually enjoy using.\"\n**Breach:** none\n**Why:** Enjoyment of handling is not a function, property, treatment effect or diagnostic claim. It does not touch Zweckbestimmung. Nothing here suggests a user population, setting or indication outside the assessed purpose.\n**Also engaged:** UWG § 6 [verified] — \"actually\" carries an implicit contrast with whatever the reader uses today. On these two sentences alone no Mitbewerber is *erkennbar* under § 6(1), so § 6 is not triggered. It **would** be triggered if the surrounding asset names a competitor, shows a competing product, or uses a phrase the market reads as pointing at a specific maker — and then the comparison must clear all of § 6(2), including no. 2 *nachprüfbar*, which a subjective enjoyment claim cannot.\n**Evidence needed:** n/a\n**Call:** OK\n\n---\n\n## Open question — not a finding\n\nThe copy is benefit-only and surfaces no limitation. I can't raise MDR Art. 7(c) on this, because (c) requires a **likely risk associated with use in line with the intended purpose** that I can name from supplied material, and I have none — no IFU, no technical documentation. I'm not going to infer one from \"surgical retractor\" and flag the copy for omitting it; that reasoning would condemn every advertisement ever written.\n\nWorth checking against the IFU: a **reusable** device carries reprocessing conditions and typically a validated reuse limit. If the IFU records anything of that kind as a condition of safe use, the proportionate fix for a two-sentence asset is an IFU pointer, not safety text in the headline. That is a question for whoever holds the technical file.\n\n## Caveat on the audience anchor\n\nYou've told me Fachkreise, and hospital procurement is squarely Fachkreise, so I've applied that. One condition on it: if these two sentences run on an ungated public web page, a trade-show banner visible to the public, or a social post, the audience is not Fachkreise in practice regardless of who the buyer is, and HWG § 11 (nos. 7, 8, 9, 11, 12 only) comes into scope. Nothing in this specific copy looks like a § 11 no. 7 shape — there is no health-impaired-by-not-using or health-improved-by-using framing — so the practical exposure would still be low. But confirm the placement.\n\n## Paste-ready revised copy\n\n**Option A — if you have the data.** Keeps the sentiment claim and makes it verifiable, which is the cheap-to-defend form:\n\n> Rated [x]/5 for handling by [n] surgeons across [n] hospitals ([survey name], [month year]). For manual retraction of tissue to maintain surgical site exposure in open procedures.\n\n**Option B — if you don't have the data.** Drops the factual register, keeps the intent, and anchors to the assessed purpose:\n\n> Designed around the hand that holds it. Balanced grip and secure positioning for manual retraction of tissue to maintain surgical site exposure in open procedures.\n\nOption B carries no substantiation burden at all. Option A is stronger with procurement, and defensible, but only against a real dataset — and the dataset needs to be current, because \"Surgeons love it\" backed by a 2019 pilot of six users is worse than no claim.\n\n## Evidence to gather before publishing\n\n| Claim | Evidence needed | From whom |\n|---|---|---|\n| \"Surgeons love it.\" | Survey/evaluation data: n, sample, date, question wording; or a decision to use Option B | Marketing / clinical affairs |\n| (context) Placement of the asset | Confirmation it is gated or trade-channel only, not an open web page | Marketing |\n| (context) Reprocessing limits | Whether the IFU records a reuse/reprocessing condition warranting an IFU pointer | RA / technical file owner |\n\n## Provisions cited\n\n- MDR Art. 7(a)–(d) — `references/mdr-ivdr-art7.md` [verified]\n- HWG § 3 no. 3(b) — `references/hwg.md` [verified]\n- HWG § 11(1) no. 11 and the § 11 device scoping sentence — `references/hwg.md` [verified]\n- UWG § 5(1), § 5(2) no. 1 — `references/uwg.md` [verified]\n- UWG § 6(1), § 6(2) no. 2 — `references/uwg.md` [verified]\n\n## Limits\n\n> This review checks copy against the verbatim text of MDR Art. 7, IVDR Art. 7, HWG §§ 3 and 11, and UWG §§ 5 and 6, retrieved from EUR-Lex and gesetze-im-internet on 2026-09-09. It does **not** cover case law, MDCG guidance, notified-body practice, national enforcement decisions, or any market outside the EU and Germany. UWG in particular is heavily shaped by BGH and OLG case law that this review does not assess. It is a drafting and risk-triage aid, not legal advice, and it is not a substitute for a Fachanwalt für Medizinrecht or Wettbewerbsrecht."
+              }
+            ]
+          }
+        ],
+        "without": [
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 4,
+            "costUsd": 0.25208100000000006,
+            "judgeCostUsd": 0.005631000000000001,
+            "durationSeconds": 95,
+            "startedAt": "2026-09-09T20:04:15.005Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-nHkaSy/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "judge votes: FAIL FAIL FAIL",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  false,
+                  false,
+                  false
+                ],
+                "evidence": "Web access is blocked in this session, so I couldn't verify the exact HWG *Nummern* against the current statute text — I've flagged those two cites below for confirmation. The substance doesn't depend on them.\n\n## Verdict\n\nNot usable as written. Two distinct problems: an unsubstantiated third-party endorsement claim, and copy that carries no device information at all for a procurement audience. Also: it's in English for a German market.\n\n---\n\n## Issue 1 — \"Surgeons love it\" is an endorsement claim\n\nThis is the serious one.\n\n**As Fachkreise-only copy:** HWG § 11 Abs. 1 applies only to advertising *outside* professional circles. Hospital procurement staff qualify as Fachkreise under § 2 HWG (persons who lawfully trade in or professionally apply medical devices), so the specific bans on medical recommendations and on third-party testimonials (§ 11 Abs. 1 — I believe Nr. 2 and Nr. 11 respectively; **verify numbering**, the list was reworked in the 2012 amendment) do not bite.\n\n**But the exemption is fragile.** It depends entirely on the channel actually being closed. If this headline sits on an open website, a brochure PDF that's publicly downloadable, a trade-fair banner, or a LinkedIn post, it reaches the general public and § 11 Abs. 1 applies — at which point \"Surgeons love it\" is close to a textbook violation. If you want to rely on Fachkreise status, the copy needs to live behind real gating (DocCheck, login, verified-professional wall). Tell me the channel and I'll re-scope this.\n\n**Regardless of audience,** the claim still has to be true and provable:\n- MDR Art. 7 prohibits claims that mislead the user, including about performance. It applies to all advertising, with no Fachkreise carve-out.\n- HWG § 3 (irreführende Werbung) — same, no carve-out.\n- UWG § 5 / § 5a — and in the health sector German courts apply the *Strengeprinzip*: the advertiser carries the burden of proving health-related claims, and the evidentiary bar is raised, not lowered, for professional audiences.\n\n\"Surgeons love it\" asserts a fact about market sentiment. To keep any version of it you need documented data — a summative usability evaluation, a customer survey, structured user feedback — and the claim must not overstate what that data shows. A survey of 15 surgeons at three sites does not support an unqualified \"surgeons love it.\"\n\n## Issue 2 — \"you'll actually enjoy using\" implies a comparison\n\n\"Actually\" only does work if it means *unlike the alternatives*. That's an implicit knock on the category.\n\nLow legal risk, in my read: UWG § 6 (vergleichende Werbung) generally requires an identifiable competitor, and no competitor is identifiable here. So I would not call this a § 6 problem, and a § 4 Nr. 1 Herabsetzung claim would be a stretch against an unnamed field. Flagging it because it's the kind of phrasing that draws a competitor *Abmahnung* even when the underlying claim is defensible — and defending one costs more than rewriting the line.\n\n## Issue 3 — a handling claim is still a claim\n\n\"Enjoy using\" is, stripped of the tone, an ergonomics/usability performance claim. That has consequences beyond marketing:\n- It must be consistent with the intended purpose in your technical documentation. Your stated purpose is \"manual retraction of tissue to maintain surgical site exposure\" — nothing about handling or ergonomics.\n- If you want to make handling claims, substantiate them from the usability engineering file (IEC 62366-1 summative evaluation) and reference them in the clinical evaluation under MDR Art. 61. Class I reusable still requires a clinical evaluation, typically literature/equivalence-based.\n\nCheapest path: either drop the handling angle, or promote it to a real, sourced claim.\n\n## Issue 4 — wrong content for the buyer\n\nProcurement does not buy on affect. This copy gives them nothing to evaluate: no intended purpose, no material, no reprocessing validation, no sizes, no CE/UDI reference, no instrument-tray compatibility. For a *reusable* device, validated reprocessing per ISO 17664 is often the deciding line item, and it's absent.\n\nNote there is no Pflichtangaben catalogue for devices — HWG § 4 covers Arzneimittel only. So this is a persuasion failure, not a compliance gap.\n\n## Issue 5 — language\n\nGerman market, German audience. Advertising isn't covered by the MDR Art. 10(11) language requirement (that governs label and IFU), but English copy to German hospital procurement is a commercial own-goal.\n\n---\n\n## Rewrite\n\nConservative, no substantiation needed:\n\n> **Wundhaken für offene Eingriffe**\n> Zur manuellen Retraktion von Gewebe und Freihaltung des Operationsfeldes. Wiederverwendbar, validiert aufbereitbar nach ISO 17664.\n\nIf you want to keep the handling story, earn it with data:\n\n> **Wundhaken für offene Eingriffe — auf Griffführung ausgelegt**\n> Zur manuellen Retraktion von Gewebe und Freihaltung des Operationsfeldes. In der summativen Usability-Evaluation nach IEC 62366-1 bewerteten [n] von [N] Anwender:innen die Griffführung als gleichwertig oder besser gegenüber dem bisher eingesetzten Instrument ([Studien-ID], [Datum]).\n\nFill the brackets from the actual report, or cut the second sentence. A specific, sourced, modest claim is both more defensible and more persuasive to this audience than \"surgeons love it.\"\n\n---\n\nTwo things I'd need from you to close this out: **what channel this runs in** (determines whether § 11 Abs. 1 applies at all), and **what usability or survey data exists**. Also worth having German regulatory counsel confirm the § 11 numbering and the Fachkreise gating for your specific channel — I'd treat my cites as pointers, not as verified."
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0.20623725,
+            "judgeCostUsd": 0.005052000000000004,
+            "durationSeconds": 96,
+            "startedAt": "2026-09-09T20:05:49.999Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-JeJbII/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "judge votes: FAIL FAIL FAIL",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  false,
+                  false,
+                  false
+                ],
+                "evidence": "## Verdict\n\nNot usable as written. Two sentences, two separate legal problems, and zero information a procurement committee can act on.\n\n---\n\n## Issue 1 — \"Surgeons love it\" (the serious one)\n\nThis is an **Äußerung Dritter / fachliche Empfehlung** — a third-party endorsement claim — with no substantiation attached.\n\n**Applies regardless of audience:**\n- **MDR Art. 7** bans claims that mislead the user about performance. An unqualified \"surgeons love it\" asserts a general professional endorsement. If the underlying basis is three enthusiastic KOLs or nothing at all, the claim is misleading by exaggeration. Art. 7 breaches are enforceable by the competent Landesbehörde and are bußgeldbewehrt via the MPDG.\n- **HWG § 3** (Irreführungsverbot) applies to Medizinprodukte via § 1 Abs. 1 Nr. 1a HWG and, unlike § 11, has **no Fachkreise exemption**. German courts apply the *Strengeprinzip* to health-related advertising: you carry the burden of proving the claim, and the standard of proof is high.\n- **HWG § 6**: the moment you support this with a survey, study or expert statement, the citation must name author, date and source precisely. A bare \"surgeons love it\" with a footnote to an unpublished internal survey is not enough.\n- **UWG § 5 / § 5a**: misleading statement about a material characteristic; withholding the methodology of a satisfaction claim is itself a § 5a issue.\n\n**Channel risk — check this before anything else.** The Fachkreise framing only holds if the copy is genuinely restricted to Fachkreise (§ 2 HWG — hospital procurement staff do qualify). German courts treat an ungated website as Publikumswerbung. On a public page, \"surgeons love it\" runs straight into **§ 11 Abs. 1 Satz 1 Nr. 2 HWG** — advertising a Gegenstand as \"ärztlich … oder anderweitig fachlich empfohlen\" — which is an absolute prohibition outside Fachkreise, not a misleadingness test. Verify the current statutory wording, but this is the sharpest edge in the whole piece. A login wall or a documented Fachkreis-Bestätigung interstitial is the fix; a \"for healthcare professionals\" disclaimer under the fold is not.\n\n---\n\n## Issue 2 — \"The retractor you'll actually enjoy using\"\n\nWeaker exposure, but still flawed:\n\n- **\"actually\"** carries an implicit comparison: *unlike the ones you're using now*. Against a generic, unidentifiable market that reads as permissible Reklameübertreibung. If your positioning, imagery or context makes a specific competitor identifiable, it becomes **UWG § 6 Abs. 2 Nr. 5** (Herabsetzung).\n- **Substance problem.** Procurement evaluates on reprocessing validation, cycle life, tray compatibility, instrument weight, unit and lifecycle cost. \"Enjoy\" answers none of it, and an affect-led claim about a surgical instrument reads as unserious to this audience.\n\n---\n\n## Issue 3 — What's missing\n\n- No device identification (name, model, manufacturer).\n- No connection to the intended purpose. Claims must be traceable to the clinical evaluation under MDR Art. 61 — Class I is not exempt from that.\n- English copy for a German market. Not itself an advertising violation for Fachkreise (the MPDG German-language requirement bites on labelling and IFU, not ads), but it weakens you in an Irreführung dispute and reads as untranslated import material to a German procurement committee.\n\n---\n\n## Rewrite\n\n**Neutral, no evidence needed beyond the technical documentation:**\n\n> Retraktor zur manuellen Retraktion von Gewebe zur Aufrechterhaltung der Sicht auf das Operationsfeld bei offenen Eingriffen. Wiederverwendbar, validiert aufbereitbar.\n>\n> *(EN: Retractor for manual retraction of tissue to maintain surgical site exposure in open procedures. Reusable, with validated reprocessing.)*\n\n**If you have the survey data and want to keep the endorsement angle:**\n\n> In einer Anwenderbefragung unter [n] Chirurginnen und Chirurgen an [x] Kliniken ([Monat/Jahr]) bewerteten [n] die Handhabung mit „gut\" oder „sehr gut\". [Vollständige Quellenangabe; Methodik auf Anfrage.]\n\n**Differentiators that will actually move a procurement decision** — each only if you hold the data:\n\n- validated reprocessing cycles per ISO 17664, with the cycle count\n- instrument weight / one-handed positioning, if measured\n- tray and container compatibility\n- cost per procedure across the validated service life\n\n---\n\n## To keep any version of \"surgeons love it\"\n\nYou need all of: sample size and population, method and date, an independent or at least disclosed sponsor, a source citation meeting § 6 HWG, a Fachkreis-gated channel, and the claim mirrored in the technical documentation. Absent any one of those, drop it — the realistic enforcement path here is a competitor or Wettbewerbszentrale Abmahnung, which is fast and cheap for them to file."
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0.17922724999999998,
+            "judgeCostUsd": 0.004767,
+            "durationSeconds": 82,
+            "startedAt": "2026-09-09T20:07:26.491Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-bgebSN/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "judge votes: FAIL FAIL FAIL",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  false,
+                  false,
+                  false
+                ],
+                "evidence": "## Verdict\n\nDon't run this. Two sentences, and both carry avoidable risk — plus the copy delivers nothing a procurement committee can act on. This is a rewrite, not a tweak.\n\n---\n\n## Issue 1 — \"Surgeons love it\" is an unsubstantiated professional-endorsement claim\n\n**The substantiation problem (applies regardless of audience).** § 3 HWG (Irreführungsverbot) and § 5 UWG bite on Fachkreis advertising too. In German practice the advertiser carries the burden of proof for advertising claims, and health-adjacent claims are held to a strict evidentiary standard. A collective preference statement (\"surgeons love it\") reads as an empirical assertion about the profession. To keep it you need a documented basis: a user survey with disclosed n, method, population and date — not internal anecdote, not three quotes from a launch event.\n\n**The audience-drift problem (the bigger one).** § 11 Abs. 1 Nr. 2 HWG prohibits advertising *outside* Fachkreise with statements that a device is professionally recommended, tested or used. Hospital procurement itself is plausibly Fachkreise (§ 2 HWG covers Einrichtungen, die der Gesundheit von Menschen dienen), so the provision doesn't bite *if the placement is genuinely gated*. It bites the moment this sits on an open website, an unrestricted PDF, a trade-fair banner or a LinkedIn post. Ask where this copy will actually live before assuming the Fachkreise carve-out protects it.\n\n**Enforcement reality:** the practical risk here isn't the authority — it's a competitor Abmahnung or the Wettbewerbszentrale. Cheap for them to send, expensive for you to answer.\n\n## Issue 2 — \"you'll actually enjoy using\" has two defects\n\n- **\"Actually\" is an implicit swipe at the category.** No identifiable competitor, so § 6 UWG (vergleichende Werbung) doesn't really engage — but a blanket \"everything else is unpleasant\" is pauschale Herabsetzung in tone and is exactly the kind of line that invites a competitor letter. Low legal risk, wrong register for procurement.\n- **\"Enjoyment\" is not in your intended purpose.** MDR Art. 7 prohibits claims ascribing properties the device does not have or suggesting uses beyond the intended purpose assessed for conformity. \"Enjoyable\" isn't a property in your technical documentation. Ergonomics claims are legitimate — but as *ergonomics*, tied to a design feature and evidence, not as an affective promise.\n\n## Issue 3 — claim-to-documentation traceability\n\nEvery marketing claim must be consistent with the intended purpose and supported in the technical documentation (MDR Annex II; Art. 7). Class I means self-certification, so no notified body pre-screens this — the discipline has to be yours. If you don't have a claims matrix mapping each marketing statement to its evidence, that's the actual gap to close, and it will keep producing copy like this.\n\n## Issue 4 — it doesn't do the job\n\nNothing here names the product, states what it does, or gives a procurement committee a single decision input. For a **reusable** Class I instrument they need: material, validated reprocessing (ISO 17664 instructions, cycle count / expected service life), UDI and instrument-tracking fit, and instrument-set compatibility. Reprocessing validation is usually the deciding line item, and it's absent.\n\n---\n\n## Rewrite\n\n**Compliant baseline (German, Fachkreise):**\n\n> **[Produktname] — chirurgischer Wundhaken, wiederverwendbar**\n> Zur manuellen Retraktion von Gewebe zur Aufrechterhaltung der Exposition des Operationsgebiets bei offenen Eingriffen.\n> [Material] · ergonomischer Griff mit [konkretes Merkmal] · validierte Aufbereitung nach ISO 17664, [n] Zyklen · UDI-DI [xxx]\n\n**If — and only if — you have the survey data, add:**\n\n> In einer Anwenderbefragung ([Monat/Jahr], n = [x] Chirurginnen und Chirurgen) bewerteten [x] % die Griffergonomie im Vergleich zum bisher verwendeten Instrument als besser. [Quellenangabe]\n\n**English equivalent for the preference claim:**\n\n> In a user survey ([month/year], n = [x] surgeons), [x]% rated handle ergonomics as improved over their previously used instrument. [Source]\n\nThat structure keeps the ergonomics message you clearly want, but converts an assertion about surgeons' feelings into a citable finding — which is both defensible and more persuasive to a procurement committee than \"surgeons love it\" ever was.\n\nTwo things to settle before publication: **where this will be placed** (gated Fachkreise channel vs. open web changes the § 11 HWG analysis entirely), and whether the survey exists. And route the final wording through your regulatory/legal sign-off — I'm flagging the risk structure, not giving you a legal opinion."
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 0.3333333333333333,
+        "passRate": 0.3333333333333333,
+        "scoreWithout": 0,
+        "passRateWithout": 0,
+        "delta": 0.3333333333333333
+      }
+    }
+  ],
+  "aggregates": {
+    "casesTotal": 1,
+    "casesPassed": 0,
+    "overallScore": 0.3333333333333333,
+    "overallPassRate": 0.3333333333333333,
+    "meanDelta": 0.3333333333333333
+  }
+}

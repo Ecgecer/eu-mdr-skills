@@ -1,0 +1,86 @@
+{
+  "schemaVersion": 1,
+  "claudeVersion": "2.1.266",
+  "startedAt": "2026-09-09T19:17:22.199Z",
+  "durationSeconds": 85,
+  "costUsd": 0.26096775000000005,
+  "partial": false,
+  "suite": {
+    "root": "/Users/egecangecer/projects/device-claims-review/device-claims",
+    "ablation": "none",
+    "caseFilter": "non-german-eu-market",
+    "threshold": 1,
+    "plugins": [
+      {
+        "name": "device-claims",
+        "version": "0.1.0",
+        "path": "/Users/egecangecer/projects/device-claims-review/device-claims"
+      }
+    ]
+  },
+  "cases": [
+    {
+      "name": "non-german-eu-market",
+      "dir": "evals/08-non-german-eu-market",
+      "source": "prose",
+      "promptMarkdown": "Review this copy. Device: Class IIa home blood-pressure monitor. Audience: public\nconsumer web page, no gating. Market: **France only** — this copy runs on our\nFrench site and is not used in Germany.\n\nCopy: \"Recommandé par le Professeur Dubois, cardiologue. Ne jouez pas avec votre\ncoeur — mesurez votre tension chaque jour.\"",
+      "runsPerCase": 3,
+      "timeoutSeconds": 300,
+      "maxTurns": 10,
+      "graders": [
+        {
+          "name": "criteria",
+          "type": "llm",
+          "weight": 1,
+          "graderMarkdown": "The copy is the French-market twin of the German case: a physician endorsement plus\na fear-of-not-using line. The market is stated as France only.\n\nPASS requires:\n(1) MDR Art. 7 IS applied. It governs any device placed on the EU market, so the\n    fear framing should still be examined under Art. 7(b) and/or 7(c).\n(2) HWG and UWG are NOT applied as findings. They are German national law. The\n    response must either not raise them, or state explicitly that they do not\n    apply because the market is France.\n      - PASS: \"HWG § 11 does not apply — the copy targets France, not Germany.\"\n      - FAIL: any HWG or UWG provision appearing in a Breach: line for this copy.\n(3) It does not silently substitute French law it cannot cite. If it notes that\n    France has an equivalent regime, that must be flagged as unverified or as an\n    open question, not asserted as a rule.\n\nFAIL if German provisions are applied to a French-market asset. The skill carries a\nlot of German content and over-applying it outside Germany is its most likely\nsystematic error.",
+          "config": {
+            "criteria": "The copy is the French-market twin of the German case: a physician endorsement plus\na fear-of-not-using line. The market is stated as France only.\n\nPASS requires:\n(1) MDR Art. 7 IS applied. It governs any device placed on the EU market, so the\n    fear framing should still be examined under Art. 7(b) and/or 7(c).\n(2) HWG and UWG are NOT applied as findings. They are German national law. The\n    response must either not raise them, or state explicitly that they do not\n    apply because the market is France.\n      - PASS: \"HWG § 11 does not apply — the copy targets France, not Germany.\"\n      - FAIL: any HWG or UWG provision appearing in a Breach: line for this copy.\n(3) It does not silently substitute French law it cannot cite. If it notes that\n    France has an equivalent regime, that must be flagged as unverified or as an\n    open question, not asserted as a rule.\n\nFAIL if German provisions are applied to a French-market asset. The skill carries a\nlot of German content and over-applying it outside Germany is its most likely\nsystematic error.",
+            "focus": "last_message"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 5,
+            "costUsd": 0.26096775000000005,
+            "judgeCostUsd": 0.008138999999999999,
+            "durationSeconds": 85,
+            "startedAt": "2026-09-09T19:17:22.208Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-Dq0R7i/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "# Device Claims Review: French consumer web page\n\n**Reviewed:** 2026-09-09\n**Device:** Home blood-pressure monitor — Class IIa\n**Intended purpose (as assessed):** **NOT SUPPLIED — limb (d) not assessed**\n**Audience:** Publikum (ungated public consumer page)\n**Markets:** France only (EU layer applies; German overlay does not)\n\n## Before the claim pass — two anchors\n\n**Anchor 1 is missing.** I can review limbs (a), (b) and (c) without the intended purpose, but (d) — suggesting uses beyond the assessed intended purpose — is the limb device marketing trips most often, and I cannot assess it against a purpose I have not seen. Can you paste the intended purpose from the technical documentation or DoC? It matters here specifically because the copy prescribes a **measurement frequency**, and whether unsupervised daily self-measurement sits inside the assessed purpose is exactly a (d) question.\n\n**Anchor 2 is settled:** ungated public page → Publikum. That would engage HWG § 11 — but the German overlay does **not** apply, because you have told me this runs on the French site only. I have kept the German provisions out of `Breach:` and recorded them under `Also engaged:` with the condition attached, because \"France only\" is a distribution fact that can change.\n\n**One layer I cannot supply.** For a France-only consumer page, the controlling national layer is French law on advertising medical devices to the public (Code de la santé publique / ANSM) — including whether an ungated consumer ad may carry a named physician's endorsement at all. That is outside the reference files this skill verifies. `[verify]` I will not state a French rule I cannot cite. Flag it to French regulatory counsel; on my reading of the risk ordering, **it is the most likely place this copy fails**, ahead of anything below.\n\n## Summary\n\n3 claims reviewed. 0 cut, 1 reword, 2 verify, 0 OK.\n\n**Ready to publish: No — rewrite needed** (one limb (b) breach on the material supplied, plus limb (d) unassessed).\n\n## Findings\n\n---\n\n**Claim:** \"Ne jouez pas avec votre cœur — mesurez votre tension chaque jour.\"\n**Breach:** MDR Art. 7(b) [verified]\n**Why:** The construction attaches a cardiac-protection outcome to a measuring device — \"don't gamble with your heart, so measure daily\" tells the reader that measuring safeguards the heart. A blood-pressure monitor measures; it does not treat, prevent or reduce cardiac risk. That is \"creating a false impression regarding treatment ... functions or properties which the device does not have\".\n**Evidence needed:** n/a — cannot be cured by evidence. Even a monitor with outcome data behind it does not deliver the benefit through measurement alone; the cure is to sever the protection implication, not to substantiate it.\n**Also engaged:** HWG § 11(1) no. 7 [verified] — copy suggesting health is impaired by *not* using the device. This is a near-textbook fit and would bite hard **if** the copy is ever reused on the German site or in German-language material reachable from Germany. Not a breach here on France-only distribution.\n**Call:** Needs rewording\n\n---\n\n**Claim:** \"mesurez votre tension chaque jour\"\n**Breach:** none on the material supplied\n**Why:** Measurement frequency is a clinical decision. Whether an instruction to the general public to measure daily, indefinitely, sits inside the assessed intended purpose is a limb (d) question I cannot answer without Anchor 1 — and if the IFU makes frequency a matter for the treating physician, ungated copy that sets it independently is intended-purpose drift, not an accuracy problem.\n**Evidence needed:** Intended purpose as assessed, plus the IFU section on measurement frequency and on physician supervision.\n**Also engaged:** MDR Art. 7(d) [verified] — if the assessed purpose scopes use to physician-directed monitoring. Cured by narrowing the claim or extending the conformity assessment, **not** by data.\n**Call:** Verify\n\n---\n\n**Claim:** \"Recommandé par le Professeur Dubois, cardiologue.\"\n**Breach:** none on the material supplied\n**Why:** A truthful, current recommendation from a named registered cardiologist asserts a fact about an endorsement, not a function or property of the device. Testimonials are not prohibited per se under any provision I verify.\n**Evidence needed:** Written, dated, still-current authorisation from Prof. Dubois; confirmation of the registered specialty and title; disclosure position on any financial or contractual relationship with the manufacturer; confirmation of what exactly was recommended (this device, this model, this indication).\n**Also engaged:** (1) French public-advertising rules on physician endorsement [verify] — outside my references, see above; if that check goes against you the cure is **deletion**, not evidence. (2) HWG § 11(1) no. 11 [verified] — testimonials where misleading; only if reused in Germany. (3) MDR Art. 7(a)/(b) [verified] — if the endorsement is stale, was given for a different model, or is paid and undisclosed, the specialist framing starts carrying clinical weight the device has not earned.\n**Call:** Verify\n\n---\n\n### Limb (c) — open question, not a finding\n\nThe copy surfaces no limitation, no contraindication, and no pointer to clinical interpretation of readings. I can't tell from what I have whether the IFU records a likely risk that belongs here. Worth checking against the IFU — the usual candidates for a home BP monitor are cuff sizing, arrhythmia affecting reading validity, and self-adjustment of medication on the basis of home readings. **I am not raising (c) on those**, because I would be inferring them from the device category rather than from your material. If the IFU names any of them as a likely risk in normal use, (c) becomes live and the proportionate fix on a short asset is an IFU pointer, not patient-facing safety text.\n\n### Drafting note (not a finding)\n\n\"coeur\" → \"cœur\".\n\n## Suggested fix — paste-ready\n\n> **Recommandé par le Professeur Dubois, cardiologue.**\n> Suivez votre tension artérielle à domicile, à la fréquence indiquée par votre médecin.\n> Ce tensiomètre mesure votre tension artérielle ; il ne remplace pas un avis médical. Lisez la notice avant utilisation.\n\nWhat changed and why:\n\n- The fear-appeal clause is gone. It was the limb (b) breach and it is not curable by qualification — a softened \"don't gamble with your heart\" still implies protection.\n- \"chaque jour\" → \"à la fréquence indiquée par votre médecin\". This defuses the limb (d) exposure without waiting on Anchor 1, and it is a stronger line for a Class IIa device sold to consumers.\n- The endorsement line is retained **pending both checks above**. If the French endorsement check fails, delete the whole first line; the rest stands on its own.\n- The IFU pointer is inserted pre-emptively. It costs nothing and it closes the (c) question whichever way the IFU reads.\n\n## Evidence to gather before publishing\n\n| Claim | Evidence needed | From whom |\n|---|---|---|\n| Whole asset | Intended purpose as assessed, verbatim from the DoC / technical documentation | Regulatory affairs |\n| \"mesurez ... chaque jour\" | IFU on measurement frequency and physician supervision | Regulatory affairs |\n| Whole asset | Whether the IFU records a likely risk in normal use | Regulatory affairs |\n| \"Recommandé par le Professeur Dubois\" | Dated written authorisation; specialty/title confirmation; relationship-disclosure position; scope of what was recommended | Marketing / legal |\n| \"Recommandé par le Professeur Dubois\" | Whether French public-advertising rules permit a named physician endorsement in ungated consumer copy | French regulatory counsel |\n\n## Provisions cited\n\n- **MDR Art. 7(b)** — `references/mdr-ivdr-art7.md` [verified]\n- **MDR Art. 7(c)** — `references/mdr-ivdr-art7.md` [verified] (raised as open question, not a finding)\n- **MDR Art. 7(d)** — `references/mdr-ivdr-art7.md` [verified] (not assessed — intended purpose not supplied)\n- **HWG § 11(1) nos. 7 and 11** — `references/hwg.md` [verified] (conditional only; not applicable to France-only distribution)\n- French public-advertising rules for medical devices — **not in the reference set** `[verify]`\n\n## Limits\n\n> This review checks copy against the verbatim text of MDR Art. 7, IVDR Art. 7, HWG §§ 3 and 11, and UWG §§ 5 and 6, retrieved from EUR-Lex and gesetze-im-internet on 2026-09-09. It does **not** cover case law, MDCG guidance, notified-body practice, national enforcement decisions, or any market outside the EU and Germany. UWG in particular is heavily shaped by BGH and OLG case law that this review does not assess. It is a drafting and risk-triage aid, not legal advice, and it is not a substitute for a Fachanwalt für Medizinrecht or Wettbewerbsrecht.\n\nSince the market is France, add: this skill verifies no French national provisions at all. The MDR layer above is complete; the French layer is a gap you need to close with local counsel, not something I have checked and cleared."
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 1,
+        "passRate": 1
+      }
+    }
+  ],
+  "aggregates": {
+    "casesTotal": 1,
+    "casesPassed": 1,
+    "overallScore": 1,
+    "overallPassRate": 1
+  }
+}

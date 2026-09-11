@@ -1,0 +1,86 @@
+{
+  "schemaVersion": 1,
+  "claudeVersion": "2.1.267",
+  "startedAt": "2026-09-10T12:33:32.654Z",
+  "durationSeconds": 89,
+  "costUsd": 0.30620300000000006,
+  "partial": false,
+  "suite": {
+    "root": "/Users/egecangecer/projects/eu-mdr-skills/device-claims",
+    "ablation": "none",
+    "caseFilter": "puffery-restraint",
+    "threshold": 1,
+    "plugins": [
+      {
+        "name": "device-claims",
+        "version": "0.1.0",
+        "path": "/Users/egecangecer/projects/eu-mdr-skills/device-claims"
+      }
+    ]
+  },
+  "cases": [
+    {
+      "name": "puffery-restraint",
+      "dir": "evals/10-puffery-restraint",
+      "source": "prose",
+      "promptMarkdown": "Review this copy. Device: Class I reusable surgical retractor. Intended purpose:\n\"manual retraction of tissue to maintain surgical site exposure during open\nprocedures.\" Audience: hospital procurement (Fachkreise). Market: Germany.\n\nCopy: \"Surgeons love it. The retractor you'll actually enjoy using.\"",
+      "runsPerCase": 3,
+      "timeoutSeconds": 300,
+      "maxTurns": 10,
+      "graders": [
+        {
+          "name": "criteria",
+          "type": "llm",
+          "weight": 1,
+          "graderMarkdown": "This is pure puffery. It makes no performance claim, no clinical claim, no\ncomparison, and no statement about certification. \"Surgeons love it\" is subjective\npreference, not an assertion about what the device does.\n\nThe skill's own taxonomy says puffery with no clinical or performance content need\nnot be listed as a finding.\n\nPASS requires:\n(1) No provision is ASSERTED AS BREACHED. Judge how a provision is used, not whether\n    its string appears.\n      - PASS: `Breach: none`.\n      - PASS: a provision under `Also engaged:` with its condition named. That line is\n        the skill's mechanism for exactly this situation and must not be marked down.\n      - PASS: a provision named in order to exclude it (\"§ 11 does not apply —\n        Fachkreise\").\n      - FAIL: a provision on a `Breach:` line, or prose asserting the copy breaches it.\n(2) HWG § 11 is not applied (Fachkreise audience, and nothing in the copy engages\n    nos. 7-9, 11 or 12 in any case).\n(3) The response does not present the copy as breaching anything. `Call: Verify`,\n    `Call: Needs substantiation` and `Ready to publish: With changes below` are all\n    acceptable and do NOT count as findings for this case.\n(4) The `## Limits` block is present and the response does not emit\n    \"Ready to publish: Yes\" — SKILL.md forbids that for a non-lawyer user.\n\nFAIL if any Art. 7 limb, HWG or UWG provision is asserted as breached. This tests\nwhether the skill can say \"nothing here\", which the no-skill baseline could not do\non the other clean-copy case.",
+          "config": {
+            "criteria": "This is pure puffery. It makes no performance claim, no clinical claim, no\ncomparison, and no statement about certification. \"Surgeons love it\" is subjective\npreference, not an assertion about what the device does.\n\nThe skill's own taxonomy says puffery with no clinical or performance content need\nnot be listed as a finding.\n\nPASS requires:\n(1) No provision is ASSERTED AS BREACHED. Judge how a provision is used, not whether\n    its string appears.\n      - PASS: `Breach: none`.\n      - PASS: a provision under `Also engaged:` with its condition named. That line is\n        the skill's mechanism for exactly this situation and must not be marked down.\n      - PASS: a provision named in order to exclude it (\"§ 11 does not apply —\n        Fachkreise\").\n      - FAIL: a provision on a `Breach:` line, or prose asserting the copy breaches it.\n(2) HWG § 11 is not applied (Fachkreise audience, and nothing in the copy engages\n    nos. 7-9, 11 or 12 in any case).\n(3) The response does not present the copy as breaching anything. `Call: Verify`,\n    `Call: Needs substantiation` and `Ready to publish: With changes below` are all\n    acceptable and do NOT count as findings for this case.\n(4) The `## Limits` block is present and the response does not emit\n    \"Ready to publish: Yes\" — SKILL.md forbids that for a non-lawyer user.\n\nFAIL if any Art. 7 limb, HWG or UWG provision is asserted as breached. This tests\nwhether the skill can say \"nothing here\", which the no-skill baseline could not do\non the other clean-copy case.",
+            "focus": "last_message"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 6,
+            "costUsd": 0.30620300000000006,
+            "judgeCostUsd": 0.007013999999999999,
+            "durationSeconds": 89,
+            "startedAt": "2026-09-10T12:33:32.664Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-qXFrlp/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "# Device Claims Review: display/brochure headline (12 words)\n\n**Reviewed:** 2026-09-10\n**Device:** Class I reusable surgical retractor\n**Intended purpose (as assessed):** \"manual retraction of tissue to maintain surgical site exposure during open procedures.\"\n**Audience:** Fachkreise (hospital procurement) — HWG § 11 does **not** apply; § 3 does `[verified]`\n**Markets:** DE (+ EU, via MDR Art. 7)\n\n## Summary\n\n2 claims reviewed. 0 cut, 0 reword, 1 substantiate, 1 OK.\n\n**Ready to publish:** With changes below.\n\nNo Art. 7 breach identified on the material supplied. The copy makes no clinical, diagnostic or performance claim, which is what keeps it out of limbs (a), (b) and (d). The single exposure is that \"Surgeons love it\" is a factual assertion about clinician acceptance addressed to buyers who purchase partly on clinician acceptance — and nothing supplied substantiates it.\n\n## Findings\n\n**Claim:** \"Surgeons love it.\"\n**Breach:** none\n**Why:** Two readings. As reklamehafte Übertreibung it has no factual core and no provision bites. As a statement of broad clinician acceptance it is an Angabe about a wesentliches Merkmal of the goods, and for a procurement reader it is exactly the kind of statement capable of moving a purchasing decision — the § 5(1) *geeignet* filter is met on this audience, not defeated by it. Which reading governs is a case-law question on the puffery boundary that this review does not assess.\n**Evidence needed:** A user-evaluation basis — survey of surgeon users with n and date, structured post-trial feedback, or hospital evaluation reports. Curable by evidence.\n**Also engaged:** HWG § 3 (irreführende Werbung) `[verified]` and UWG § 5(2) no. 1 — \"wesentlichen Merkmale … Beschaffenheit\" `[verified]` — **if** there is no user-feedback basis on file, or the basis is materially narrower than \"surgeons\" implies (e.g. three users at one pilot site).\n**Call:** Needs substantiation\n**Suggested fix (paste-ready, fill the slots from the evaluation file):**\n> \"In our [YEAR] user evaluation, [X] of [Y] surgeons at [N] hospitals rated handling better than their current retractor.\"\n\n**Claim:** \"The retractor you'll actually enjoy using.\"\n**Breach:** none\n**Why:** No function or property is ascribed (limb (a)), no impression regarding treatment or diagnosis is created (limb (b)), and no use outside \"manual retraction of tissue … during open procedures\" is suggested (limb (d)). Subjective user satisfaction is not a therapeutic Wirkung, so HWG § 3 no. 1 is not engaged, and \"enjoy using\" promises a user experience rather than an *Erfolg*, so § 3 no. 2(a) is not engaged either.\n**Evidence needed:** n/a\n**Also engaged:** UWG § 6(2) no. 2 `[verified]` — only if this line sits in a context that makes a competitor *erkennbar* under § 6(1). The implicit sting in \"actually\" points at retractors generally, not at an identifiable rival, so on this asset alone I do not read § 6 as engaged. If the headline runs above a competitor comparison, on a trade-show panel naming a rival, or in a deck that does, re-test it as comparative advertising — the comparison would then have to be objective and *nachprüfbar*, which \"enjoy using\" is not.\n**Call:** OK\n**Drafting note (not a legal finding):** the two lines together carry zero device information — no handling characteristic, no blade configuration, no reprocessing data. For a procurement audience that is a commercial weakness, not a compliance one.\n\n## Considered and not flagged\n\n- **HWG § 11(1) no. 11 (Äußerungen Dritter)** — not applicable. § 11 governs advertising **außerhalb der Fachkreise**, and hospital procurement is Fachkreise. Even for a Publikum asset, testimonials are prohibited only where missbräuchlich, abstoßend or irreführend, not per se `[verified]`.\n- **MDR Art. 7(c)** — not raised. The copy is benefit-only and surfaces no limitation, but I have no IFU or technical documentation, so I cannot name a likely risk from supplied material and will not infer one from the device category. **Open question:** does the IFU record a likely risk for this device — reprocessing/sterilisation limits, maximum retraction force, tissue-trauma cautions, service-life or inspection requirements — that belongs in procurement-facing copy? Worth checking. An \"see IFU for reprocessing and inspection requirements\" pointer is cheap insurance on a reusable device regardless of how that lands.\n- **UWG § 5(2) nos. 3 and 4** — no certification, class or notified-body claim appears. Note for whoever builds the surrounding asset: a Class I device self-certifies, so any notified-body or \"certified\" framing added later is a no. 4 finding independently of the performance claims.\n\n## Evidence to gather before publishing\n\n| Claim | Evidence needed | From whom |\n|---|---|---|\n| \"Surgeons love it.\" | Surgeon user-evaluation data — n, date, sites, question wording | Sales/clinical affairs; hospital evaluation reports |\n| (c) open question | Whether the IFU records a likely risk warranting a pointer in marketing copy | RA/QA — technical documentation owner |\n\n## Provisions cited\n\n- MDR Art. 7(a)–(d) — `references/mdr-ivdr-art7.md` `[verified]`\n- HWG § 3, § 11(1) no. 11 and the Fachkreise scoping sentence — `references/hwg.md` `[verified]`\n- UWG § 5(1), § 5(2) nos. 1, 3, 4; § 6(1), § 6(2) no. 2 — `references/uwg.md` `[verified]`\n- The puffery / factual-claim boundary, and whether a diffuse \"actually\" establishes *Erkennbarkeit* under § 6(1) — `[verify]`, case law, outside this skill's sources\n\n## Limits\n\n> This review checks copy against the verbatim text of MDR Art. 7, IVDR Art. 7, HWG §§ 3 and 11, and UWG §§ 5 and 6, retrieved from EUR-Lex and gesetze-im-internet on 2026-09-09. It does **not** cover case law, MDCG guidance, notified-body practice, national enforcement decisions, or any market outside the EU and Germany. UWG in particular is heavily shaped by BGH and OLG case law that this review does not assess. It is a drafting and risk-triage aid, not legal advice, and it is not a substitute for a Fachanwalt für Medizinrecht or Wettbewerbsrecht.\n\n---\n\nThe short version: nothing here needs cutting. Substantiate \"Surgeons love it\" or make it concrete, check the IFU for a risk worth a pointer, and re-test the second line under UWG § 6 if it ever runs alongside a competitor comparison."
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 1,
+        "passRate": 1
+      }
+    }
+  ],
+  "aggregates": {
+    "casesTotal": 1,
+    "casesPassed": 1,
+    "overallScore": 1,
+    "overallPassRate": 1
+  }
+}

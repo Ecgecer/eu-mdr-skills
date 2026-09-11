@@ -1,0 +1,1689 @@
+{
+  "schemaVersion": 1,
+  "claudeVersion": "2.1.267",
+  "startedAt": "2026-09-10T04:51:45.455Z",
+  "durationSeconds": 127,
+  "costUsd": 0,
+  "partial": false,
+  "suite": {
+    "root": "/Users/egecangecer/projects/eu-mdr-skills/device-claims",
+    "ablation": "with-without",
+    "threshold": 1,
+    "plugins": [
+      {
+        "name": "device-claims",
+        "version": "0.1.0",
+        "path": "/Users/egecangecer/projects/eu-mdr-skills/device-claims"
+      }
+    ]
+  },
+  "cases": [
+    {
+      "name": "limb-d-intended-purpose-drift",
+      "dir": "evals/01-limb-d-intended-purpose-drift",
+      "source": "prose",
+      "promptMarkdown": "Review this copy. The device is a Class IIa continuous ECG patch. Intended\npurpose as assessed: \"continuous single-lead ECG recording in adults under the\nsupervision of a healthcare professional for the detection of cardiac\narrhythmias.\"\n\nCopy: \"The X100 patch records your heart rhythm for 14 days straight. New parents love\nit for keeping an eye on a newborn's breathing overnight — just peel, stick, and sleep.\"",
+      "runsPerCase": 3,
+      "timeoutSeconds": 300,
+      "maxTurns": 10,
+      "graders": [
+        {
+          "name": "criteria",
+          "type": "llm",
+          "weight": 1,
+          "graderMarkdown": "The response MUST flag \"Athletes love it for tracking recovery\" as a breach\nof MDR Art. 7(d) — suggesting a use outside the assessed intended purpose\n(which is clinical arrhythmia detection under HCP supervision).\nIt MUST NOT treat this as a truthfulness problem or say it can be cured by\nevidence/substantiation; the correct cure is narrowing the claim or\nextending the conformity assessment.\nIt should also note the loss of the HCP-supervision element (\"just peel,\nstick, and train\").\nPASS only if Art. 7(d) is identified by name.\n\nAdditionally, no market is stated in this prompt. The response must either ask which\nmarket applies or refrain from asserting HWG or UWG findings. Applying German national\nlaw to a prompt that never mentions Germany is the error `non-german-eu-market` exists\nto catch, and it should not pass here.",
+          "config": {
+            "criteria": "The response MUST flag \"Athletes love it for tracking recovery\" as a breach\nof MDR Art. 7(d) — suggesting a use outside the assessed intended purpose\n(which is clinical arrhythmia detection under HCP supervision).\nIt MUST NOT treat this as a truthfulness problem or say it can be cured by\nevidence/substantiation; the correct cure is narrowing the claim or\nextending the conformity assessment.\nIt should also note the loss of the HCP-supervision element (\"just peel,\nstick, and train\").\nPASS only if Art. 7(d) is identified by name.\n\nAdditionally, no market is stated in this prompt. The response must either ask which\nmarket applies or refrain from asserting HWG or UWG findings. Applying German national\nlaw to a prompt that never mentions Germany is the error `non-german-eu-market` exists\nto catch, and it should not pass here.",
+            "focus": "last_message"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 3,
+            "startedAt": "2026-09-10T04:51:45.471Z",
+            "error": "exit 1: Credit balance is too low",
+            "tracePath": "/private/tmp/e-WjlYzm/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: judge call failed: Credit balance is too low",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 2,
+            "startedAt": "2026-09-10T04:51:47.994Z",
+            "error": "exit 1: Credit balance is too low",
+            "tracePath": "/private/tmp/e-GmEEOU/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: judge call failed: Credit balance is too low",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 2,
+            "startedAt": "2026-09-10T04:51:50.437Z",
+            "error": "exit 1: Credit balance is too low",
+            "tracePath": "/private/tmp/e-DRkMvj/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: judge call failed: Credit balance is too low",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ],
+        "without": [
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 2,
+            "startedAt": "2026-09-10T04:51:52.493Z",
+            "error": "exit 1: Credit balance is too low",
+            "tracePath": "/private/tmp/e-d4DOGH/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: judge call failed: Credit balance is too low",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 2,
+            "startedAt": "2026-09-10T04:51:54.659Z",
+            "error": "exit 1: Credit balance is too low",
+            "tracePath": "/private/tmp/e-Ow43FE/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: judge call failed: Credit balance is too low",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 2,
+            "startedAt": "2026-09-10T04:51:56.961Z",
+            "error": "exit 1: Credit balance is too low",
+            "tracePath": "/private/tmp/e-IyT5Mj/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: judge call failed: Credit balance is too low",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 0,
+        "passRate": 0,
+        "scoreWithout": 0,
+        "passRateWithout": 0,
+        "delta": 0
+      }
+    },
+    {
+      "name": "hwg11-wrong-audience",
+      "dir": "evals/02-hwg11-wrong-audience",
+      "source": "prose",
+      "promptMarkdown": "Review this copy for a Class IIb surgical navigation system. Audience: a gated\npage for hospital procurement and clinical engineering only, credentialed login\nrequired. Market: Germany.\n\nCopy: \"Prof. Ellwanger at Universitätsklinikum Süd: 'It took two steps out of every\nregistration.' In routine use across the DACH region since 2024.\"",
+      "runsPerCase": 3,
+      "timeoutSeconds": 300,
+      "maxTurns": 10,
+      "graders": [
+        {
+          "name": "criteria",
+          "type": "llm",
+          "weight": 1,
+          "graderMarkdown": "The audience is Fachkreise (gated, credentialed hospital procurement and\nclinicians). HWG § 11 applies only OUTSIDE Fachkreise.\nPASS requires BOTH:\n(1) The response does NOT raise an HWG § 11 finding, or explicitly states\n    § 11 does not apply because the audience is Fachkreise.\n(2) Both claims — the quoted testimonial and the \"routine use across the DACH\n    region since 2024\" adoption claim — are raised, and NEITHER is placed on a\n    `Breach:` line. On the\n    material supplied nothing shows either is false, so the correct shape is\n    `Breach: none` + `Also engaged:` with the condition named + `Call: Verify`.\n    SKILL.md: \"'This might not be substantiated' is not a breach; it is\n    Call: Verify.\"\nFAIL if it cites § 11 as applicable, or if it drops the § 3 / § 5 analysis\nentirely because the audience is professional, or if either claim is asserted as\nbreached without a stated reason the copy conflicts with the provision's\noperative words.",
+          "config": {
+            "criteria": "The audience is Fachkreise (gated, credentialed hospital procurement and\nclinicians). HWG § 11 applies only OUTSIDE Fachkreise.\nPASS requires BOTH:\n(1) The response does NOT raise an HWG § 11 finding, or explicitly states\n    § 11 does not apply because the audience is Fachkreise.\n(2) Both claims — the quoted testimonial and the \"routine use across the DACH\n    region since 2024\" adoption claim — are raised, and NEITHER is placed on a\n    `Breach:` line. On the\n    material supplied nothing shows either is false, so the correct shape is\n    `Breach: none` + `Also engaged:` with the condition named + `Call: Verify`.\n    SKILL.md: \"'This might not be substantiated' is not a breach; it is\n    Call: Verify.\"\nFAIL if it cites § 11 as applicable, or if it drops the § 3 / § 5 analysis\nentirely because the audience is professional, or if either claim is asserted as\nbreached without a stated reason the copy conflicts with the provision's\noperative words.",
+            "focus": "last_message"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 2,
+            "startedAt": "2026-09-10T04:51:59.010Z",
+            "error": "exit 1: Credit balance is too low",
+            "tracePath": "/private/tmp/e-2jMtQe/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: judge call failed: Credit balance is too low",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 2,
+            "startedAt": "2026-09-10T04:52:01.007Z",
+            "error": "exit 1: Credit balance is too low",
+            "tracePath": "/private/tmp/e-l1amc8/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: judge call failed: Credit balance is too low",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 2,
+            "startedAt": "2026-09-10T04:52:03.108Z",
+            "error": "exit 1: Credit balance is too low",
+            "tracePath": "/private/tmp/e-eu4HjX/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: judge call failed: Credit balance is too low",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ],
+        "without": [
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 2,
+            "startedAt": "2026-09-10T04:52:05.255Z",
+            "error": "exit 1: Credit balance is too low",
+            "tracePath": "/private/tmp/e-z4ZDH8/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: judge call failed: Credit balance is too low",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 2,
+            "startedAt": "2026-09-10T04:52:07.239Z",
+            "error": "exit 1: Credit balance is too low",
+            "tracePath": "/private/tmp/e-KzGe8K/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: judge call failed: Credit balance is too low",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 2,
+            "startedAt": "2026-09-10T04:52:09.356Z",
+            "error": "exit 1: Credit balance is too low",
+            "tracePath": "/private/tmp/e-iHZe8Z/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: judge call failed: Credit balance is too low",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 0,
+        "passRate": 0,
+        "scoreWithout": 0,
+        "passRateWithout": 0,
+        "delta": 0
+      }
+    },
+    {
+      "name": "hwg11-item-scope",
+      "dir": "evals/03-hwg11-item-scope",
+      "source": "prose",
+      "promptMarkdown": "Review this copy. Device: Class IIa home blood-pressure monitor. Audience:\npublic consumer web page, no gating. Market: Germany.\n\nCopy: \"Recommended by Professor Schmidt, cardiologist. Don't gamble with your\nheart — check your pressure daily.\"",
+      "runsPerCase": 3,
+      "timeoutSeconds": 300,
+      "maxTurns": 10,
+      "graders": [
+        {
+          "name": "criteria",
+          "type": "llm",
+          "weight": 1,
+          "graderMarkdown": "This is Publikumswerbung for a MEDICAL DEVICE. Under HWG § 11(1) final\nsentence, only nos. 7, 8, 9, 11 and 12 apply to devices.\nPASS requires:\n(1) \"Don't gamble with your heart\" IS flagged under § 11(1) no. 7\n    (suggesting health is impaired by not using the device).\n(2) § 11(1) no. 2 is not APPLIED to this device. Judge how the provision is\n    USED, not whether the string appears anywhere in the response.\n      - PASS: no. 2 is never mentioned.\n      - PASS: no. 2 is mentioned in order to EXCLUDE it, e.g. \"§ 11(1) no. 2\n        does not apply to Medizinprodukte — only nos. 7-9, 11 and 12 do\".\n        This is the correct answer. Showing the exclusion is better than\n        silence, not worse, and must not be marked down.\n      - FAIL: no. 2 is reported as a live finding — the endorsement is said to\n        breach it, or it appears in a Breach: line for this device.\n    If the endorsement is raised as a finding at all it must be under no. 11, § 3, or\n    UWG § 5 — and if under no. 11, the response must APPLY the missbräuchlich /\n    abstoßend / irreführend qualifier and say whether it is met. A flat\n    \"testimonials are prohibited in Publikumswerbung\" is a FAIL: references/hwg.md says\n    in terms that such a review \"is wrong\".\n(3) No § 11(1) item outside {7, 8, 9, 11, 12} is applied to this device. The closing\n    sentence of § 11(1) limits devices to those five; citing no. 3, no. 5 or any other\n    is the same error as no. 2.\nThis is the most important false-positive check in the suite. Read the sentence\naround any occurrence of \"no. 2\" before voting.",
+          "config": {
+            "criteria": "This is Publikumswerbung for a MEDICAL DEVICE. Under HWG § 11(1) final\nsentence, only nos. 7, 8, 9, 11 and 12 apply to devices.\nPASS requires:\n(1) \"Don't gamble with your heart\" IS flagged under § 11(1) no. 7\n    (suggesting health is impaired by not using the device).\n(2) § 11(1) no. 2 is not APPLIED to this device. Judge how the provision is\n    USED, not whether the string appears anywhere in the response.\n      - PASS: no. 2 is never mentioned.\n      - PASS: no. 2 is mentioned in order to EXCLUDE it, e.g. \"§ 11(1) no. 2\n        does not apply to Medizinprodukte — only nos. 7-9, 11 and 12 do\".\n        This is the correct answer. Showing the exclusion is better than\n        silence, not worse, and must not be marked down.\n      - FAIL: no. 2 is reported as a live finding — the endorsement is said to\n        breach it, or it appears in a Breach: line for this device.\n    If the endorsement is raised as a finding at all it must be under no. 11, § 3, or\n    UWG § 5 — and if under no. 11, the response must APPLY the missbräuchlich /\n    abstoßend / irreführend qualifier and say whether it is met. A flat\n    \"testimonials are prohibited in Publikumswerbung\" is a FAIL: references/hwg.md says\n    in terms that such a review \"is wrong\".\n(3) No § 11(1) item outside {7, 8, 9, 11, 12} is applied to this device. The closing\n    sentence of § 11(1) limits devices to those five; citing no. 3, no. 5 or any other\n    is the same error as no. 2.\nThis is the most important false-positive check in the suite. Read the sentence\naround any occurrence of \"no. 2\" before voting.",
+            "focus": "last_message"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 3,
+            "startedAt": "2026-09-10T04:52:11.343Z",
+            "error": "exit 1: Credit balance is too low",
+            "tracePath": "/private/tmp/e-hxk04b/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: judge call failed: Credit balance is too low",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 2,
+            "startedAt": "2026-09-10T04:52:13.853Z",
+            "error": "exit 1: Credit balance is too low",
+            "tracePath": "/private/tmp/e-fKC9iT/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: judge call failed: Credit balance is too low",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 2,
+            "startedAt": "2026-09-10T04:52:15.933Z",
+            "error": "exit 1: Credit balance is too low",
+            "tracePath": "/private/tmp/e-GLnnMp/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: judge call failed: Credit balance is too low",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ],
+        "without": [
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 2,
+            "startedAt": "2026-09-10T04:52:17.909Z",
+            "error": "exit 1: Credit balance is too low",
+            "tracePath": "/private/tmp/e-WsB9tN/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: judge call failed: Credit balance is too low",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 2,
+            "startedAt": "2026-09-10T04:52:20.015Z",
+            "error": "exit 1: Credit balance is too low",
+            "tracePath": "/private/tmp/e-T5Z2A9/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: judge call failed: Credit balance is too low",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 2,
+            "startedAt": "2026-09-10T04:52:22.033Z",
+            "error": "exit 1: Credit balance is too low",
+            "tracePath": "/private/tmp/e-4UiUjX/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: judge call failed: Credit balance is too low",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 0,
+        "passRate": 0,
+        "scoreWithout": 0,
+        "passRateWithout": 0,
+        "delta": 0
+      }
+    },
+    {
+      "name": "limb-c-omission",
+      "dir": "evals/04-limb-c-omission",
+      "source": "prose",
+      "promptMarkdown": "Review this copy. Device: Class IIa CGM (continuous glucose monitor). Intended\npurpose: \"continuous interstitial glucose monitoring in adults with diabetes;\nreadings are not intended to replace blood glucose measurement for treatment\ndecisions during periods of rapid glucose change.\"\n\nCopy: \"Know your glucose at a glance. Real-time readings every 5 minutes,\nstraight to your phone. Dose with confidence.\"",
+      "runsPerCase": 3,
+      "timeoutSeconds": 300,
+      "maxTurns": 10,
+      "graders": [
+        {
+          "name": "criteria",
+          "type": "llm",
+          "weight": 1,
+          "graderMarkdown": "Nothing in this copy is factually false, so a generic marketing review would\npass it. PASS requires the response to flag:\n(1) That the copy omits the rapid-change limitation stated in the intended\n    purpose, AND names the risk that follows — dosing on a reading that lags\n    during rapid change. Art. 7(c) is the natural home. Routing it instead to\n    7(d) or 7(b), on the ground that the copy affirmatively INVITES the use the\n    intended purpose carves out, is equally correct and PASSES: once copy invites\n    a carved-out use, that is commission rather than omission.\n(2) \"Dose with confidence\" as a further breach — it invites treatment\n    decisions the intended purpose explicitly carves out (Art. 7(b) and/or\n    7(d) both acceptable).\nThe response must recognise that (c) is an OMISSION test and not dismiss the\ncopy as compliant because it contains no false statement.\nFAIL if the response concludes there are no findings.\n\nAdditionally, no market is stated in this prompt. The response must either ask which\nmarket applies or refrain from asserting HWG or UWG findings. Applying German national\nlaw to a prompt that never mentions Germany is the error `non-german-eu-market` exists\nto catch, and it should not pass here.",
+          "config": {
+            "criteria": "Nothing in this copy is factually false, so a generic marketing review would\npass it. PASS requires the response to flag:\n(1) That the copy omits the rapid-change limitation stated in the intended\n    purpose, AND names the risk that follows — dosing on a reading that lags\n    during rapid change. Art. 7(c) is the natural home. Routing it instead to\n    7(d) or 7(b), on the ground that the copy affirmatively INVITES the use the\n    intended purpose carves out, is equally correct and PASSES: once copy invites\n    a carved-out use, that is commission rather than omission.\n(2) \"Dose with confidence\" as a further breach — it invites treatment\n    decisions the intended purpose explicitly carves out (Art. 7(b) and/or\n    7(d) both acceptable).\nThe response must recognise that (c) is an OMISSION test and not dismiss the\ncopy as compliant because it contains no false statement.\nFAIL if the response concludes there are no findings.\n\nAdditionally, no market is stated in this prompt. The response must either ask which\nmarket applies or refrain from asserting HWG or UWG findings. Applying German national\nlaw to a prompt that never mentions Germany is the error `non-german-eu-market` exists\nto catch, and it should not pass here.",
+            "focus": "last_message"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 2,
+            "startedAt": "2026-09-10T04:52:24.393Z",
+            "error": "exit 1: Credit balance is too low",
+            "tracePath": "/private/tmp/e-IZgWkb/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: judge call failed: Credit balance is too low",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 2,
+            "startedAt": "2026-09-10T04:52:26.476Z",
+            "error": "exit 1: Credit balance is too low",
+            "tracePath": "/private/tmp/e-RukWmK/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: judge call failed: Credit balance is too low",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 2,
+            "startedAt": "2026-09-10T04:52:28.513Z",
+            "error": "exit 1: Credit balance is too low",
+            "tracePath": "/private/tmp/e-8a6cJV/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: judge call failed: Credit balance is too low",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ],
+        "without": [
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 2,
+            "startedAt": "2026-09-10T04:52:30.609Z",
+            "error": "exit 1: Credit balance is too low",
+            "tracePath": "/private/tmp/e-RWwisq/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: judge call failed: Credit balance is too low",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 2,
+            "startedAt": "2026-09-10T04:52:32.563Z",
+            "error": "exit 1: Credit balance is too low",
+            "tracePath": "/private/tmp/e-T2SVO3/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: judge call failed: Credit balance is too low",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 2,
+            "startedAt": "2026-09-10T04:52:34.652Z",
+            "error": "exit 1: Credit balance is too low",
+            "tracePath": "/private/tmp/e-KzD3mw/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: judge call failed: Credit balance is too low",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 0,
+        "passRate": 0,
+        "scoreWithout": 0,
+        "passRateWithout": 0,
+        "delta": 0
+      }
+    },
+    {
+      "name": "uwg6-comparison",
+      "dir": "evals/05-uwg6-comparison",
+      "source": "prose",
+      "promptMarkdown": "Review this comparison block for a German-market Class I software device.\nMarket: Germany. Audience: manufacturers and regulatory consultants.\n\nCopy: \"The spreadsheet-and-email crowd still find their errors after submission.\nWe catch them before. Half the rework of what most teams use today.\"",
+      "runsPerCase": 3,
+      "timeoutSeconds": 300,
+      "maxTurns": 10,
+      "graders": [
+        {
+          "name": "criteria",
+          "type": "llm",
+          "weight": 1,
+          "graderMarkdown": "PASS requires ALL of:\n(1) The response recognises this IS comparative advertising under UWG § 6(1)\n    even though no competitor is named — \"the spreadsheet-and-email crowd\" and\n    \"what most teams use today\" make competitors erkennbar if the market can tell\n    who is meant.\n\n    Note for the judge: references/uwg.md uses a different phrase as its worked\n    example. Do not look for that phrase; judge whether the erkennbar test is\n    applied to THIS copy.\n(2) Nothing states or implies that comparative advertising is per se prohibited\n    in Germany. Judge only for the presence of that error.\n    Finding ALL THREE claims defective is CORRECT — all three are defective.\n    Do NOT require an explicit sentence affirming that compliant comparisons are\n    lawful; a correct analysis of three bad claims has no natural occasion to\n    say it, and its absence is not a failure.\n(3) It flags \"Half the rework of what most teams use today\" under § 6(2) no. 2 as\n    failing the \"nachprüfbar\" requirement — the reader cannot check it, and the\n    comparator is undefined.\n(4) \"The spreadsheet-and-email crowd still find their errors after submission\" is\n    examined and routed to a § 6(2) limb. Both\n    no. 2 (not objective, not nachprüfbar) and no. 5 (Herabsetzung) are acceptable —\n    the skill and its reference teach nos. 1 and 2 and do not carry no. 5, so requiring\n    no. 5 would test the model rather than the skill. FAIL only if the line is ignored.\nFAIL if comparative advertising is described as banned or per se unlawful.",
+          "config": {
+            "criteria": "PASS requires ALL of:\n(1) The response recognises this IS comparative advertising under UWG § 6(1)\n    even though no competitor is named — \"the spreadsheet-and-email crowd\" and\n    \"what most teams use today\" make competitors erkennbar if the market can tell\n    who is meant.\n\n    Note for the judge: references/uwg.md uses a different phrase as its worked\n    example. Do not look for that phrase; judge whether the erkennbar test is\n    applied to THIS copy.\n(2) Nothing states or implies that comparative advertising is per se prohibited\n    in Germany. Judge only for the presence of that error.\n    Finding ALL THREE claims defective is CORRECT — all three are defective.\n    Do NOT require an explicit sentence affirming that compliant comparisons are\n    lawful; a correct analysis of three bad claims has no natural occasion to\n    say it, and its absence is not a failure.\n(3) It flags \"Half the rework of what most teams use today\" under § 6(2) no. 2 as\n    failing the \"nachprüfbar\" requirement — the reader cannot check it, and the\n    comparator is undefined.\n(4) \"The spreadsheet-and-email crowd still find their errors after submission\" is\n    examined and routed to a § 6(2) limb. Both\n    no. 2 (not objective, not nachprüfbar) and no. 5 (Herabsetzung) are acceptable —\n    the skill and its reference teach nos. 1 and 2 and do not carry no. 5, so requiring\n    no. 5 would test the model rather than the skill. FAIL only if the line is ignored.\nFAIL if comparative advertising is described as banned or per se unlawful.",
+            "focus": "last_message"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 2,
+            "startedAt": "2026-09-10T04:52:36.866Z",
+            "error": "exit 1: Credit balance is too low",
+            "tracePath": "/private/tmp/e-s4OiFw/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: judge call failed: Credit balance is too low",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 2,
+            "startedAt": "2026-09-10T04:52:39.098Z",
+            "error": "exit 1: Credit balance is too low",
+            "tracePath": "/private/tmp/e-vPYIaO/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: judge call failed: Credit balance is too low",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 2,
+            "startedAt": "2026-09-10T04:52:41.194Z",
+            "error": "exit 1: Credit balance is too low",
+            "tracePath": "/private/tmp/e-oX9qZz/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: judge call failed: Credit balance is too low",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ],
+        "without": [
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 2,
+            "startedAt": "2026-09-10T04:52:43.350Z",
+            "error": "exit 1: Credit balance is too low",
+            "tracePath": "/private/tmp/e-OZs5ah/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: judge call failed: Credit balance is too low",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 2,
+            "startedAt": "2026-09-10T04:52:45.257Z",
+            "error": "exit 1: Credit balance is too low",
+            "tracePath": "/private/tmp/e-rdUIPW/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: judge call failed: Credit balance is too low",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 2,
+            "startedAt": "2026-09-10T04:52:47.215Z",
+            "error": "exit 1: Credit balance is too low",
+            "tracePath": "/private/tmp/e-FzDz2D/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: judge call failed: Credit balance is too low",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 0,
+        "passRate": 0,
+        "scoreWithout": 0,
+        "passRateWithout": 0,
+        "delta": 0
+      }
+    },
+    {
+      "name": "no-case-law-supplement",
+      "dir": "evals/06-no-case-law-supplement",
+      "source": "prose",
+      "promptMarkdown": "Device: Class IIa wound dressing, German market. Copy: \"Heals wounds 40% faster.\"\nWe have one small in-house study, n=12, unpublished.\n\nWhat has the BGH said about the substantiation standard for medical device\nefficacy claims? Give me the leading case and the exact standard it set.",
+      "runsPerCase": 3,
+      "timeoutSeconds": 300,
+      "maxTurns": 10,
+      "graders": [
+        {
+          "name": "criteria",
+          "type": "llm",
+          "weight": 1,
+          "graderMarkdown": "The skill verifies statute text only and explicitly does not cover case law.\nPASS requires the response to decline to state a BGH holding as fact — it must\nsay the case law is outside what it verifies, and offer to flag it as an open\nquestion or work from a source the user supplies.\nIt may still analyse the \"40% faster\" claim against HWG § 3 no. 1 and\nUWG § 5(2) no. 1 (Tests / expected results) using the n=12 unpublished study.\nFAIL if the response states a BGH holding, standard, or docket number AT ALL, tagged\nor untagged. SKILL.md is stricter than a tag: \"Never state how a German court would\ndecide\" and \"I will not state a rule I cannot cite from the reference files.\" The\n`[verify]` tier covers acknowledging that case law exists and is out of scope; it does\nnot license stating its content.\n\nThis matters because nothing here checks whether a named case is real. A fabricated\ndocket number carrying a `[verify]` tag would otherwise pass a case whose entire purpose\nis citation integrity.",
+          "config": {
+            "criteria": "The skill verifies statute text only and explicitly does not cover case law.\nPASS requires the response to decline to state a BGH holding as fact — it must\nsay the case law is outside what it verifies, and offer to flag it as an open\nquestion or work from a source the user supplies.\nIt may still analyse the \"40% faster\" claim against HWG § 3 no. 1 and\nUWG § 5(2) no. 1 (Tests / expected results) using the n=12 unpublished study.\nFAIL if the response states a BGH holding, standard, or docket number AT ALL, tagged\nor untagged. SKILL.md is stricter than a tag: \"Never state how a German court would\ndecide\" and \"I will not state a rule I cannot cite from the reference files.\" The\n`[verify]` tier covers acknowledging that case law exists and is out of scope; it does\nnot license stating its content.\n\nThis matters because nothing here checks whether a named case is real. A fabricated\ndocket number carrying a `[verify]` tag would otherwise pass a case whose entire purpose\nis citation integrity.",
+            "focus": "last_message"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 2,
+            "startedAt": "2026-09-10T04:52:49.275Z",
+            "error": "exit 1: Credit balance is too low",
+            "tracePath": "/private/tmp/e-ErACK1/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: judge call failed: Credit balance is too low",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 2,
+            "startedAt": "2026-09-10T04:52:51.348Z",
+            "error": "exit 1: Credit balance is too low",
+            "tracePath": "/private/tmp/e-YBnpxd/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: judge call failed: Credit balance is too low",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 2,
+            "startedAt": "2026-09-10T04:52:53.342Z",
+            "error": "exit 1: Credit balance is too low",
+            "tracePath": "/private/tmp/e-N8IHqf/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: judge call failed: Credit balance is too low",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ],
+        "without": [
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 2,
+            "startedAt": "2026-09-10T04:52:55.382Z",
+            "error": "exit 1: Credit balance is too low",
+            "tracePath": "/private/tmp/e-vjfGo1/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: judge call failed: Credit balance is too low",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 2,
+            "startedAt": "2026-09-10T04:52:57.441Z",
+            "error": "exit 1: Credit balance is too low",
+            "tracePath": "/private/tmp/e-iahvXU/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: judge call failed: Credit balance is too low",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 2,
+            "startedAt": "2026-09-10T04:52:59.424Z",
+            "error": "exit 1: Credit balance is too low",
+            "tracePath": "/private/tmp/e-aVwbtE/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: judge call failed: Credit balance is too low",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 0,
+        "passRate": 0,
+        "scoreWithout": 0,
+        "passRateWithout": 0,
+        "delta": 0
+      }
+    },
+    {
+      "name": "clean-copy-control",
+      "dir": "evals/07-clean-copy-control",
+      "source": "prose",
+      "promptMarkdown": "Review this copy. Device: Class IIa continuous ECG patch. Intended purpose:\n\"continuous single-lead ECG recording in adults under the supervision of a\nhealthcare professional for the detection of cardiac arrhythmias.\"\nAudience: Fachkreise (cardiology trade press). Market: Germany.\n\nCopy: \"Single-lead ECG recording for up to 14 days. For use under healthcare\nprofessional supervision in the detection of cardiac arrhythmias. Sensitivity\nand specificity data available on request.\"",
+      "runsPerCase": 3,
+      "timeoutSeconds": 300,
+      "maxTurns": 10,
+      "graders": [
+        {
+          "name": "criteria",
+          "type": "llm",
+          "weight": 1,
+          "graderMarkdown": "This copy tracks the intended purpose closely, states the supervision\nrequirement, targets Fachkreise, and makes no unsubstantiated performance\nclaim.\nPASS requires ALL of:\n(1) No provision is ASSERTED AS BREACHED. Judge how a provision is used, not\n    whether its string appears. `Breach: none` + `Call: Verify` passes — asking\n    whether \"up to 14 days\" sits inside the assessed scope is legitimate. A\n    provision under `Also engaged:` with its condition named also passes; that\n    line is the skill's mechanism for exactly this. Labelling anything an\n    Art. 7(a) breach is a FAIL.\n(2) HWG § 11 is NOT applied (audience is Fachkreise).\n(3) If MDR Art. 7(c) is raised at all, the named risk must come from supplied\n    material. The test is PROVENANCE, not whether the risk sounds\n    category-typical: \"single-lead\" appears in the supplied intended purpose, so\n    reasoning from it is legitimate. FAIL only where the named risk appears in\n    neither the intended purpose nor anything else the user provided.\n(4) The `## Limits` block is present and the response does not emit\n    \"Ready to publish: Yes\" — SKILL.md forbids that for a non-lawyer user, and\n    clean copy is exactly where an unqualified clearance is tempting.\nFAIL if the response invents a breach to appear thorough.",
+          "config": {
+            "criteria": "This copy tracks the intended purpose closely, states the supervision\nrequirement, targets Fachkreise, and makes no unsubstantiated performance\nclaim.\nPASS requires ALL of:\n(1) No provision is ASSERTED AS BREACHED. Judge how a provision is used, not\n    whether its string appears. `Breach: none` + `Call: Verify` passes — asking\n    whether \"up to 14 days\" sits inside the assessed scope is legitimate. A\n    provision under `Also engaged:` with its condition named also passes; that\n    line is the skill's mechanism for exactly this. Labelling anything an\n    Art. 7(a) breach is a FAIL.\n(2) HWG § 11 is NOT applied (audience is Fachkreise).\n(3) If MDR Art. 7(c) is raised at all, the named risk must come from supplied\n    material. The test is PROVENANCE, not whether the risk sounds\n    category-typical: \"single-lead\" appears in the supplied intended purpose, so\n    reasoning from it is legitimate. FAIL only where the named risk appears in\n    neither the intended purpose nor anything else the user provided.\n(4) The `## Limits` block is present and the response does not emit\n    \"Ready to publish: Yes\" — SKILL.md forbids that for a non-lawyer user, and\n    clean copy is exactly where an unqualified clearance is tempting.\nFAIL if the response invents a breach to appear thorough.",
+            "focus": "last_message"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 2,
+            "startedAt": "2026-09-10T04:53:01.514Z",
+            "error": "exit 1: Credit balance is too low",
+            "tracePath": "/private/tmp/e-ktmmOe/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: judge call failed: Credit balance is too low",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 2,
+            "startedAt": "2026-09-10T04:53:03.512Z",
+            "error": "exit 1: Credit balance is too low",
+            "tracePath": "/private/tmp/e-sIknE9/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: judge call failed: Credit balance is too low",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 2,
+            "startedAt": "2026-09-10T04:53:05.449Z",
+            "error": "exit 1: Credit balance is too low",
+            "tracePath": "/private/tmp/e-J78tIi/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: judge call failed: Credit balance is too low",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ],
+        "without": [
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 2,
+            "startedAt": "2026-09-10T04:53:07.494Z",
+            "error": "exit 1: Credit balance is too low",
+            "tracePath": "/private/tmp/e-2BxG0o/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: judge call failed: Credit balance is too low",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 2,
+            "startedAt": "2026-09-10T04:53:09.975Z",
+            "error": "exit 1: Credit balance is too low",
+            "tracePath": "/private/tmp/e-9teFIX/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: judge call failed: Credit balance is too low",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 2,
+            "startedAt": "2026-09-10T04:53:11.875Z",
+            "error": "exit 1: Credit balance is too low",
+            "tracePath": "/private/tmp/e-oQqmqf/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: judge call failed: Credit balance is too low",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 0,
+        "passRate": 0,
+        "scoreWithout": 0,
+        "passRateWithout": 0,
+        "delta": 0
+      }
+    },
+    {
+      "name": "non-german-eu-market",
+      "dir": "evals/08-non-german-eu-market",
+      "source": "prose",
+      "promptMarkdown": "Review this copy. Device: Class IIa home blood-pressure monitor. Audience: public\nconsumer web page, no gating. Market: **France only** — this copy runs on our\nFrench site and is not used in Germany.\n\nCopy: \"Recommandé par le Professeur Dubois, cardiologue. Ne jouez pas avec votre\ncoeur — mesurez votre tension chaque jour.\"",
+      "runsPerCase": 3,
+      "timeoutSeconds": 300,
+      "maxTurns": 10,
+      "graders": [
+        {
+          "name": "criteria",
+          "type": "llm",
+          "weight": 1,
+          "graderMarkdown": "The copy is the French-market twin of the German case: a physician endorsement plus\na fear-of-not-using line. The market is stated as France only.\n\nPASS requires:\n(1) MDR Art. 7 IS applied — it governs any device placed on the EU market. The fear\n    framing must be examined and a stated conclusion reached. Art. 7(b) is the\n    defensible limb; Art. 7(c) is NOT (it is failing to inform of a risk, which is the\n    opposite of a fear appeal). Concluding that no Art. 7 limb reaches a fear appeal is\n    also acceptable and PASSES, provided it is reasoned — Art. 7 has no fear-appeal\n    limb, which is precisely why the German case routes that to HWG § 11(1) no. 7.\n(2) HWG and UWG are NOT applied as findings. They are German national law. The\n    response must either not raise them, or state explicitly that they do not\n    apply because the market is France.\n      - PASS: \"HWG § 11 does not apply — the copy targets France, not Germany.\"\n      - FAIL: any HWG or UWG provision appearing in a Breach: line for this copy.\n(3) It does not silently substitute French law it cannot cite. If it notes that\n    France has an equivalent regime, that must be flagged as unverified or as an\n    open question, not asserted as a rule.\n\nFAIL if an HWG or UWG provision is ASSERTED AS BREACHED for this French-market asset.\nA conditional note under `Also engaged:` (\"UWG would engage if this page is also\ndirected at German consumers\") PASSES — that is the skill's mechanism for a contingent\nprovision, not a finding.\n\nThe skill carries a lot of German content and over-applying it outside Germany is its\nmost likely systematic error.",
+          "config": {
+            "criteria": "The copy is the French-market twin of the German case: a physician endorsement plus\na fear-of-not-using line. The market is stated as France only.\n\nPASS requires:\n(1) MDR Art. 7 IS applied — it governs any device placed on the EU market. The fear\n    framing must be examined and a stated conclusion reached. Art. 7(b) is the\n    defensible limb; Art. 7(c) is NOT (it is failing to inform of a risk, which is the\n    opposite of a fear appeal). Concluding that no Art. 7 limb reaches a fear appeal is\n    also acceptable and PASSES, provided it is reasoned — Art. 7 has no fear-appeal\n    limb, which is precisely why the German case routes that to HWG § 11(1) no. 7.\n(2) HWG and UWG are NOT applied as findings. They are German national law. The\n    response must either not raise them, or state explicitly that they do not\n    apply because the market is France.\n      - PASS: \"HWG § 11 does not apply — the copy targets France, not Germany.\"\n      - FAIL: any HWG or UWG provision appearing in a Breach: line for this copy.\n(3) It does not silently substitute French law it cannot cite. If it notes that\n    France has an equivalent regime, that must be flagged as unverified or as an\n    open question, not asserted as a rule.\n\nFAIL if an HWG or UWG provision is ASSERTED AS BREACHED for this French-market asset.\nA conditional note under `Also engaged:` (\"UWG would engage if this page is also\ndirected at German consumers\") PASSES — that is the skill's mechanism for a contingent\nprovision, not a finding.\n\nThe skill carries a lot of German content and over-applying it outside Germany is its\nmost likely systematic error.",
+            "focus": "last_message"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 2,
+            "startedAt": "2026-09-10T04:53:13.972Z",
+            "error": "exit 1: Credit balance is too low",
+            "tracePath": "/private/tmp/e-J6g6nX/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: judge call failed: Credit balance is too low",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 2,
+            "startedAt": "2026-09-10T04:53:16.041Z",
+            "error": "exit 1: Credit balance is too low",
+            "tracePath": "/private/tmp/e-JQqiMm/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: judge call failed: Credit balance is too low",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 2,
+            "startedAt": "2026-09-10T04:53:18.225Z",
+            "error": "exit 1: Credit balance is too low",
+            "tracePath": "/private/tmp/e-kCK3Ct/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: judge call failed: Credit balance is too low",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ],
+        "without": [
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 2,
+            "startedAt": "2026-09-10T04:53:20.261Z",
+            "error": "exit 1: Credit balance is too low",
+            "tracePath": "/private/tmp/e-qcsJmq/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: judge call failed: Credit balance is too low",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 2,
+            "startedAt": "2026-09-10T04:53:22.363Z",
+            "error": "exit 1: Credit balance is too low",
+            "tracePath": "/private/tmp/e-G9wN3T/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: judge call failed: Credit balance is too low",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 2,
+            "startedAt": "2026-09-10T04:53:24.421Z",
+            "error": "exit 1: Credit balance is too low",
+            "tracePath": "/private/tmp/e-24gRE4/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: judge call failed: Credit balance is too low",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 0,
+        "passRate": 0,
+        "scoreWithout": 0,
+        "passRateWithout": 0,
+        "delta": 0
+      }
+    },
+    {
+      "name": "hwg3a-arzneimittel-only",
+      "dir": "evals/09-hwg3a-arzneimittel-only",
+      "source": "prose",
+      "promptMarkdown": "Review this copy. Device: Class IIb drug-eluting coronary stent, CE marked, notified\nbody involved. Audience: interventional cardiologists at a congress booth\n(Fachkreise). Market: Germany.\n\nCopy: \"Our sirolimus-eluting stent delivers sustained drug release across the full\nlesion. Approved and available now.\"",
+      "runsPerCase": 3,
+      "timeoutSeconds": 300,
+      "maxTurns": 10,
+      "graders": [
+        {
+          "name": "criteria",
+          "type": "llm",
+          "weight": 1,
+          "graderMarkdown": "This is a MEDICAL DEVICE that carries a drug. It is not an Arzneimittel.\n\nHWG § 3a prohibits advertising a medicinal product that requires marketing\nauthorisation and does not have one. It applies to Arzneimittel only, and the\nreference file says so explicitly.\n\nPASS requires:\n(1) HWG § 3a is NOT applied to this device.\n      - PASS: § 3a is not mentioned, or is mentioned only to exclude it\n        (\"§ 3a covers Arzneimittel, not devices\").\n      - FAIL: § 3a appears in a Breach: line, or the response says the stent\n        needs a marketing authorisation it lacks.\n(2) HWG § 11 is NOT applied — the audience is Fachkreise.\n(3) \"Approved and available now\" is examined. The device is stated to be CE marked\n    with a notified body involved, so on the supplied material there is no basis to\n    assert it misleads. The correct shape is `Breach: none` + `Also engaged: UWG\n    § 5(2) no. 4` (a claim about the goods' approval status) + `Call: Verify`.\n    A bare `Breach: UWG § 5` with no stated conflict with the supplied facts is a FAIL —\n    SKILL.md says \"Do not promote it to a breach to make the review look thorough.\"\n    Ignoring the line entirely is also a FAIL.\n(4) The Art. 7 limbs are opened on \"sustained drug release across the full lesion\",\n    which is a performance claim. `Breach: none` + `Call: Verify` is acceptable;\n    not examining it at all is not.\n\nFAIL if § 3a is applied to a device. The drug-eluting framing is the bait.",
+          "config": {
+            "criteria": "This is a MEDICAL DEVICE that carries a drug. It is not an Arzneimittel.\n\nHWG § 3a prohibits advertising a medicinal product that requires marketing\nauthorisation and does not have one. It applies to Arzneimittel only, and the\nreference file says so explicitly.\n\nPASS requires:\n(1) HWG § 3a is NOT applied to this device.\n      - PASS: § 3a is not mentioned, or is mentioned only to exclude it\n        (\"§ 3a covers Arzneimittel, not devices\").\n      - FAIL: § 3a appears in a Breach: line, or the response says the stent\n        needs a marketing authorisation it lacks.\n(2) HWG § 11 is NOT applied — the audience is Fachkreise.\n(3) \"Approved and available now\" is examined. The device is stated to be CE marked\n    with a notified body involved, so on the supplied material there is no basis to\n    assert it misleads. The correct shape is `Breach: none` + `Also engaged: UWG\n    § 5(2) no. 4` (a claim about the goods' approval status) + `Call: Verify`.\n    A bare `Breach: UWG § 5` with no stated conflict with the supplied facts is a FAIL —\n    SKILL.md says \"Do not promote it to a breach to make the review look thorough.\"\n    Ignoring the line entirely is also a FAIL.\n(4) The Art. 7 limbs are opened on \"sustained drug release across the full lesion\",\n    which is a performance claim. `Breach: none` + `Call: Verify` is acceptable;\n    not examining it at all is not.\n\nFAIL if § 3a is applied to a device. The drug-eluting framing is the bait.",
+            "focus": "last_message"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 2,
+            "startedAt": "2026-09-10T04:53:26.528Z",
+            "error": "exit 1: Credit balance is too low",
+            "tracePath": "/private/tmp/e-JJmF1e/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: judge call failed: Credit balance is too low",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 2,
+            "startedAt": "2026-09-10T04:53:28.615Z",
+            "error": "exit 1: Credit balance is too low",
+            "tracePath": "/private/tmp/e-ymKU0i/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: judge call failed: Credit balance is too low",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 2,
+            "startedAt": "2026-09-10T04:53:30.875Z",
+            "error": "exit 1: Credit balance is too low",
+            "tracePath": "/private/tmp/e-lwGme8/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: judge call failed: Credit balance is too low",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ],
+        "without": [
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 2,
+            "startedAt": "2026-09-10T04:53:32.911Z",
+            "error": "exit 1: Credit balance is too low",
+            "tracePath": "/private/tmp/e-oZNHPn/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: judge call failed: Credit balance is too low",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 2,
+            "startedAt": "2026-09-10T04:53:35.373Z",
+            "error": "exit 1: Credit balance is too low",
+            "tracePath": "/private/tmp/e-FkmQ96/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: judge call failed: Credit balance is too low",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 3,
+            "startedAt": "2026-09-10T04:53:37.310Z",
+            "error": "exit 1: Credit balance is too low",
+            "tracePath": "/private/tmp/e-lPbHA4/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: judge call failed: Credit balance is too low",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 0,
+        "passRate": 0,
+        "scoreWithout": 0,
+        "passRateWithout": 0,
+        "delta": 0
+      }
+    },
+    {
+      "name": "puffery-restraint",
+      "dir": "evals/10-puffery-restraint",
+      "source": "prose",
+      "promptMarkdown": "Review this copy. Device: Class I reusable surgical retractor. Intended purpose:\n\"manual retraction of tissue to maintain surgical site exposure during open\nprocedures.\" Audience: hospital procurement (Fachkreise). Market: Germany.\n\nCopy: \"Surgeons love it. The retractor you'll actually enjoy using.\"",
+      "runsPerCase": 3,
+      "timeoutSeconds": 300,
+      "maxTurns": 10,
+      "graders": [
+        {
+          "name": "criteria",
+          "type": "llm",
+          "weight": 1,
+          "graderMarkdown": "This is pure puffery. It makes no performance claim, no clinical claim, no\ncomparison, and no statement about certification. \"Surgeons love it\" is subjective\npreference, not an assertion about what the device does.\n\nThe skill's own taxonomy says puffery with no clinical or performance content need\nnot be listed as a finding.\n\nPASS requires:\n(1) No provision is ASSERTED AS BREACHED. Judge how a provision is used, not whether\n    its string appears.\n      - PASS: `Breach: none`.\n      - PASS: a provision under `Also engaged:` with its condition named. That line is\n        the skill's mechanism for exactly this situation and must not be marked down.\n      - PASS: a provision named in order to exclude it (\"§ 11 does not apply —\n        Fachkreise\").\n      - FAIL: a provision on a `Breach:` line, or prose asserting the copy breaches it.\n(2) HWG § 11 is not applied (Fachkreise audience, and nothing in the copy engages\n    nos. 7-9, 11 or 12 in any case).\n(3) The response does not present the copy as breaching anything. `Call: Verify`,\n    `Call: Needs substantiation` and `Ready to publish: With changes below` are all\n    acceptable and do NOT count as findings for this case.\n(4) The `## Limits` block is present and the response does not emit\n    \"Ready to publish: Yes\" — SKILL.md forbids that for a non-lawyer user.\n\nFAIL if any Art. 7 limb, HWG or UWG provision is asserted as breached. This tests\nwhether the skill can say \"nothing here\", which the no-skill baseline could not do\non the other clean-copy case.",
+          "config": {
+            "criteria": "This is pure puffery. It makes no performance claim, no clinical claim, no\ncomparison, and no statement about certification. \"Surgeons love it\" is subjective\npreference, not an assertion about what the device does.\n\nThe skill's own taxonomy says puffery with no clinical or performance content need\nnot be listed as a finding.\n\nPASS requires:\n(1) No provision is ASSERTED AS BREACHED. Judge how a provision is used, not whether\n    its string appears.\n      - PASS: `Breach: none`.\n      - PASS: a provision under `Also engaged:` with its condition named. That line is\n        the skill's mechanism for exactly this situation and must not be marked down.\n      - PASS: a provision named in order to exclude it (\"§ 11 does not apply —\n        Fachkreise\").\n      - FAIL: a provision on a `Breach:` line, or prose asserting the copy breaches it.\n(2) HWG § 11 is not applied (Fachkreise audience, and nothing in the copy engages\n    nos. 7-9, 11 or 12 in any case).\n(3) The response does not present the copy as breaching anything. `Call: Verify`,\n    `Call: Needs substantiation` and `Ready to publish: With changes below` are all\n    acceptable and do NOT count as findings for this case.\n(4) The `## Limits` block is present and the response does not emit\n    \"Ready to publish: Yes\" — SKILL.md forbids that for a non-lawyer user.\n\nFAIL if any Art. 7 limb, HWG or UWG provision is asserted as breached. This tests\nwhether the skill can say \"nothing here\", which the no-skill baseline could not do\non the other clean-copy case.",
+            "focus": "last_message"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 2,
+            "startedAt": "2026-09-10T04:53:40.291Z",
+            "error": "exit 1: Credit balance is too low",
+            "tracePath": "/private/tmp/e-lTzYuy/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: judge call failed: Credit balance is too low",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 2,
+            "startedAt": "2026-09-10T04:53:42.410Z",
+            "error": "exit 1: Credit balance is too low",
+            "tracePath": "/private/tmp/e-Qyd8Vh/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: judge call failed: Credit balance is too low",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 2,
+            "startedAt": "2026-09-10T04:53:44.562Z",
+            "error": "exit 1: Credit balance is too low",
+            "tracePath": "/private/tmp/e-RUq1y9/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: judge call failed: Credit balance is too low",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ],
+        "without": [
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 2,
+            "startedAt": "2026-09-10T04:53:46.620Z",
+            "error": "exit 1: Credit balance is too low",
+            "tracePath": "/private/tmp/e-rahlzN/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: judge call failed: Credit balance is too low",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 2,
+            "startedAt": "2026-09-10T04:53:48.562Z",
+            "error": "exit 1: Credit balance is too low",
+            "tracePath": "/private/tmp/e-37Lc9R/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: judge call failed: Credit balance is too low",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 2,
+            "startedAt": "2026-09-10T04:53:50.712Z",
+            "error": "exit 1: Credit balance is too low",
+            "tracePath": "/private/tmp/e-hYeCJJ/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: judge call failed: Credit balance is too low",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 0,
+        "passRate": 0,
+        "scoreWithout": 0,
+        "passRateWithout": 0,
+        "delta": 0
+      }
+    }
+  ],
+  "aggregates": {
+    "casesTotal": 10,
+    "casesPassed": 0,
+    "overallScore": 0,
+    "overallPassRate": 0,
+    "meanDelta": 0
+  }
+}
