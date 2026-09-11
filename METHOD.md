@@ -143,6 +143,21 @@ so a size threshold seemed reasonable, and it flagged every good source as a bot
 because gesetze-im-internet legitimately serves each section as its own 3–8 KB page. Key
 on status code and extracted-text length.
 
+**Trusting three runs on a small delta.** The rule here is three runs per case per arm,
+and the same suite measured four times in a day returned +0.44, +0.33, -0.11 and, at nine
+runs an arm, **+0.22**. One case read +0.33, +0.33, -0.67 and settled at -0.22. That
+spread is wider than most of the deltas this repo publishes, which means a single
+three-run figure distinguishes "+1.00" from "0.00" reliably and distinguishes "+0.33"
+from "-0.33" hardly at all.
+
+Three runs is the floor for a number being evidence at all, not the point at which it
+becomes precise. Large effects survive it: `rule-not-carried` has measured +1.00 across
+four measurements and two models. Small ones do not, and reading a case that moved 0.33
+as a regression has already cost one wrong diagnosis here and nearly cost a skill edit
+made to chase noise. **Where a delta sits inside about a third of a point of zero, run
+nine before you believe its sign.** It costs about three times as much and it is cheaper
+than acting on the wrong sign.
+
 **Predicting where a skill will earn.** Four times now: classification would show a large
 delta because the rules interact (it did not), Article 120 would because the model's
 recall was stale (it was not), the two Art. 7 limb cases would because the limbs are
@@ -176,7 +191,7 @@ since; its current figure is in its own eval README rather than restated here. T
 ## What it costs
 
 <!-- eval-cost:start -->
-**$155 of eval spend so far**, across 40 stored runs of 5 suites and 30 cases, at 3 runs per case per arm. The largest single run (`device-claims`, 10 cases, both arms) was **$16.39** and took 97 minutes.
+**$163 of eval spend so far**, across 42 stored runs of 5 suites and 30 cases, at 3 runs per case per arm. The largest single run (`device-claims`, 10 cases, both arms) was **$16.39** and took 97 minutes.
 <!-- eval-cost:end -->
 
 Budget for re-running after every substantive change, because that is when a suite earns
