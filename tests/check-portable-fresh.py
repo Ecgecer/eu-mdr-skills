@@ -295,4 +295,37 @@ else:
     n = sum(1 for l in rl.stdout.splitlines() if l.strip().startswith("ok  "))
     print(f"  {n} reporting-logic assertions hold")
 
+# 12. advisory: provisions a skill cites that its references do not carry
+#
+# Advisory on purpose, and it must stay that way. Declaring a provision in order to put
+# it OUT of scope -- "IVDR Article 110 governs this and I do not carry it" -- is the
+# behaviour this repo most wants, and it cites a provision the references need not
+# contain. A hard failure here would punish the discipline it is meant to protect, the
+# same way an over-strict grader failed three correct refusals. It reports; a human
+# decides.
+unbacked = []
+for skill_md in sorted(_glob.glob(str(ROOT / "*/skills/*/SKILL.md"))):
+    d = Path(skill_md).parent
+    refs = list(d.glob("references/*.md"))
+    if not refs:
+        continue
+    ref_text = "\n".join(r.read_text() for r in refs)
+    body = Path(skill_md).read_text()
+    cites = set(re.findall(r'§+\s*\d+[a-z]?(?:\(\d+\))?', body))
+    cites |= set(re.findall(r'(?:Art\.|Article)\s*\d+[a-z]?(?:\(\d+\))?', body))
+    for c in sorted(cites):
+        nums = re.findall(r'\d+', c)
+        if not nums:
+            continue
+        if not re.search(rf'(§|Art\.|Article|Artikel)\s*{re.escape(nums[0])}\b', ref_text):
+            unbacked.append(f"{d.parent.parent.name}: {re.sub(r'  +', ' ', c)}")
+if unbacked:
+    print("\n  NOTE: provisions cited in a skill that its references do not mention:")
+    for u in unbacked:
+        print(f"    {u}")
+    print("  Fine when the skill names it to exclude it. Not fine when it is applied as a")
+    print("  finding -- the skill would be asserting a rule it cannot cite. Check which.")
+else:
+    print("  every provision cited in a skill is carried by its references")
+
 sys.exit(failed)
