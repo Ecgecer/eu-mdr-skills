@@ -68,6 +68,20 @@ where a manufacturer asks what they must do and the answer is "these are operato
 not yours", and one asking whether STK applies to a device outside the listed categories.
 If the baseline fails those in 3 of 3 runs, build the skill. If it passes, do not.
 
+**The two cases are written.** [`mpdg-germany/roadmap-probe/`](mpdg-germany/roadmap-probe/)
+holds them, outside `evals/` so nothing here reaches a published table. One command
+decides it, and it costs about a dollar:
+
+```
+cd mpdg-germany && claude plugin eval . --eval-dir roadmap-probe --ablation with-without
+```
+
+The **without** arm is the measurement. Both graders judge whether the boundary was
+tested rather than whether the model knows the Anlage, because the cases were written
+without the MPBetreibV text pinned and a grader demanding a specific legal conclusion
+would assert law this repo has not verified. Pin the text before building anything on
+the result.
+
 Source is available: gesetze-im-internet serves MPBetreibV, and it verifies with the
 existing tooling.
 
