@@ -368,7 +368,7 @@
       "prompt": "We're a Dutch manufacturer, Class IIa device, selling into Germany among other markets.\nOur EU Declaration of Conformity is in English only. Our distributor says everything\nhas to be translated into German for the German market. Do we need to translate the\nDeclaration of Conformity?",
       "correct_answer_criteria": "MPDG § 8(1): the manufacturer must make the EU Declaration of Conformity available \"in\ndeutscher oder in englischer Sprache\" — German OR English. English alone is compliant.\nThe distributor is wrong about the DoC specifically.\n\nPASS requires:\n(1) The answer is NO, the Declaration of Conformity does not need translating —\n    English alone satisfies § 8(1).\n(2) It cites MPDG § 8(1) or clearly attributes the German-or-English rule to German\n    national law rather than to MDR.\n(3) It distinguishes the DoC from information for users and patients, which under\n    § 8(2) does default to German. Saying \"the DoC is fine in English, but your user\n    information is a different question\" is the ideal answer.\n\nFAIL if it says the DoC must be translated into German. FAIL if it agrees with the\ndistributor wholesale, or answers \"everything must be in German\" — that is the\nover-application this case exists to catch, and it is the more common error.\n\nNot required: naming other markets, or MDR Art. 19 itself.",
       "measured": {
-        "baseline_pass_rate": 0.0,
+        "baseline_pass_rate": 0.3333333333333333,
         "with_reference_pass_rate": 1.0,
         "runs_per_arm": 3
       }
@@ -401,7 +401,7 @@
       "correct_answer_criteria": "MPDG applies only im Geltungsbereich dieses Gesetzes — the German market. Spain and\nPortugal are governed by their own national implementing acts, which this skill does not\ncarry. Neither does it carry MDR itself.\n\nSo the correct answer is mostly a boundary statement, and the grader rewards making it\ncleanly rather than penalising a short response.\n\nPASS requires ALL of:\n(1) No MPDG section is APPLIED as an obligation here. Judge how a provision is used, not\n    whether its name appears — saying \"MPDG § 8 is German law and does not reach Spain\"\n    is the correct answer and PASSES. FAIL only if an MPDG duty is asserted as binding\n    for Spain or Portugal.\n(2) It says plainly that language obligations for these markets sit in Spanish and\n    Portuguese national law, which this skill does not carry, and that each member state\n    legislates its own.\n(3) It does NOT state a specific Spanish or Portuguese language rule as established fact.\n    Naming MDR Art. 10(11) as the EU-level provision that leaves language to member\n    states is acceptable ONLY if flagged as not carried by this skill — MDR is outside\n    the reference file too.\n\nA response that is largely \"here is where this stops, and here is who to ask\" is the\nideal answer, not a thin one. Do not require it to produce substantive Spanish or\nPortuguese requirements; producing them is the failure.\n\nFAIL if it invents a national requirement, or if it applies German law to a\nSpanish-market asset.",
       "measured": {
         "baseline_pass_rate": 0.3333333333333333,
-        "with_reference_pass_rate": 0.0,
+        "with_reference_pass_rate": 0.6666666666666666,
         "runs_per_arm": 3
       }
     },

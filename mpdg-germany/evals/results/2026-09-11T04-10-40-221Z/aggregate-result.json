@@ -1,0 +1,1039 @@
+{
+  "schemaVersion": 1,
+  "claudeVersion": "2.1.268",
+  "startedAt": "2026-09-11T04:10:40.221Z",
+  "durationSeconds": 2080,
+  "costUsd": 5.938359,
+  "partial": false,
+  "suite": {
+    "root": "/Users/egecangecer/projects/eu-mdr-skills/mpdg-germany",
+    "ablation": "with-without",
+    "threshold": 1,
+    "plugins": [
+      {
+        "name": "mpdg-germany",
+        "version": "0.1.0",
+        "path": "/Users/egecangecer/projects/eu-mdr-skills/mpdg-germany"
+      }
+    ]
+  },
+  "cases": [
+    {
+      "name": "doc-english-sufficient",
+      "dir": "evals/01-doc-english-sufficient",
+      "source": "prose",
+      "promptMarkdown": "We're a Dutch manufacturer, Class IIa device, selling into Germany among other markets.\nOur EU Declaration of Conformity is in English only. Our distributor says everything\nhas to be translated into German for the German market. Do we need to translate the\nDeclaration of Conformity?",
+      "runsPerCase": 3,
+      "timeoutSeconds": 300,
+      "maxTurns": 10,
+      "graders": [
+        {
+          "name": "criteria",
+          "type": "llm",
+          "weight": 1,
+          "graderMarkdown": "MPDG § 8(1): the manufacturer must make the EU Declaration of Conformity available \"in\ndeutscher oder in englischer Sprache\" — German OR English. English alone is compliant.\nThe distributor is wrong about the DoC specifically.\n\nPASS requires:\n(1) The answer is NO, the Declaration of Conformity does not need translating —\n    English alone satisfies § 8(1).\n(2) It cites MPDG § 8(1) or clearly attributes the German-or-English rule to German\n    national law rather than to MDR.\n(3) It distinguishes the DoC from information for users and patients, which under\n    § 8(2) does default to German. Saying \"the DoC is fine in English, but your user\n    information is a different question\" is the ideal answer.\n\nFAIL if it says the DoC must be translated into German. FAIL if it agrees with the\ndistributor wholesale, or answers \"everything must be in German\" — that is the\nover-application this case exists to catch, and it is the more common error.\n\nNot required: naming other markets, or MDR Art. 19 itself.",
+          "config": {
+            "criteria": "MPDG § 8(1): the manufacturer must make the EU Declaration of Conformity available \"in\ndeutscher oder in englischer Sprache\" — German OR English. English alone is compliant.\nThe distributor is wrong about the DoC specifically.\n\nPASS requires:\n(1) The answer is NO, the Declaration of Conformity does not need translating —\n    English alone satisfies § 8(1).\n(2) It cites MPDG § 8(1) or clearly attributes the German-or-English rule to German\n    national law rather than to MDR.\n(3) It distinguishes the DoC from information for users and patients, which under\n    § 8(2) does default to German. Saying \"the DoC is fine in English, but your user\n    information is a different question\" is the ideal answer.\n\nFAIL if it says the DoC must be translated into German. FAIL if it agrees with the\ndistributor wholesale, or answers \"everything must be in German\" — that is the\nover-application this case exists to catch, and it is the more common error.\n\nNot required: naming other markets, or MDR Art. 19 itself.",
+            "focus": "last_message"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 4,
+            "costUsd": 0.145279,
+            "judgeCostUsd": 0.004035,
+            "durationSeconds": 29,
+            "startedAt": "2026-09-11T04:10:40.231Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-LYfKSX/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "## Does the EU Declaration of Conformity need to be translated into German?\n\n**German market:** confirmed — device is made available in Germany, so MPDG applies\n**Answer:** No. For the DoC, German **or** English is sufficient — English alone is compliant. Your distributor is right about the general direction but wrong about the DoC specifically.\n\n| Item | MDR requires | Germany adds | Basis |\n|---|---|---|---|\n| EU Declaration of Conformity | not carried here (MDR Art. 19(1)) `[verify]` | German **or English** — English alone satisfies it | MPDG § 8(1) `[verified]` |\n| Information for users and patients (IFU, labelling) | not carried here | **German**, and it is a *condition of supply* — the product may only be handed over to users/patients if this is met | MPDG § 8(2) sent. 1 `[verified]` |\n| Same, where information is exclusively for professional users | not carried here | English or another easily understood language permitted, but only if **all three**: a justified case (*begründeter Fall*), **exclusively** professional users, and safety-related information still provided in German or the user's language | MPDG § 8(2) sent. 2 `[verified]` |\n| Implant information under MDR Art. 18(1), if your IIa device is implantable | not carried here | **German**. No professional-user exception reaches it | MPDG § 8(3) `[verified]` |\n\nThe statutory text for the DoC is explicit: *\"in deutscher **oder** in englischer Sprache\"*. Translating it is over-application, not a compliance improvement — though nothing stops you doing it voluntarily if it smooths the commercial relationship.\n\nSo the distributor's \"everything must be German\" is half right. The DoC is the one item where English is expressly allowed. The user and patient information is where the real obligation sits, and there it is strict — and it is framed as a precondition on supply, not just a documentation duty. If your IFU and labelling are also English-only, that is the thing to fix, not the DoC.\n\n**What would change this:**\n- **The professional-user route** — if this IIa device goes exclusively to professional users and you can justify it, § 8(2) sentence 2 opens English for the IFU. But all three conditions are cumulative, and safety-related information still has to be in German (or the user's language) regardless. Miss one condition and the German default snaps back.\n- **Implantability** — if your Class IIa device is implantable, the Art. 18(1) implant information is German with no exception available.\n- **Field safety notices** — separately, if you ever take a field safety corrective action in Germany, the FSN must be written in German (§ 73(1) `[verified]`), and that attaches to where the action is taken, not where you are established. Worth knowing in advance rather than under time pressure.\n\nOne thing I did *not* check, because it sits outside what I can cite: as a Netherlands-established manufacturer you are inside the EU, so the German-establishment duties in § 73(2) sentence 1 (documenting FSCAs and periodically reviewing effectiveness) do not attach to you — but if your German distributor is acting as an importer, they may pick up duties of their own. That is their analysis to run.\n\n## Limits\n\nThis covers MPDG §§ 4, 8 and 73 only, retrieved verbatim from gesetze-im-internet on 2026-09-10. It does **not** cover the rest of MPDG, MDR or IVDR themselves, MDCG guidance, BfArM practice, or any other member state's implementing law — an obligation here is German and says nothing about France, Italy or elsewhere, each of which has its own implementing act and its own language rules. A first-pass aid for spotting German-specific duties, not legal advice, and not a substitute for a regulatory professional or a Fachanwalt für Medizinrecht."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 4,
+            "costUsd": 0.14004524999999998,
+            "judgeCostUsd": 0.0037380000000000017,
+            "durationSeconds": 25,
+            "startedAt": "2026-09-11T04:11:08.778Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-POBRgT/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "## Does the EU Declaration of Conformity need translating into German?\n\n**German market:** confirmed — product made available in Germany, so MPDG applies alongside MDR.\n**Answer:** No. MPDG § 8(1) requires the EU Declaration of Conformity to be made available **in German *or* English** — English alone is compliant. Your distributor is over-applying the rule here.\n\n| Item | MDR requires | Germany adds | Basis |\n|---|---|---|---|\n| EU Declaration of Conformity (MDR Art. 19(1)) | not carried here | German **or** English — no translation duty | MPDG § 8(1) `[verified]` |\n| Information for users and patients (IFU, labelling) | not carried here | **German**, and it is a *condition of supply* — the product may only be handed over to users/patients if this is met | MPDG § 8(2) sentence 1 `[verified]` |\n| Same, where information is *exclusively* for professional users | not carried here | English or another easily understood language permitted, but only in a justified case (*begründeter Fall*) **and** safety-related information still in German or the user's language | MPDG § 8(2) sentence 2 `[verified]` |\n| Implant information under MDR Art. 18(1) | not carried here | **German**, no professional-user exception | MPDG § 8(3) `[verified]` |\n\nThe rule is asymmetric, and that is probably the source of the disagreement. Your distributor is right that German matters for the German market — just not for the document they've picked. The DoC is the one item § 8 explicitly allows in English; the user-facing information is where the German-language duty actually bites, and there it is strict enough to block supply.\n\n**What would change this:**\n- **If the distributor's real concern is the IFU/labelling rather than the DoC** — then they have a point, and § 8(2) applies. Worth clarifying which document they mean before pushing back.\n- **If your device is implantable** (Class IIa implantables exist, e.g. certain long-term devices) — § 8(3) pulls the Art. 18(1) implant information into mandatory German with no exception available.\n- **If the product reaches lay users/patients at all** — the § 8(2) sentence 2 exception is unavailable, since it requires the information to be *exclusively* for professional users. All three of its conditions must hold together; missing one, the German default applies.\n- **Other markets** — this analysis is German only. The Netherlands and every other member state have their own implementing acts with their own language rules, which I don't carry.\n\nOne practical note: § 8(1) says the DoC must be *made available* (*zur Verfügung zu stellen*) in German or English — so the obligation is about availability on request, not about translation. Nothing stops you translating it voluntarily if it smooths the commercial relationship, but it isn't a legal requirement you can be held to.\n\n## Limits\n\nThis covers MPDG §§ 4, 8 and 73 only, retrieved verbatim from gesetze-im-internet on 2026-09-10. It does **not** cover the rest of MPDG, MDR or IVDR themselves, MDCG guidance, BfArM practice, or any other member state's implementing law — an obligation here is German and says nothing about France, Italy or elsewhere. A first-pass aid for spotting German-specific duties, not legal advice, and not a substitute for a regulatory professional or a Fachanwalt für Medizinrecht."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 4,
+            "costUsd": 0.1461825,
+            "judgeCostUsd": 0.003780000000000002,
+            "durationSeconds": 29,
+            "startedAt": "2026-09-11T04:11:34.157Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-OIiTe0/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "## Does the EU Declaration of Conformity need German translation for the German market?\n\n**German market:** confirmed (device made available in Germany)\n**Answer:** No. § 8(1) MPDG expressly allows the EU Declaration of Conformity in German **or English** — English alone is compliant. Your distributor is over-applying the rule.\n\n| Item | MDR requires | Germany adds | Basis |\n|---|---|---|---|\n| EU Declaration of Conformity | not carried here (MDR Art. 19(1)) `[verify]` | German **or English** — no translation duty | MPDG § 8(1) `[verified]` |\n| Information for users and patients (IFU, labelling) | not carried here | **German** — and it is a *condition of supply*: the product may only be handed over if this is met | MPDG § 8(2) s.1 `[verified]` |\n| Same, where exclusively for professional users | not carried here | English/other easily understood language permitted, but only in a *begründeter Fall*, **and** exclusively professional users, **and** safety-related information still in German or the user's language — all three, cumulatively | MPDG § 8(2) s.2 `[verified]` |\n| Implant information under MDR Art. 18(1) | not carried here | **German**, no professional-user exception | MPDG § 8(3) `[verified]` |\n| Field Safety Notice, if you ever take an FSCA in Germany | not carried here (MDR Art. 89(8)) `[verify]` | **German** | MPDG § 73(1) `[verified]` |\n\nSo your distributor is right in substance about the *product information* and wrong about the *Declaration of Conformity*. Those are two different obligations under two different paragraphs of the same section, and \"everything has to be translated\" collapses them.\n\n**What would change this:**\n- If your Class IIa device is **implantable** and Art. 18(1) information applies, that information must be in German regardless — § 8(3) has no exception.\n- If the IFU is genuinely for professional users only, the § 8(2) s.2 exception may let you keep it in English — but only if all three conditions hold, and safety-related content still goes into German. Missing any one, sentence 1 applies in full.\n- Being established in the Netherlands rather than Germany does not affect § 8 at all — it attaches to products made available in Germany, not to where you sit. It does matter for § 73(2): the FSCA documentation and effectiveness-review duty is on manufacturers *established in Germany*, so it does not reach you; the German-language FSN in § 73(1) does, because it attaches to the action taken in Germany.\n\nOne practical note: a distributor asking for a German DoC may simply want a document it can hand to customers or authorities. That's a commercial request, not a legal one — you can supply a courtesy translation if you like, but nothing obliges you to, and a translated DoC is not a separate regulatory artefact.\n\n## Limits\n\n> This covers MPDG §§ 4, 8 and 73 only, retrieved verbatim from gesetze-im-internet on 2026-09-10. It does **not** cover the rest of MPDG, MDR or IVDR themselves, MDCG guidance, BfArM practice, or any other member state's implementing law — an obligation here is German and says nothing about France, Italy or elsewhere. A first-pass aid for spotting German-specific duties, not legal advice, and not a substitute for a regulatory professional or a Fachanwalt für Medizinrecht."
+              }
+            ]
+          }
+        ],
+        "without": [
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 4,
+            "costUsd": 0.17167025,
+            "judgeCostUsd": 0.005132000000000001,
+            "durationSeconds": 59,
+            "startedAt": "2026-09-11T04:12:03.075Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-Oj3iQw/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "judge votes: FAIL FAIL FAIL",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  false,
+                  false,
+                  false
+                ],
+                "evidence": "Web search is blocked in this session, so the German national-law citation below is from my own knowledge and you should verify the current MPDG text before acting on it. The MDR-level analysis is solid.\n\n## Short answer\n\nYour distributor is overstating it. \"Everything has to be in German\" is wrong as a blanket statement — but for the Declaration of Conformity specifically, they are probably right, and translating it is the low-cost move regardless.\n\n## The legal hook\n\n**MDR Article 19(1), final sentence** is the operative provision:\n\n> The EU declaration of conformity shall be translated into an official Union language or languages **required by the Member State(s) in which the device is made available on the market.**\n\nSo the MDR itself does not mandate translation. It delegates the decision to each Member State. The answer is therefore not \"yes\" or \"no\" at EU level — it's \"whatever Germany has legislated.\"\n\n## Germany specifically\n\nGermany's implementing act is the **MPDG** (Medizinprodukterecht-Durchführungsgesetz). Its language provision requires German for the label and instructions for use, and my understanding is that Germany has exercised the Article 19(1) option to require the DoC in German as well. **Verify this against the current MPDG text (the Sprachenregelung section, § 8) and BfArM guidance** — I could not confirm the section number or current wording without web access, and this is exactly the kind of detail that gets amended.\n\nNote that this is a separate question from **Article 10(14)** (documentation produced to a competent authority on request, in a language that authority determines). Germany is generally pragmatic about accepting English technical documentation under that route. Don't let anyone conflate the two — a distributor citing \"the authorities accept English\" is answering the wrong question.\n\n## Where the distributor is wrong\n\nWorth pushing back so this doesn't become a precedent for every document they ask for:\n\n- **Label and IFU** — German, yes, non-negotiable (Art. 10(11) + Annex I 23.1(d) + MPDG).\n- **Declaration of Conformity** — German, per the above.\n- **Technical documentation, clinical evaluation, PMS plan, risk management file** — no. These are not \"made available\" to the German market. English is standard and accepted.\n- **The DoC does not have to ship with the device.** Unlike some other CE regimes, MDR doesn't require the DoC to accompany each Class IIa unit to the end user. The distributor's actual obligation is **Article 14(2)(b)**: verify that a DoC *has been drawn up*. That's a verification duty, not a distribution duty. If they're asking for translated copies to hand to hospitals, that's a commercial ask dressed as a regulatory one.\n\n## What I'd do\n\nIssue a **bilingual DoC** — English and German in parallel columns or stacked on one page, single document, single revision number. Reasons:\n\n1. It's one page. The translation cost is trivial next to the argument you're currently having.\n2. It removes the question permanently for Germany and for German-language tender and hospital procurement, where a German DoC gets asked for whether or not law requires it.\n3. One document means one version to keep current. Article 19(1) requires the DoC to be **continuously updated** — separate per-language files are how you end up with a stale German version contradicting a current English one during an audit.\n\nState explicitly on the face of the document that the **English version is the authoritative text** in case of discrepancy. That protects you if a translator introduces an error in a scope statement or a standards list.\n\nIf you're selling into other markets too, apply the same Article 19(1) analysis per market rather than per distributor request — several Member States require their own language, and you'd rather find out once and batch the translations than one distributor complaint at a time.\n\nOne caveat on scope: I've treated this as a Class IIa device under a Notified Body certificate with Germany as an established market. If you're also relying on the DoC for a market where you use an authorised representative or a different conformity assessment route, the per-market language obligation still attaches independently."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 4,
+            "costUsd": 0.18767775000000003,
+            "judgeCostUsd": 0.0042810000000000036,
+            "durationSeconds": 61,
+            "startedAt": "2026-09-11T04:13:01.817Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-Etqw3k/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "Web search is blocked in this session, so the answer below is from knowledge, with the one point that needs primary-source verification flagged explicitly.\n\n## Short answer\n\nYour distributor is overstating it. \"Everything into German\" is correct for **labelling and IFU**, but the Declaration of Conformity follows a different rule, and Germany is one of the Member States that does **not** require a German DoC.\n\n## The legal chain\n\n**Article 19(4) MDR** is the controlling provision:\n\n> The EU declaration of conformity shall be translated into an official Union language or languages required by the Member State(s) in which the device is made available.\n\nSo the MDR itself doesn't mandate any particular language — it delegates the choice to each Member State where you make the device available. The question is therefore not \"what does the MDR say\" but \"what has Germany required.\"\n\n**Germany's national implementation** is the MPDG (Medizinprodukterecht-Durchführungsgesetz). Its language provision (§ 8, *Sprachenregelungen*) requires German for the Annex I Chapter III Section 23 information — label, IFU, implant card — but my understanding is that it permits the EU declaration of conformity in **German or English**. Germany is generally grouped with NL, IE, and the Nordics as English-accepting for the DoC, in contrast to FR, IT, ES, PL, where the national language is required.\n\n⚠\ufe0f **Verify this before you rely on it.** I could not confirm the current wording of MPDG § 8 in this session. Pull the consolidated text from gesetze-im-internet.de and read the DoC sentence yourself — this is a one-paragraph check and it's the whole basis of the answer.\n\n## What *does* have to be German\n\nThis is probably where your distributor's confusion comes from — several things genuinely must be German, so a blanket claim feels right to them:\n\n| Item | German required for DE market? |\n|---|---|\n| Label (Annex I 23.2) | **Yes** |\n| Instructions for use (Annex I 23.4) | **Yes** |\n| Implant card + accompanying info (Art. 18) | **Yes** |\n| Field safety notices (Art. 89) | **Yes** |\n| **EU Declaration of Conformity** | **No — English accepted** (pending your § 8 check) |\n| Technical documentation | Language agreed with your notified body; competent authority may demand German under Art. 10(14) |\n\nAlso worth correcting a common distributor assumption: the MDR does **not** require the DoC to ship with the device. Unlike the Machinery Directive, there's no accompanying-document obligation. Art. 10(8) requires you to keep it available to competent authorities for 10 years after the last device is placed on the market (15 for implantables). The distributor's own duty under Art. 14(2)(a) is only to verify that a DoC *has been drawn up* — not to hold it in German.\n\n## Practical recommendation\n\nEven though you're almost certainly not obliged to: **issue a single bilingual DE/EN DoC** rather than refusing, or rather than maintaining two separate files.\n\nThe reason is commercial, not regulatory. German hospital procurement, tender submissions, and Einkaufsgemeinschaften routinely ask for a German DoC, and arguing Art. 19(4) with a purchasing department is a poor use of your regulatory affairs time. The cost is one page of translation.\n\nDo it as **one document with one revision number**, two columns or two stacked language blocks — not as two independent documents. Art. 19(1) requires the DoC to be kept continuously updated, and every separate language file is another artifact that can drift out of sync when you add a variant, change your notified body certificate number, or update the Basic UDI-DI. A single bilingual artifact under one change-control record avoids that failure mode entirely.\n\nOne thing to check while you're in there: if your device also falls under other Union legislation requiring a DoC (e.g. RED for a wireless component), Art. 19(3)–(4) requires a **single** combined declaration covering all applicable acts — and the language rule then has to satisfy every regime involved, which is not necessarily the same set.\n\n**Bottom line:** you can decline on the legal merits, but supply a bilingual DoC anyway — confirm MPDG § 8's DoC sentence first so you're arguing from the actual text if the distributor pushes back."
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 5,
+            "costUsd": 0.23425250000000003,
+            "judgeCostUsd": 0.005531000000000001,
+            "durationSeconds": 87,
+            "startedAt": "2026-09-11T04:14:02.643Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-uVvvV5/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "judge votes: FAIL FAIL FAIL",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  false,
+                  false,
+                  false
+                ],
+                "evidence": "Short answer: **the DoC is subject to a translation requirement under the MDR, but whether *Germany* triggers it is a national-law question — and for Germany the answer is most likely no.** Your distributor is right that the DoC is not exempt, and wrong that \"everything\" must be in German.\n\nOne caveat up front: I tried to pull the current text of the German MPDG to confirm the specific provision and web access is disabled in this session. The MDR side below I'm confident in; the German national provision is the part you should verify against the current statute (or have your German-market regulatory consultant confirm in writing).\n\n## The MDR position\n\nArticle 19(1) MDR, final sentence:\n\n> The EU declaration of conformity shall... be translated into an official Union language or languages **required by the Member State(s) in which the device is made available on the market**.\n\nSo the MDR itself doesn't mandate German. It defers to each Member State. The default is that your English DoC is fine unless a Member State has affirmatively legislated a language requirement for the DoC.\n\n## Germany specifically\n\nGermany's language rules sit in the MPDG (Medizinprodukterecht-Durchführungsgesetz), §8. The structure is:\n\n- **Label and IFU** (Annex I Section 23 information) → German. This is the hard requirement, and it flows from Art. 10(11) MDR plus MPDG §8. There's a narrow carve-out permitting English IFU for devices used exclusively by professional users under defined conditions — check whether your Class IIa device qualifies, and don't assume it does.\n- **EU Declaration of Conformity and technical documentation** → Germany accepts German **or English**. Germany is one of the more permissive Member States here; it does not impose a national-language DoC requirement on manufacturers placing devices on the market.\n\nThat second bullet is the one to verify against the current MPDG text. If it holds, your English-only DoC is legally sufficient for Germany.\n\n## Where your distributor's confusion comes from\n\nDistributors have their own verification duty under Art. 14(2) MDR. Before making a device available they must check that:\n\n- (a) the device is CE marked **and an EU DoC has been drawn up**\n- (b) the device is accompanied by the Art. 10(11) information — i.e. **label and IFU in the required language**\n- (d) a UDI has been assigned\n\nNote the asymmetry: the language requirement in (b) attaches to the labelling and IFU, not to the DoC in (a). For the DoC, the distributor only has to confirm it *exists*. Your distributor is reading the language condition in (b) across onto (a).\n\n## What I'd actually do\n\nTranslate it anyway — but for commercial, not legal, reasons:\n\n1. **It's a one-page document.** The cost of translating Annex IV content is trivial against the cost of this argument recurring with every distributor in every market.\n2. **German tenders and hospital procurement routinely ask for a German DoC** regardless of what the law requires. Handing one over is faster than explaining Art. 19(1) to a procurement officer.\n3. **Issue it as a single bilingual EN/DE document**, not two separate files. Two files means two documents to keep in sync every time you revise the DoC (new NB certificate, new product variant, Basic UDI-DI change), and a stale translated DoC in circulation is a genuine problem. One bilingual document with parallel columns has one version number and one signature.\n\nIf you'd rather not, you're on solid ground pushing back — but get the MPDG §8 confirmation in writing first so you have something to send the distributor.\n\n## Two things worth checking while you're here\n\n- **Your other markets.** Language requirements for the DoC genuinely do vary, and some Member States are stricter than Germany. Since Art. 19(1) points at each market's national law, \"English is fine for Germany\" tells you nothing about your other markets. Worth building a small matrix of DoC language requirements per market you sell into — this question will come back from every distributor otherwise.\n- **Your German IFU and labelling.** This is the requirement with real enforcement exposure, and it's the one the distributor is actually obliged to verify under Art. 14(2)(b). If they're raising language issues, make sure that side is genuinely clean before the conversation turns to it.\n\nThis is regulatory information rather than legal advice — for the MPDG §8 confirmation specifically, get it from your German regulatory counsel or consultant, since that's the load-bearing point."
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 1,
+        "passRate": 1,
+        "scoreWithout": 0.3333333333333333,
+        "passRateWithout": 0.3333333333333333,
+        "delta": 0.6666666666666667
+      }
+    },
+    {
+      "name": "professional-user-exception",
+      "dir": "evals/02-professional-user-exception",
+      "source": "prose",
+      "promptMarkdown": "Our device is a benchtop analyser sold only to hospital laboratories in Germany — never\nto patients, never to home users. We want to ship the instructions for use in English\nonly, since all our users are lab professionals. Our German competitor does this. Can\nwe?",
+      "runsPerCase": 3,
+      "timeoutSeconds": 300,
+      "maxTurns": 10,
+      "graders": [
+        {
+          "name": "criteria",
+          "type": "llm",
+          "weight": 1,
+          "graderMarkdown": "MPDG § 8(2) sentence 2 permits English for information intended exclusively for\nprofessional users, but the exception is CUMULATIVE — three conditions, all required:\na justified case (begründeter Fall), exclusively professional users, AND\nsafety-related information still provided in German or the user's language.\n\nPASS requires:\n(1) It does NOT answer a flat yes. English-only for the whole IFU is not permitted,\n    because safety-related information must still be in German (or the user's language)\n    even under the exception.\n(2) It names the cumulative structure — at minimum, that the professional-user route\n    still requires safety information in German. Naming all three conditions is better\n    but not required.\n(3) It does NOT answer a flat no either. The exception is real, and a response that\n    says \"everything must be German, no exceptions\" misses § 8(2) sentence 2 and is a\n    FAIL for the opposite reason.\n\nThe correct shape is: mostly yes for the professional content, but not for the\nsafety-related parts, and only in a justified case.\n\n(4) The response must not treat \"all our users are lab professionals\" as itself\n    supplying the begründeter Fall. That collapses two of the three cumulative\n    conditions into one. A response that mentions safety information in German but\n    treats professional users as automatically justifying the exception has missed the\n    structure and is a FAIL.\n\nIgnore the competitor point; what a competitor does is not a legal basis, and the\nresponse need not address it.",
+          "config": {
+            "criteria": "MPDG § 8(2) sentence 2 permits English for information intended exclusively for\nprofessional users, but the exception is CUMULATIVE — three conditions, all required:\na justified case (begründeter Fall), exclusively professional users, AND\nsafety-related information still provided in German or the user's language.\n\nPASS requires:\n(1) It does NOT answer a flat yes. English-only for the whole IFU is not permitted,\n    because safety-related information must still be in German (or the user's language)\n    even under the exception.\n(2) It names the cumulative structure — at minimum, that the professional-user route\n    still requires safety information in German. Naming all three conditions is better\n    but not required.\n(3) It does NOT answer a flat no either. The exception is real, and a response that\n    says \"everything must be German, no exceptions\" misses § 8(2) sentence 2 and is a\n    FAIL for the opposite reason.\n\nThe correct shape is: mostly yes for the professional content, but not for the\nsafety-related parts, and only in a justified case.\n\n(4) The response must not treat \"all our users are lab professionals\" as itself\n    supplying the begründeter Fall. That collapses two of the three cumulative\n    conditions into one. A response that mentions safety information in German but\n    treats professional users as automatically justifying the exception has missed the\n    structure and is a FAIL.\n\nIgnore the competitor point; what a competitor does is not a legal basis, and the\nresponse need not address it.",
+            "focus": "last_message"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 4,
+            "costUsd": 0.1522535,
+            "judgeCostUsd": 0.004442999999999999,
+            "durationSeconds": 36,
+            "startedAt": "2026-09-11T04:15:29.510Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-f0cP0A/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "## Can the instructions for use be English-only? (IVD benchtop analyser, German hospital labs)\n\n**German market:** confirmed — sold to hospital laboratories in Germany, so MPDG applies.\n**Answer:** No, not as stated. English for the body of the IFU is available to you, but **safety-related information must still be provided in German** (or the user's language) — so \"English only\" fails § 8(2).\n\n| Item | MDR/IVDR requires | Germany adds | Basis |\n|---|---|---|---|\n| EU Declaration of Conformity | not carried here | German **or** English — English alone is fine, no translation needed | MPDG § 8(1) `[verified]` |\n| Information for users (IFU, labelling) — default | not carried here | **German**, and it is a condition of supply: products may only be handed over to users if met | MPDG § 8(2) sentence 1 `[verified]` |\n| Same, where use is exclusively professional | not carried here | English or another easily understood language permitted — but only in a *justified case* (*begründeter Fall*) | MPDG § 8(2) sentence 2 `[verified]` |\n| Safety-related information, even under that exception | not carried here | **German** or the user's language. The exception does not reach it. | MPDG § 8(2) sentence 2, final clause `[verified]` |\n\n### The three conditions are cumulative\n\n§ 8(2) sentence 2 permits English only where **all three** hold:\n\n1. it is a **justified case** — *begründeter Fall*;\n2. the information is **exclusively** for professional users;\n3. **safety-related information is still provided in German** or the user's language.\n\nYour facts satisfy condition 2 cleanly — benchtop analyser, hospital labs, never patients or home users. But condition 2 is not self-executing: being professional-only is one of the three requirements, not the justification for the other two. And condition 3 is the one that breaks a pure English-only plan. The workable shape is a **bilingual package**: English IFU with the safety-related content in German — warnings, precautions, contraindications, residual-risk and handling instructions, and anything else your risk file treats as risk-control-by-information. Where the line falls between \"safety-related\" and the rest is a judgement call the statute does not itemise, and I won't state how BfArM or a German court would draw it.\n\n### On the competitor\n\nThat a German competitor ships English-only is not a legal basis, and it does not tell you what their German-language content looks like or whether anyone has examined it. § 8(2) sentence 1 makes compliance a **condition of supply** — the exposure sits with you at handover, not with the precedent.\n\n### Adjacent, since it is the same section family\n\nIf you ever take a field safety corrective action in Germany, the **Field Safety Notice must be written in German** (MPDG § 73(1) `[verified]`) — including for IVDR devices, the section names Art. 84(8) of 2017/746 expressly. No professional-user exception there. Worth knowing before you build a monolingual-English documentation pipeline you would have to break in an emergency.\n\n**What would change this:** if the analyser were ever made available outside exclusively professional use, condition 2 fails and the full German requirement in sentence 1 applies to all user information. Conversely, nothing about hospital-lab sophistication removes condition 3 — the safety-content-in-German duty holds regardless of how fluent your users are.\n\n## Limits\n\nThis covers MPDG §§ 4, 8 and 73 only, retrieved verbatim from gesetze-im-internet on 2026-09-10. It does **not** cover the rest of MPDG, MDR or IVDR themselves (including IVDR Annex I language provisions), MDCG guidance, BfArM practice, or any other member state's implementing law — an obligation here is German and says nothing about France, Italy or elsewhere. A first-pass aid for spotting German-specific duties, not legal advice, and not a substitute for a regulatory professional or a Fachanwalt für Medizinrecht."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 4,
+            "costUsd": 0.14720425,
+            "judgeCostUsd": 0.0045509999999999926,
+            "durationSeconds": 33,
+            "startedAt": "2026-09-11T04:16:05.043Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-yQSbbP/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "## Can the IFU be English-only? (IVD benchtop analyser, German hospital labs)\n\n**German market:** confirmed — product made available *im Geltungsbereich* of MPDG.\n**Answer:** No, not English-*only*. English IFU is permitted for exclusively professional users in a justified case, but the **safety-related information must still be provided in German** (or the user's language) — so a purely English document set does not comply.\n\n| Item | MDR/IVDR requires | Germany adds | Basis |\n|---|---|---|---|\n| IFU / information for users | not carried here | Default: **German**, and it is a *condition of supply* — products may only be handed over to users if it is met | MPDG § 8(2) sentence 1 `[verified]` |\n| IFU, exclusively professional users | not carried here | English (or another easily understood language) allowed, but only in a **justified case** (*begründeter Fall*) | MPDG § 8(2) sentence 2 `[verified]` |\n| Safety-related information within that IFU | not carried here | **German** or the user's language — the professional-user exception does not reach it | MPDG § 8(2) sentence 2, final clause `[verified]` |\n| EU Declaration of Conformity | not carried here | German **or English** — English alone is fine, no translation needed | MPDG § 8(1) `[verified]` |\n\nThree points worth being precise about:\n\n1. **The exception is cumulative.** Justified case **and** exclusively professional users **and** safety information in German. Your facts look good on the second limb — sold only to hospital laboratories, never patients, never home users. The first limb (*begründeter Fall*) is a separate hurdle you still have to be able to articulate; \"our users read English\" is an argument, not automatically a justification, and I can't tell you where the authority draws that line. The third limb is the one that defeats \"English only\" outright.\n\n2. **So the practical shape is a split document set**, not a single-language one: body of the IFU in English, with safety-related content — warnings, cautions, contraindications, residual-risk and handling/disposal warnings, anything safety-bearing — available in German. How far \"sicherheitsbezogene Informationen\" extends is a scoping judgement; the safer read is broad.\n\n3. **§ 8(1) cuts the other way.** Don't translate the DoC on the assumption Germany wants everything in German — English alone is explicitly sufficient there. Over-translating is the other common error.\n\n**What would change this:** if the analyser were ever made available to non-professional users, sentence 1 applies and the whole IFU must be German. Note that § 8(2) is a supply condition on *abgegeben werden* — if a distributor could hand it to a non-professional setting, the exception is at risk.\n\n**On the competitor:** what a German competitor ships is not evidence of compliance. They may have a documented justification you don't have, they may be shipping German safety content you haven't seen, or they may simply not have been challenged.\n\nTwo things outside what I can answer: whether your specific rationale qualifies as a *begründeter Fall*, and where exactly the safety/non-safety boundary falls in your IFU. Both are judgement calls a regulatory professional should sign off. If you go this route, document the justification in your technical file — it's the thing you'd be asked to produce.\n\nAlso worth planning for now: if you ever run a field safety corrective action in Germany, the **Field Safety Notice must be in German** (MPDG § 73(1) `[verified]`) — no professional-user exception there. An English-first documentation pipeline should have German FSN capability built in rather than improvised under time pressure.\n\n## Limits\n\nThis covers MPDG §§ 4, 8 and 73 only, retrieved verbatim from gesetze-im-internet on 2026-09-10. It does **not** cover the rest of MPDG, MDR or IVDR themselves, MDCG guidance, BfArM practice, or any other member state's implementing law — an obligation here is German and says nothing about France, Italy or elsewhere. A first-pass aid for spotting German-specific duties, not legal advice, and not a substitute for a regulatory professional or a Fachanwalt für Medizinrecht."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 4,
+            "costUsd": 0.1473255,
+            "judgeCostUsd": 0.004508999999999992,
+            "durationSeconds": 33,
+            "startedAt": "2026-09-11T04:16:37.573Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-brCkIK/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "## Can the IFU for a professional-use IVD analyser be English-only in Germany?\n\n**German market:** confirmed — placed on the German market, so MPDG applies alongside IVDR.\n**Answer:** No, not English-*only*. You can likely put the bulk of the IFU in English under the professional-user exception, but the **safety-related information must still be provided in German** (or the user's language) — that part is not waivable, so a pure English-only document does not comply.\n\n| Item | MDR/IVDR requires | Germany adds | Basis |\n|---|---|---|---|\n| EU Declaration of Conformity | not carried here | German **or English** — English alone is fine, no translation needed | MPDG § 8(1) `[verified]` |\n| Information for users (IFU, labelling) — default | not carried here | **German**, and it is a *condition of supply*: the product may only be handed over if met | MPDG § 8(2) s.1 `[verified]` |\n| Same, where exclusively professional users | not carried here | English (or another easily understood language) permitted — but only **in begründeten Fällen** | MPDG § 8(2) s.2 `[verified]` |\n| Safety-related information, even under that exception | not carried here | **German** or the user's language — exception does not reach it | MPDG § 8(2) s.2, final clause `[verified]` |\n\n### The exception is cumulative\n§ 8(2) sentence 2 has three conditions and you need **all three**:\n\n1. a **justified case** (*begründeter Fall*) — you would need to be able to articulate why English is appropriate here, not merely convenient;\n2. the information is **exclusively** for professional users — your hospital-lab-only, never-to-patients distribution is exactly the fact pattern this contemplates, and looks satisfied;\n3. **safety-related information is also provided in German** (or the user's language).\n\nMiss any one and sentence 1 snaps back: the whole thing must be in German, as a condition of being allowed to supply the device at all.\n\nCondition 2 is your strongest point. Condition 3 is the one that defeats \"English only\" as stated. Practically, this tends to mean an English IFU with the safety content — warnings, precautions, contraindications/limitations, handling and disposal hazards, anything whose misreading creates risk — carried in German as well. Where exactly the safety/non-safety line falls in your IFU is a judgment call on your content; the statute doesn't enumerate it, and I won't invent a boundary for you.\n\n### On the competitor\nWhat your German competitor ships is not evidence of compliance. They may be meeting condition 3 in a way that isn't obvious from the main IFU (a German safety insert, German on-screen warnings, German quick-reference), they may be relying on a justification specific to their product, or they may simply be non-compliant and not yet challenged. It isn't a basis to build your own position on.\n\n**What would change this:** any of — the device becoming available to non-professional users (self-testing/near-patient use outside the professional-only framing) kills the exception outright and pushes you to full German; and separately, if you ever take a field safety corrective action in Germany, the Field Safety Notice must be in German regardless of any of the above (MPDG § 73(1) `[verified]`).\n\n## Limits\n\n> This covers MPDG §§ 4, 8 and 73 only, retrieved verbatim from gesetze-im-internet on 2026-09-10. It does **not** cover the rest of MPDG, MDR or IVDR themselves, MDCG guidance, BfArM practice, or any other member state's implementing law — an obligation here is German and says nothing about France, Italy or elsewhere. A first-pass aid for spotting German-specific duties, not legal advice, and not a substitute for a regulatory professional or a Fachanwalt für Medizinrecht.\n\nTwo things I'd flag as outside what I can answer: what IVDR Annex I §20 itself requires of your IFU content, and how BfArM or a notified body would view a particular *begründeter Fall* justification. Both are worth putting to your regulatory lead."
+              }
+            ]
+          }
+        ],
+        "without": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 1,
+            "costUsd": 0.18105025000000002,
+            "judgeCostUsd": 0.005511000000000002,
+            "durationSeconds": 88,
+            "startedAt": "2026-09-11T04:17:10.302Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-7p7rP5/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS FAIL PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  false,
+                  true
+                ],
+                "evidence": "Short answer: **most likely yes for the instructions for use specifically — Germany has a professional-user exception — but it isn't automatic, it doesn't cover everything you ship, and \"our competitor does it\" is not the basis to rely on.** Here's the reasoning chain and what I'd check before committing.\n\n(Standard caveat: this is regulatory orientation, not legal advice. Confirm with German regulatory counsel or your notified body before you freeze the documentation plan.)\n\n## Where the requirement comes from\n\nA benchtop analyser for hospital labs is an IVD, so **Regulation (EU) 2017/746 (IVDR)** applies — assuming it's placed on the market as an IVD and not as RUO/general lab equipment, which is a different regime entirely.\n\nIVDR doesn't set the language itself. Annex I, Section 20 and Article 10 push the decision down: the information supplied with the device must be in a Union language **determined by the Member State in which the device is made available**. So the answer is entirely a question of German national law.\n\n## What German law says\n\nThe relevant provision is **§ 11 MPDG** (Medizinprodukterecht-Durchführungsgesetz). The default rule is German. The exception — carried over in substance from the old § 11 MPG — permits the **instructions for use in English for devices intended exclusively for professional users**.\n\nTwo things I'd verify against the current statutory text rather than take from me:\n\n- **The exact conditions attached to the exception.** The historical formulation conditioned it on the professional user's agreement, and there is a carve-out keeping **safety-relevant information and the label/packaging markings in German** even when the IFU may be English. Whether and how that applies to your product is the crux of the question, and it's worth reading the current wording plus any BfArM position rather than relying on a summary.\n- **That \"exclusively professional\" holds across your entire distribution chain.** This is the condition that actually breaks in practice. If a distributor can resell to a physician's office lab, a POCT setting, a veterinary lab, or anywhere a non-professional operator touches it, the exception stops applying — and your controls, not your intent, are what an authority will look at.\n\n## What English-only probably does *not* cover\n\nEven if the IFU exception applies cleanly:\n\n- **Label and packaging markings on the device itself** — plan for German unless you confirm otherwise.\n- **Field safety notices and any vigilance communication to users** — these go out in German. Build the translation capability now; you don't want to be sourcing a translator during a recall.\n- **Interactions with the competent authority** (the Land-level market surveillance body, not BfArM, for inspections) — they can request German-language material.\n- **The EU Declaration of Conformity** — Article 17 requires translation into the language(s) the Member State requires; check Germany's position.\n- **eIFU**, if you're going electronic under Regulation (EU) 2021/2226, is a separate permission and doesn't change the language analysis.\n\n## Two things that will bite you outside the regulation\n\n**The competitor is not evidence.** They may be reading the exception the same way you are, they may have a different intended-use statement, or they may simply not have been inspected yet. None of that transfers to you.\n\n**Hospital procurement may require German regardless of what the law permits.** Under MPBetreibV the operator has duties around instructing users (Einweisung) and operating per the IFU. German hospital purchasing frequently makes German documentation a contractual requirement, and public-sector tenders often do so explicitly. You can be fully compliant and still lose deals.\n\n## What I'd do\n\n1. Get a written opinion on § 11 MPDG applied to your specific intended use and distribution model — this is a cheap question for German counsel and it's the one that decides everything.\n2. Tighten the intended-use statement and your distributor agreements so \"exclusively professional users\" is a controlled fact, not an assumption.\n3. Document the language decision in the technical file, and treat it as a **usability risk** under IEC 62366-1 — language comprehension by German MTAs reading English is a legitimate use-error input. Also check EN ISO 18113 (information supplied by the manufacturer, IVD-specific) and ISO 15223-1 symbols, since heavy symbol use reduces the text burden either way.\n4. Budget for German FSN translation capability regardless of the IFU outcome.\n5. Ask your two or three largest target accounts whether German IFU is a procurement requirement — that answer may make the legal question moot.\n\nIf you can tell me the risk class under IVDR and whether the instrument has an operator-facing software UI, I can be more specific about which pieces are most exposed."
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 4,
+            "costUsd": 0.23630350000000003,
+            "judgeCostUsd": 0.007192999999999998,
+            "durationSeconds": 100,
+            "startedAt": "2026-09-11T04:18:38.062Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-sceFoD/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "judge votes: FAIL FAIL FAIL",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  false,
+                  false,
+                  false
+                ],
+                "evidence": "I couldn't verify the current statutory text — my WebSearch/WebFetch calls were denied in this session, so the below is from knowledge and you should confirm the exact wording of § 8 MPDG before relying on it. Happy to look it up if you enable web access.\n\n## Short answer\n\nProbably yes for the *instructions for use*, but it is not automatic, it does not extend to everything you ship, and \"our competitor does it\" is not the basis.\n\n## The legal chain\n\nA benchtop analyser for hospital labs is an IVD under **Regulation (EU) 2017/746 (IVDR)**. IVDR Art. 10(10) does not itself set a language — it says the information in Annex I Section 20 must be in \"an official Union language(s) **determined by the Member State** in which the device is made available.\" So the question is purely one of German national law.\n\nGermany's implementing act is the **MPDG**, and its language provision (**§ 8 MPDG**) sets German as the default but contains an exception for devices supplied **exclusively to professional users**, under which the instructions for use may be in English. That exception carries conditions — as I recall it turns on the professional user's agreement and on safety not being compromised. Those conditions are the whole ballgame, and they're what you need counsel to read against your facts, not the headline permission.\n\n## What stays in German regardless\n\nDo not read the exception as \"the whole product can be English\":\n\n- **Safety-relevant labelling and warnings** — the exception is narrower than the full Annex I Section 20 package; check how far it reaches beyond the IFU proper.\n- **Field safety notices / FSCA communications** to German users and to BfArM — German, in practice always.\n- **EU Declaration of Conformity** — IVDR Art. 17 requires translation into the language the Member State requires.\n- **Technical documentation on request** — BfArM can demand German.\n- **Summary of Safety and Performance** (if your analyser or its reagent system falls into class C/D and an SSP applies).\n\n## The conditions are where this usually fails\n\n\"All our users are lab professionals\" is doing more work in your sentence than it can bear. Your actual user population includes MTAs and lab technicians, night-shift staff, biomedical engineering and service technicians, and whoever does decontamination. \"Professional\" is not a synonym for \"reads technical English under time pressure.\" Under IEC 62366 your usability engineering file and your risk management file need to positively justify that English does not raise use-error risk for *that* population — an English-only IFU is a design decision that has to survive your own risk analysis, not just a translation budget decision.\n\nAlso: once you ship into distribution you lose control of where units travel. Parallel movement into Austria brings a German requirement anyway; other Member States bring their own.\n\n## The competitor argument\n\nDiscard it. Your competitor may be relying on the same exception and meeting its conditions, may be quietly non-compliant with nobody having complained yet, or may have a materially different intended-use statement. None of those is transferable to you, and none of it is a defence in a market surveillance action.\n\n## Commercial reality, separate from legality\n\nYour customers have their own obligations. Under **MPBetreibV** the hospital as operator must ensure users are instructed and have the IFU available, and under **ArbSchG / BetrSichV** the employer must give employees instructions in a language they understand. Several German hospital procurement departments turn this into a hard tender requirement for German documentation. So even where you may lawfully ship English, you can lose deals on it.\n\n## What I'd recommend\n\n1. Get German regulatory counsel to read § 8 MPDG against your intended-use statement and confirm exactly which documents the professional-user exception covers.\n2. Document the decision in your technical file — risk management plus usability rationale, not just a commercial note.\n3. Check your notified body's position early; some have views on this independent of the statute.\n4. Consider German IFU with an English service manual as the split, or electronic IFU to cut the cost of doing German properly. The translation cost of an IFU is small next to one tender loss or one market surveillance finding."
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 4,
+            "costUsd": 0.13789900000000002,
+            "judgeCostUsd": 0.0015240000000000045,
+            "durationSeconds": 76,
+            "startedAt": "2026-09-11T04:20:17.799Z",
+            "error": "exit 1: API Error: Repeated 529 Overloaded errors. The API is at capacity — this is usually temporary. Try again in a moment. If it persists, check https://status.claude.com.",
+            "tracePath": "/private/tmp/e-0nBItY/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "judge votes: FAIL FAIL FAIL",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  false,
+                  false,
+                  false
+                ],
+                "evidence": "API Error: Repeated 529 Overloaded errors. The API is at capacity — this is usually temporary. Try again in a moment. If it persists, check https://status.claude.com."
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 1,
+        "passRate": 1,
+        "scoreWithout": 0.3333333333333333,
+        "passRateWithout": 0.3333333333333333,
+        "delta": 0.6666666666666667
+      }
+    },
+    {
+      "name": "not-german-market",
+      "dir": "evals/03-not-german-market",
+      "source": "prose",
+      "promptMarkdown": "We're placing a Class IIb device on the market in Spain and Portugal only. Nothing in\nGermany. What are our language obligations for the instructions for use?",
+      "runsPerCase": 3,
+      "timeoutSeconds": 300,
+      "maxTurns": 10,
+      "graders": [
+        {
+          "name": "criteria",
+          "type": "llm",
+          "weight": 1,
+          "graderMarkdown": "MPDG applies only im Geltungsbereich dieses Gesetzes — the German market. Spain and\nPortugal are governed by their own national implementing acts, which this skill does not\ncarry. Neither does it carry MDR itself.\n\nSo the correct answer is mostly a boundary statement, and the grader rewards making it\ncleanly rather than penalising a short response.\n\nPASS requires ALL of:\n(1) No MPDG section is APPLIED as an obligation here. Judge how a provision is used, not\n    whether its name appears — saying \"MPDG § 8 is German law and does not reach Spain\"\n    is the correct answer and PASSES. FAIL only if an MPDG duty is asserted as binding\n    for Spain or Portugal.\n(2) It says plainly that language obligations for these markets sit in Spanish and\n    Portuguese national law, which this skill does not carry, and that each member state\n    legislates its own.\n(3) It does NOT state a specific Spanish or Portuguese language rule as established fact.\n    Naming MDR Art. 10(11) as the EU-level provision that leaves language to member\n    states is acceptable ONLY if flagged as not carried by this skill — MDR is outside\n    the reference file too.\n\nA response that is largely \"here is where this stops, and here is who to ask\" is the\nideal answer, not a thin one. Do not require it to produce substantive Spanish or\nPortuguese requirements; producing them is the failure.\n\nFAIL if it invents a national requirement, or if it applies German law to a\nSpanish-market asset.",
+          "config": {
+            "criteria": "MPDG applies only im Geltungsbereich dieses Gesetzes — the German market. Spain and\nPortugal are governed by their own national implementing acts, which this skill does not\ncarry. Neither does it carry MDR itself.\n\nSo the correct answer is mostly a boundary statement, and the grader rewards making it\ncleanly rather than penalising a short response.\n\nPASS requires ALL of:\n(1) No MPDG section is APPLIED as an obligation here. Judge how a provision is used, not\n    whether its name appears — saying \"MPDG § 8 is German law and does not reach Spain\"\n    is the correct answer and PASSES. FAIL only if an MPDG duty is asserted as binding\n    for Spain or Portugal.\n(2) It says plainly that language obligations for these markets sit in Spanish and\n    Portuguese national law, which this skill does not carry, and that each member state\n    legislates its own.\n(3) It does NOT state a specific Spanish or Portuguese language rule as established fact.\n    Naming MDR Art. 10(11) as the EU-level provision that leaves language to member\n    states is acceptable ONLY if flagged as not carried by this skill — MDR is outside\n    the reference file too.\n\nA response that is largely \"here is where this stops, and here is who to ask\" is the\nideal answer, not a thin one. Do not require it to produce substantive Spanish or\nPortuguese requirements; producing them is the failure.\n\nFAIL if it invents a national requirement, or if it applies German law to a\nSpanish-market asset.",
+            "focus": "last_message"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 4,
+            "costUsd": 0.23294175000000003,
+            "judgeCostUsd": 0.0055650000000000074,
+            "durationSeconds": 90,
+            "startedAt": "2026-09-11T04:21:34.164Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-1Y6pC2/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS FAIL PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  false,
+                  true
+                ],
+                "evidence": "Quick scoping note: I couldn't reach the web (search was blocked in this session), so the EU-level rules below are from the MDR text and are solid; the two national-law specifics are flagged **[verify]** where I'd want you to confirm the article number against the consolidated text before it goes in a regulatory file. Also — the MPDG/German-language skill available here doesn't apply to you at all, since nothing is made available in Germany.\n\n## The MDR baseline\n\nMDR doesn't itself name a language. It delegates:\n\n- **Art. 10(11)**: the device must be accompanied by the Annex I §23 information \"in an official Union language(s) **determined by the Member State in which the device is made available** to the user or patient.\"\n- **Annex I §23.1(f)**: same rule restated for the content of the label and the IFU.\n- **Annex I §23.4**: an IFU is mandatory here. The \"no IFU needed if it can be used safely without one\" exemption is only for Class I and IIa. **Class IIb ⇒ IFU always required.**\n\nSo your obligation is the union of what Spain and Portugal each demand. Two markets, two determinations.\n\n## Spain\n\nBaseline: **Spanish (castellano)**. The implementing act is **Real Decreto 192/2023, de 21 de marzo**, on medical devices (it replaced RD 1591/2009).\n\n- Devices reaching a **lay user or patient**: labelling and IFU in Spanish, no discretion.\n- Devices for **exclusively professional use**: Spanish law has traditionally allowed some relief here — under the predecessor RD 1591/2009 the IFU for professional-use devices could be in another EU official language while the safety-critical label information stayed in Spanish. RD 192/2023 carries a comparable split. **[verify the exact wording and scope of the professional-use carve-out in RD 192/2023 — this is the single most misapplied provision in Spain, and AEMPS can require Spanish regardless.]** My recommendation: ship Spanish anyway and don't build the launch around the carve-out.\n- **Co-official languages** (Catalan, Basque, Galician): not required by the medical-device legislation. But if the device is retailed to consumers, Catalonia's consumer code (Llei 22/2010) creates a Catalan-labelling expectation for products distributed there. Low enforcement risk historically, non-zero for a lay-user product. Ignore it for a hospital-only device.\n\n## Portugal\n\nBaseline: **Portuguese**, and Portugal is the stricter of the two in practice — INFARMED has consistently expected Portuguese for information delivered with the device, including in hospital settings, and is less accommodating of English-only professional IFUs than AEMPS. The national MDR implementing decree-law (successor to DL 145/2009) keeps this. **[verify the current decree-law citation and its language article with INFARMED before quoting it.]**\n\nPractical read: **plan on full Portuguese IFU and label.** Don't budget for an English-only professional exemption.\n\n## What else is language-bound (easy to miss)\n\n| Item | Rule | Applies to you? |\n|---|---|---|\n| Label | Same MS-determined language as IFU | Yes — ES + PT |\n| **Declaration of Conformity** | Art. 19(1): translated into the language(s) required by each MS of availability | Check whether ES/PT require translation; many MS do. (This is the exact duty MPDG § 8 imposes in Germany — not your problem here) |\n| **Implant card + patient info** | Art. 18: language determined by the MS | Only if your IIb is implantable — and the patient-facing text must be lay-comprehensible |\n| **SSCP** | Art. 32 | Class III and implantables only — a non-implantable IIb has none |\n| **FSN** | Art. 89: language accepted by each MS | Yes — pre-translate an FSN template into ES and PT now, not during an incident |\n\n## Format and delivery\n\n- **One multilingual IFU booklet covering ES + PT is fine.** Nothing requires country-specific print runs. Watch Annex I §23.1(d) legibility as you add columns.\n- **Electronic IFU** under Reg. (EU) 2021/2226 is available for professional-use devices, but it doesn't relieve you of language: the eIFU must be available in the language of every MS where you make the device available, the website must serve those languages, and you must supply paper **free, within 7 days** of request. eIFU is essentially closed to lay-user devices.\n- **EN ISO 15223-1 symbols** reduce translated text on the label but never substitute for the IFU language requirement.\n- **Keep translation in-house.** Under Art. 16(3)–(4), a distributor or importer who translates your IFU takes on manufacturer-like obligations and must run a QMS covering it, and must notify you. Far cleaner to control translation under your own QMS, with the translated IFUs listed in the technical documentation your notified body reviews.\n\n## Bottom line\n\nSpanish and Portuguese IFU and labelling, full text, both markets. Treat the professional-use language carve-outs in each country as a fallback you've verified rather than a plan. No German obligations arise — but note that the moment a distributor makes the device available in Germany, MPDG § 8 pulls in German DoC and product information, so keep that condition explicit in your distribution agreements.\n\nThe two **[verify]** items are worth a short confirmation with your ES/PT regulatory consultants or directly against the consolidated texts on BOE and Diário da República. I can draft those verification questions if useful."
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 4,
+            "costUsd": 0.22651074999999998,
+            "judgeCostUsd": 0.006544000000000001,
+            "durationSeconds": 94,
+            "startedAt": "2026-09-11T04:23:04.220Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-xcpi7w/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "judge votes: FAIL FAIL FAIL",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  false,
+                  false,
+                  false
+                ],
+                "evidence": "I couldn't verify this against the live national texts — WebSearch was denied in this session, so the EU-level citations below are solid from the regulation itself, but treat the two national decree references as \"check before you rely on them.\" Say the word and I'll re-run the searches if you enable web access.\n\n## Bottom line\n\nClass IIb is irrelevant to the language question. What drives it is (a) which Member States you make the device available in, and (b) whether the user is a healthcare professional or a lay person/patient. For Spain + Portugal you need **Spanish (castellano)** and **European Portuguese** IFU, unless a professional-use exemption applies — and neither country's exemption is something I'd build a packaging plan on without written confirmation.\n\n## The EU rule\n\nMDR Article 10(11) and Annex I Section 23.1(d): the information in Annex I §23 (label + IFU) must be supplied \"in an official Union language(s) determined by the Member State in which the device is made available to the user or patient.\"\n\nSo the MDR itself specifies no language — it delegates entirely to each Member State. There is no \"English is fine EU-wide\" position. Your obligation is the union of the two national rules, nothing more: placing on the market in ES and PT creates no obligation toward any other language.\n\n## Spain\n\n- Baseline: label and IFU at least in Spanish. This sits in the national medical devices decree (**Real Decreto 192/2023**, which replaced RD 1591/2009) — confirm the exact article.\n- There has historically been a carve-out allowing another language for devices used **exclusively** by healthcare professionals. If your IIb device is professional-use-only, this is worth pursuing with AEMPS, but confirm the current wording; \"exclusively\" is read strictly, and anything that reaches a patient or carer kills the exemption.\n- Co-official languages (Catalan, Basque, Galician): the state-level device rule requires castellano, and that is what AEMPS enforces. If the device is a **consumer/retail** product, regional consumer-protection law (e.g. Catalonia's Codi de consum) is a residual, low-but-nonzero exposure. For hospital-channel devices, ignore it.\n\n## Portugal\n\n- Baseline: label and IFU in Portuguese, under the MDR implementing decree (**Decreto-Lei n.º 29/2023**, successor to DL 145/2009) — again, verify the article.\n- Same shape of professional-use exception, but historically it ran through INFARMED rather than being self-certifying: the manufacturer could use another language for professional-only devices where INFARMED accepted it. Do not assume it is automatic.\n- Use **European** Portuguese. Brazilian Portuguese terminology and orthography will draw comments in a review.\n\n## Don't stop at the IFU\n\nSame national-language logic reaches several other artefacts:\n\n- **Label and packaging text** — same Article 10(11) rule, same languages.\n- **Implant card and accompanying patient information** (Art. 18) — *if* your IIb device is implantable. This one is patient-facing by definition, so no professional-use escape: ES and PT required.\n- **Field safety notices** (Art. 89) — in the language determined by each Member State. Have ES and PT templates ready before you need them, not after.\n- **Declaration of Conformity** — Annex IV; Member States may require translation into their language. ES/PT generally accept English but can ask.\n- **Technical documentation** — both authorities in practice accept English; no pre-emptive translation needed.\n\n## Two practical notes\n\n- **eIFU**: Regulation (EU) 2021/2226 only permits electronic-only IFU for specific professional-use categories (implantables, fixed installed devices, devices with a built-in display, software). Even then the language obligation is unchanged — the site must serve ES and PT — and you must ship a paper copy free of charge within 7 days on request.\n- **Symbols** (EN ISO 15223-1) cut translated label text considerably, but they do not displace the IFU language requirement.\n\nSimplest compliant setup: one bilingual ES/PT IFU covering both markets, rather than two SKUs. That also means a later market addition only costs you a language, not a repack.\n\nYou flagged Germany as out of scope, and it is — Germany layers extra national requirements (German-language DoC and product information, plus German FSNs) on top of the MDR that simply don't attach here. If Germany ever enters the plan, that's a separate analysis and the packaging decision above would need revisiting."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 4,
+            "costUsd": 0.25037875,
+            "judgeCostUsd": 0.005256000000000011,
+            "durationSeconds": 96,
+            "startedAt": "2026-09-11T04:24:37.977Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-isKOQE/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "Web search was denied in this session, so I'm answering from knowledge. The MDR-level analysis is solid; the two national decree details flagged below are where you should confirm the current article text before relying on them.\n\n(The one domain skill available here is Germany-specific — MPDG § 8 — and doesn't apply to you. More on that at the end.)\n\n## The framework: MDR delegates language to Member States\n\nMDR Art. 10(11) requires that devices be accompanied by the information in Annex I Ch. III § 23 (label + IFU) \"in an official Union language(s) **determined by the Member State in which the device is made available** to the user or patient.\"\n\nTwo consequences:\n\n- There is no EU-wide language answer. You have to satisfy Spain's rule and Portugal's rule separately.\n- **Risk class is irrelevant to the language obligation.** Class IIb changes your conformity route, not your language duties. (It does matter for the adjacent items in the last section.)\n\n## Spain\n\n**Spanish (castellano) is required.** National basis is Real Decreto 192/2023, which replaced RD 1591/2009.\n\n- The long-standing Spanish position — carried over from RD 1591/2009 Art. 4 — is that the Annex I information must be in Spanish *at least* whenever the device reaches the final user or patient, **regardless of whether its use requires the intervention of a healthcare professional**. Spain has historically been one of the stricter Member States here; do not assume a professional-use English carve-out.\n- There is a narrow provision for information intended exclusively for professionals. Confirm the exact wording in RD 192/2023 before designing around it — this is the one point I'd want the current text for.\n- **Co-official languages** (Catalan/Valencian, Galician, Basque) are *not* required by the state medical-device rule. Castilian discharges the obligation. Autonomous-community consumer legislation occasionally creates commercial pressure for consumer-facing products, but it isn't the enforced standard for device IFU.\n- Separately, Class IIb triggers a market-placement notification to AEMPS; your Spanish-language labelling and IFU are part of what you must hold and provide.\n\n## Portugal\n\n**European Portuguese is required.** National basis is the 2023 Decreto-Lei implementing the MDR (successor to DL 145/2009), administered by INFARMED.\n\n- Portugal has historically been more permissive than Spain for devices intended **exclusively for professional use**, where English IFU could be accepted. Whether that survived into the current decree in the same form is the second point to verify. If you have a professional-only device and translation cost is material, it's worth checking; otherwise default to Portuguese.\n- Use pt-PT, not pt-BR. Translations done for Brazil will not be accepted as-is.\n- INFARMED device registration by the responsible entity expects the Portuguese labelling and IFU.\n\n## Don't stop at the IFU — same language rule reaches further\n\n| Item | Applies to you? | Language |\n|---|---|---|\n| Label and packaging text | Yes | ES + PT (EN ISO 15223-1 symbols cut translated text substantially) |\n| EU Declaration of Conformity | Yes | Annex IV: translated into the language(s) required by each MS of availability — keep ES and PT versions |\n| Implant card + patient information (Art. 18) | Only if your IIb is implantable | ES + PT |\n| SSCP | Only if implantable or Class III — a non-implantable IIb needs none | Patient-facing part in ES + PT |\n| Field Safety Notices | Yes, when one occurs | Must issue in ES and PT — have templates pre-translated, this is a vigilance duty and the clock is short |\n\nAlso note your **importers and distributors** in both countries are independently obliged to verify the device carries the required-language information (Art. 13(2)(b), 14(2)(b)). Non-localized stock will get rejected at the economic-operator level, not just by the competent authority.\n\n**eIFU:** Regulation (EU) 2021/2226 permits electronic-only IFU for a closed list of categories (fixed installed devices, certain implantables/actives, software, accessories) and only for professional users, with a paper copy on request within 7 days and all required languages on the website. Assume paper unless you clearly fall inside a listed category.\n\n## On Germany\n\nCorrect that MPDG § 8 (German-language DoC and product information) does not bite if you are not making the device available in Germany. Two things that could pull you in later, worth noting for your file rather than acting on now: a distributor onward-shipping stock into DE, and any future DE market entry — which would also bring DMIDS notification duties and German-language FSNs. An EU authorised representative located in Germany does not by itself trigger the language rules; *making available on the German market* does.\n\n## Practical recommendation\n\nShip a single multilingual IFU covering ES + PT (permitted, and cheaper than two SKUs), with English retained as the master for your technical documentation and Notified Body. Bring translation under your ISO 13485 controls: qualified translators, back-translation or equivalent QC on safety-critical text, version linkage to the DoC and technical file, and — if the IFU carries any risk-control function — confirm whether your usability validation needs to cover the translated versions."
+              }
+            ]
+          }
+        ],
+        "without": [
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0.159482,
+            "judgeCostUsd": 0.005474000000000007,
+            "durationSeconds": 72,
+            "startedAt": "2026-09-11T04:26:13.818Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-YSwqip/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "judge votes: FAIL FAIL FAIL",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  false,
+                  false,
+                  false
+                ],
+                "evidence": "Short answer: Spanish and Portuguese. Nothing in German, and the MDR does not give you a \"one language for the whole EU\" option.\n\n## The rule\n\nMDR Article 10(11): the device must be accompanied by the Annex I §23 information (label, packaging, IFU) **\"in an official Union language(s) determined by the Member State in which the device is made available to the user or patient.\"** Language is set country-by-country by national law, not by the Regulation. Because you're only making the device available in Spain and Portugal, only those two national rules bind you — Germany's does not, even if your notified body is German.\n\nSo: Castilian Spanish for Spain, European Portuguese for Portugal. A single bilingual ES/PT booklet is perfectly acceptable and is the normal Iberian approach.\n\n## National specifics worth verifying against the actual text\n\n- **Spain** — Real Decreto 192/2023 (which replaced RD 1591/2009). The baseline is that information reaching the final user or patient must be at least in Castilian Spanish. There is a carve-out in that decree relaxing this for devices intended exclusively for professional use; I'd read the language article of RD 192/2023 directly before relying on it, and in practice most manufacturers ship Spanish anyway because AEMPS and hospital tenders expect it.\n- **Portugal** — Decreto-Lei n.º 29/2023. Same structure: Portuguese for information reaching the user or patient, with some flexibility historically recognised by INFARMED for strictly professional-use devices. Again, verify the language article rather than relying on the general practice.\n- **Regional languages** — Catalan, Galician and Basque are not official Union languages for MDR purposes, so the MDR doesn't require them. But if your device is a lay-user/consumer device, Catalonia's Consumer Code (Llei 22/2010) can require permanent consumer information in Catalan. Irrelevant for a professional-use IIb; a real exposure if patients buy it.\n\n## Other things the language rule reaches, not just the IFU\n\n- **Label and packaging** — same rule, same two languages.\n- **Declaration of conformity** — Article 19(1): must be translated into the language(s) required by each Member State where the device is made available. Have ES and PT versions ready.\n- **Field safety notices** — must go out in the language of each affected market. Build the translation capability before you need it in a recall.\n- **Implant card and patient information** — only if your IIb is implantable; then Article 18 information also follows the national language determination.\n- **SSCP** — only required for Class III and implantables, so skip it unless yours is implantable.\n- **Information to competent authorities** — Article 10(14): AEMPS and INFARMED can require submissions in their own official language. Technical documentation for your notified body is a separate negotiation (usually English).\n\n## Two practical traps\n\n**Don't let the distributor do the translating casually.** If your Iberian distributor translates the IFU or label, Article 16(2)(a) applies to them: they need a QMS covering translation, they must inform you before making the translated device available, and they must notify the competent authority. Cleaner to own the translations yourself and treat them as controlled documents under your QMS with back-translation or equivalent verification.\n\n**Electronic IFU probably isn't available to you.** Regulation (EU) 2021/2226 limits eIFU to a narrow set — implantables and Class III for professionals, fixed installed devices, devices with a built-in display, and software. A typical non-implantable Class IIb doesn't qualify, so plan on paper. Even where eIFU is allowed, the language obligation is unchanged and you must supply paper free of charge on request within seven days.\n\n**One forward-looking note:** goods move freely in the internal market. If a distributor later makes the device available in Germany — including through parallel distribution you didn't initiate — German IFU becomes a legal requirement and the device is non-compliant without it. Worth an explicit territorial restriction in your distribution agreements if you intend to hold the line at Iberia.\n\nThis is a regulatory summary, not legal advice; I'd have Spanish and Portuguese local counsel confirm the professional-use carve-outs in RD 192/2023 and DL 29/2023 before you rely on either to avoid a translation."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 4,
+            "costUsd": 0.19111100000000003,
+            "judgeCostUsd": 0.004626000000000005,
+            "durationSeconds": 67,
+            "startedAt": "2026-09-11T04:27:25.873Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-0xVnEH/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "Web access is blocked in this session, so the below is from knowledge. The MDR-level framework I'm confident about; I've flagged the two national-law details you should verify against the actual decree texts before locking your labelling spec.\n\n## The MDR framework\n\nLanguage is not harmonised. MDR Art. 10(11) says the Annex I §23 information (label + IFU) must be supplied \"in an official Union language(s) determined by the Member State in which the device is made available to the user or patient.\" Annex I §23.1(d) repeats this. So your obligation is the union of what Spain and Portugal each demand — nothing more.\n\n**Germany is irrelevant to you.** No German, because you aren't making the device available there. The German requirement (MPDG §8 — German for the label and IFU) only attaches on placing/making available in Germany.\n\n## Spain\n\nBaseline: **Spanish (Castilian)**. That's the state-level requirement under the medical devices decree (RD 192/2023, which replaced RD 1591/2009).\n\n⚠\ufe0f Verify: RD 1591/2009 carried a carve-out letting *professional-use-only* devices carry information in another language where the device doesn't reach the lay user. I believe RD 192/2023 keeps a version of this, but I can't confirm the exact article or its conditions without the text. If your Class IIb device is professional-use only and you were hoping to ship an English IFU into Spain, that hinges entirely on this clause — read it directly (BOE, RD 192/2023) rather than relying on my recollection.\n\nRegional co-official languages (Catalan, Basque, Galician, Valencian) are **not** a medical-device requirement. Some autonomous communities have general consumer-labelling rules, but these are not normally applied to device IFU. Don't budget for them unless a regional tender or hospital contract asks.\n\n## Portugal\n\nBaseline: **Portuguese**. Set by the national implementing decree (DL 29/2023, replacing DL 145/2009).\n\n⚠\ufe0f Verify: same pattern — Portuguese law has historically distinguished lay-user from professional-use devices, with INFARMED able to accept another language for the latter. Confirm the current article and whether it requires notification to INFARMED.\n\n## Practical read\n\nAssume **Spanish + Portuguese, both required, for label and IFU**, and treat any professional-use language relief as a bonus you only claim after reading the decree. The relief is narrow, conditional, and often evaporates at hospital procurement anyway — buyers ask for national language regardless of what the law permits.\n\n## Things that travel with the IFU obligation\n\n- **Declaration of Conformity** — Art. 19(1): must be translated into the language(s) required by each Member State where the device is made available. Spanish and Portuguese.\n- **Field Safety Notices** — must go out in the language accepted by each Member State. Have translation capacity on standby; FSNs are time-pressured.\n- **SSCP** — only if your Class IIb device is *implantable*. Then it's required (Art. 32) and must be in the languages the Member States determine. Non-implantable Class IIb: not applicable.\n- **eIFU** — Reg. (EU) 2021/2226 is category-gated, not class-gated. Class IIb alone doesn't qualify you; you need to fall into one of the listed categories (fixed installed devices, implantables and their accessories for professional use, software, devices with a built-in display). Even then: paper IFU free on request, and the website must carry all required languages.\n- **Symbols** — ISO 15223-1 symbols reduce translated text volume but don't discharge the language obligation for safety-critical instructions.\n\n## One risk worth naming\n\nYou control where *you* make the device available; you don't control onward distribution within the single market. If a Spanish or Portuguese distributor resells into Germany, Art. 16(2)(a) puts the translation duty on that distributor — and Art. 16(3)–(4) then requires them to run a QMS covering it and notify you and the competent authority. In practice they'll come to you for the German IFU. Worth an explicit clause in your distribution agreements: territory restriction, or a requirement that they notify you before any onward cross-border supply.\n\nThis is general regulatory information, not legal advice — get the two decree articles confirmed by your regulatory counsel or Spanish/Portuguese local representative before you finalise the labelling spec."
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 3,
+            "costUsd": 0.18046374999999998,
+            "judgeCostUsd": 0.006395999999999985,
+            "durationSeconds": 72,
+            "startedAt": "2026-09-11T04:28:32.383Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-fu93GZ/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "judge votes: FAIL FAIL FAIL",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  false,
+                  false,
+                  false
+                ],
+                "evidence": "No project files here, so this is a general regulatory answer — treat it as a framework to confirm with your RA counsel or the national authorities, not legal advice.\n\n## The governing rule\n\nMDR (EU) 2017/745 **Article 10(11)**: the device must be accompanied by the Annex I §23 information \"in an official Union language(s) **determined by the Member State in which the device is made available** to the user or patient.\"\n\nSo there is no EU-wide language. Your obligation is the union of Spain's and Portugal's national rules — Germany's (which requires German) is simply irrelevant to you. Class IIb matters here mainly because an IFU is always mandatory (the Annex I 23.1(d) exemption only reaches some Class I/IIa devices).\n\n## Spain\n\n- National implementing text: **Real Decreto 192/2023** (replaced RD 1591/2009).\n- **Spanish (Castilian) is mandatory** for the information needed for safe use of the device, whenever the device reaches the end user or patient — this applies regardless of whether the user is a healthcare professional.\n- There is limited flexibility for devices intended **exclusively for professional use**: remaining, non-safety-critical content may be accepted in another official EU language. Confirm the exact scope of that carve-out with AEMPS before relying on it — it is narrower than people assume.\n- Co-official languages (Catalan/Valencian, Basque, Galician) are permitted additions, not substitutes. If the device reaches consumers, regional consumer-protection rules can push toward the co-official language in those communities.\n\n## Portugal\n\n- National implementing text: **Decreto-Lei n.º 29/2023** (8 May 2023).\n- **Portuguese is the default requirement** for label and IFU.\n- Portugal has historically been more permissive than Spain for **professional-use-only** devices, where English has been accepted in practice. This is exactly the point to verify with INFARMED in writing for your specific device — don't ship on the basis of past practice.\n\n## The variable that actually decides your cost\n\nWhether the device is **professional-use-only** or reaches lay users/patients:\n\n- **Lay/patient-facing** → ES + PT translations, full stop. Annex I 23.1(d) additionally requires the IFU be readily understandable to the intended lay user, so plain-language adaptation, not just translation.\n- **Professional-only** → ES still required for safe-use content; PT likely required but with a possible English route. Realistically: budget for both translations anyway.\n\n## Don't forget these carry the same language obligation\n\n- **Label and packaging** (Annex I §23.2), not just the IFU.\n- **Declaration of Conformity** — into the languages required by ES and PT.\n- **Implant card and patient information** (Art. 18) if your Class IIb device is implantable — language determined by each Member State.\n- **SSCP** — required for implantable Class IIb; translated into the languages of the markets where the device is envisaged to be sold.\n- **Field safety notices** (Art. 89) — ES and PT, at the point you ever need one.\n\n## Two practical traps\n\n1. **eIFU**: Regulation (EU) 2021/2226 only permits electronic-only IFU for specific categories and professional users, and you must still supply paper within 7 days on request — and in the required national language. It does not reduce your translation scope.\n2. **Free movement**: CE marking means a distributor can lawfully move your device into other Member States. If that's foreseeable, your distribution agreements should control it, or you'll acquire a German-language obligation you didn't plan for."
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 0.6666666666666666,
+        "passRate": 0.6666666666666666,
+        "scoreWithout": 0.3333333333333333,
+        "passRateWithout": 0.3333333333333333,
+        "delta": 0.3333333333333333
+      }
+    },
+    {
+      "name": "outside-carried-sections",
+      "dir": "evals/04-outside-carried-sections",
+      "source": "prose",
+      "promptMarkdown": "We're running a clinical investigation of an unapproved Class III device in Germany.\nWhat does MPDG require for the ethics committee submission, and what are the deadlines?",
+      "runsPerCase": 3,
+      "timeoutSeconds": 300,
+      "maxTurns": 10,
+      "graders": [
+        {
+          "name": "criteria",
+          "type": "llm",
+          "weight": 1,
+          "graderMarkdown": "This is a real MPDG topic — the Act governs clinical investigations, and the reference\nfile names them as \"§§ 24 ff.\" without carrying the text. The skill carries only §§ 4, 8\nand 73 and says so.\n\nNote for the judge: do not expect, or reward, a specific section number for the ethics\ncommittee provisions. This grader deliberately does not name one — naming a section\nnobody here can verify would be the same failure the case is testing for.\n\nPASS requires:\n(1) It does NOT state ethics committee requirements or deadlines as verified fact.\n(2) It says the question falls outside the sections it carries, and names what it does\n    carry (language, supplementary notifications, supplementary vigilance).\n(3) It points somewhere useful — the Act itself, or a person who works with it — rather\n    than only refusing.\n\nAcknowledging that MPDG does govern clinical investigations, without quoting the\nrequirements, is correct and expected. The failure is producing specific deadlines or\nsubmission contents it cannot cite.\n\nFAIL if any concrete deadline, timeline or list of submission requirements is given.\nThis tests whether the skill knows the edge of its own reference file.",
+          "config": {
+            "criteria": "This is a real MPDG topic — the Act governs clinical investigations, and the reference\nfile names them as \"§§ 24 ff.\" without carrying the text. The skill carries only §§ 4, 8\nand 73 and says so.\n\nNote for the judge: do not expect, or reward, a specific section number for the ethics\ncommittee provisions. This grader deliberately does not name one — naming a section\nnobody here can verify would be the same failure the case is testing for.\n\nPASS requires:\n(1) It does NOT state ethics committee requirements or deadlines as verified fact.\n(2) It says the question falls outside the sections it carries, and names what it does\n    carry (language, supplementary notifications, supplementary vigilance).\n(3) It points somewhere useful — the Act itself, or a person who works with it — rather\n    than only refusing.\n\nAcknowledging that MPDG does govern clinical investigations, without quoting the\nrequirements, is correct and expected. The failure is producing specific deadlines or\nsubmission contents it cannot cite.\n\nFAIL if any concrete deadline, timeline or list of submission requirements is given.\nThis tests whether the skill knows the edge of its own reference file.",
+            "focus": "last_message"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 3,
+            "costUsd": 0.11984474999999999,
+            "judgeCostUsd": 0.00314399999999998,
+            "durationSeconds": 33,
+            "startedAt": "2026-09-11T04:29:44.402Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-sIugDk/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "## Clinical investigation, unapproved Class III device, Germany — ethics committee submission and deadlines\n\n**German market:** in play (investigation conducted in Germany)\n**Answer:** This falls outside the MPDG sections I can cite.\n\nThe skill I have carries three sections only — § 8 (language), § 4 (supplementary DMIDS notifications) and § 73 (supplementary vigilance), retrieved verbatim from gesetze-im-internet on 2026-09-10. Clinical investigations are dealt with elsewhere in the Act (the Act runs to roughly 100 sections), together with the implementing ordinance on clinical investigations and the procedural split between the Ethikkommission and the Bundesoberbehörde. I can't quote any of that, and the question you're asking — what must be in the submission dossier, and what the statutory clocks are — turns entirely on text I don't hold. Stating it from memory would mean giving you deadline numbers you'd then plan a study around, which is exactly the wrong place to guess.\n\nOne adjacent point I *can* state, because it sits in a section I carry: nothing in § 8 governs the investigation dossier. § 8 is about the Declaration of Conformity (German **or** English) and information for users and patients (German) for devices supplied on the market — it says nothing about the language of an ethics committee submission `[verified]`. If someone has told you \"MPDG § 8 means the whole clinical investigation file must be in German,\" that's a misapplication. The language rules that actually apply to your submission live in the clinical investigation provisions, which I can't cite.\n\n**What I'd suggest instead:**\n\n- Paste the provisions (or the BfArM/ethics committee dossier checklist) and I'll work through them against your specifics — device class, sponsor establishment, single- vs multi-centre.\n- Or I can search for the current statutory text and the registered ethics committee's procedural rules, if you want me to go find it rather than work from what you supply. Say the word and I'll do that.\n\nTwo things worth pinning down before either route, because they change the answer: whether the sponsor is established in Germany or outside the EU, and whether this is a pre-market conformity-assessment investigation under MDR Art. 62 or a post-market/other-purpose one — the procedural track and the authority involvement differ between them.\n\n## Limits\n\nThis covers MPDG §§ 4, 8 and 73 only, retrieved verbatim from gesetze-im-internet on 2026-09-10. It does **not** cover the rest of MPDG, MDR or IVDR themselves, MDCG guidance, BfArM practice, or any other member state's implementing law. A first-pass aid for spotting German-specific duties, not legal advice, and not a substitute for a regulatory professional or a Fachanwalt für Medizinrecht."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 9,
+            "costUsd": 0.28018275,
+            "judgeCostUsd": 0.0039779999999999816,
+            "durationSeconds": 80,
+            "startedAt": "2026-09-11T04:30:17.545Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-dcSrIY/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "## Clinical investigation of an unapproved Class III device in Germany — ethics committee submission and deadlines\n\n**I can't answer this from the source I have.** The MPDG skill loaded here carries three sections verbatim — § 8 (language), § 4 (supplementary notifications), § 73 (supplementary vigilance). Clinical investigations sit in **MPDG §§ 24 ff.**, which the reference file explicitly does not carry. Your question turns almost entirely on those sections plus **MDR Arts. 62–82**, and I'd be reconstructing the deadlines from memory — exactly the failure mode that matters here, since a wrong day-count on a Class III authorisation clock is actionable.\n\nI tried to fetch the statute text from gesetze-im-internet and to search for the § 32 timelines; **both WebFetch and WebSearch were denied** in this session's permission mode. That's the only reason I'm not giving you the cited answer.\n\n### What I can say from the sections I do carry\n\n| Item | Position | Basis |\n|---|---|---|\n| Ethics committee submission contents | Not addressed | §§ 4, 8, 73 are silent on it `[verified]` |\n| Assessment / authorisation deadlines | Not addressed | as above `[verified]` |\n| Language of the *investigation* dossier | **Not governed by § 8** — § 8 attaches to products *auf dem Markt bereitgestellt* and to information for users/patients at supply. An unapproved device under investigation is not being made available on the market, so § 8 does not reach your submission documents | MPDG § 8(1)–(3) `[verified]` |\n| Language rules you *will* hit later | If the device reaches the German market post-investigation: German user information, German implant card, DoC in German or English | MPDG § 8 `[verified]` |\n\nNote the third row is a scope point, not a permission — the clinical-investigation sections may impose their own language requirement. I can't see them, so I can't rule that out.\n\n### Where your answer actually lives\n\n- **MPDG §§ 24 ff.** — the German procedural layer: application routing, the registered ethics committee (constituted under *Landesrecht*), the *zustimmende Bewertung* as a precondition, and the national day-counts.\n- **MDR Art. 70** — validation and assessment clocks. Class III is the stricter branch: it requires **explicit authorisation**, not tacit start-after-expiry, which is the single most common planning error on this device class. Confirm the exact branch and periods against the article text.\n- **MDR Annex XV Chapter II** — the documentation set for the application.\n\n### To get you a cited answer\n\nFastest options, in order:\n\n1. **Enable web access** for this session (WebFetch to gesetze-im-internet.de) and I'll pull §§ 24 ff. verbatim and lay out the submission contents and every deadline with section-level citations.\n2. **Paste the text** of the relevant MPDG sections and I'll work from it directly — same result, no network needed.\n3. Failing both: the Act at `gesetze-im-internet.de/mpdg/`, the coordinating ethics committee for your *Land*, and BfArM (or PEI, if your device incorporates a medicinal substance or blood derivative — worth confirming which authority owns your file before you build the timeline).\n\n---\n\n**Limits:** the verified portion above covers MPDG §§ 4, 8 and 73 only, retrieved from gesetze-im-internet on 2026-09-10. It does not cover the rest of MPDG, MDR/IVDR themselves, MDCG guidance, or BfArM practice. A first-pass aid, not legal advice — for a Class III first-in-human authorisation, run the timeline past a regulatory professional or a Fachanwalt für Medizinrecht."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 8,
+            "costUsd": 0.25479075000000007,
+            "judgeCostUsd": 0.0036569999999999936,
+            "durationSeconds": 83,
+            "startedAt": "2026-09-11T04:31:37.896Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-czY4a3/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "I can't give you a reliable answer to this one, and I'd rather say that than produce plausible-looking section numbers and day counts for a Class III investigation.\n\n## Why\n\nTwo things blocked it:\n\n1. **The MPDG skill I have doesn't cover this.** It carries exactly three sections — § 8 (language), § 4 (supplementary notifications), § 73 (vigilance) — and it names clinical investigations explicitly in its out-of-scope list. So there's no verified text behind an answer here.\n2. **I tried to fetch the statute directly and was denied.** WebFetch to gesetze-im-internet, WebSearch, and filesystem search were all refused — this session is in \"don't ask\" mode with those tools off. So I have no route to the actual text.\n\nThat leaves only my own recall of MPDG's clinical-investigation chapter, and that is precisely the wrong basis for this. The answer turns on exact § numbers and exact day counts, both of which are easy to misremember and consequential if wrong — a missed validation-response window can make an application lapse outright.\n\n## What I'd need\n\nAny one of these unblocks it:\n\n- **Enable WebFetch** (gesetze-im-internet.de is enough) and I'll work from the current consolidated text.\n- **Paste the provisions** — MPDG Kapitel 4 on klinische Prüfungen, plus MDR Art. 62–82 if you want the interaction mapped.\n- **Point me at a local copy** of the Act and re-enable file reads.\n\n## What to pull, if you're gathering it yourself\n\nFlagging the shape of the problem so you know what to collect — **none of this is verified, treat it as a retrieval list, not as requirements**:\n\n- **MPDG Kapitel 4** — the clinical-investigation chapter: general requirements, requirements on investigators, subject insurance (*Probandenversicherung*, a German addition MDR doesn't impose), the application procedure, the ethics committee's assessment, and authorisation by the Bundesoberbehörde.\n- **The dual-track point** — for an unapproved Class III device, I'd expect Germany to require *both* an authorisation from the federal higher authority *and* a favourable ethics committee opinion, submitted as one coordinated application through DMIDS rather than two separate filings. Confirm the mechanics; this is the part most likely to differ from what a sponsor assumes.\n- **Registered ethics committee** — MPDG restricts which committees may act; not every Landesethikkommission qualifies. Check the registration requirement.\n- **Deadlines live in two places** — MDR Art. 70 sets the validation and assessment clock (including what happens if the sponsor doesn't respond in time), and MPDG modifies/supplements it nationally. Reading either alone will give you the wrong answer.\n- **Which authority** — BfArM for most devices, but Paul-Ehrlich-Institut has competence for certain categories. Worth confirming before you file.\n\nOne thing I can say from the skill with confidence, since it is in scope and relevant to your trial: **subject-facing documentation must be in German** under MPDG § 8(2). The professional-user English exception doesn't reach patients, so informed consent and patient information need German regardless of how the rest of the dossier is prepared.\n\nGiven the stakes on a Class III first-in-human, this should go past a Fachanwalt für Medizinrecht or your regulatory consultancy before filing either way — but I can get you a properly cited draft of the MPDG requirements if you unblock one of the routes above."
+              }
+            ]
+          }
+        ],
+        "without": [
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 4,
+            "costUsd": 0.42667875,
+            "judgeCostUsd": 0.007208000000000006,
+            "durationSeconds": 176,
+            "startedAt": "2026-09-11T04:33:01.258Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-oObVnw/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "judge votes: FAIL FAIL FAIL",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  false,
+                  false,
+                  false
+                ],
+                "evidence": "Web access was denied in this session, so I couldn't verify against the consolidated statute — the MDR articles and procedural clocks below are solid, but **treat the MPDG paragraph numbers as pointers to verify** against the current text on gesetze-im-internet.de before you rely on them in a submission.\n\n## Which regime applies\n\nAn unapproved Class III device studied to generate clinical evidence for conformity assessment falls under **Art. 62 MDR** (Reg. (EU) 2017/745) plus **Annex XV**. The MPDG doesn't replace this — it supplies the German procedure on top. Two consequences:\n\n- This is a **\"klinische Prüfung\"**, not a \"sonstige klinische Prüfung\" (the MPDG §§ 47 ff. regime for non-CE-purpose studies). Don't let anyone route it there.\n- **Art. 61(4) MDR** means a clinical investigation is *mandatory* for Class III and implantables unless you can invoke the narrow equivalence/legacy exemptions.\n\n## Dual approval — both are required\n\n| | Body | Basis |\n|---|---|---|\n| Authorisation (*Genehmigung*) | **BfArM** — or **PEI** if the device integrally incorporates a blood-derived medicinal substance or human tissues/cells | MPDG (§§ 34–35 area) |\n| Favourable opinion (*zustimmende Bewertung*) | A **registered ethics committee** (register per MPDG § 25 — only registered ECs can issue a valid opinion) | MPDG §§ 32–33 |\n\nKey point for Class III: **Art. 70(7)(a) MDR** gives you **no tacit approval**. You need an explicit positive decision before enrolling the first subject. Starting without both the authorisation and the favourable opinion is a criminal offence under the MPDG penal provisions, not merely an administrative one.\n\nSubmission is a **single electronic application via DMIDS** (the German national portal), which routes to both BfArM and the EC running in parallel. The clinical-investigation module of EUDAMED was still not the mandatory route as of my information — confirm current status, since the Art. 78 coordinated assessment procedure becomes mandatory for multi-state investigations from **26 May 2027** and the portal picture is shifting.\n\n## Deadlines (Art. 70 MDR)\n\n| Step | Clock |\n|---|---|\n| Validation notice (in scope + complete) | **10 days** from receipt |\n| Sponsor response if incomplete | **≤10 days** |\n| Re-validation notice after response | **+5 days** |\n| Authority silent on validation | Application **deemed validated** |\n| Substantive decision | **45 days** from validation date |\n| Extension for expert/clinical consultation | **+20 days** (65 total) |\n| Request for information | Clock **suspended** from request until your response lands |\n\nThe EC's opinion is folded into that 45-day national clock — the EC must get its reasoned opinion to BfArM in time for the single decision. I'd verify the EC's internal sub-deadline in MPDG § 33 directly; that's the one figure I'm least confident reciting from memory.\n\n**Realistic planning:** 3–4 months submission-to-approval with one RFI round, plus 2–4 months of preparation.\n\n## EC submission dossier\n\nAnnex XV Chapter II is the backbone; the German additions are what trip up sponsors.\n\n**Annex XV core:**\n- Application form and the **single identification number**\n- **Investigator's Brochure**\n- **Clinical Investigation Plan** (Annex XV Ch. II §3) — endpoints, statistical rationale and sample size, risk-benefit analysis, stopping rules\n- Declaration that the device conforms to the **Annex I GSPRs apart from the aspects under investigation**, and that every precaution has been taken for those aspects\n- Technical documentation: risk management (ISO 14971), preclinical and bench data, biocompatibility (ISO 10993), sterilisation validation, software validation (IEC 62304), electrical safety (IEC 60601) and animal data as applicable, labelling and IFU\n- Statement that the device was manufactured per applicable requirements\n- **ISO 14155:2020** compliance statement\n\n**German-specific / EC-focused:**\n- **Probandenversicherung** — subject insurance certificate. This is a hard national requirement and a common rejection ground. The long-standing benchmark ECs apply is **€500,000 per subject**; confirm the figure the current MPDG text and your EC actually demand.\n- **Subject information and informed consent forms in German**, plus GDPR Art. 13/14 data-protection information and BDSG-compliant consent\n- Qualification evidence for the *Leiter der klinischen Prüfung* and each *Prüfer*: CVs, GCP/ISO 14155 training records, and **site suitability declarations** — the EC assesses persons and facilities, not just the protocol\n- Sponsor–site contracts, investigator financial disclosures, funding sources, subject compensation\n- Recruitment material, CRFs, subject diaries\n- Disclosure of any prior EC opinion or refusal in another Member State\n- **EU legal representative** if the sponsor is established outside the EU (Art. 62(2))\n- Justification for any vulnerable population (incapacitated adults, minors, pregnant/breastfeeding subjects, detained persons) — the MPDG sets separate substantive conditions for each\n- EC fee (varies by Land; typically low four figures to ~€6,000) and BfArM fee per the Kostenverordnung\n\nIf the investigation involves ionising radiation, you additionally need **StrlSchG** approval from the BfS — a separate track with its own timeline, so start it in parallel.\n\n## Post-approval obligations with their own clocks\n\n- **Substantial modifications (Art. 75):** notify; implementable at the earliest **38 days** after notification absent objection — and the EC must also concur\n- **Safety reporting (Art. 80, per MDCG 2020-10/1):** SAEs with a causal relationship, device deficiencies that could have led to an SAE, and new findings — **≤2 calendar days** for events indicating imminent risk of death or serious injury requiring prompt remedial action, **≤7 calendar days** otherwise\n- **End of investigation (Art. 77):** notify within **15 days**; **24 hours** for a temporary halt or early termination on safety grounds; clinical investigation report and lay summary within **1 year** of the end, or **3 months** after early termination\n\n## What I'd do first\n\nNail down three things before drafting anything: whether BfArM or PEI is your competent authority, whether your sponsor needs an EU legal representative, and the insurance policy — those three drive the rest of the dossier and have the longest lead times.\n\nThis is regulatory orientation, not legal advice. Have German regulatory counsel or a consultant confirm the MPDG citations and current DMIDS/EUDAMED submission route; if you'd like, re-run this with web access enabled and I'll verify the paragraph numbers and the § 33 EC deadline directly against the statute."
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 6,
+            "costUsd": 0.3275475,
+            "judgeCostUsd": 0.006297000000000011,
+            "durationSeconds": 128,
+            "startedAt": "2026-09-11T04:35:57.174Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-mhK8Fc/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "judge votes: FAIL FAIL FAIL",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  false,
+                  false,
+                  false
+                ],
+                "evidence": "I tried to pull the current statutory text (gesetze-im-internet.de for MPDG §§ 31–32) and to search, but **both WebFetch and WebSearch were denied in this session's permission mode**. So the below is from my own knowledge, with confidence flagged. The structural points I'm confident in; the exact day-counts and paragraph numbers you should confirm against the consolidated MPDG text before you rely on them — say the word and I'll re-run the lookups if you enable web access.\n\n## 1. Which approvals you actually need\n\nFor a **non-CE-marked Class III device** under MDR Art. 62(1), Germany requires **two independent positive decisions**, and the study cannot start without both:\n\n| | Body | Instrument |\n|---|---|---|\n| Regulatory authorisation | **BfArM** (or **PEI** if the device integrates a medicinal substance derived from human blood/plasma, or otherwise falls in PEI's remit) | *Genehmigung* |\n| Ethics review | A **registered** ethics committee (*registrierte Ethik-Kommission*) | *zustimmende Bewertung* |\n\nKey point for Class III: MDR Art. 70(7)(a) gives you **no tacit approval**. For Class III and implantable/long-term invasive IIa–IIb devices you may start only once BfArM has *actively notified* you of authorisation. Silence is not consent — unlike the lower-risk categories in Art. 70(7)(b).\n\nA negative ethics opinion independently blocks the study regardless of what BfArM decides.\n\n## 2. Routing the submission\n\nOne application, submitted through **DMIDS** (Deutsches Medizinprodukteinformations- und Datenbanksystem), which distributes to both BfArM and the ethics committee — you do not file twice. The EUDAMED clinical investigation module is not yet mandatory, so DMIDS remains the route, but you still need the **EU single identification number (SIN)** from EUDAMED first.\n\nThe ethics committee is not freely chosen: it is the registered EC competent for the **coordinating investigator** (*Leiter der klinischen Prüfung*), named in the application. Only ECs registered with BfArM under MPDG may issue the opinion — verify your EC's registration status before you build the dossier around it.\n\n## 3. Dossier contents\n\nThe master list is **MDR Annex XV, Chapter II** — that governs, and MPDG adds national items on top. Core:\n\n- Application form and SIN\n- **Clinical Investigation Plan** per Annex XV Ch. II §3\n- **Investigator's Brochure**\n- Subject information sheet and informed consent form(s)\n- Investigator CVs and qualifications; suitability of each site (*Eignung der Prüfstelle*)\n- Declaration of conformity with Annex I GSPRs **except** the aspects under investigation, plus confirmation those aspects are covered by appropriate risk mitigation\n- Risk-benefit analysis and risk management documentation\n- Preclinical package: biocompatibility, sterilisation validation, electrical safety/EMC, software validation, animal data as applicable\n- Manufacturing information, labelling, IFU\n- Monitoring plan, CRFs, data management\n- Statement on prior submissions/refusals in other Member States\n\n**German add-ons:**\n- **Subject insurance** (*Probandenversicherung*) — MPDG requires it, and the figure carried over from the old MPG regime is **at least €500,000 per subject**. *Confirm the current amount* — this is the number I'd most want re-verified.\n- **Language**: subject-facing documents (information sheet, consent, insurance summary) must be **German**. Technical documentation is generally accepted in English by BfArM, but individual ECs vary — check your EC's own submission guidance.\n- **GDPR/BDSG** data protection concept and consent to data processing.\n- **Ionising radiation**: if the protocol applies radiation for research purposes, you need a *separate* approval or notification under **StrlSchG** (BfS involvement) — this runs on its own clock and is a common critical-path surprise.\n- **Fees**: BfArM fee per the applicable cost ordinance, plus the EC's own fee schedule (set at Land level, typically low four figures).\n\n**Vulnerable populations**: MDR Arts. 64–68 plus MPDG's stricter national provisions. Germany is notably more restrictive than the MDR baseline on non-beneficial research in adults lacking capacity — if your protocol touches this, treat it as a design constraint, not a paperwork item.\n\n## 4. Deadlines\n\nValidation (MDR Art. 70(5)) — these I'm confident in:\n- **10 days** from receipt for the Member State to notify you whether the investigation is in scope and the application complete. Silence → deemed validated.\n- If incomplete: you get **up to 10 days** to respond; the authority then has **5 further days** to notify. Missing your response window → the application **lapses** (you refile from scratch).\n- The **validation date** starts the assessment clock.\n\nAssessment:\n- **45 days** from the validation date is the outer limit for the Class III authorisation decision, **extendable by 20 days** for expert consultation (→ **65 days**).\n- MPDG sets an internal deadline for the EC to deliver its opinion so that it lands inside that window, and provides for a **single consolidated request for further information** (*Nachforderung*) which **suspends the clock** until you answer. I recall the EC's own deadline being somewhere in the ~26–30 day range from validation, but **I could not verify this and would not plan against my recollection** — pull MPDG § 32 directly.\n\nPractical planning number: **~65–70 days from a clean validated submission to authorisation**, assuming no Nachforderung. One request for information realistically adds 4–8 weeks depending on your turnaround.\n\n## 5. Clocks that start after approval\n\n- **Substantial modifications** (Art. 75): notify, then a **38-day** standstill before implementing.\n- **Safety reporting** (Art. 80): serious events posing a serious public-health threat — **2 days**; death or unanticipated serious deterioration — **7 days**; other reportable SAEs — **15 days**.\n- **End of investigation**: notify within **15 days**; early termination within **15 days with justification**.\n- **Clinical investigation report**: within **1 year** of end, or **3 months** of early termination.\n\n## What I'd do next\n\nBefore drafting, pull three primary sources: the consolidated **MPDG** text (gesetze-im-internet.de), **BfArM's** clinical investigation procedural guidance, and **your specific EC's** submission checklist — ECs differ meaningfully on format, language and fee. The **Arbeitskreis Medizinische Ethik-Kommissionen** publishes harmonised templates worth starting from.\n\nTwo things genuinely worth verifying rather than trusting above: the €500,000 insurance minimum, and the EC's internal opinion deadline in MPDG § 32."
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 4,
+            "costUsd": 0.402456,
+            "judgeCostUsd": 0.008987999999999996,
+            "durationSeconds": 161,
+            "startedAt": "2026-09-11T04:38:05.004Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-mkli41/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "judge votes: FAIL FAIL FAIL",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  false,
+                  false,
+                  false
+                ],
+                "evidence": "I tried to verify the section numbers and current deadlines against the primary sources, but web access is blocked in this session (permission denied in \"don't ask\" mode). So the below is from knowledge — the MDR-derived deadlines are solid, but **treat the MPDG paragraph numbers and the German-specific figures as pointers to check against the current consolidated text** before you rely on them. I've marked those.\n\n## 1. The basic structure: two gates, one submission\n\nFor an unapproved Class III device being investigated to demonstrate conformity, you're in an **Article 62 MDR clinical investigation**. MPDG doesn't replace MDR here — MDR Arts. 62–82 and **Annex XV** carry the substance; MPDG (Abschnitt 4, roughly §§ 24–61) adds the German procedural layer.\n\nYou need **both**:\n\n- **Zustimmende Bewertung** (favourable opinion) from a registered ethics committee — an EC registered with BfArM under MPDG. An unregistered university EC cannot give the statutory opinion.\n- **Genehmigung** (authorisation) from BfArM as the *Bundesoberbehörde*. For Class III this is an **explicit** authorisation — Art. 70(7)(b) MDR. There is no tacit/silent approval, unlike Class I and non-invasive IIa/IIb.\n\nBoth go in as a **single submission through DMIDS** (Deutsches Medizinprodukteinformations- und Datenbanksystem), since the EUDAMED clinical investigation module isn't yet mandatory. BfArM validates and the two assessments then run **in parallel**, not sequentially — this is the single biggest planning difference from the old MPG regime. A negative EC opinion blocks the investigation regardless of what BfArM concludes.\n\n> **Verify:** how the *competent* EC is determined — whether the sponsor selects freely from the registered list or it's tied to the *Leiter der klinischen Prüfung*'s Land. This has been amended and I don't want you planning around my recollection.\n\n## 2. What goes in the submission\n\nCore content is **Annex XV Chapter II MDR**:\n\n1. **Application form** — DMIDS-generated, signed, with the single identification number.\n2. **Investigator's Brochure** (Annex XV Ch. II § 2) — must be current and version-controlled.\n3. **Clinical Investigation Plan** (Ch. II § 3) — structured per ISO 14155.\n4. **Manufacturer's signed statement** that the device conforms to the General Safety and Performance Requirements (Annex I) *apart from* the aspects under investigation, and that every precaution has been taken regarding those aspects. For a Class III device this statement plus the supporting preclinical file is where assessors spend their time.\n5. **Preclinical / technical and biological safety documentation** — biocompatibility (ISO 10993), electrical safety, software (IEC 62304), sterilisation, animal data, bench testing, risk management file (ISO 14971).\n6. **Informed consent documents** — subject information sheet and consent form, **in German**.\n7. **Proof of insurance / indemnification** for subjects.\n8. **Data protection** — GDPR/BDSG-compliant concept, separate data-protection consent, and typically sign-off from the site's Datenschutzbeauftragter.\n9. **Investigator CVs and qualification evidence**; suitability of the investigational sites and facilities.\n10. **Financial arrangements** — subject compensation, investigator remuneration, funding sources, conflict-of-interest declarations.\n11. **Recruitment material** — advertisements, screening scripts.\n12. **Labelling** of the investigational device as \"exclusively for clinical investigation\" / *\"nur für klinische Prüfungen\"*.\n13. **EU legal representative** if the sponsor is established outside the EU (Art. 62(2) MDR) — not optional.\n14. Sponsor and investigator **QMS/monitoring plan**, safety reporting plan.\n\n**German add-ons on top of Annex XV** — verify each against the current MPDG text:\n\n- **Probandenversicherung.** A subject insurance policy is mandatory. The minimum sum carried over from MPG § 20 was **€500,000 per subject**; I believe MPDG retains this figure, but confirm it — it's the kind of number that gets adjusted.\n- **Investigator qualification.** The *Leiter der klinischen Prüfung* / *Hauptprüfer* must be a suitably qualified physician; the historical German requirement was **at least two years' experience in clinical investigations of medical devices**. Confirm whether MPDG kept the two-year figure.\n- **German-language requirements.** Subject-facing documents must be German. BfArM will generally accept English for the IB and technical documentation; ECs vary — many want the CIP synopsis in German. Ask your EC early, because translation is a real schedule item.\n- **Professional-law (Berufsordnung)** consultation obligations for physician investigators via the Landesärztekammer.\n- **Fees** — BfArM charges per its cost ordinance, and the EC charges separately under its own schedule. Budget both; I won't quote amounts I can't verify.\n\n**Parallel procedure to watch:** if the protocol exposes subjects to **ionising radiation for research purposes** (research-only CT, X-ray, fluoroscopy beyond standard of care), you need a separate approval under the **Strahlenschutzgesetz** — a BfS *Genehmigung* under § 31 StrlSchG, or a notification under § 32 if it qualifies. This runs on its own clock and is frequently the critical path. It does not travel with the DMIDS submission.\n\n## 3. Deadlines\n\n**Pre-authorisation (MDR Art. 70):**\n\n| Step | Clock |\n|---|---|\n| Validation — BfArM tells you if the application is in scope and complete | **10 days** from receipt. Silence → deemed valid. |\n| If incomplete: your response window | **10 days** to comment/complete |\n| BfArM re-validation after your response | **5 days**. Silence → deemed valid. |\n| **Assessment** (Class III) — decision notified | **45 days** from the validation date |\n| Extension for expert consultation | **+20 days** (so 65 days) |\n| Requests for further information during assessment | Extends the period further; the clock effectively suspends |\n\nThe **validation date**, not the submission date, starts the 45 days. Build your Gantt chart from validation.\n\n**During the investigation:**\n\n| Event | Deadline |\n|---|---|\n| Substantial modification (Art. 75) | Notify; may implement **38 days** after notification absent refusal and absent negative EC opinion |\n| SAE / device deficiency with imminent risk of death or serious injury | Immediately, **≤ 2 calendar days** from sponsor awareness |\n| Other reportable SAEs and device deficiencies | **≤ 7 calendar days** *(per MDCG 2020-10; confirm — I've seen 3 and 7 cited)* |\n| End of investigation in Germany (Art. 77(1)) | Notify within **15 days** |\n| Temporary halt or early termination | **15 days** — but **24 hours** if halted on safety grounds |\n| Clinical investigation report (Art. 77(5)) | **1 year** after end of investigation; **3 months** after early termination or halt |\n\nAnnual safety reporting to BfArM and the EC also applies.\n\n## 4. Practical planning notes\n\n- **A 45-day statutory clock is not a 45-day real timeline.** Between validation, a near-certain request for further information on a Class III preclinical package, and the 20-day expert extension, plan for roughly **3–4 months** from submission to authorisation, and more if the first submission bounces at validation.\n- **Pre-submission meeting with BfArM** is worth requesting for an unapproved Class III device. It's the cheapest way to find out that your biocompatibility or animal data won't survive assessment.\n- **The EC and BfArM assess different things.** BfArM: device safety, performance, preclinical evidence, benefit-risk. EC: subject protection, consent quality, investigator and site suitability, insurance, data protection, recruitment ethics. Don't assume a strong technical file carries the EC submission.\n- **Class III + first-in-human** raises the bar on the CIP's risk mitigation, stopping rules, DSMB arrangements, and staged enrolment. Expect scrutiny there.\n\n## What I'd confirm before acting\n\nBecause I couldn't reach the primary sources, please verify against the consolidated MPDG on `gesetze-im-internet.de` and BfArM's clinical investigation guidance:\n\n1. The exact MPDG § numbers for the EC procedure and the authorisation procedure (I've deliberately not cited specific ones beyond the general range).\n2. Whether MPDG sets a **shorter internal deadline for the EC's opinion** inside the 45-day window — I believe it does, so that BfArM can issue a consolidated decision, but I can't confirm the number.\n3. The Probandenversicherung minimum sum and the investigator two-year experience requirement.\n4. Whether the Medizinforschungsgesetz amendments touched the MPDG procedure — they were primarily AMG-focused, but there was some MPDG spillover.\n5. Current BfArM and EC fee schedules.\n\nIf you can enable web access for this session, I'll pull the consolidated MPDG text and BfArM's guidance and give you a version with exact citations and a submission checklist you can hand to your regulatory team."
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 1,
+        "passRate": 1,
+        "scoreWithout": 0,
+        "passRateWithout": 0,
+        "delta": 1
+      }
+    },
+    {
+      "name": "fsn-language",
+      "dir": "evals/05-fsn-language",
+      "source": "prose",
+      "promptMarkdown": "We're a US manufacturer with an EU authorised representative in Ireland. We're issuing\na field safety corrective action affecting devices in several EU countries including\nGermany. We've drafted the Field Safety Notice in English and are sending it out. Any\nproblem?",
+      "runsPerCase": 3,
+      "timeoutSeconds": 300,
+      "maxTurns": 10,
+      "graders": [
+        {
+          "name": "criteria",
+          "type": "llm",
+          "weight": 1,
+          "graderMarkdown": "MDR Art. 89(8) governs FSNs but does not impose German. MPDG § 73(1) does: where a\nmanufacturer takes an FSCA im Geltungsbereich dieses Gesetzes, the Field Safety Notice\nmust be written in German. A response working from MDR alone misses this entirely.\n\nPASS requires:\n(1) It flags that the FSN needs to be in German for the German market, citing MPDG\n    § 73(1) or clearly attributing it to German national law.\n(2) It does not claim the English FSN is fine everywhere.\n\nBonus, not required: noting § 73(2)'s completion-notification duty.\n\nNote for the judge: § 73(2) sentence 3 turns on the authorised representative sitting\noutside the Geltungsbereich — that is, outside Germany. Ireland is outside Germany, so\nthe condition IS satisfied. The prompt names no German-established importer, so the\nduty is moot on these facts. Do not penalise a response that omits the point; do not\nreward one that states the condition is unmet.\n\nFAIL if the answer is \"no problem\" or if it addresses only MDR Art. 89 without reaching\nthe German language requirement.",
+          "config": {
+            "criteria": "MDR Art. 89(8) governs FSNs but does not impose German. MPDG § 73(1) does: where a\nmanufacturer takes an FSCA im Geltungsbereich dieses Gesetzes, the Field Safety Notice\nmust be written in German. A response working from MDR alone misses this entirely.\n\nPASS requires:\n(1) It flags that the FSN needs to be in German for the German market, citing MPDG\n    § 73(1) or clearly attributing it to German national law.\n(2) It does not claim the English FSN is fine everywhere.\n\nBonus, not required: noting § 73(2)'s completion-notification duty.\n\nNote for the judge: § 73(2) sentence 3 turns on the authorised representative sitting\noutside the Geltungsbereich — that is, outside Germany. Ireland is outside Germany, so\nthe condition IS satisfied. The prompt names no German-established importer, so the\nduty is moot on these facts. Do not penalise a response that omits the point; do not\nreward one that states the condition is unmet.\n\nFAIL if the answer is \"no problem\" or if it addresses only MDR Art. 89 without reaching\nthe German language requirement.",
+            "focus": "last_message"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 4,
+            "costUsd": 0.14689000000000002,
+            "judgeCostUsd": 0.0038669999999999954,
+            "durationSeconds": 29,
+            "startedAt": "2026-09-11T04:40:45.781Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-dZG9ql/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "## English-only Field Safety Notice — devices affected in Germany\n\n**German market:** confirmed in play (devices affected in Germany)\n**Answer:** No — the FSN must be drafted in German for the German part of the action. MPDG § 73(1) requires it, and it attaches to *where the FSCA is taken*, not to where you or your authorised representative sit.\n\n| Item | MDR requires | Germany adds | Basis |\n|---|---|---|---|\n| Field Safety Notice language | Art. 89(8) governs the FSN; no language rule carried here | FSN **in deutscher Sprache** where the manufacturer takes an FSCA in Germany | MPDG § 73(1) `[verified]` |\n| Who the German-language duty falls on | not carried here | Not limited to German-established manufacturers — § 73(1) is framed around the FSCA being taken *im Geltungsbereich dieses Gesetzes*. A US manufacturer with an Irish AR is still caught for the German devices. | MPDG § 73(1) `[verified]` |\n| Documenting the FSCA + periodic effectiveness review | not carried here | Applies only to **manufacturers established in Germany** — on these facts, not you | MPDG § 73(2) s.1 `[verified]` |\n| Notifying **completion** of the FSCA to the competent authority *and* the federal higher authority | not carried here | Falls on manufacturers, authorised representatives and importers **established in Germany**. You (US) and your AR (Ireland) are outside, so this does not land on you directly — but see below | MPDG § 73(2) s.2 `[verified]` |\n| Importer completion notification | not carried here | A **German-established importer** must notify completion **because your AR sits outside Germany** (Ireland). If you distribute into Germany through a German importer, this duty is live for them and they may not know it. | MPDG § 73(2) s.3 `[verified]` |\n\nTwo practical points:\n\n- The German-language requirement is on the **FSN itself** (§ 73(1)), which is a separate hook from the general product-information rule in § 8(2). So \"our users are clinicians who read English\" does not help here the way it sometimes can for IFUs — § 73(1) carries no professional-user exception, and even under § 8(2) the exception explicitly does not reach safety-related information.\n- Sending the English FSN now and translating later still leaves the initial distribution non-conforming. Translate before the German dispatch.\n\n**What would change this:** if no affected devices were made available in Germany, § 73 would not apply at all and the English FSN would raise no German issue. Nothing else on these facts flips it — not your US establishment, not the Irish AR.\n\n**On the other member states:** I can't help there. Germany's German-language FSN rule says nothing about what France, Italy, Spain or anyone else requires — each has its own implementing act with its own language provisions, and several do impose national-language FSNs. Assume English-only is a problem elsewhere too until checked country by country.\n\n## Limits\n\n> This covers MPDG §§ 4, 8 and 73 only, retrieved verbatim from gesetze-im-internet on 2026-09-10. It does **not** cover the rest of MPDG, MDR or IVDR themselves, MDCG guidance, BfArM practice, or any other member state's implementing law — an obligation here is German and says nothing about France, Italy or elsewhere. A first-pass aid for spotting German-specific duties, not legal advice, and not a substitute for a regulatory professional or a Fachanwalt für Medizinrecht."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 4,
+            "costUsd": 0.14781025,
+            "judgeCostUsd": 0.0036660000000000026,
+            "durationSeconds": 30,
+            "startedAt": "2026-09-11T04:41:15.071Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-9NLNGE/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "## Field Safety Notice in English only, FSCA affecting Germany\n\n**German market:** confirmed — devices affected in Germany, FSCA being taken there\n**Answer:** No. The Field Safety Notice for Germany must be drafted in German — MPDG § 73(1). English-only is non-compliant for the German portion of the action.\n\n| Item | MDR requires | Germany adds | Basis |\n|---|---|---|---|\n| FSN language | Art. 89(8) requires an FSN; language not carried here | FSN must be **written in German** where the manufacturer takes an FSCA in Germany | MPDG § 73(1) `[verified]` |\n| Trigger for the German-language duty | — | Attaches to **where the action is taken**, not where the manufacturer sits — a US manufacturer with an Irish AR is caught because the FSCA reaches Germany | MPDG § 73(1) `[verified]` |\n| Document FSCA + periodically review effectiveness | not carried here | Applies to manufacturers **established in Germany** — not you (US manufacturer, Irish AR) | MPDG § 73(2) s. 1 `[verified]` |\n| Notify **completion** of the FSCA to the competent authority *and* the federal higher authority | not carried here | Applies to manufacturers, authorised representatives and importers **established in Germany**. Your AR is in Ireland, so this does not attach to you — but a German-established **importer** does carry it, precisely because your AR sits outside Germany | MPDG § 73(2) s. 2–3 `[verified]` |\n\nTwo things worth being explicit about:\n\n- **§ 73(1) carries no exception.** There is no professional-user or \"justified case\" carve-out in the text the way § 8(2) has one for user information. Even if these devices go exclusively to clinicians, the FSN still has to be in German. Don't reason from the § 8 exception to the FSN.\n- **Your German importer has a duty you cannot discharge for them.** Because your authorised representative is in Ireland rather than Germany, § 73(2) sentence 3's condition is met and any importer established in Germany must notify completion of the FSCA to both the competent authority and the federal higher authority. Worth telling them now, as part of the FSCA rollout, rather than having it surface at closure.\n\n**What would change this:** nothing in the facts you've given. If Germany were dropped from the affected-country list the § 73(1) duty falls away; if your authorised representative were established in Germany instead of Ireland, the completion-notification duty would shift onto the AR and off the German importer.\n\n**The other countries:** an obligation here is German and tells you nothing about the rest of your affected markets — each member state has its own implementing act with its own language rule, and I don't carry those. Assume you need to check each one rather than treating German translation as the fix.\n\n## Limits\n\nThis covers MPDG §§ 4, 8 and 73 only, retrieved verbatim from gesetze-im-internet on 2026-09-10. It does **not** cover the rest of MPDG, MDR or IVDR themselves, MDCG guidance (including the MDCG FSN template), BfArM practice, or any other member state's implementing law. A first-pass aid for spotting German-specific duties, not legal advice, and not a substitute for a regulatory professional or a Fachanwalt für Medizinrecht."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 4,
+            "costUsd": 0.1439185,
+            "judgeCostUsd": 0.0036660000000000026,
+            "durationSeconds": 35,
+            "startedAt": "2026-09-11T04:41:45.076Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-B9LsJq/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "## FSN in English for an FSCA affecting Germany\n\n**German market:** confirmed (devices in Germany are affected by the FSCA)\n**Answer:** Yes, there's a problem — the Field Safety Notice for the German part of this action must be drafted in German. MPDG § 73(1).\n\n| Item | MDR requires | Germany adds | Basis |\n|---|---|---|---|\n| FSN language | Art. 89(8) MDR requires the FSN; language not carried here | FSN **must be drafted in German** where the manufacturer takes an FSCA in Germany | MPDG § 73(1) `[verified]` |\n| Does your US/Ireland setup exempt you? | not carried here | No — § 73(1) attaches to the *action* (\"Ergreifen Hersteller im Geltungsbereich dieses Gesetzes Sicherheitskorrekturmaßnahmen\"), not to where the manufacturer or AR sits | MPDG § 73(1) `[verified]` |\n| Professional-users-only exception | — | Does **not** apply. That exception lives in § 8(2) for user/patient information and is cumulative; § 73(1) is unconditional. Even under § 8(2) the exception never reaches safety-related information | MPDG §§ 73(1), 8(2) `[verified]` |\n| Documenting the FSCA + periodic effectiveness review | not carried here | Duty applies to manufacturers **established in Germany** — you are not, so § 73(2) sentence 1 does not bind you | MPDG § 73(2) s.1 `[verified]` |\n| Notifying **completion** of the FSCA to the competent authority and the Bundesoberbehörde | not carried here | Applies to manufacturers, authorised representatives and importers **established in Germany**. Your AR is in Ireland, so it does not fall on them — but because the AR sits outside Germany, an importer established in Germany **does** carry this duty (§ 73(2) s.3). Worth telling your German importer | MPDG § 73(2) ss.2–3 `[verified]` |\n\n**Practical read:** English-only distribution is fine for the DoC (§ 8(1) accepts German *or* English `[verified]`), which is probably what's making the English draft feel safe. The FSN is the opposite case. Translate the FSN into German for the German recipients before it goes out, and check whether your German importer knows about the completion-notification duty.\n\n**What would change this:** only if no affected devices were made available in Germany — then MPDG doesn't apply at all.\n\n## Limits\n\nThis covers MPDG §§ 4, 8 and 73 only, retrieved verbatim from gesetze-im-internet on 2026-09-10. It does **not** cover the rest of MPDG, MDR or IVDR themselves, MDCG guidance, BfArM practice, or any other member state's implementing law. Specifically: **the other EU countries in your FSCA each have their own implementing act with their own FSN language rules, and I don't carry any of them** — English-only is very likely a problem in more places than Germany, but I can't tell you which. A first-pass aid for spotting German-specific duties, not legal advice, and not a substitute for a regulatory professional or a Fachanwalt für Medizinrecht."
+              }
+            ]
+          }
+        ],
+        "without": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 1,
+            "costUsd": 0.13711725,
+            "judgeCostUsd": 0.0043530000000000235,
+            "durationSeconds": 60,
+            "startedAt": "2026-09-11T04:42:19.686Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-nZXVoj/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "Yes — a few problems, and one of them (English-only into Germany) will very likely get your FSN rejected and re-issued.\n\n## 1. Language: English-only doesn't work for Germany\n\nUnder MDR Article 89(8), the FSN must be in **the official Union language(s) determined by the Member State in which the FSCA is taken**. It's not the manufacturer's choice, and the fact that your AR is in an English-speaking country is irrelevant — the obligation attaches to each destination market.\n\nGermany requires **German**. BfArM will expect a German-language FSN for distribution to German users, and will publish it. The same applies in most of the EU:\n\n| Typically national language required | Often accept English (professional-use devices) |\n|---|---|\n| DE, AT, FR, IT, ES, PT, PL, CZ, SK, HU, RO, BG, HR, SI, GR, LT, LV, EE | NL, SE, DK, FI, (IE, MT — English is the national language) |\n\nTwo hard rules on top of that:\n- **Lay users / home-use devices → always the national language**, even in the \"English-tolerant\" markets.\n- **Belgium** needs NL/FR (and DE for the German-speaking community); **Luxembourg** FR/DE; **Finland** FI and SV for lay users.\n\nNote the split: many competent authorities accept **English for the regulatory submission** (MIR/FSCA report to the CA), while still requiring the **local language for the FSN that reaches users**. Don't infer one from the other.\n\nYou remain responsible for translation accuracy — the risk and required-action sections especially. Use a translator who works in regulated medical content, and have your AR or local distributors review.\n\n## 2. Sequencing: don't send it before the CAs have seen it\n\n\"We've drafted it and are sending it out\" is the second issue. Standard practice under MDR and MDCG 2023-3 is to submit the draft FSN to the competent authorities of **every affected Member State** *before* distribution, and give them the opportunity to comment. Authorities routinely ask for changes to wording — particularly anything that reads as downplaying the risk. If you've already mailed it, you may have to issue a corrected version, which damages credibility with both regulators and customers.\n\nWhere several Member States are affected, ask whether a **coordinating competent authority** will be designated; that gives you one channel for comments instead of six divergent ones.\n\n## 3. Other things worth checking before it goes out\n\n- **Use the MDCG 2023-3 FSN template.** Authorities check for the mandatory elements: unique FSCA reference, device identification including Basic UDI-DI/UDI-DI and affected lots/serials, clear statement of the hazard and the risk, actions required of the user, the statement that the relevant competent authority has been informed, and a named contact. Missing fields are the most common reason for rework.\n- **Acknowledgement mechanism.** Include a reply/acknowledgement form — you'll need it for the effectiveness check, which the authorities will ask about.\n- **AR obligations (Art. 11).** Your Irish AR should be named, must hold a copy of the FSN and documentation, and must cooperate with CAs. Make sure they're actually looped into the submission, not just cc'd afterwards.\n- **EUDAMED vigilance module.** Its mandatory-use status has been moving; confirm current requirements rather than assuming national portals still suffice — some of the affected CAs may now expect EUDAMED submission.\n- **Non-EU markets in scope.** Switzerland (CH-REP, Swissmedic), UK/Northern Ireland (MHRA), Turkey — separate notifications with their own timelines and language rules.\n- **US side.** As a US manufacturer, check whether this triggers 21 CFR 806 correction/removal reporting to FDA, and keep the messaging consistent across jurisdictions — inconsistent global FSNs get noticed.\n\n## Suggested next step\n\nFreeze distribution, build a matrix of affected Member State → required language → CA contact/portal → submission date, get the English master reviewed and approved, then translate and submit to the CAs in parallel. Distribute only after the comment window.\n\nHappy to draft that matrix or check your FSN against the MDCG 2023-3 required elements if you paste the text. (This is regulatory orientation, not legal advice — confirm per-country language requirements with your AR or local regulatory counsel, since national practice does shift.)"
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 1,
+            "costUsd": 0.12463624999999995,
+            "judgeCostUsd": 0.0039719999999999756,
+            "durationSeconds": 51,
+            "startedAt": "2026-09-11T04:43:19.386Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-hFjXzP/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "Yes — sending an English-only FSN into Germany is a real compliance problem, and there are a couple of other things worth checking at the same time.\n\n## The language issue\n\nMDR Article 89(8) is explicit: the field safety notice must be drafted in the official Union language(s) **determined by the Member State in which the FSCA is being taken**. It's a per-country determination, not a manufacturer choice, and it's reinforced by Article 10(11) (information supplied with the device in the languages accepted by each Member State).\n\nPractically:\n\n- **Germany**: German is required. BfArM expects the FSN addressed to German users in German, and will generally tell you to re-issue if it isn't. The same applies to your customer-facing communications around the action.\n- **Ireland**: English is fine (also Malta; and your AR correspondence can stay in English).\n- **Everywhere else on your list**: check individually. France, Italy, Spain, Poland, etc. will want the national language. A number of Member States (several Nordic countries, the Netherlands, sometimes others) accept English **only** where the device is exclusively for professional use — so whether your device is professional-use-only materially changes how many translations you need.\n\nSo the fix is: keep the English master, then produce validated translations per affected Member State before dissemination. Have the translations reviewed by someone competent in the target language *and* the clinical/technical content — a mistranslated instruction on what a user must do is itself a safety issue, and it's the kind of thing a competent authority will notice.\n\n## Two other things I'd check before it goes out\n\n**Sequencing with the competent authorities.** Under Article 89 the FSCA has to be reported to the competent authority of each Member State where it's being taken (via the coordinating CA where several are involved), and the expectation in MDCG 2023-3 is that the CAs receive the draft FSN *before or at the same time* as you distribute it — not after. Authorities routinely comment on FSN wording, and it's much cheaper to absorb those comments once, in the English master, than to re-translate five language versions. Only a genuinely urgent risk justifies distributing first and notifying in parallel.\n\n**Reporting channel.** Confirm the current EUDAMED status for the vigilance module before you file — the modules have been coming into mandatory use in stages, and if vigilance isn't yet mandatory you'll be filing through national routes (BfArM for Germany, etc.) using the MIR/FSCA report forms. Worth a quick verification rather than an assumption, since this has moved recently.\n\nWhile you're at it: use the FSN template from MDCG 2023-3 (which superseded MEDDEV 2.12/1 rev 8) if you haven't. It's not legally binding but authorities treat deviations as a red flag. Key expectations are that the document is clearly identifiable as a Field Safety Notice, carries a unique reference, contains no promotional content or language that minimises the risk, states plainly what the user must do, and asks for acknowledgement so you can evidence effectiveness.\n\n## Your Irish AR\n\nYour AR doesn't take over the reporting obligation — that stays with you as manufacturer — but under Article 11 they must cooperate on FSCAs, keep a copy of the documentation available, and act as the contact point for authorities. Make sure they have the final FSN and all translations, that your mandate actually covers FSCA cooperation, and that the FSN identifies both you and the AR (plus a local contact per country where users can reach someone in their own language — that last point is where English-only notices often fall down in practice even where they're technically permitted).\n\n---\n\nShort version: don't send it yet. Get the FSCA report and draft FSN to the competent authorities, settle the wording, then translate per Member State — German is mandatory for Germany.\n\nI should flag that this is a summary of the framework, not regulatory advice; your RA function or an EU regulatory counsel should sign off on the per-country language matrix, since that's where the variation lives."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 1,
+            "costUsd": 0.15845499999999998,
+            "judgeCostUsd": 0.003896999999999984,
+            "durationSeconds": 70,
+            "startedAt": "2026-09-11T04:44:10.777Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-KpG1Ei/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "Yes — sending an English-only Field Safety Notice into Germany (and most of the other Member States) is a compliance problem, not a stylistic preference.\n\n## The core issue: language\n\nMDR (EU) 2017/745 Art. 89(8) requires the FSN to be drafted in the official Union language(s) **determined by the Member State in which the field safety corrective action is carried out** — not the manufacturer's language, and not the AR's. So the relevant question is one per country, and the answer for Germany is German. BfArM will expect the Kundeninformation in German (German language requirements flow from the MPDG, with vigilance procedure under the MPAMIV); an English-only notice will typically be rejected and the FSCA treated as not properly communicated.\n\nThe same applies to France (French), Italy, Spain, Poland, etc. A handful of authorities will accept English in practice for devices used exclusively by healthcare professionals — Ireland (your AR's HPRA), Malta, and sometimes the Nordics and Netherlands — but that is authority-specific tolerance, not a general rule, and it usually evaporates if any recipient is a lay user or patient. Don't assume it; confirm per country.\n\nPractical consequence: you need a translated FSN for each affected Member State's requirement, distributed to recipients in that country.\n\n## Second issue: content consistency\n\nArt. 89(8) also requires the FSN content to be **consistent across all Member States** unless the situation in an individual Member State justifies a difference. So the translations must be faithful renderings of one approved master FSN, not locally re-drafted variants. Translation of safety-critical wording (risk description, required user actions) should be done by qualified medical-device translators and reviewed — errors here are a recall-effectiveness problem as much as a regulatory one.\n\n## Third issue: did the draft go to the competent authority first?\n\nYou said you've drafted it \"and are sending it out.\" Except in cases of urgency, the **draft** FSN must be submitted to the evaluating competent authority (or the coordinating CA where several Member States are involved) so it can comment, before distribution. Because you're a US manufacturer, your point of entry is normally the CA of the Member State where your authorised representative is established — the HPRA in Ireland — which would typically act as, or route you to, the coordinating CA. If you're distributing before that step, pause and check.\n\nAlso confirm the FSCA itself has been reported under Art. 87(1)(b) within the required timelines, and that you're using the Commission/MDCG FSN template structure (see MDCG 2023-3 on vigilance terms and concepts, which supersedes MEDDEV 2.12-1 rev. 8 for MDR devices).\n\n## Things to line up\n\n- **Per-country language matrix** for every affected Member State, confirmed against each CA's current guidance, before distribution.\n- **One master FSN**, CA-commented, then translated — keep the version/date identical across languages.\n- **Recipient type**: professional vs. lay user changes both language expectations and reading level.\n- **Distributors and importers** in each country have their own Art. 13/14 obligations to cooperate and pass the notice on; brief them explicitly rather than assuming cascade.\n- **EUDAMED**: FSN/vigilance entry via the electronic system per Art. 92. The vigilance module's mandatory-use date was set by Regulation (EU) 2024/1860 to follow the declaration of functionality — verify the current status and whether parallel national reporting is still required, since this was in transition as of mid-2026.\n- **Effectiveness checks and records**: document distribution per country and per language, plus response rates — authorities will ask.\n\nOne caveat: this is regulatory orientation, not legal advice. For Germany specifically, have your AR or German regulatory counsel confirm the exact MPDG/MPAMIV provisions and BfArM's current submission expectations before you distribute."
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 1,
+        "passRate": 1,
+        "scoreWithout": 1,
+        "passRateWithout": 1,
+        "delta": 0
+      }
+    }
+  ],
+  "aggregates": {
+    "casesTotal": 5,
+    "casesPassed": 4,
+    "overallScore": 0.9333333333333332,
+    "overallPassRate": 0.9333333333333332,
+    "meanDelta": 0.5333333333333334
+  }
+}

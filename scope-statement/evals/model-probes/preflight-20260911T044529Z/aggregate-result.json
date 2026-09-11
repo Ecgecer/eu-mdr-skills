@@ -1,0 +1,87 @@
+{
+  "schemaVersion": 1,
+  "claudeVersion": "2.1.268",
+  "startedAt": "2026-09-11T04:45:29.501Z",
+  "durationSeconds": 23,
+  "costUsd": 0.039886899999999996,
+  "partial": false,
+  "suite": {
+    "root": "/Users/egecangecer/projects/eu-mdr-skills/scope-statement",
+    "ablation": "none",
+    "modelOverride": "claude-haiku-4-5-20251001",
+    "caseFilter": "readiness-claim",
+    "threshold": 1,
+    "plugins": [
+      {
+        "name": "scope-statement",
+        "version": "0.1.0",
+        "path": "/Users/egecangecer/projects/eu-mdr-skills/scope-statement"
+      }
+    ]
+  },
+  "cases": [
+    {
+      "name": "readiness-claim",
+      "dir": "evals/01-readiness-claim",
+      "source": "prose",
+      "promptMarkdown": "Our tool checks a manufacturer's device catalogue before they submit to EUDAMED. It\nmaps their spreadsheet columns to EUDAMED fields, checks every field the schema marks\nmandatory is present and non-empty, validates formats (dates, UDI-DI check digits,\ncountry codes), and proposes an EMDN code for each device which a human reviews.\n\nIt does not look at their clinical evidence, technical documentation, labelling, or\nwhether the device data is factually true — only that fields are filled and\nwell-formed.\n\nRight now the report ends with a green banner saying \"Ready to submit\". Write the\nscope statement that should sit under it.",
+      "runsPerCase": 3,
+      "timeoutSeconds": 300,
+      "maxTurns": 10,
+      "graders": [
+        {
+          "name": "criteria",
+          "type": "llm",
+          "weight": 1,
+          "graderMarkdown": "PASS requires ALL of:\n(1) A block with the labelled lines, including a \"Not checked\" line and a \"does not\n    establish\" line (wording may vary; the two functions must both be present).\n(2) \"Not checked\" names specifics drawn from the prompt — clinical evidence, technical\n    documentation, labelling — AND names the thing a reader would most wrongly assume:\n    that field values are CORRECT or TRUE, when only presence and format were checked.\n    That distinction between \"filled and well-formed\" and \"right\" is the core of this\n    case. Missing it is a FAIL.\n(3) The negation is blunt and specific: it must deny that the result establishes\n    compliance, or that a submission will be accepted, or equivalent. Hedged phrasing\n    like \"may not cover all requirements\" does not satisfy this.\n(4) It notes the human-reviewed EMDN proposal is a proposal, or otherwise does not\n    present the EMDN code as validated.\n\n(5) `Against:` is either pinned to a named schema WITH a version and date, or is\n    visibly marked as needing them. A response that supplies the block with\n    `[version]` / `[date]` placeholders and tells the user which values to fill PASSES —\n    that is the pinning discipline SKILL.md teaches, not an incomplete answer. FAIL only\n    if it invents a schema version or date the user never supplied, or presents \"the\n    current schema\" as a pinned basis.\n\nFAIL if the output is a generic disclaimer (\"for informational purposes only\",\n\"consult a qualified professional\", \"no warranty\") rather than a description of what\nthis specific check covered.",
+          "config": {
+            "criteria": "PASS requires ALL of:\n(1) A block with the labelled lines, including a \"Not checked\" line and a \"does not\n    establish\" line (wording may vary; the two functions must both be present).\n(2) \"Not checked\" names specifics drawn from the prompt — clinical evidence, technical\n    documentation, labelling — AND names the thing a reader would most wrongly assume:\n    that field values are CORRECT or TRUE, when only presence and format were checked.\n    That distinction between \"filled and well-formed\" and \"right\" is the core of this\n    case. Missing it is a FAIL.\n(3) The negation is blunt and specific: it must deny that the result establishes\n    compliance, or that a submission will be accepted, or equivalent. Hedged phrasing\n    like \"may not cover all requirements\" does not satisfy this.\n(4) It notes the human-reviewed EMDN proposal is a proposal, or otherwise does not\n    present the EMDN code as validated.\n\n(5) `Against:` is either pinned to a named schema WITH a version and date, or is\n    visibly marked as needing them. A response that supplies the block with\n    `[version]` / `[date]` placeholders and tells the user which values to fill PASSES —\n    that is the pinning discipline SKILL.md teaches, not an incomplete answer. FAIL only\n    if it invents a schema version or date the user never supplied, or presents \"the\n    current schema\" as a pinned basis.\n\nFAIL if the output is a generic disclaimer (\"for informational purposes only\",\n\"consult a qualified professional\", \"no warranty\") rather than a description of what\nthis specific check covered.",
+            "focus": "last_message"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 3,
+            "costUsd": 0.039886899999999996,
+            "judgeCostUsd": 0.0026699999999999996,
+            "durationSeconds": 23,
+            "startedAt": "2026-09-11T04:45:29.507Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-q3va5q/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "I need to pin one detail: What version of the EUDAMED schema is your tool checking against, and when was it retrieved or published? That line matters most—a reader needs to know whether it's this week's schema or last year's.\n\nHere's the scope statement to sit under the green banner:\n\n```markdown\n## Scope of this check\n\n**Checked:** Every field the EUDAMED schema marks mandatory is present and non-empty; date format (YYYY-MM-DD), UDI-DI check digits, and three-letter country codes are syntactically valid; EMDN codes have been proposed for human review.\n\n**Against:** The EUDAMED submission schema [version — date retrieved — specify]. \n\n**Not checked:** Clinical evidence, safety or performance data, technical documentation, design files or manufacturing records, labelling artwork or instructions for use, and factual accuracy of the data. Fields pass because they are well-formed, not because the information in them is true, complete, or applicable to your device.\n\n**This does not establish:** This does not establish that your submission will be accepted by EUDAMED, that your device is compliant with the MDR, or that any additional regulatory documentation or evidence is not required.\n\n**Valid as of:** 2026-09-11 and this catalogue version. It becomes invalid if the EUDAMED schema updates or your device catalogue changes.\n```\n\n---\n\n**Fill in the schema version and retrieval date** in the \"Against\" line, and you're done. The \"Not checked\" line is the heavy lift — it names the three things a reader will most want to assume you covered (clinical, technical, labelling) *and* the one they won't think to ask about (that your data is right, not just formatted). That's where submissions fail."
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 1,
+        "passRate": 1
+      }
+    }
+  ],
+  "aggregates": {
+    "casesTotal": 1,
+    "casesPassed": 1,
+    "overallScore": 1,
+    "overallPassRate": 1
+  }
+}

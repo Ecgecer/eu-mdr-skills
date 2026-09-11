@@ -56,15 +56,13 @@ does, which is why `scripts/run-benchmark.py` refuses it and calls the plain API
 instead. The contamination leaves no trace in the answer text, so state the
 condition rather than leaving a reader to assume it.
 
-## The hard cases — Claude scored 0.00 (11)
+## The hard cases — Claude scored 0.00 (10)
 
 Claude failed every run of these with no reference material and no web access.
 Untested on other models:
 
 - **`clean-copy-control`** — clean copy — the model invents findings that are not there  
   <sub>device-claims</sub>
-- **`doc-english-sufficient`** — tells a manufacturer to translate a DoC its member state accepts in English  
-  <sub>mpdg-germany</sub>
 - **`hwg11-item-scope`** — cites a German advertising item that does not reach medical devices  
   <sub>device-claims</sub>
 - **`hwg11-wrong-audience`** — applies a lay-audience rule to a gated professional audience  
@@ -102,12 +100,13 @@ These measure nothing about boundary discipline; a model gets them right unaided
 - `qualification-not-established` (mdr-classification)
 - `superseded-deadline` (mdr-transition)
 
-## Cases a baseline passes only sometimes (7)
+## Cases a baseline passes only sometimes (8)
 
 The baseline scored above 0.00 and below 1.00 across three runs. These
 discriminate most sharply: the model can reach the right answer and does
 not do so reliably, so a single run of any of them proves nothing.
 
+- `doc-english-sufficient` (mpdg-germany) — baseline 0.33
 - `hwg3a-arzneimittel-only` (device-claims) — baseline 0.33
 - `limb-c-omission` (device-claims) — baseline 0.33
 - `limb-d-intended-purpose-drift` (device-claims) — baseline 0.67
