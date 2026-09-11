@@ -81,9 +81,20 @@ the evidence supports it. Blocked on sourcing: gesetze-im-internet has no equiva
 unreachable. A reference nobody can verify is the thing this repo exists not to ship.
 
 **More EU-level MDR** — qualification, GSPRs, technical documentation, clinical
-evaluation. Three EU-only suites measured +0.07 to +0.14. There is no reason to expect a
-fourth to differ, and the prediction that classification and Article 120 would be
-different was wrong both times.
+evaluation. The two EU-only suites sit at the bottom of the table above, and the
+prediction that classification and Article 120 would be different was wrong both times.
+
+The sharper version of that rule is visible in *which* of their cases earn. In both
+suites every case that supplies knowledge measures **0.00** — the baseline quotes
+implementing rule 3.3 verbatim, cites 2023/607 by number, gets the suture carve-out
+right. The entire delta of each suite comes from one case, and in both it is a boundary
+case: `rule-not-carried`, where the baseline answers a question the rule it cites does
+not settle, and `ivdr-out-of-scope`, where it answers an IVD question from memory instead
+of declining.
+
+So a third EU-level skill is not doomed. It is doomed *if it is built to inform*. Write
+the boundary cases first, measure the baseline against them, and build only if it fails
+them — the knowledge cases will measure zero whatever you do.
 
 **A general "which jurisdiction applies" skill** — the highest-earning cases are
 jurisdiction errors, so this looks attractive. But each existing skill already opens by
