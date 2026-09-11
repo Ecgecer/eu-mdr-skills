@@ -155,6 +155,22 @@ def suite_summary():
     for pl, mean, n in rows:
         val = "—" if mean is None else (f"**{mean:+.2f}**" if mean >= 0.5 else f"{mean:+.2f}")
         out.append(f"| `{pl}` | {val} | {n} | {CONTENT.get(pl, '')} |")
+    # The share of cases where the skill changes nothing is the number that keeps the
+    # rest honest, and it drifts every re-measure -- prose said "roughly half" while it
+    # was 38%. Counted here instead.
+    zero = total = 0
+    for pl in plugins():
+        for name, rs in load(pl).items():
+            cur = current(rs)
+            w, wo = cur["arms"]["with"]["score"], cur["arms"]["without"]["score"]
+            if w is None or wo is None:
+                continue
+            total += 1
+            zero += abs(w - wo) < 0.01
+    if total:
+        out += ["", f"**{zero} of those {total} cases measure a delta of 0.00** — the skill "
+                    f"changes nothing. They are published case by case, because a suite "
+                    f"that reports only what it earns is not reporting."]
     return "\n".join(out)
 
 SUMMARY_FILES = ["ROADMAP.md", "README.md"]

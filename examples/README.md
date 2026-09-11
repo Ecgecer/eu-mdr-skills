@@ -3,15 +3,12 @@
 One prompt, run twice: once with the skill, once with nothing. Both outputs are
 verbatim, straight from the eval harness. Neither has been edited.
 
-> ⚠ **These transcripts were produced by an earlier version of the skill** (commit
-> `07f2848`, 2026-09-10). They have not been edited and will not be — editing them would
-> destroy the only thing this directory is for. What changed since is **Anchor 1**: the
-> with-skill transcript below stops to ask for the intended purpose before finishing
-> limb (d), because the skill then said "say so and stop the (d) analysis" and ended its
-> template with a question. Measured against `uwg6-comparison`, that gating cost the
-> review — a user who pasted copy got a question back instead of findings. The skill now
-> assesses limbs (a) to (c), marks (d) not assessed, and puts the request underneath.
-> The transcripts will be regenerated once the current measurement round completes.
+> These transcripts are regenerated from the stored eval run by
+> `scripts/build-example.py`, never edited. `tests/check-portable-fresh.py` fails if the
+> skill moves ahead of them without this file saying so, and fails again if the notice is
+> left behind once they match. They came out of run `2026-09-11T05-46-23-760Z`, case
+> `hwg11-item-scope`, where all three with-skill runs scored 1.00 and all three baseline
+> runs scored 0.00 — so "run 1 of each arm" chooses nothing.
 
 ## The prompt
 

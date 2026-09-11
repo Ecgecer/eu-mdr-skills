@@ -1,6 +1,7 @@
 {
   "plugin": "device-claims",
-  "produced_from_commit": "07f2848b96f70c9b4a09fc84e0804323ba3209af",
-  "sha256": "5f1078ec08f1264002dd3b800c2186a02f3023cee597dc6bacc0dc7126e519cf",
-  "note": "Hash of device-claims skill text as it stood when these transcripts were produced. tests/check-portable-fresh.py compares it to the current text and requires a visible staleness note in README.md when they differ. The transcripts themselves are never edited -- that is the whole claim of this directory."
+  "case": "hwg11-item-scope",
+  "results": "2026-09-11T05-46-23-760Z",
+  "sha256": "0bf4ef41ded933b76b93a37a336b0378af9147f9c2267b4aba61fab995782d14",
+  "note": "Skill and eval text these transcripts were produced from. tests/check-portable-fresh.py requires a visible staleness note in README.md while this differs from the current text. Regenerate with scripts/build-example.py -- never by editing a transcript."
 }

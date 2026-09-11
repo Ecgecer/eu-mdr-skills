@@ -1,75 +1,70 @@
 # Without the skill
 
-Verbatim output from the same prompt with no skill and no reference files. Scored 0.00, three judge votes FAIL, 3 of 3 runs.
+Verbatim output, unedited. Same prompt, no plugin loaded. Run 1 of the baseline arm,
+stored run `2026-09-11T05-46-23-760Z`. All three runs of this arm scored 0.00.
 
 ---
 
-Web access is blocked in this session, so I couldn't re-verify the statutory subsection numbers against the current consolidated text. The substance below is solid; **have counsel confirm the exact HWG subsection numbering** before you rely on the citations verbatim.
+## Verdict: do not publish as written
 
-## Verdict
+Both sentences carry per‑se prohibitions under German advertising law for medical devices. This isn't a "soften the wording" fix — the professional endorsement has to come out entirely, and the fear hook has to be rebuilt.
 
-Don't run this copy. On an ungated German consumer page, both sentences hit prohibitions in the Heilmittelwerbegesetz (HWG), and the third element ("daily") is an unsubstantiated clinical claim under MDR Art. 7. This is the classic profile for an *Abmahnung* from the Wettbewerbszentrale or a competitor — HWG breaches are actionable via § 3a UWG, so the practical risk is a cease-and-desist plus costs, not a regulator knocking.
+Relevant frame: the HWG (Heilmittelwerbegesetz) applies to medical devices (§ 1 Abs. 1 Nr. 1a HWG, referencing MDR Art. 2 Nr. 1), and because the page is public and ungated, the stricter *Publikumswerbung* rules in § 11 apply with no availability of professional‑audience carve‑outs. Germany also has an active private enforcement market (competitors, Wettbewerbszentrale, vzbv), so the practical exposure is an Abmahnung with costs and a cease‑and‑desist undertaking, not just regulator attention.
 
-Two threshold points that make everything below apply:
+---
 
-- **HWG covers medical devices.** § 1 HWG extends to devices under Regulation (EU) 2017/745, and the § 11(1) prohibitions are drafted to cover "Gegenstände oder andere Mittel," not just medicines. A Class IIa BP monitor is squarely in scope.
-- **"Public, no gating" is the decisive fact.** § 11(1) restricts advertising *außerhalb der Fachkreise*. Everything below would be permissible in HCP-facing material behind a genuine Fachkreise gate (§ 2 HWG). The copy isn't inherently unlawful — it's unlawful *at this audience*.
+### Finding 1 — "Recommended by Professor Schmidt, cardiologist" (critical)
 
-## Issue 1 — "Recommended by Professor Schmidt, cardiologist"
+**§ 11 Abs. 1 Satz 1 Nr. 2 HWG** bans advertising outside professional circles with statements that the product "ärztlich … empfohlen oder geprüft ist oder angewendet wird." The provision expressly covers "der Gegenstand," i.e. devices, not just medicinal products. This is an absolute prohibition — no disclaimer, no substantiation and no disclosure of the relationship cures it. It applies whether or not Professor Schmidt genuinely holds that view.
 
-**HWG § 11(1) Nr. 2** prohibits consumer advertising stating that a product is medically or otherwise professionally recommended, tested, or used. This is a near-textbook violation: a named physician, their specialty, and the word "recommended."
+Secondary exposure:
+- **§ 11 Abs. 1 Satz 1 Nr. 4 HWG** if any accompanying image shows a person in professional clothing or practising as a health professional (white coat, stethoscope, clinic setting) — so also check the visual treatment, not only the words.
+- **MBO‑Ä § 27** (model professional code for physicians): the physician themselves risks professional sanction for lending their name and title to commercial advertising. Flag this to Professor Schmidt if the arrangement is already in place.
+- **UWG § 5a** if a paid or equity relationship exists and is undisclosed — an additional, independent violation layered on the HWG one.
 
-Note the shape of this rule, because it drives the fix: it is **not** a substantiation requirement. A genuine, documented, unpaid recommendation from a real cardiologist is *equally prohibited*. The concern is the borrowed authority itself, not whether the endorsement is true. So "get it in writing from Prof. Schmidt" does not solve this — only removing the endorsement or gating the page does.
+**Action:** remove. If you have genuine clinical credibility to convey, route it to facts about the device rather than a person: independent validation status, the validation standard, peer‑reviewed data. Physician endorsement can only live in genuinely gated Fachkreise material, and "ungated public page" is stated here, so that route is closed.
 
-Related exposure worth checking:
-- If the page carries a photo of Prof. Schmidt in a white coat, stethoscope, or clinical setting, that's a **separate** hit under the § 11(1) provision banning depictions of healthcare professionals in professional dress or practice. Removing the sentence but keeping the image doesn't clear it.
-- If you're citing a study or expert opinion rather than a personal endorsement, the § 11(1) restriction on *Gutachten*, certificates, and scientific/professional publications is the relevant one instead.
-- **Prof. Schmidt has their own problem.** Under the Musterberufsordnung für Ärzte (§ 34 ff. MBO-Ä as adopted by the Landesärztekammern), physicians may not lend their name or reputation to product advertising. Running this could expose them to professional discipline from their state medical chamber. Worth telling them before this goes live — this is the kind of thing that damages a relationship you presumably want to keep.
-- If the endorsement is paid or otherwise compensated, undisclosed commercial testimonials are independently misleading under UWG.
+### Finding 2 — "Don't gamble with your heart" (critical)
 
-## Issue 2 — "Don't gamble with your heart"
+**§ 11 Abs. 1 Satz 1 Nr. 7 HWG** prohibits advertising statements apt to create or exploit fear (*Angstwerbung*). A gambling metaphor applied to cardiac risk is close to a textbook case: the persuasive mechanism *is* the implied threat of a cardiac event.
 
-**HWG § 11(1) Nr. 7** prohibits advertising statements apt to create or exploit feelings of anxiety. Fear-of-cardiac-event framing to sell a BP monitor is the paradigm case this provision exists for.
+The same phrase also suggests health will be impaired by not using the product, which compounds the problem under Finding 3.
 
-The line is roughly: *describing a risk factually* is fine; *dramatising consequences to create urgency to buy* is not. "Gamble with your heart" is unambiguously the latter — it's a wager metaphor about dying. Reframing toward what the device gives you (information, continuity, shareable data for your doctor) rather than what you risk without it moves you across that line.
+**Action:** rewrite around benefit, not dread. Convenience, accuracy, continuity of data for the doctor, understanding your own trend.
 
-## Issue 3 — "check your pressure daily"
+### Finding 3 — implied clinical benefit beyond the intended purpose (high)
 
-Not an HWG issue; an **MDR Art. 7** one — claims must not mislead the user as to performance or clinical benefit.
+Taken together, the two sentences assert that daily use of this monitor protects cardiac health. A blood‑pressure monitor's intended purpose is *measurement*. It does not diagnose hypertension, and it does not prevent cardiovascular events.
 
-Indiscriminate daily self-measurement isn't what the guidelines say. ESH/ESC home-BP guidance recommends structured schedules — typically 7 consecutive days of duplicate morning and evening readings before a clinical review, then defined intervals — not perpetual daily checks for everyone. Asserting "daily" as the right cadence for an undifferentiated public audience:
+- **MDR Art. 7(a)/(b):** claims must not ascribe functions beyond the intended purpose or create a false impression regarding treatment or prevention.
+- **UWG § 3 Abs. 3 in conjunction with Anhang Nr. 17:** untrue claims that a product cures or prevents illness are per‑se unfair, with no balancing test.
+- Every retained claim must be supported in the clinical evaluation and technical documentation (**MDR Annex XIV**). "Clinically validated accuracy," if you use it, needs a specific basis — typically ISO 81060‑2 validation, ideally a STRIDE BP listing you can cite.
 
-- implies a clinical benefit from that cadence that you'd struggle to evidence,
-- risks reading as individualised medical advice from a manufacturer, and
-- can encourage measurement anxiety and over-monitoring in healthy users, which is a foreseeable-misuse point your risk file should probably already address.
+### Finding 4 — "check your pressure daily" (medium)
 
-Check this against your **IFU and intended purpose**. If the IFU says "as directed by your physician," the ad is inconsistent with the approved documentation, which is its own MDR problem independent of whether "daily" is clinically defensible.
+This is a usage instruction, and it needs to match the IFU and prevailing clinical guidance. ESH guidance for home monitoring is built around 7‑day measurement schedules (morning and evening, two readings each) around clinical appointments, not indefinite daily self‑measurement — which in some patients drives measurement anxiety and over‑monitoring.
 
-## Rewrite
+**Action:** verify against your IFU. If the IFU doesn't prescribe daily use, the advertising contradicts the approved instructions. Safer framing: "as often as your doctor recommends."
 
-Removing the violations, keeping the persuasive job of the copy:
+### Gaps to close before publication
 
-> **DE:** "Blutdruck zuverlässig zu Hause messen — klinisch validiert nach ESH-Protokoll. Besprechen Sie Ihre Messwerte mit Ihrer Ärztin oder Ihrem Arzt."
->
-> **EN:** "Reliable blood-pressure readings at home — clinically validated to the ESH protocol. Share your results with your doctor."
+- **Language:** copy for the German market should be in German. (Strictly an MDR requirement for labelling and IFU under Annex I § 23, but for advertising it's a practical and consumer‑protection expectation.)
+- **No substitute for medical advice / consult your physician** signposting, given the copy currently nudges toward self‑management.
+- **Manufacturer identity and CE conformity** presentation consistent with the rest of the site; nothing implying the CE mark or the notified body endorses the product.
+- Confirm the ungated page carries no content that would only be lawful for Fachkreise.
 
-Why this works: it substitutes *product-level, substantiable* authority (validation protocol, accuracy data, ISO 81060-2 conformity) for *borrowed personal* authority, which is exactly the trade § 11(1) Nr. 2 is designed to force. Validation-protocol claims are the strongest asset you have in this category and they're fully usable on a consumer page — but only if you actually hold the validation report, so confirm that before publishing.
+---
 
-Two conditions on the rewrite:
-- Only claim ESH/ISO validation if you have the study. Substitute your actual evidence if not.
-- Cadence language, if you want any: "Measure as recommended by your doctor" or "supports the 7-day measurement schedules used in clinical guidelines" — both stay clear of prescribing a schedule yourself.
+### Suggested rewrite
 
-## If you want to keep the endorsement
+**German (primary):**
+> Klinisch validierte Messgenauigkeit für Zuhause. Behalten Sie Ihre Blutdruckwerte im Blick und besprechen Sie sie mit Ihrer Ärztin oder Ihrem Arzt.
 
-The endorsement is usable, but only behind a real Fachkreise gate (§ 2 HWG) — verified HCP registration, not a self-declaration checkbox. Given this is described as a public consumer page, that's a different asset with a different purpose, and you'd still need Prof. Schmidt's MBO-Ä position resolved.
+**English (reference):**
+> Clinically validated accuracy at home. Keep track of your blood pressure readings and discuss them with your doctor.
 
-## Also worth handling
+This keeps the value proposition — accuracy, home use, useful data for the clinical relationship — while dropping the endorsement, the fear appeal, the implied prevention claim, and the unsanctioned daily‑use instruction. "Klinisch validiert" still needs the validation record behind it; if you don't have ISO 81060‑2 validation you can point to, drop that phrase and lead with a feature that is documented.
 
-- **Language.** Copy for the German market should be in German. The English above is for your review only — and note that German legal assessment applies to the German text as published, so get the final German wording reviewed, not this translation.
-- **Documentation.** Advertising claims form part of the technical documentation trail under MDR. Whatever survives review needs its substantiation filed.
-- **GDPR.** Naming a real individual on a commercial page needs a documented lawful basis and their consent, separate from the HWG question.
-- **Consistency sweep.** § 11(1) is a list of *distinct* prohibitions — clearing Nr. 2 and Nr. 7 in the headline doesn't clear testimonials, patient case histories, or before/after imagery elsewhere on the page. If this copy reflects the house style, the rest of the site probably has the same issues.
+If you want a variant that still conveys expert credibility, the compliant path is institutional and impersonal — e.g. referencing the validation standard or an independent validation registry — rather than any named clinician.
 
-One scope note: I've reviewed the two sentences you gave me. I haven't seen the page, so the imagery, testimonials, and surrounding claims are unassessed — the § 11(1) exposure there is real and I'd want eyes on the full page before sign-off.
-
-I'm not a lawyer and this isn't legal advice — route the final wording through your regulatory affairs function or German healthcare-advertising counsel, who should confirm the subsection numbering I flagged at the top.
+One flag: I've written this against the current HWG structure as I understand it, and § 11 has been amended repeatedly. Have German regulatory counsel confirm the exact provision wording before you rely on the citations in a written position; the substantive conclusions on Findings 1 and 2 are well settled regardless of numbering.

@@ -37,18 +37,20 @@ carry, and stop rather than conclude past their own boundary.
 | `scope-statement` | "What should this report say it didn't check?" | nothing — domain-general |
 
 Every skill ships an eval suite measured against a **no-plugin baseline**, and every suite
-publishes the cases where the skill adds **nothing** — roughly half of them do.
+publishes the cases where the skill adds **nothing**.
 
 <!-- suite-summary:start -->
 Measured across 5 suites, 30 cases:
 
 | Suite | Mean delta | Cases measured | Content |
 |---|---|---|---|
-| `device-claims` | **+0.63** | 10 | MDR/IVDR Art. 7 **plus HWG and UWG** |
+| `device-claims` | **+0.77** | 10 | MDR/IVDR Art. 7 **plus HWG and UWG** |
 | `mpdg-germany` | **+0.50** | 4 | German national law only |
 | `scope-statement` | +0.44 | 3 | domain-general |
 | `mdr-transition` | +0.20 | 5 | EU-level only |
 | `mdr-classification` | +0.10 | 7 | EU-level only |
+
+**11 of those 29 cases measure a delta of 0.00** — the skill changes nothing. They are published case by case, because a suite that reports only what it earns is not reporting.
 <!-- suite-summary:end -->
 
 This table is spliced in from the stored run data by `scripts/report-evals.py` and CI
@@ -95,8 +97,8 @@ or tool, not just this one:
 > provision it cites does not reach?
 
 <!-- bench-counts:start -->
-Of the 30 cases, **10 are ones Claude failed in every run** with no reference material and no
-web access, 12 it passed in every run, and 8 it passed only sometimes. All three
+Of the 30 cases, **11 are ones Claude failed in every run** with no reference material and no
+web access, 12 it passed in every run, and 7 it passed only sometimes. All three
 groups are published, because a benchmark that hides its easy cases overstates itself.
 <!-- bench-counts:end -->
 
