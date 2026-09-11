@@ -166,7 +166,9 @@ def main():
                       "                no part of this fragment is on the page")
             drifted += 1
         else:
-            print(f"  OK            {rel}  ({nfrag} fragments across {len(qs)} quotes match)")
+            frag = f"{nfrag} fragment{'' if nfrag == 1 else 's'}"
+            quote = f"{len(qs)} quote{'' if len(qs) == 1 else 's'}"
+            print(f"  OK            {rel}  ({frag} across {quote} match)")
             if verbose:
                 for frags in qs:
                     for f in frags:
