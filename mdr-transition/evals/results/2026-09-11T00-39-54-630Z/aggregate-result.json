@@ -1,0 +1,886 @@
+{
+  "schemaVersion": 1,
+  "claudeVersion": "2.1.268",
+  "startedAt": "2026-09-11T00:39:54.630Z",
+  "durationSeconds": 557,
+  "costUsd": 1.4342030000000001,
+  "partial": false,
+  "suite": {
+    "root": "/Users/egecangecer/projects/eu-mdr-skills/mdr-transition",
+    "ablation": "with-without",
+    "threshold": 1,
+    "plugins": [
+      {
+        "name": "mdr-transition",
+        "version": "0.1.0",
+        "path": "/Users/egecangecer/projects/eu-mdr-skills/mdr-transition"
+      }
+    ]
+  },
+  "cases": [
+    {
+      "name": "superseded-deadline",
+      "dir": "evals/01-superseded-deadline",
+      "source": "prose",
+      "promptMarkdown": "We have a Class III implantable device with a valid MDD certificate issued under\n93/42/EEC. We're still selling it. How long can we keep placing it on the EU market\nbefore we have to be fully MDR certified?",
+      "runsPerCase": 3,
+      "timeoutSeconds": 300,
+      "maxTurns": 10,
+      "graders": [
+        {
+          "name": "criteria",
+          "type": "llm",
+          "weight": 1,
+          "graderMarkdown": "MDR Art. 120(3a)(a), as amended by Regulation (EU) 2023/607, gives class III devices\nuntil **31 December 2027**. The original 2017 text said 26 May 2024; that is superseded\nas a market deadline.\n\nPASS requires:\n(1) The stated deadline is **31 December 2027**.\n(2) It does NOT present 26 May 2024 as the date by which the device must leave the\n    market.\n(3) It notes the extension is conditional on Art. 120(3c) — at minimum that conditions\n    exist and were required, not that 2027 is automatic.\n\nMentioning 26 May 2024 in its CORRECT role — the deadline for the QMS and for lodging the\nnotified-body application under 3c(d) and 3c(e) — is right and expected. Judge how the\ndate is used, not whether it appears.\n\nFAIL if the answer is 26 May 2024, or any 2024 date, as the market deadline. That is the\nsuperseded text and the specific failure this case tests.",
+          "config": {
+            "criteria": "MDR Art. 120(3a)(a), as amended by Regulation (EU) 2023/607, gives class III devices\nuntil **31 December 2027**. The original 2017 text said 26 May 2024; that is superseded\nas a market deadline.\n\nPASS requires:\n(1) The stated deadline is **31 December 2027**.\n(2) It does NOT present 26 May 2024 as the date by which the device must leave the\n    market.\n(3) It notes the extension is conditional on Art. 120(3c) — at minimum that conditions\n    exist and were required, not that 2027 is automatic.\n\nMentioning 26 May 2024 in its CORRECT role — the deadline for the QMS and for lodging the\nnotified-body application under 3c(d) and 3c(e) — is right and expected. Judge how the\ndate is used, not whether it appears.\n\nFAIL if the answer is 26 May 2024, or any 2024 date, as the market deadline. That is the\nsuperseded text and the specific failure this case tests.",
+            "focus": "last_message"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 4,
+            "costUsd": 0.19073475,
+            "judgeCostUsd": 0.003675,
+            "durationSeconds": 39,
+            "startedAt": "2026-09-11T00:39:54.668Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-43Il3f/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "## Class III implantable device, MDD certificate under 93/42/EEC\n\n**Class:** III (implantable — but class III is what drives the date here; the implantable qualifier only matters for class IIb)\n**Route:** 120(3a) — notified-body certificate issued under 93/42/EEC\n**Deadline:** **31 December 2027** — conditional on Article 120(3c)\n\n| Question | Answer | Basis |\n|---|---|---|\n| Which paragraph applies | 120(3a)(a) — device holds a certificate issued under 93/42/EEC, valid by virtue of 120(2) | `[verified]` |\n| Class-dependent date | 31 December 2027 for all class III devices | `[verified]` |\n| 3c conditions met? | **Not established — you have not told me.** All five are cumulative, and two had 2024 deadlines that have now passed | `[verified]` |\n\nThat is roughly 15½ months from today. Note that **26 May 2024 is not your market deadline** — the original 2017 text of Article 120 said that, but it was rewritten by Regulation (EU) 2023/607 in March 2023. If you have been planning against 26 May 2024, or against advice that cited it, that advice is quoting superseded law.\n\nBut 2024 did not go away — it changed job. The 31 December 2027 date is available **only if** all five conditions in 120(3c) were met:\n\n- (a) the device continues to comply with 93/42/EEC;\n- (b) no significant changes in design and intended purpose;\n- (c) no unacceptable risk to health or safety;\n- (d) a quality management system under Article 10(9) in place **no later than 26 May 2024**;\n- (e) a formal application lodged with a notified body under Annex VII 4.3 **no later than 26 May 2024**, and a written agreement signed with that notified body **no later than 26 September 2024**.\n\n**What would change this:** conditions (d) and (e). Both deadlines are in the past and cannot now be cured. If the QMS was not in place by 26 May 2024, or the application was not lodged by that date, or the written agreement was not signed by 26 September 2024, the extension was never available to this device and 31 December 2027 does not apply to you. Please confirm those three milestones before treating 2027 as your runway.\n\nOne more thing that is easy to miss: under 120(3d), MDR's requirements on post-market surveillance, market surveillance, vigilance, and registration of economic operators and devices apply to your device **now, in place of** the corresponding 93/42/EEC requirements — the transition covers conformity assessment, not those obligations.\n\n## Limits\n\n> This covers MDR Article 120(3) and (3a)–(3d) as amended by Regulation (EU) 2023/607, retrieved verbatim from the Official Journal on 2026-09-10. It does **not** cover Article 120's other paragraphs, **IVDR Article 110** (the parallel IVD transition, whose dates differ), MDCG guidance including on what counts as a significant change, Annex VII, or national practice. The transition is conditional and fact-specific; this is a first-pass aid, not legal or regulatory advice, and not a substitute for your notified body or a qualified regulatory professional."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 4,
+            "costUsd": 0.13621375000000002,
+            "judgeCostUsd": 0.004335,
+            "durationSeconds": 34,
+            "startedAt": "2026-09-11T00:40:33.175Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-48xaEV/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "## Class III implantable device, MDD certificate under 93/42/EEC\n\n**Class:** III (implantable — but for Class III the implantable status doesn't change the date)\n**Route:** Article 120(3a) — notified-body certificate issued under 93/42/EEC\n**Deadline:** **31 December 2027** — conditional on Article 120(3c)\n\n| Question | Answer | Basis |\n|---|---|---|\n| Which paragraph applies | 120(3a)(a) — device holds a certificate issued under 93/42/EEC and valid by virtue of 120(2) | `[verified]` |\n| Class-dependent date | 31 December 2027, for all class III devices (and class IIb implantables other than the listed exceptions) | `[verified]` |\n| 3c conditions met? | **Not established — you need to confirm this.** All five are cumulative, and two of them fell due in 2024 | — |\n\n**Not 26 May 2024.** That date was the market deadline in the original 2017 text of Article 120, and it was superseded by Regulation (EU) 2023/607 in March 2023. It didn't disappear, though — it changed job, which is the part that matters for you.\n\n### What you have to confirm before relying on 31 December 2027\n\nThe extension is conditional, not automatic. Under 120(3c) the device may be placed on the market until that date **only if all five** of these are met `[verified]`:\n\n- **(a)** it continues to comply with 93/42/EEC;\n- **(b)** there are no significant changes in design and intended purpose;\n- **(c)** it presents no unacceptable risk to health or safety;\n- **(d)** a quality management system under Article 10(9) was in place **no later than 26 May 2024**;\n- **(e)** a formal application was lodged with a notified body under Annex VII §4.3 first subparagraph **no later than 26 May 2024**, *and* the notified body and manufacturer signed a written agreement under §4.3 second subparagraph **no later than 26 September 2024**.\n\nConditions (d) and (e) had deadlines that have now passed. If your QMS wasn't in place by 26 May 2024, or the application wasn't lodged by then, or the written agreement wasn't signed by 26 September 2024, **the extension was never available to this device** and 31 December 2027 is not your date. Can you confirm those three milestones were hit?\n\n### Also in force right now\n\nArticle 120(3d): even during the transition, the **MDR's** requirements on post-market surveillance, market surveillance, vigilance, and registration of economic operators and devices apply **in place of** the corresponding 93/42/EEC requirements `[verified]`. This is easy to miss — it's not deferred to 2027.\n\n**What would change this:** a miss on any 3c condition (most likely the 2024 QMS/application dates, or a significant design or intended-purpose change since certification) removes the extension entirely. Note also that \"significant change\" under 3c(b) is the subject of MDCG guidance that I don't have in front of me — if your device has been modified, that question needs to be worked separately.\n\nOne thing to flag on scope: 31 December 2027 is about **placing on the market or putting into service**. Article 120's other paragraphs govern the validity of your old certificate and the treatment of devices already placed on the market — those aren't in the reference text I'm working from, so I can't give you dates on them. That's about 15½ months from today, which for a Class III conformity assessment is not a lot of runway.\n\n## Limits\n\n> This covers MDR Article 120(3) and (3a)–(3d) as amended by Regulation (EU) 2023/607, retrieved verbatim from the Official Journal on 2026-09-10. It does **not** cover Article 120's other paragraphs, **IVDR Article 110** (the parallel IVD transition, whose dates differ), MDCG guidance including on what counts as a significant change, Annex VII, or national practice. The transition is conditional and fact-specific; this is a first-pass aid, not legal or regulatory advice, and not a substitute for your notified body or a qualified regulatory professional."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 4,
+            "costUsd": 0.128224,
+            "judgeCostUsd": 0.0034920000000000003,
+            "durationSeconds": 31,
+            "startedAt": "2026-09-11T00:41:07.240Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-zFQBNS/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "## Class III implantable device, MDD certificate under 93/42/EEC\n\n**Class:** III (implantable — the same date applies either way)\n**Route:** 120(3a) — notified-body certificate issued under 93/42/EEC\n**Deadline:** **31 December 2027** — conditional on Article 120(3c)\n\n| Question | Answer | Basis |\n|---|---|---|\n| Which paragraph applies | 120(3a) — device holds a certificate issued under 93/42/EEC and valid by virtue of 120(2) | `[verified]` |\n| Class-dependent date | 31 December 2027, for all class III devices (and class IIb implantables other than the listed exceptions) | `[verified]` |\n| 3c conditions met? | **Not established — you have not confirmed these.** All five are cumulative | `[verified]` |\n\n**Note on 26 May 2024:** that is no longer the market deadline — the original 2017 text of Article 120 set it as one, and Regulation (EU) 2023/607 superseded that in March 2023. But it did not disappear. It became the date by which two conditions had to be met: a quality management system in place under Article 10(9) (3c(d)), and a formal application lodged with a notified body under Annex VII Section 4.3 (3c(e)), with the **signed written agreement** between you and the notified body due no later than **26 September 2024**.\n\nThose dates are now roughly two years past. So the honest answer is conditional: on class alone the device runs to 31 December 2027, **if** it qualified. If the QMS was not in place by 26 May 2024, or the application was not lodged by then, or the written agreement was not signed by 26 September 2024, the extension was never available to this device and the answer is materially different.\n\n**What would change this:** whether all five 120(3c) conditions were met. Beyond the three dated ones, the device must continue to comply with 93/42/EEC (3c(a)), have **no significant changes in design and intended purpose** (3c(b)), and present no unacceptable risk (3c(c)). Can you confirm the application and the signed agreement? `[verified]`\n\nOne thing that is easy to miss even if you do qualify: under 120(3d), MDR's requirements on post-market surveillance, market surveillance, vigilance, and registration of economic operators and devices apply **in place of** the corresponding 93/42/EEC requirements during the transition. The extension covers conformity assessment, not the whole regime. `[verified]`\n\n## Limits\n\n> This covers MDR Article 120(3) and (3a)–(3d) as amended by Regulation (EU) 2023/607, retrieved verbatim from the Official Journal on 2026-09-10. It does **not** cover Article 120's other paragraphs, **IVDR Article 110** (the parallel IVD transition, whose dates differ), MDCG guidance including on what counts as a significant change, Annex VII, or national practice. The transition is conditional and fact-specific; this is a first-pass aid, not legal or regulatory advice, and not a substitute for your notified body or a qualified regulatory professional."
+              }
+            ]
+          }
+        ],
+        "without": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 4,
+            "costUsd": 0.17840725000000002,
+            "judgeCostUsd": 0.004686000000000001,
+            "durationSeconds": 69,
+            "startedAt": "2026-09-11T00:41:38.281Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-pQuR6n/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "Web search is blocked in this session, so the below is from the regulation text as I know it — verify the final dates against the current consolidated text before relying on them.\n\n## Short answer\n\n**31 December 2027** — that's your last day to place the device on the EU market under the MDD certificate, and only if you met a set of conditions whose deadlines have already passed.\n\n## Where that comes from\n\nArticle 120(3a) MDR, as rewritten by **Regulation (EU) 2023/607**, splits the old \"26 May 2024\" cliff edge into risk-based dates:\n\n| Device class (MDR classification) | Placing on market until |\n|---|---|\n| Class III, and class IIb implantable (except sutures, staples, dental fillings, braces, crowns, screws, wedges, plates, wires, pins, clips, connectors) | **31 Dec 2027** |\n| Other class IIb, class IIa, class I sterile / measuring / reusable surgical | 31 Dec 2028 |\n| Class III custom-made implantable | 26 May 2026 |\n\nNote the table keys off the **MDR** class, not the MDD class. A Class III implantable lands squarely in the 2027 bucket.\n\nYour certificate is deemed valid to that date even if the date printed on it is earlier (Art. 120(2)) — you don't need the notified body to reissue anything.\n\n## The conditions — check these now, they're retroactive\n\nThe extension is not automatic. It only applies if, per Art. 120(3c):\n\n1. The device still complies with the MDD, and\n2. There's been **no significant change** in design or intended purpose (MDCG 2020-3 rev.1 is the test — and it's stricter than most people assume; a supplier change to an implant's material, or a new indication, can blow it), and\n3. The device presents no unacceptable risk to health and safety, and\n4. By **26 May 2024** you had an MDR-compliant QMS in place (Art. 10(9)), and\n5. By **26 May 2024** you had lodged a formal MDR conformity assessment application with a notified body, and\n6. By **26 September 2024** you had a signed written agreement with that notified body.\n\nItems 4–6 are the ones worth confirming in your files today. If any of them was missed, you **do not have the extension at all** — your lawful placing-on-market window closed on 26 May 2024, and the current sales are a problem that needs immediate legal advice, not a transition plan.\n\n## Two things that are more generous than people expect\n\n- **No sell-off deadline.** Regulation 2023/607 deleted Art. 120(4). Devices lawfully *placed on the market* before 31 Dec 2027 can continue to be *made available* in the supply chain and put into service indefinitely. So distributor stock and implantation don't stop on 1 Jan 2028 — only your act of first placing a unit on the EU market does.\n- **Expired certificates count.** Certificates that lapsed before 20 March 2023 can be revived under the same conditions, provided the NB agreement or a competent authority derogation was in place.\n\n## Two things that are less generous\n\n- **MDR already applies to you in part.** During the transition you're under MDR for post-market surveillance, vigilance, market surveillance, registration of economic operators and devices, and UDI carriers on Class III/implantables (Art. 120(3f)). Only the pre-market conformity assessment rides on the MDD certificate.\n- **Surveillance transfers.** Under Art. 120(3e), ongoing surveillance of the legacy device is performed by your *MDR* notified body, not the one that issued the MDD certificate, once the written agreement is in place.\n\n## What 31 December 2027 actually requires of you\n\n\"Fully MDR certified\" means the CE certificate is *issued* — not that the review is underway. Notified body capacity for Class III implantables is the binding constraint; review cycles running 12–18 months from a complete submission are common, and clinical evaluation deficiencies under MDR Annex XIV for implantables are the usual cause of a second round. Working back from Dec 2027, a complete, deficiency-resistant submission wants to be in the NB's hands well before end of 2026.\n\nOne forward-looking caveat: the Commission has signalled a broader MDR/IVDR revision, partly aimed at notified body capacity. As of my knowledge cutoff no proposal had changed the 2027 date, and you should plan against 2027 as the law. Ask your notified body directly whether anything has moved since — and if it matters commercially, also confirm current Eudamed registration module obligations, which were on a rolling mandatory-use schedule under Regulation (EU) 2024/1860 that I can't verify from here."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 4,
+            "costUsd": 0.19246074999999999,
+            "judgeCostUsd": 0.004400999999999999,
+            "durationSeconds": 70,
+            "startedAt": "2026-09-11T00:42:47.545Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-ZoQwne/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "Quick caveat up front: I tried to verify this against current EU sources but web access is disabled in this session, so this is from my training data (cutoff May 2026) — and the MDR transition dates have been amended twice already. Confirm against the consolidated text of Regulation (EU) 2017/745 on EUR-Lex before you rely on it. This is regulatory information, not legal advice.\n\n## Short answer: 31 December 2027\n\nFor a **Class III device** (implantable or not), Article 120(3a)(b) MDR — as amended by Regulation (EU) 2023/607 — extends MDD certificate validity to **31 December 2027**. From today (11 Sep 2026) that's roughly 15½ months of placing-on-the-market runway.\n\nYour MDR certificate must be **issued** before that date, not merely applied for. Notified body capacity for Class III implantables is the binding constraint — 15 months is tight if review isn't already well advanced.\n\n## The catch: the extension was conditional, and both gating deadlines have passed\n\nThe 2027 date is not automatic. Article 120(3c) required all of the following, and two were hard deadlines now in the past:\n\n| Condition | Deadline |\n|---|---|\n| MDR-compliant QMS in place (Art. 10(9)) | **26 May 2024** |\n| Formal MDR application lodged with a notified body (Annex VII §4.3) | **26 May 2024** |\n| Written agreement signed between you and the notified body | **26 Sep 2024** |\n| Device still complies with MDD | ongoing |\n| No significant change in design or intended purpose | ongoing |\n| No unacceptable risk to health and safety | ongoing |\n\nIf you missed either 2024 date, **the extension never applied to your device** — your legal cover ended at the certificate's own expiry date, and you may be placing a non-compliant device on the market right now. That's the first thing to check, ahead of anything else.\n\nTwo further points on the conditions:\n- **\"Significant change\"** is interpreted per MDCG 2020-3 rev.1. Design or intended-purpose changes made since 26 May 2021 can void the extension retroactively. Changes required for safety or to comply with the law are generally fine.\n- Your paper certificate may show an expiry date already in the past. That's expected — validity is extended by operation of law, not by reissue. Notified bodies typically provide a confirmation letter; distributors and tender bodies often ask for one.\n\n## Three things that commonly get missed\n\n**MDR obligations already apply to you.** During the extension, the MDR rules on post-market surveillance, vigilance, and registration of economic operators and devices replace the corresponding MDD ones (Art. 120(3)). You are not operating under a pure MDD regime today.\n\n**There is no sell-off deadline.** Regulation 2023/607 deleted it. Devices lawfully placed on the market before your cutoff can continue to be made available and put into service indefinitely. So \"placing on the market\" is the only clock — inventory in the channel isn't stranded.\n\n**If the device is custom-made,** the deadline was 26 May 2026 — already passed. Only relevant if that applies to you.\n\n## What I'd do this week\n\n1. Pull the notified body agreement and confirm the 26 May / 26 Sep 2024 dates were met. Everything else depends on this.\n2. Get a written status and target issuance date from the notified body, and ask explicitly whether they expect to certify before 31 Dec 2027.\n3. Run a significant-change review against MDCG 2020-3 rev.1 for every change since May 2021.\n4. If certification by end-2027 looks unlikely, start on the Article 59 (competent authority derogation) or Article 97 fallback path now — these take months and are discretionary, not a right.\n5. If you may discontinue the device instead, note the supply-interruption notification duty added by Regulation (EU) 2024/1860, in force since 10 Jan 2025: six months' advance notice to competent authorities where interruption could cause serious harm.\n\nOne forward-looking note: the Commission had signalled a broader targeted revision of the medical devices framework, with a proposal expected around late 2026. I can't tell you whether anything has been tabled since May 2026. Don't plan around a further extension, but it's worth watching — and worth a fresh check given my sources are stale by four months."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 4,
+            "costUsd": 0.1860455,
+            "judgeCostUsd": 0.004392,
+            "durationSeconds": 75,
+            "startedAt": "2026-09-11T00:43:57.532Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-jtqEVW/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "Web search is blocked in this session, so this is from my own knowledge (cutoff May 2026, and today is September 2026) — verify against the current consolidated text before relying on it.\n\n## Short answer\n\n**31 December 2027** — but only if you met a set of conditions whose deadlines all fell in 2024. If you missed those, your certificate is already void and you should not be placing the device on the market today.\n\n## The legal basis\n\nArticle 120 MDR (Regulation (EU) 2017/745), as amended by **Regulation (EU) 2023/607**. It replaced the old \"hard stop 26 May 2024\" with a risk-class-staggered extension of legacy MDD/AIMDD certificates:\n\n| Device group | Extended certificate validity |\n|---|---|\n| **Class III; Class IIb implantable** (except the well-established-technology carve-out: sutures, staples, dental fillings/braces/crowns, screws, wedges, plates, wires, pins, clips, connectors) | **31 Dec 2027** |\n| Other Class IIb, Class IIa, Class I sterile/measuring/reusable surgical | 31 Dec 2028 |\n| Class III **custom-made** implantables | 26 May 2026 (already passed) |\n\nA standard (non-custom-made) Class III implantable sits in the **31 December 2027** bucket.\n\n## The conditions — check these first\n\nThe extension is not automatic. It applied only if, cumulatively:\n\n1. The device continues to comply with the MDD.\n2. **No significant changes** to design or intended purpose.\n3. No unacceptable risk to health and safety.\n4. By **26 May 2024**: an MDR Article 10(9)-compliant QMS was in place.\n5. By **26 May 2024**: a formal MDR conformity assessment application was lodged with a notified body, **and** by **26 September 2024** a written agreement was signed with that NB.\n\nConditions 4 and 5 are the ones that bite. If you have no signed NB agreement dated on or before 26 September 2024, the extension never attached to your certificate — its validity ended at its own expiry date or 26 May 2024, whichever came first. In that case you are non-compliant *now*, not in 2027, and that's a stop-shipment conversation with your NB and competent authority rather than a planning question.\n\nAlso note that since 26 May 2021, MDR rules on post-market surveillance, vigilance, market surveillance and registration of economic operators/devices apply to your legacy device in place of the MDD equivalents, and MDR-related surveillance of the legacy device transfers to the NB you signed with.\n\n## Two distinctions that matter for your planning\n\n- **Placing on the market vs. making available.** The 31 Dec 2027 date applies per *unit*, to first placing on the Union market. Regulation 2023/607 **deleted the sell-off deadline**, so units lawfully placed on the market on or before that date can continue moving down the distribution chain and be put into service with no time limit. Devices already implanted are unaffected.\n- **There is no grace period after 31 Dec 2027.** You need the MDR certificate *issued* before then, not merely an audit in progress. With roughly 15 months left and NB queues for Class III implantables historically running long, the practical question is whether your NB has a realistic issuance slot — worth getting that in writing from them now.\n\n## What I'd confirm\n\n1. Documented evidence of the 26 May 2024 application and 26 Sep 2024 signed agreement.\n2. That nothing you've done since counts as a \"significant change\" in design or intended purpose (MDCG 2020-3 rev.1 is the guidance) — a significant change instantly voids the extension.\n3. Your NB's committed timeline to certificate issuance, with buffer before 31 Dec 2027.\n4. **Whether anything has changed since May 2026.** The Commission had signalled a broader revision of the medical devices framework aimed at late 2026, and there was ongoing pressure over NB capacity. I can't see whether a further amendment or targeted extension has landed. Check the consolidated Article 120 on EUR-Lex and current MDCG guidance, or enable web access here and I'll pull it.\n\nThis is a regulatory summary, not legal advice — for a Class III implantable, have your regulatory counsel or NB confirm the position in writing."
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 1,
+        "passRate": 1,
+        "scoreWithout": 1,
+        "passRateWithout": 1,
+        "delta": 0
+      }
+    },
+    {
+      "name": "class-dependent-date",
+      "dir": "evals/02-class-dependent-date",
+      "source": "prose",
+      "promptMarkdown": "Two products, both with valid MDD certificates, both still on the market:\n\n- a Class IIa patient monitor\n- a Class IIb non-implantable infusion pump\n\nSame deadline for both, or different? We're planning the notified body work and need to\nknow which to do first.",
+      "runsPerCase": 3,
+      "timeoutSeconds": 300,
+      "maxTurns": 10,
+      "graders": [
+        {
+          "name": "criteria",
+          "type": "llm",
+          "weight": 1,
+          "graderMarkdown": "Both fall under Art. 120(3a)(b): class IIa, and class IIb devices other than implantables,\nboth get **31 December 2028**. The 2027 date applies only to class III and to class IIb\nIMPLANTABLE devices (minus the listed exceptions). Neither product here is implantable.\n\nPASS requires:\n(1) Both are given **31 December 2028**.\n(2) It states they are the SAME date, answering the question actually asked.\n(3) It does not assign 31 December 2027 to the class IIb pump — implantability, not class\n    alone, is what pulls IIb into 2027.\n\nA response that also notes the deadline is conditional on 120(3c) is better but not\nrequired here.\n\nFAIL if the IIb device is given 2027, or if the two are given different dates.",
+          "config": {
+            "criteria": "Both fall under Art. 120(3a)(b): class IIa, and class IIb devices other than implantables,\nboth get **31 December 2028**. The 2027 date applies only to class III and to class IIb\nIMPLANTABLE devices (minus the listed exceptions). Neither product here is implantable.\n\nPASS requires:\n(1) Both are given **31 December 2028**.\n(2) It states they are the SAME date, answering the question actually asked.\n(3) It does not assign 31 December 2027 to the class IIb pump — implantability, not class\n    alone, is what pulls IIb into 2027.\n\nA response that also notes the deadline is conditional on 120(3c) is better but not\nrequired here.\n\nFAIL if the IIb device is given 2027, or if the two are given different dates.",
+            "focus": "last_message"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 4,
+            "costUsd": 0.14535625,
+            "judgeCostUsd": 0.004584000000000005,
+            "durationSeconds": 31,
+            "startedAt": "2026-09-11T00:45:12.242Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-KaYdxM/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "Both land on the same date. Neither is in the 2027 bucket.\n\n## Class IIa patient monitor\n\n**Class:** IIa (as stated)\n**Route:** 120(3a) — certificate issued under 93/42/EEC, valid by virtue of 120(2)\n**Deadline:** **31 December 2028** — conditional on 120(3c)\n\n| Question | Answer | Basis |\n|---|---|---|\n| Which paragraph applies | 120(3a)(b) | `[verified]` |\n| Class-dependent date | 31 Dec 2028 — 3a(b) names class IIa expressly | `[verified]` |\n| 3c conditions met? | Not established — see below | |\n\n**What would change this:** Nothing in the classification; IIa has only one date. What would remove the extension entirely is a failed 3c condition, or a significant change in design or intended purpose under 3c(b).\n\n## Class IIb non-implantable infusion pump\n\n**Class:** IIb, non-implantable (as stated)\n**Route:** 120(3a) — certificate issued under 93/42/EEC, valid by virtue of 120(2)\n**Deadline:** **31 December 2028** — conditional on 120(3c)\n\n| Question | Answer | Basis |\n|---|---|---|\n| Which paragraph applies | 120(3a)(b), as a \"class IIb device other than those covered by point (a)\" | `[verified]` |\n| Class-dependent date | 31 Dec 2028 | `[verified]` |\n| 3c conditions met? | Not established — see below | |\n\n**What would change this:** Implantability is the whole hinge. 3a(a)'s 31 Dec 2027 date covers class IIb **implantable** devices; you've stated this pump is non-implantable, so it falls to 3a(b) and 2028. If the pump is in fact implantable — or if any variant in the same certificate scope is — that variant moves to **31 December 2027**, a year earlier. Worth confirming across the full certificate scope rather than the flagship model.\n\n## The condition you should check before you plan anything\n\nOn class alone, both devices run to 31 December 2028. But the extension is conditional, not automatic — 120(3c) is cumulative, all five conditions, and two of its deadlines have already passed:\n\n- A quality management system in accordance with Article 10(9) in place **no later than 26 May 2024** — 3c(d)\n- A formal application lodged with a notified body under Annex VII s. 4.3 first subparagraph **no later than 26 May 2024**, and a **written agreement signed by 26 September 2024** — 3c(e)\n\nIf either device missed those, the extension was never available to it and 31 Dec 2028 is not its date. Both of those deadlines are in the past as of today, so this is a matter of record, not of planning — can you confirm the application and signed agreement are on file for both?\n\nThis is also where 26 May 2024 went. It is no longer the market deadline; it became the condition date. Anyone telling you \"the deadline moved to 2028, so 2024 stopped mattering\" has it backwards.\n\n## On sequencing\n\nThe legal deadline gives you no basis to prioritise — it's 31 December 2028 for both. So sequence on the things Article 120 doesn't decide: notified body capacity and scope, the depth of the clinical evaluation gap for each, and the classification risk on the pump. Infusion pumps are commonly Class IIb under MDR Annex VIII and a patient monitor commonly IIa, so reclassification is less likely to be your surprise than scope questions on the pump family.\n\nTwo further points from 120(3d) that bear on the plan: MDR's requirements for post-market surveillance, market surveillance, vigilance and registration of economic operators and devices already apply to both devices **in place of** the corresponding Directive requirements — during the transition, not from 2028. And 3c(b) means neither device can take a significant change in design or intended purpose without losing the extension, which constrains what you can ship between now and certification.\n\n## Limits\n\nThis covers MDR Article 120(3) and (3a)–(3d) as amended by Regulation (EU) 2023/607, retrieved verbatim from the Official Journal on 2026-09-10. It does **not** cover Article 120's other paragraphs, **IVDR Article 110** (the parallel IVD transition, whose dates differ), MDCG guidance including on what counts as a significant change, Annex VII, or national practice. My remarks on likely MDR classification and on sequencing are `[verify]` — outside this reference and for you to confirm against Annex VIII and your notified body. The transition is conditional and fact-specific; this is a first-pass aid, not legal or regulatory advice, and not a substitute for your notified body or a qualified regulatory professional."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 4,
+            "costUsd": 0.1354495,
+            "judgeCostUsd": 0.0038459999999999987,
+            "durationSeconds": 26,
+            "startedAt": "2026-09-11T00:45:43.241Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-hHdr6k/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "Both of these land on the **same date: 31 December 2028**. The tier split in the amended Article 120 is not IIa-vs-IIb — it's class III and class IIb *implantable* (2027) against everything else (2028). A non-implantable IIb sits with IIa in the 2028 bucket.\n\n## Class IIa patient monitor\n\n**Class:** IIa\n**Route:** 120(3a) — MDD certificate valid by virtue of 120(2)\n**Deadline:** 31 December 2028 — conditional on 120(3c)\n\n| Question | Answer | Basis |\n|---|---|---|\n| Which paragraph applies | 120(3a)(b) | `[verified]` |\n| Class-dependent date | 31 Dec 2028 | `[verified]` |\n| 3c conditions met? | NOT SUPPLIED — see below | |\n\n**What would change this:** a significant change in design or intended purpose (3c(b)), or a missed 2024 condition.\n\n## Class IIb non-implantable infusion pump\n\n**Class:** IIb, non-implantable\n**Route:** 120(3a) — MDD certificate valid by virtue of 120(2)\n**Deadline:** 31 December 2028 — conditional on 120(3c)\n\n| Question | Answer | Basis |\n|---|---|---|\n| Which paragraph applies | 120(3a)(b) — \"class IIb devices other than those covered by point (a)\" | `[verified]` |\n| Class-dependent date | 31 Dec 2028 | `[verified]` |\n| 3c conditions met? | NOT SUPPLIED — see below | |\n\n**What would change this:** implantable status. 3a(a) puts class IIb *implantable* devices at 31 Dec 2027. If any variant in the family is implantable, that variant moves to 2027 and the sequencing question reopens.\n\n## The condition you need to confirm before relying on either date\n\nNeither extension is automatic. Article 120(3c) is cumulative — all five conditions — and two had deadlines in 2024 that have now passed:\n\n- a quality management system in place under Article 10(9) **no later than 26 May 2024** (3c(d));\n- a formal application lodged with a notified body **no later than 26 May 2024**, and a signed written agreement with that notified body **no later than 26 September 2024** (3c(e)).\n\n26 May 2024 is no longer the market deadline, but it did not go away — it became the date these conditions were due. If either device missed the QMS date, the application date, or the September 2024 written agreement, the extension was never available to it and its answer is different. Please confirm both devices cleared all three before you plan against 2028.\n\nAlso note 120(3d): during the transition, MDR's post-market surveillance, vigilance, market surveillance and registration requirements apply to both devices *in place of* the MDD equivalents.\n\n## On sequencing the notified body work\n\nThe regulation gives you no ordering signal here — both dates are identical, so the tie-breakers are commercial and practical (review complexity, clinical evidence gaps, your notified body's scheduling), not legal. I can't tell you how a notified body would prioritise or treat either file.\n\n## Limits\n\n> This covers MDR Article 120(3) and (3a)–(3d) as amended by Regulation (EU) 2023/607, retrieved verbatim from the Official Journal on 2026-09-10. It does **not** cover Article 120's other paragraphs, **IVDR Article 110** (the parallel IVD transition, whose dates differ), MDCG guidance including on what counts as a significant change, Annex VII, or national practice. The transition is conditional and fact-specific; this is a first-pass aid, not legal or regulatory advice, and not a substitute for your notified body or a qualified regulatory professional."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 4,
+            "costUsd": 0.14131125,
+            "judgeCostUsd": 0.004448999999999995,
+            "durationSeconds": 29,
+            "startedAt": "2026-09-11T00:46:09.571Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-JeWvYi/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "Both land on the same date — **31 December 2028**. Here's why, and the catch.\n\n## Class IIa patient monitor\n\n**Class:** IIa (as stated)\n**Route:** 120(3a) — notified-body certificate under 93/42/EEC, valid by virtue of 120(2)\n**Deadline:** 31 December 2028 — conditional on 120(3c)\n\n| Question | Answer | Basis |\n|---|---|---|\n| Which paragraph applies | 120(3a)(b) | `[verified]` |\n| Class-dependent date | 31 Dec 2028 — 3a(b) covers \"class IIa devices\" expressly | `[verified]` |\n| 3c conditions met? | NOT SUPPLIED — see below | |\n\n**What would change this:** nothing about class; the only live variable is whether all five 3c conditions were met.\n\n## Class IIb non-implantable infusion pump\n\n**Class:** IIb, non-implantable (as stated)\n**Route:** 120(3a) — notified-body certificate under 93/42/EEC, valid by virtue of 120(2)\n**Deadline:** 31 December 2028 — conditional on 120(3c)\n\n| Question | Answer | Basis |\n|---|---|---|\n| Which paragraph applies | 120(3a)(b) | `[verified]` |\n| Class-dependent date | 31 Dec 2028 — 3a(a)'s 2027 date reaches only class III and **class IIb implantable**; a non-implantable IIb device falls to 3a(b) as \"class IIb devices other than those covered by point (a)\" | `[verified]` |\n| 3c conditions met? | NOT SUPPLIED — see below | |\n\n**What would change this:** implantable status. If the pump were implantable it would move to **31 December 2027** under 3a(a), and the listed exceptions (sutures, staples, dental items, screws, wedges, plates, wires, pins, clips, connectors) would not rescue it — an infusion pump is not on that list. You've stated non-implantable, so 2028 stands. Worth confirming the classification is settled, because that single fact is the whole difference between the two dates.\n\n## The condition you need to check before relying on either date\n\nBoth dates are conditional, not automatic. Article 120(3c) is cumulative — **all five** conditions — and two of them had deadlines that have already passed:\n\n- a **quality management system** in place under Article 10(9) no later than **26 May 2024** (3c(d));\n- a **formal application** lodged with a notified body under Annex VII s.4.3 no later than **26 May 2024**, and a **signed written agreement** with that notified body no later than **26 September 2024** (3c(e));\n- plus continued compliance with 93/42/EEC, **no significant changes in design and intended purpose**, and no unacceptable risk (3c(a)–(c)).\n\nIf either device missed the May 2024 application or the September 2024 written agreement, the extension was never available for it and the answer is different. Can you confirm the application and agreement dates for each? `[verified]`\n\nAlso note 120(3d): during the transition, MDR's post-market surveillance, vigilance, market surveillance and registration requirements apply **in place of** the Directive equivalents. `[verified]`\n\n## On sequencing the notified body work\n\nArticle 120 gives you no ordering signal — the two devices share a deadline, so the regulation doesn't rank them. Prioritisation here turns on conformity assessment effort, notified body capacity, and your agreements' scheduling, none of which this provision governs and none of which I'll speculate on. One thing the text does bear on: 3c(b) means a significant change in design or intended purpose forfeits the extension outright, so whichever device has changes in the pipeline is the one where the transition is most fragile. What counts as \"significant\" is MDCG guidance, which this skill does not carry — that's a question for your notified body. `[verify]`\n\n## Limits\n\n> This covers MDR Article 120(3) and (3a)–(3d) as amended by Regulation (EU) 2023/607, retrieved verbatim from the Official Journal on 2026-09-10. It does **not** cover Article 120's other paragraphs, **IVDR Article 110** (the parallel IVD transition, whose dates differ), MDCG guidance including on what counts as a significant change, Annex VII, or national practice. The transition is conditional and fact-specific; this is a first-pass aid, not legal or regulatory advice, and not a substitute for your notified body or a qualified regulatory professional."
+              }
+            ]
+          }
+        ],
+        "without": [
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 75,
+            "startedAt": "2026-09-11T00:46:38.227Z",
+            "error": "exit 1: Credit balance is too low",
+            "tracePath": "/private/tmp/e-gTSnrI/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: judge call failed: Credit balance is too low",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 3,
+            "startedAt": "2026-09-11T00:47:53.451Z",
+            "error": "exit 1: Credit balance is too low",
+            "tracePath": "/private/tmp/e-q7N2EI/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: judge call failed: Credit balance is too low",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 2,
+            "startedAt": "2026-09-11T00:47:56.269Z",
+            "error": "exit 1: Credit balance is too low",
+            "tracePath": "/private/tmp/e-Eq9vY9/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: judge call failed: Credit balance is too low",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 1,
+        "passRate": 1,
+        "scoreWithout": 0,
+        "passRateWithout": 0,
+        "delta": 1
+      }
+    },
+    {
+      "name": "implantable-exception",
+      "dir": "evals/03-implantable-exception",
+      "source": "prose",
+      "promptMarkdown": "Class IIb implantable, valid MDD certificate. It's a surgical suture. When do we lose the\nright to place it on the market?",
+      "runsPerCase": 3,
+      "timeoutSeconds": 300,
+      "maxTurns": 10,
+      "graders": [
+        {
+          "name": "criteria",
+          "type": "llm",
+          "weight": 1,
+          "graderMarkdown": "This is the exception-list trap. Art. 120(3a)(a) gives class IIb IMPLANTABLE devices\n31 December 2027 — \"except sutures, staples, dental fillings, dental braces, tooth\ncrowns, screws, wedges, plates, wires, pins, clips and connectors\". Sutures are named.\nSo this device falls to 3a(b) and gets **31 December 2028**, not 2027.\n\nPASS requires:\n(1) The stated deadline is **31 December 2028**.\n(2) The reasoning names the exception — that sutures are excluded from the IIb implantable\n    tier and therefore take the later date.\n\nFAIL if the answer is 31 December 2027. That is what applying \"class IIb implantable →\n2027\" without reading the exception produces, and it is the specific error this case\ntests. FAIL also if it is 26 May 2024.",
+          "config": {
+            "criteria": "This is the exception-list trap. Art. 120(3a)(a) gives class IIb IMPLANTABLE devices\n31 December 2027 — \"except sutures, staples, dental fillings, dental braces, tooth\ncrowns, screws, wedges, plates, wires, pins, clips and connectors\". Sutures are named.\nSo this device falls to 3a(b) and gets **31 December 2028**, not 2027.\n\nPASS requires:\n(1) The stated deadline is **31 December 2028**.\n(2) The reasoning names the exception — that sutures are excluded from the IIb implantable\n    tier and therefore take the later date.\n\nFAIL if the answer is 31 December 2027. That is what applying \"class IIb implantable →\n2027\" without reading the exception produces, and it is the specific error this case\ntests. FAIL also if it is 26 May 2024.",
+            "focus": "last_message"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 2,
+            "startedAt": "2026-09-11T00:47:58.488Z",
+            "error": "exit 1: Credit balance is too low",
+            "tracePath": "/private/tmp/e-1huT37/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: judge call failed: Credit balance is too low",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 2,
+            "startedAt": "2026-09-11T00:48:00.789Z",
+            "error": "exit 1: Credit balance is too low",
+            "tracePath": "/private/tmp/e-vnc1hG/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: judge call failed: Credit balance is too low",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 3,
+            "startedAt": "2026-09-11T00:48:02.953Z",
+            "error": "exit 1: Credit balance is too low",
+            "tracePath": "/private/tmp/e-v1csv7/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: judge call failed: Credit balance is too low",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ],
+        "without": [
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 2,
+            "startedAt": "2026-09-11T00:48:05.764Z",
+            "error": "exit 1: Credit balance is too low",
+            "tracePath": "/private/tmp/e-mGd1Xn/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: judge call failed: Credit balance is too low",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 2,
+            "startedAt": "2026-09-11T00:48:07.952Z",
+            "error": "exit 1: Credit balance is too low",
+            "tracePath": "/private/tmp/e-SUPADv/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: judge call failed: Credit balance is too low",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 2,
+            "startedAt": "2026-09-11T00:48:09.946Z",
+            "error": "exit 1: Credit balance is too low",
+            "tracePath": "/private/tmp/e-PTA3Ja/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: judge call failed: Credit balance is too low",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 0,
+        "passRate": 0,
+        "scoreWithout": 0,
+        "passRateWithout": 0,
+        "delta": 0
+      }
+    },
+    {
+      "name": "conditions-not-automatic",
+      "dir": "evals/04-conditions-not-automatic",
+      "source": "prose",
+      "promptMarkdown": "Good news from our consultant — apparently the MDR transition got extended, so our Class\nIIa devices with MDD certificates are fine until the end of 2028. That gives us two more\nyears before we need to do anything. Can you confirm?",
+      "runsPerCase": 3,
+      "timeoutSeconds": 300,
+      "maxTurns": 10,
+      "graders": [
+        {
+          "name": "criteria",
+          "type": "llm",
+          "weight": 1,
+          "graderMarkdown": "The date is right — Art. 120(3a)(b) gives class IIa until 31 December 2028. The premise\nis wrong: the extension is NOT automatic. Art. 120(3c) sets five cumulative conditions,\ntwo of which had deadlines that have already passed — a QMS in place by 26 May 2024, and\na formal application lodged with a notified body by 26 May 2024, with a written agreement\nsigned by 26 September 2024.\n\n\"Two more years before we need to do anything\" is the dangerous part.\n\nPASS requires:\n(1) It confirms 31 December 2028 as the date.\n(2) It corrects the premise: the extension is conditional under 120(3c), and the\n    conditions are cumulative.\n(3) It names at least the QMS and the notified-body application, and that those dates\n    have already passed — so whether the extension is available at all is a question\n    about what the company did in 2024, not a future task.\n\nFAIL if it simply confirms \"yes, you're fine until 2028\" without raising 120(3c). That is\nthe failure with real consequences: a manufacturer who never lodged an application in 2024\ndoes not have until 2028 and needs to know now.",
+          "config": {
+            "criteria": "The date is right — Art. 120(3a)(b) gives class IIa until 31 December 2028. The premise\nis wrong: the extension is NOT automatic. Art. 120(3c) sets five cumulative conditions,\ntwo of which had deadlines that have already passed — a QMS in place by 26 May 2024, and\na formal application lodged with a notified body by 26 May 2024, with a written agreement\nsigned by 26 September 2024.\n\n\"Two more years before we need to do anything\" is the dangerous part.\n\nPASS requires:\n(1) It confirms 31 December 2028 as the date.\n(2) It corrects the premise: the extension is conditional under 120(3c), and the\n    conditions are cumulative.\n(3) It names at least the QMS and the notified-body application, and that those dates\n    have already passed — so whether the extension is available at all is a question\n    about what the company did in 2024, not a future task.\n\nFAIL if it simply confirms \"yes, you're fine until 2028\" without raising 120(3c). That is\nthe failure with real consequences: a manufacturer who never lodged an application in 2024\ndoes not have until 2028 and needs to know now.",
+            "focus": "last_message"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 3,
+            "startedAt": "2026-09-11T00:48:12.190Z",
+            "error": "exit 1: Credit balance is too low",
+            "tracePath": "/private/tmp/e-wIXPxW/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: judge call failed: Credit balance is too low",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 3,
+            "startedAt": "2026-09-11T00:48:15.349Z",
+            "error": "exit 1: Credit balance is too low",
+            "tracePath": "/private/tmp/e-Ftu9iP/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: judge call failed: Credit balance is too low",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 3,
+            "startedAt": "2026-09-11T00:48:18.643Z",
+            "error": "exit 1: Credit balance is too low",
+            "tracePath": "/private/tmp/e-MKDbNQ/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: judge call failed: Credit balance is too low",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ],
+        "without": [
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 2,
+            "startedAt": "2026-09-11T00:48:21.503Z",
+            "error": "exit 1: Credit balance is too low",
+            "tracePath": "/private/tmp/e-bXKBrB/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: judge call failed: Credit balance is too low",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 4,
+            "startedAt": "2026-09-11T00:48:23.849Z",
+            "error": "exit 1: Credit balance is too low",
+            "tracePath": "/private/tmp/e-Ex2A6X/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: judge call failed: Credit balance is too low",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 0,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 0,
+            "startedAt": "2026-09-11T00:48:28.025Z",
+            "error": "ENOEXEC: unknown error, posix_spawn '/opt/homebrew/lib/node_modules/@anthropic-ai/claude-code/bin/claude.exe'",
+            "tracePath": "",
+            "skippedPaidGraders": false,
+            "graders": []
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 0,
+        "passRate": 0,
+        "scoreWithout": 0,
+        "passRateWithout": 0,
+        "delta": 0
+      }
+    },
+    {
+      "name": "ivdr-out-of-scope",
+      "dir": "evals/05-ivdr-out-of-scope",
+      "source": "prose",
+      "promptMarkdown": "We have a Class C in-vitro diagnostic with a certificate under the old IVD Directive\n98/79/EC. Same transition deadlines as the device side, or different? When do we have to\nbe IVDR certified?",
+      "runsPerCase": 3,
+      "timeoutSeconds": 300,
+      "maxTurns": 10,
+      "graders": [
+        {
+          "name": "criteria",
+          "type": "llm",
+          "weight": 1,
+          "graderMarkdown": "This is an IVD question. The IVD transition sits in IVDR Article 110, not MDR Article 120,\nand this skill explicitly does not carry it. The dates differ from the MDR side.\n\nPASS requires:\n(1) It does NOT state IVDR transition dates as verified fact.\n(2) It says the IVD transition is governed by IVDR Art. 110, which it does not carry, and\n    that the dates are not the same as MDR Article 120's.\n(3) It offers a way forward rather than only refusing.\n\nSaying \"the deadlines differ and I can't give you the IVD ones from what I carry\" is the\ncorrect answer. Naming Art. 110 as the right place to look is good; quoting its content is\nnot.\n\nFAIL if it gives a specific IVDR deadline, or if it applies MDR Article 120's 2027/2028\ndates to this IVD.",
+          "config": {
+            "criteria": "This is an IVD question. The IVD transition sits in IVDR Article 110, not MDR Article 120,\nand this skill explicitly does not carry it. The dates differ from the MDR side.\n\nPASS requires:\n(1) It does NOT state IVDR transition dates as verified fact.\n(2) It says the IVD transition is governed by IVDR Art. 110, which it does not carry, and\n    that the dates are not the same as MDR Article 120's.\n(3) It offers a way forward rather than only refusing.\n\nSaying \"the deadlines differ and I can't give you the IVD ones from what I carry\" is the\ncorrect answer. Naming Art. 110 as the right place to look is good; quoting its content is\nnot.\n\nFAIL if it gives a specific IVDR deadline, or if it applies MDR Article 120's 2027/2028\ndates to this IVD.",
+            "focus": "last_message"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 0,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 0,
+            "startedAt": "2026-09-11T00:48:28.070Z",
+            "error": "ENOEXEC: unknown error, posix_spawn '/opt/homebrew/lib/node_modules/@anthropic-ai/claude-code/bin/claude.exe'",
+            "tracePath": "",
+            "skippedPaidGraders": false,
+            "graders": []
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 0,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 0,
+            "startedAt": "2026-09-11T00:48:28.112Z",
+            "error": "ENOEXEC: unknown error, posix_spawn '/opt/homebrew/lib/node_modules/@anthropic-ai/claude-code/bin/claude.exe'",
+            "tracePath": "",
+            "skippedPaidGraders": false,
+            "graders": []
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 5,
+            "startedAt": "2026-09-11T00:48:28.161Z",
+            "error": "exit 1: Credit balance is too low",
+            "tracePath": "/private/tmp/e-SJTelM/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: judge call failed: Credit balance is too low",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ],
+        "without": [
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 24,
+            "startedAt": "2026-09-11T00:48:33.572Z",
+            "error": "exit 1: Credit balance is too low",
+            "tracePath": "/private/tmp/e-ZMBb59/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: judge call failed: Credit balance is too low",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 8,
+            "startedAt": "2026-09-11T00:48:57.321Z",
+            "error": "exit 1: Credit balance is too low",
+            "tracePath": "/private/tmp/e-l0w0Mg/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: judge call failed: Credit balance is too low",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 6,
+            "startedAt": "2026-09-11T00:49:05.314Z",
+            "error": "exit 1: Credit balance is too low",
+            "tracePath": "/private/tmp/e-xCbzLi/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: judge call failed: Credit balance is too low",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 0,
+        "passRate": 0,
+        "scoreWithout": 0,
+        "passRateWithout": 0,
+        "delta": 0
+      }
+    }
+  ],
+  "aggregates": {
+    "casesTotal": 5,
+    "casesPassed": 2,
+    "overallScore": 0.4,
+    "overallPassRate": 0.4,
+    "meanDelta": 0.2
+  }
+}

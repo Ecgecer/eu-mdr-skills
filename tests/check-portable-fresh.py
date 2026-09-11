@@ -110,4 +110,18 @@ print(rb.stdout.rstrip())
 if rb.returncode:
     failed = 1
 
+# 6. the published eval tables match the runs they claim to report
+#
+# The tables said "generated ... do not hand-edit" and were pasted by hand anyway, so
+# three drifted from their own stored evidence: mpdg-germany published +0.47 against a
+# stored +0.60, scope-statement +0.22 against +0.11, and two cases where the skill
+# measured NEGATIVE were published as +0.00. This also enforces the staleness banner,
+# which report-evals.py splices into the same region when a skill was edited after the
+# runs it is reporting -- so a reader of the table learns it describes older text.
+rt = subprocess.run([sys.executable, str(ROOT / "scripts" / "report-evals.py"),
+                     "--check-tables"], capture_output=True, text=True)
+print(rt.stdout.rstrip())
+if rt.returncode:
+    failed = 1
+
 sys.exit(failed)

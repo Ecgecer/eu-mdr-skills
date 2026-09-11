@@ -30,6 +30,7 @@ from collections import defaultdict
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
+MIN_VALID_RUNS = 3      # "three runs per case -- single runs are not evidence"
 
 def plugins():
     """Discovered, not listed -- a hardcoded list goes stale the day a skill is added."""
@@ -88,6 +89,55 @@ def do_stamp(names=None, force=False):
         print(f"  stamped {pl} -> {res}")
     return bad
 
+START, END = "<!-- report-evals:start -->", "<!-- report-evals:end -->"
+
+def readme_path(plugin):
+    return ROOT / plugin / "evals" / "README.md"
+
+def splice(plugin):
+    """Return the eval README with its generated region replaced, or None if unmarked.
+
+    The tables said "generated ... do not hand-edit" and were then pasted by hand, so
+    three of them drifted from the runs they claimed to report -- mpdg-germany published
+    +0.47 against a stored +0.60, scope-statement +0.22 against +0.11. Generated now
+    means generated.
+    """
+    f = readme_path(plugin)
+    if not f.exists():
+        return None
+    txt = f.read_text()
+    if START not in txt or END not in txt:
+        return None
+    head, rest = txt.split(START, 1)
+    _, tail = rest.split(END, 1)
+    return f"{head}{START}\n{table(plugin).rstrip()}\n{END}{tail}"
+
+def do_write():
+    for pl in plugins():
+        new = splice(pl)
+        if new is None:
+            print(f"  {pl}: no markers in evals/README.md, skipped"); continue
+        f = readme_path(pl)
+        if f.read_text() == new:
+            print(f"  {pl}: already current")
+        else:
+            f.write_text(new); print(f"  {pl}: table rewritten from stored runs")
+    return 0
+
+def do_check_tables():
+    bad = 0
+    for pl in plugins():
+        new = splice(pl)
+        if new is None:
+            print(f"  {pl}: evals/README.md has no generation markers"); bad = 1; continue
+        if readme_path(pl).read_text() != new:
+            print(f"  {pl}: published table does not match the stored runs it cites.")
+            print(f"    Run `python3 scripts/report-evals.py --write`.")
+            bad = 1
+        else:
+            print(f"  {pl}: published table matches the stored runs")
+    return bad
+
 def do_check():
     bad = 0
     for pl in plugins():
@@ -121,18 +171,40 @@ def load(plugin):
                 ok = [r for r in rs if not r.get("error")]
                 rec["arms"][a] = {
                     "n": len(rs), "errored": len(rs) - len(ok),
-                    "score": (sum(r.get("score", 0) for r in ok) / len(ok)) if ok else None,
+                    # An arm needs MIN_VALID_RUNS surviving runs to report a score.
+                    # Averaging whatever survived published mpdg-germany's fsn-language
+                    # as +1.00 off a single baseline run, in a repo whose stated rule is
+                    # that single runs are not evidence. Below the threshold the arm is
+                    # unmeasured, which is not the same as zero.
+                    "score": (sum(r.get("score", 0) for r in ok) / len(ok))
+                             if len(ok) >= MIN_VALID_RUNS else None,
                 }
             runs[c["name"]].append(rec)
     return runs
 
 def fmt(v): return "—" if v is None else f"{v:.2f}"
 
+def stale_banner(plugin):
+    """A line in the table itself when the skill text moved after it was measured.
+
+    CI colour is for maintainers. Someone reading the published table needs to know
+    from the table whether it describes the skill they are about to install.
+    """
+    if not newest_results(plugin):
+        return []
+    sp = stamp_path(plugin)
+    if sp.exists() and json.loads(sp.read_text()).get("sha256") == content_hash(plugin):
+        return []
+    return ["> ⚠ **The skill text changed after these runs.** The numbers below describe",
+            "> the earlier text, not what this plugin currently ships. Re-measure with",
+            f"> `claude plugin eval {plugin} --ablation with-without`.", ""]
+
 def table(plugin):
     runs = load(plugin)
     if not runs:
         return f"_No stored eval runs for `{plugin}`._\n"
-    out = ["| Case | with | without | delta | runs | measured |",
+    out = stale_banner(plugin) + [
+           "| Case | with | without | delta | runs | measured |",
            "|---|---|---|---|---|---|"]
     extra = []
     for name in sorted(runs):
@@ -176,6 +248,10 @@ if __name__ == "__main__":
         sys.exit(do_stamp(names or None, force))
     if "--check-stamps" in args:
         sys.exit(do_check())
+    if "--write" in args:
+        sys.exit(do_write())
+    if "--check-tables" in args:
+        sys.exit(do_check_tables())
     names = args or [d.parent.parent.name for d in sorted(ROOT.glob("*/evals/results"))]
     for name in names:
         print(f"\n## {name}\n")

@@ -1,0 +1,1028 @@
+{
+  "schemaVersion": 1,
+  "claudeVersion": "2.1.268",
+  "startedAt": "2026-09-11T00:43:21.876Z",
+  "durationSeconds": 397,
+  "costUsd": 0.7667124999999999,
+  "partial": true,
+  "partialReason": "interrupted",
+  "suite": {
+    "root": "/Users/egecangecer/projects/eu-mdr-skills/mdr-classification",
+    "ablation": "with-without",
+    "threshold": 1,
+    "plugins": [
+      {
+        "name": "mdr-classification",
+        "version": "0.1.0",
+        "path": "/Users/egecangecer/projects/eu-mdr-skills/mdr-classification"
+      }
+    ]
+  },
+  "cases": [
+    {
+      "name": "driving-software-3-3",
+      "dir": "evals/01-driving-software-3-3",
+      "source": "prose",
+      "promptMarkdown": "What MDR class is our software?\n\nIt's a control application that runs on a tablet and sets the infusion rate on our\nown infusion pump. The pump is a Class III device. The app doesn't diagnose anything\n— it just lets the clinician set and adjust the rate, and it shows the current rate.\nIntended purpose: \"to set and adjust the delivery rate of the [X] infusion pump under\nclinician control.\"",
+      "runsPerCase": 3,
+      "timeoutSeconds": 300,
+      "maxTurns": 10,
+      "graders": [
+        {
+          "name": "criteria",
+          "type": "llm",
+          "weight": 1,
+          "graderMarkdown": "Implementing rule 3.3: software which DRIVES a device or influences its use falls\nwithin the SAME CLASS as that device. Rule 11 is not reached. The pump is Class III,\nso the software is Class III.\n\nPASS requires:\n(1) The stated class is **III**.\n(2) The route is via implementing rule **3.3**, identified by number or clearly\n    described as \"same class as the device it drives\".\n(3) It does NOT conclude via Rule 11. Mentioning Rule 11 to explain that 3.3 takes\n    precedence and Rule 11 is therefore not reached is CORRECT and passes. Using a\n    Rule 11 limb to reach the final class is a FAIL.\n\nFAIL if the answer is IIa, IIb, or I. FAIL if it reaches its class through Rule 11\nlimbs rather than 3.3. Setting an infusion rate is the textbook \"drives a device\"\ncase, and skipping 3.3 is the most common classification error for software.",
+          "config": {
+            "criteria": "Implementing rule 3.3: software which DRIVES a device or influences its use falls\nwithin the SAME CLASS as that device. Rule 11 is not reached. The pump is Class III,\nso the software is Class III.\n\nPASS requires:\n(1) The stated class is **III**.\n(2) The route is via implementing rule **3.3**, identified by number or clearly\n    described as \"same class as the device it drives\".\n(3) It does NOT conclude via Rule 11. Mentioning Rule 11 to explain that 3.3 takes\n    precedence and Rule 11 is therefore not reached is CORRECT and passes. Using a\n    Rule 11 limb to reach the final class is a FAIL.\n\nFAIL if the answer is IIa, IIb, or I. FAIL if it reaches its class through Rule 11\nlimbs rather than 3.3. Setting an infusion rate is the textbook \"drives a device\"\ncase, and skipping 3.3 is the most common classification error for software.",
+            "focus": "last_message"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 4,
+            "costUsd": 0.1596665,
+            "judgeCostUsd": 0.004587,
+            "durationSeconds": 52,
+            "startedAt": "2026-09-11T00:43:21.914Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-PI4dVa/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "# MDR Software Classification: tablet infusion-pump control app\n\n**Intended purpose (as stated):** \"to set and adjust the delivery rate of the [X] infusion pump under clinician control.\"\n**Qualified as a device:** not explicitly stated by you — see note below. The analysis below assumes it is.\n\n## Class: III\n\n**Route:** 3.3 → same class as the driven device (the Class III pump). Rule 11 is never reached.\n\n## Reasoning\n\n| Step | Question | Answer | Basis |\n|---|---|---|---|\n| 3.1 | Intended purpose | \"to set and adjust the delivery rate of the [X] infusion pump under clinician control\" | `[verified]` |\n| 3.3 | Drives or influences another device? | **Yes** — it sets the pump's delivery rate. That is driving the pump, not merely displaying its output. | `[verified]` |\n| 3.3 | Which device's class governs? | The [X] infusion pump — **Class III**, as you state it | `[verified]` |\n| Rule 11 | Which limb | **Not reached.** 3.3 disposes of it; the software is not independent. | `[verified]` |\n| Rule 11 | Escalation | n/a | `[verified]` |\n| 3.5 | Could a stricter rule apply? | No — III is the highest class; nothing can raise it further | `[verified]` |\n\nThe \"it doesn't diagnose anything\" point is the trap here. It's true, and it's the reason Rule 11 limb 1 wouldn't bite — but Rule 11 only applies to software that is *independent of any other device*. Yours isn't. 3.3 runs first and assigns the pump's class regardless of what Rule 11 would have said on its own. An app that only *displayed* the current rate would be a different analysis; the moment it sets the rate, it drives.\n\nNote also 3.2: a device intended for use in combination with another is classified separately, and accessories are classified in their own right. That does not rescue you into a lower class — 3.3 is the specific provision for software that drives a device, and it points at the pump's class.\n\n## What would change this\n\n- **The pump's actual class.** Everything rests on it. Class III is your number, not mine; if the pump is in fact IIb, the app is IIb.\n- **Removing rate-setting from the intended purpose.** If the app were display-only — showing the current rate with no ability to set, adjust, gate, or alter pump operation — it would likely be independent under 3.3 and fall to Rule 11. Displaying a therapy parameter is not obviously a diagnostic/therapeutic decision input or physiological monitoring, so that version would plausibly be limb 3, class I. As stated, that is not your product.\n- **\"Under clinician control\" does not lower the class.** A human in the loop doesn't stop the software from driving the pump. It may matter to your risk file and usability engineering; it doesn't change 3.3.\n- **Capability beyond the stated purpose.** If the app can do anything the intended purpose doesn't mention — bolus, alarm handling, limit overrides, remote/unattended adjustment — that's not a classification issue (3.1 anchors to intended purpose), but it is a signal your intended purpose may be understated. Worth checking against your technical documentation.\n\n## Limits\n\n> This classifies software under MDR Annex VIII implementing rules 3.1–3.7 and Rule 11, retrieved verbatim from EUR-Lex on 2026-09-09. It does **not** cover Art. 2(1) qualification, Rules 1–10 or 12–22, Annex XVI, IVDR, MDCG guidance, notified-body practice, or national interpretation. Rule 11 is a floor: under 3.5 a stricter rule this skill does not carry may raise the class. A structured first pass and an audit aid, not legal or regulatory advice, and not a substitute for your notified body or a qualified regulatory professional.\n\nOne prior question I should flag rather than assume away: you haven't told me that the app is qualified as a medical device under Art. 2(1). Classification presumes qualification, and that's a separate analysis this skill doesn't carry. In practice software that sets the delivery rate of a pump is hard to place outside the definition, but confirm it rather than inherit it from me.\n\nThis is the Annex VIII text applied to the intended purpose as you stated it. The class drives your conformity route, whether you need a notified body, and the depth of your technical documentation — so confirm it with your regulatory lead or notified body before you build on it. The three things to put in front of them: **(1)** the 3.3 call that the app drives the pump rather than being independent, **(2)** that this takes Rule 11 off the table entirely, and **(3)** the pump's own classification, since the app's class is entirely derived from it."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 4,
+            "costUsd": 0.153344,
+            "judgeCostUsd": 0.004338000000000001,
+            "durationSeconds": 40,
+            "startedAt": "2026-09-11T00:44:13.543Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-5iWHzj/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "# MDR Software Classification: tablet control application for the [X] infusion pump\n\n**Intended purpose (as stated):** \"to set and adjust the delivery rate of the [X] infusion pump under clinician control.\"\n**Qualified as a device:** not explicitly established — see note below\n\n## Class: III\n\n**Route:** 3.3 → same class as the driven device (the [X] infusion pump, class III). Rule 11 is not reached.\n\n## Reasoning\n\n| Step | Question | Answer | Basis |\n|---|---|---|---|\n| 3.1 | Intended purpose | \"to set and adjust the delivery rate of the [X] infusion pump under clinician control\" | `[verified]` |\n| 3.3 | Drives or influences another device? | **Yes** — setting and adjusting the delivery rate is driving the pump, and on any reading at least influences its use. It therefore \"fall[s] within the same class as the device\": class III | `[verified]` |\n| Rule 11 | Which limb | **Not reached.** 3.3 disposes of it; only *independent* software is classified in its own right | `[verified]` |\n| Rule 11 | Escalation | n/a | `[verified]` |\n| 3.5 | Could a stricter rule apply? | No rule reaches higher than III; III is the top class. The strictest-rule principle cannot move it | `[verified]` |\n\nThe \"it doesn't diagnose anything\" point is a Rule 11 argument, and Rule 11 is never reached here. The absence of a diagnostic or monitoring function would matter only if the software were independent of any other device. It isn't. Under 3.3 the driven device's class governs regardless of what the software itself does.\n\nThe rate display is the part that would be independent if it stood alone — software that merely shows a device's output usually is. But it doesn't stand alone; it is one function of an application whose stated purpose is to set and adjust the rate. Classification runs on the product as one device with one intended purpose.\n\n## What would change this\n\n- **The pump's class.** The entire answer is inherited. If the [X] pump is not in fact class III, the app follows it down.\n- **Splitting the product.** If the display were a genuinely separate device with its own intended purpose, 3.2 would classify it separately and it would very likely land elsewhere. That is a product-architecture and intended-purpose decision, not a classification one — and splitting to obtain a lower class for a component that ships with the controller is the kind of thing a notified body will look at closely.\n- **Nothing about the clinician in the loop.** \"Under clinician control\" does not make the software not drive the pump. It is the software that sets the parameter.\n\n## A note on qualification\n\nYou have not told me the app is qualified as a medical device under Art. 2(1), and that is a separate analysis this skill does not carry. In practice it is hard to see how software whose stated purpose is to set the delivery rate of a class III pump avoids qualification, but I am flagging it rather than asserting it — that is your regulatory lead's call, not mine.\n\n## Limits\n\n> This classifies software under MDR Annex VIII implementing rules 3.1–3.7 and Rule 11, retrieved verbatim from EUR-Lex on 2026-09-09. It does **not** cover Art. 2(1) qualification, Rules 1–10 or 12–22, Annex XVI, IVDR, MDCG guidance, notified-body practice, or national interpretation. Rule 11 is a floor: under 3.5 a stricter rule this skill does not carry may raise the class. A structured first pass and an audit aid, not legal or regulatory advice, and not a substitute for your notified body or a qualified regulatory professional.\n\n---\n\nThis is the Annex VIII text applied to the intended purpose as you stated it. The class drives your conformity route, whether you need a notified body, and the depth of your technical documentation, so confirm it with your regulatory lead or notified body before you build on it. The three things to put in front of them:\n\n1. **The 3.3 call** — that the app drives the pump, so the pump's class governs.\n2. **That Rule 11 is not reached** — and therefore the lack of a diagnostic function carries no weight.\n3. **The class III consequence** — Rule 11 would have been the route to a lower class, and 3.3 closes it. Class III is a materially different conformity route from anything Rule 11 would have produced; if your project has been planned on a Rule 11 assumption, that is worth raising now rather than later."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 4,
+            "costUsd": 0.17476824999999999,
+            "judgeCostUsd": 0.005129999999999999,
+            "durationSeconds": 44,
+            "startedAt": "2026-09-11T00:44:53.904Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-7d4gOH/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "# MDR Software Classification: tablet control app for the [X] infusion pump\n\n**Intended purpose (as stated):** *\"to set and adjust the delivery rate of the [X] infusion pump under clinician control.\"*\n**Qualified as a device:** not established from what you've given — see the note below. Classifying on the assumption that it is.\n\n## Class: III\n\n**Route:** 3.3 → same class as the driven device. Rule 11 is never reached.\n\n## Reasoning\n\n| Step | Question | Answer | Basis |\n|---|---|---|---|\n| 3.1 | Intended purpose | *\"to set and adjust the delivery rate of the [X] infusion pump under clinician control\"* | `[verified]` |\n| 3.3 | Drives or influences another device? | **Yes** — it sets the delivery rate of the [X] pump. That is driving the device, not displaying from it. | `[verified]` |\n| 3.3 | Consequence | Falls within the same class as that device. The [X] pump is Class III → **the app is Class III**. | `[verified]` |\n| Rule 11 | Which limb | **Not reached.** 3.3 disposes of it; the app is not independent software. | `[verified]` |\n| Rule 11 | Escalation | N/A | `[verified]` |\n| 3.5 | Could a stricter rule apply? | **No** — III is the highest class, so nothing can raise it further. | `[verified]` |\n\nThree things worth being explicit about, because they're where this analysis usually goes wrong:\n\n**\"It doesn't diagnose anything\" doesn't help you.** That's a Rule 11 limb-1 argument, and you never get to Rule 11. 3.3 runs first and is unconditional: software that drives a device takes that device's class. The absence of a diagnostic function is irrelevant to it.\n\n**\"Under clinician control\" doesn't help either.** 3.3 has no clinician-in-the-loop exception. The clinician chooses the number; your software is what turns that into a rate the pump delivers. That is driving.\n\n**The display function doesn't split out.** You have one piece of software with one intended purpose, and that purpose includes setting the rate. The read-only \"shows the current rate\" part would, on its own, likely be independent software under 3.3's second paragraph — but it isn't on its own.\n\n## Note on qualification\n\nNothing you've told me settles whether this app is a medical device in its own right under Art. 2(1), and that's a separate analysis this skill doesn't cover `[verify]`. It matters here for a practical reason rather than a doctrinal one: there's a real question whether the app is a **device in its own right / an accessory** being classified separately, or a **component or part of the [X] pump itself** — software you place on a tablet but that is part of the pump's own conformity assessment and technical documentation. Either way it lands in Class III territory, so the class answer doesn't move. What moves is whether you need a separate Class III conformity assessment and technical file for the app, or whether it's covered inside the pump's. That's the more expensive question and it's the one I'd put to your regulatory lead first.\n\n## What would change this\n\n- **The pump's class being something other than III.** 3.3 is a pointer — whatever the pump is, the app is. If the [X] pump's Class III designation is itself uncertain, that uncertainty passes straight through.\n- **The app genuinely not setting the rate.** If a future version only displayed pump status and had no write path to the device, it would be independent under 3.3 and would go to Rule 11 — and a pure display of a rate the pump already determined would plausibly land much lower. The moment it writes a setting, you're back to III.\n- **A narrower intended purpose that still includes rate-setting.** Won't help. Any wording that leaves the app setting the rate keeps 3.3 engaged.\n- **Nothing about the risk of a wrong rate.** People reach for this — *\"a wrong rate could kill someone, so III\"* — and arrive at the right answer by the wrong route. The escalation language about death and irreversible deterioration lives in Rule 11 limb 1, which you never reach. Your III comes from 3.3 alone. Worth getting right, because the reasoning goes in your technical documentation, not just the class.\n\n---\n\nThis is the Annex VIII text applied to the intended purpose as you stated it. The class drives your conformity route, whether you need a notified body, and the depth of your technical documentation, so it should be confirmed by your regulatory lead or notified body before you build on it. The three things to put in front of them: **the 3.3 call** (that setting the rate is driving the pump, so the pump's class governs), **that Rule 11 is therefore not reached at all**, and **whether the app is a device/accessory in its own right or a part of the pump** — which decides whether it needs its own Class III conformity assessment.\n\n> This classifies software under MDR Annex VIII implementing rules 3.1–3.7 and Rule 11, retrieved verbatim from EUR-Lex on 2026-09-09. It does **not** cover Art. 2(1) qualification, Rules 1–10 or 12–22, Annex XVI, IVDR, MDCG guidance, notified-body practice, or national interpretation. Rule 11 is a floor: under 3.5 a stricter rule this skill does not carry may raise the class. A structured first pass and an audit aid, not legal or regulatory advice, and not a substitute for your notified body or a qualified regulatory professional."
+              }
+            ]
+          }
+        ],
+        "without": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 3,
+            "costUsd": 0.1928945,
+            "judgeCostUsd": 0.004106999999999998,
+            "durationSeconds": 79,
+            "startedAt": "2026-09-11T00:45:37.649Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-JWOywI/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "## Class III.\n\n**The rule you land on is Annex VIII, Chapter II, Implementing Rule 3.3**, not Rule 11:\n\n> \"Software, which drives a device or influences the use of a device, shall fall within the same class as the device. If the software is independent of any other device, it shall be classified in its own right.\"\n\nSetting the delivery rate is the textbook case of *driving* a device. Your app is not independent of another device, so you never reach Rule 11 — the app inherits the pump's class. Class III pump → Class III app.\n\n**The \"it doesn't diagnose\" argument doesn't rescue you.** That's an argument about Rule 11, and Rule 11 isn't the rule that applies. Even if it were: Rule 11's first limb puts software providing information used for *therapeutic* decisions in Class III where a wrong decision could cause death or irreversible deterioration — a wrong infusion rate qualifies. Both paths land in the same place.\n\n\"Under clinician control\" doesn't lower it either. The clinician sets an intent; they cannot independently verify the pump received and is executing that rate. There's no meaningful barrier between a software fault and the patient, which is exactly why 3.3 is written mechanically.\n\nMDCG 2019-11 is the guidance to cite if you need to defend this in a design review or to a notified body.\n\n## The question that actually matters\n\nNot *what class* — that's settled — but **whether this is a separate device at all**:\n\n1. **Component of the pump system.** If you place it on the market as part of the pump (same CE certificate, covered by the pump's technical documentation and IFU, not separately obtainable), there's no separate classification. It's Class III software inside a Class III device, and it needs its full IEC 62304 lifecycle record *within* the pump's file.\n2. **Placed on the market separately.** Own SKU, app-store distribution, independent release cadence, or usable across several pump models → it's a device/accessory in its own right: separate technical documentation, its own Basic UDI-DI and UDI-DIs, its own conformity assessment. Still Class III via 3.3.\n\nTeams get caught out here by distribution channel. Shipping through a public app store, or updating the app independently of pump firmware releases, generally means separate placing on the market — and a separate regulatory object you may not have budgeted for.\n\n## What Class III actually costs you\n\n- **Annex IX** conformity assessment: QMS audit *plus* technical documentation assessment — and for Class III the NB assesses the tech doc for every device, no sampling.\n- **SSCP** (Summary of Safety and Clinical Performance) is mandatory; annual PSUR; PMCF plan and reports.\n- **Clinical evaluation** with a Class III expectation of clinical investigation data unless you can hold an equivalence or Article 61(4)-(6) argument.\n- **IEC 62304 software safety Class C** almost certainly — the hazard is over-infusion leading to death, and a tablet app has no independent hardware mitigation you can claim. That means architectural design, detailed design, and unit-level verification records, plus disciplined SOUP management (your OS, UI framework, BLE/network stack).\n- **The tablet is off-the-shelf hardware you don't control.** Annex I 17.3/17.4 requires you to specify minimum hardware, IT-network, and security characteristics. Decide now whether you supply a locked-down tablet as part of the device or specify a platform and validate against it — OS auto-updates are the recurring pain.\n- **The link to the pump is your top hazard source**: latency, dropped commands, partial writes, and pairing to the wrong pump in a multi-bed room. Expect IEC 60601-1-8 for alarms, IEC 62366-1 summative usability focused hard on rate entry and unit confusion, IEC 81001-5-1 and MDCG 2019-16 for security.\n\nOne caveat: if you're also targeting the US, don't reason from the EU class. FDA would most likely treat this as part of the pump system under the pump's (typically Class II, 510(k)) classification — different route, different evidence.\n\nI'd treat the split between options 1 and 2 above as the decision to make this week; it changes your submission structure, not your class."
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 2,
+            "costUsd": 0.08603925000000001,
+            "judgeCostUsd": 0,
+            "durationSeconds": 41,
+            "startedAt": "2026-09-11T00:46:56.182Z",
+            "error": "exit 1: Credit balance is too low",
+            "tracePath": "/private/tmp/e-452OVj/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: judge call failed: Credit balance is too low",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 2,
+            "startedAt": "2026-09-11T00:47:36.912Z",
+            "error": "exit 1: Credit balance is too low",
+            "tracePath": "/private/tmp/e-MaB4V7/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: judge call failed: Credit balance is too low",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 1,
+        "passRate": 1,
+        "scoreWithout": 0.3333333333333333,
+        "passRateWithout": 0.3333333333333333,
+        "delta": 0.6666666666666667
+      }
+    },
+    {
+      "name": "limb1-escalation-iii",
+      "dir": "evals/02-limb1-escalation-iii",
+      "source": "prose",
+      "promptMarkdown": "Classify this under MDR please.\n\nStandalone software, no connection to any other device. It analyses CT angiography\nimages and flags suspected large-vessel occlusion strokes, and the output is used by\nthe on-call neurointerventionalist to decide whether to take the patient straight to\nthrombectomy or not. Intended purpose: \"to provide triage information to support the\ndecision to proceed to mechanical thrombectomy in suspected acute ischaemic stroke.\"",
+      "runsPerCase": 3,
+      "timeoutSeconds": 300,
+      "maxTurns": 10,
+      "graders": [
+        {
+          "name": "criteria",
+          "type": "llm",
+          "weight": 1,
+          "graderMarkdown": "Independent software (3.3 does not divert it), so Rule 11 applies. It provides\ninformation used to take a decision with diagnostic/therapeutic purpose — limb 1,\nbase class IIa. The escalation test is the IMPACT OF THE DECISION: a missed or wrong\nlarge-vessel-occlusion triage decision may cause death or irreversible neurological\ndeterioration. That is the class III trigger.\n\nPASS requires:\n(1) The stated class is **III**.\n(2) It reaches III through **Rule 11 limb 1's escalation**, on the basis that the\n    decision may cause death or irreversible deterioration — not merely because\n    stroke is a serious disease.\n(3) It addresses 3.3 — that the software is independent, so 3.3 does not divert it to\n    another device's class. Merely reaching Rule 11 without mentioning 3.3 does not\n    satisfy this; 3.3 runs first and skipping it is the error `driving-software-3-3`\n    exists to catch.\n\nAccept IIb ONLY if the response explicitly reasons that the relevant impact is\nserious deterioration or a surgical intervention rather than death/irreversible harm,\nAND acknowledges the III trigger and explains why it does not apply. A bare IIb with\nno such reasoning is a FAIL.\n\nFAIL if the answer is IIa or I, or if the escalation is justified by disease severity\nalone rather than by what the decision may cause.",
+          "config": {
+            "criteria": "Independent software (3.3 does not divert it), so Rule 11 applies. It provides\ninformation used to take a decision with diagnostic/therapeutic purpose — limb 1,\nbase class IIa. The escalation test is the IMPACT OF THE DECISION: a missed or wrong\nlarge-vessel-occlusion triage decision may cause death or irreversible neurological\ndeterioration. That is the class III trigger.\n\nPASS requires:\n(1) The stated class is **III**.\n(2) It reaches III through **Rule 11 limb 1's escalation**, on the basis that the\n    decision may cause death or irreversible deterioration — not merely because\n    stroke is a serious disease.\n(3) It addresses 3.3 — that the software is independent, so 3.3 does not divert it to\n    another device's class. Merely reaching Rule 11 without mentioning 3.3 does not\n    satisfy this; 3.3 runs first and skipping it is the error `driving-software-3-3`\n    exists to catch.\n\nAccept IIb ONLY if the response explicitly reasons that the relevant impact is\nserious deterioration or a surgical intervention rather than death/irreversible harm,\nAND acknowledges the III trigger and explains why it does not apply. A bare IIb with\nno such reasoning is a FAIL.\n\nFAIL if the answer is IIa or I, or if the escalation is justified by disease severity\nalone rather than by what the decision may cause.",
+            "focus": "last_message"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 2,
+            "startedAt": "2026-09-11T00:47:39.246Z",
+            "error": "exit 1: Credit balance is too low",
+            "tracePath": "/private/tmp/e-G53o4m/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: judge call failed: Credit balance is too low",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 2,
+            "startedAt": "2026-09-11T00:47:41.243Z",
+            "error": "exit 1: Credit balance is too low",
+            "tracePath": "/private/tmp/e-2Zz4A3/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: judge call failed: Credit balance is too low",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 2,
+            "startedAt": "2026-09-11T00:47:43.697Z",
+            "error": "exit 1: Credit balance is too low",
+            "tracePath": "/private/tmp/e-4yTTLv/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: judge call failed: Credit balance is too low",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ],
+        "without": [
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 2,
+            "startedAt": "2026-09-11T00:47:46.009Z",
+            "error": "exit 1: Credit balance is too low",
+            "tracePath": "/private/tmp/e-uDNDgF/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: judge call failed: Credit balance is too low",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 4,
+            "startedAt": "2026-09-11T00:47:48.185Z",
+            "error": "exit 1: Credit balance is too low",
+            "tracePath": "/private/tmp/e-bJDUZX/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: judge call failed: Credit balance is too low",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 3,
+            "startedAt": "2026-09-11T00:47:52.515Z",
+            "error": "exit 1: Credit balance is too low",
+            "tracePath": "/private/tmp/e-ULIfZM/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: judge call failed: Credit balance is too low",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 0,
+        "passRate": 0,
+        "scoreWithout": 0,
+        "passRateWithout": 0,
+        "delta": 0
+      }
+    },
+    {
+      "name": "limb2-both-conditions",
+      "dir": "evals/03-limb2-both-conditions",
+      "source": "prose",
+      "promptMarkdown": "MDR class for this?\n\nStandalone app, not connected to any device. Patients with chronic kidney disease\nenter their weight and blood pressure once a day at home, and the app trends the\nreadings over weeks and shows the trend to the patient and their nephrologist at the\nnext appointment. There are no alarms and it is not used for any acute decision.\nIntended purpose: \"to record and trend patient-entered weight and blood pressure over\ntime for review during scheduled nephrology consultations.\"",
+      "runsPerCase": 3,
+      "timeoutSeconds": 300,
+      "maxTurns": 10,
+      "graders": [
+        {
+          "name": "criteria",
+          "type": "llm",
+          "weight": 1,
+          "graderMarkdown": "Blood pressure is a vital physiological parameter, which makes this a tempting IIb.\nBut Rule 11 limb 2's escalation needs BOTH conditions: the parameters must be vital\nAND the nature of their variation must be such that it could result in IMMEDIATE\ndanger. Daily self-entered readings trended for a scheduled appointment, with no\nalarms and no acute use, does not meet the immediate-danger condition.\n\nPASS requires:\n(1) The stated class is **IIa**.\n(2) The route is not scored. PASS whether the response reaches IIa via limb 2\n    (monitoring physiological processes) or via limb 1 (information used for\n    therapeutic decisions) — both are defensible on these facts, and SKILL.md instructs\n    stopping at the first limb that matches, which is limb 1.\n(3) It does not escalate to IIb. If it reaches limb 2 it must not treat \"blood pressure\n    is vital\" as sufficient; if it reaches limb 1 it must not escalate without reasoning\n    about what a wrong decision may cause. FAIL only where an escalation is ASSERTED\n    without its second condition — not where the response simply never proposed one.\n\nAccept class I only if the response reasons that this is not monitoring within limb 2\nand explains why. A bare class I is a FAIL.\n\nNote for the judge: a response that questions whether this is a medical device at all\nbefore classifying is following the skill, not evading the question. Do not penalise it.\n\nFAIL if the answer is IIb. That is the trap: escalating on \"vital parameter\" alone\nwhile ignoring the second, cumulative condition.",
+          "config": {
+            "criteria": "Blood pressure is a vital physiological parameter, which makes this a tempting IIb.\nBut Rule 11 limb 2's escalation needs BOTH conditions: the parameters must be vital\nAND the nature of their variation must be such that it could result in IMMEDIATE\ndanger. Daily self-entered readings trended for a scheduled appointment, with no\nalarms and no acute use, does not meet the immediate-danger condition.\n\nPASS requires:\n(1) The stated class is **IIa**.\n(2) The route is not scored. PASS whether the response reaches IIa via limb 2\n    (monitoring physiological processes) or via limb 1 (information used for\n    therapeutic decisions) — both are defensible on these facts, and SKILL.md instructs\n    stopping at the first limb that matches, which is limb 1.\n(3) It does not escalate to IIb. If it reaches limb 2 it must not treat \"blood pressure\n    is vital\" as sufficient; if it reaches limb 1 it must not escalate without reasoning\n    about what a wrong decision may cause. FAIL only where an escalation is ASSERTED\n    without its second condition — not where the response simply never proposed one.\n\nAccept class I only if the response reasons that this is not monitoring within limb 2\nand explains why. A bare class I is a FAIL.\n\nNote for the judge: a response that questions whether this is a medical device at all\nbefore classifying is following the skill, not evading the question. Do not penalise it.\n\nFAIL if the answer is IIb. That is the trap: escalating on \"vital parameter\" alone\nwhile ignoring the second, cumulative condition.",
+            "focus": "last_message"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 2,
+            "startedAt": "2026-09-11T00:47:55.696Z",
+            "error": "exit 1: Credit balance is too low",
+            "tracePath": "/private/tmp/e-31SVNq/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: judge call failed: Credit balance is too low",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 3,
+            "startedAt": "2026-09-11T00:47:58.009Z",
+            "error": "exit 1: Credit balance is too low",
+            "tracePath": "/private/tmp/e-3KeebX/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: judge call failed: Credit balance is too low",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 3,
+            "startedAt": "2026-09-11T00:48:01.359Z",
+            "error": "exit 1: Credit balance is too low",
+            "tracePath": "/private/tmp/e-jtJ9Fb/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: judge call failed: Credit balance is too low",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ],
+        "without": [
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 3,
+            "startedAt": "2026-09-11T00:48:03.914Z",
+            "error": "exit 1: Credit balance is too low",
+            "tracePath": "/private/tmp/e-jWqG5T/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: judge call failed: Credit balance is too low",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 2,
+            "startedAt": "2026-09-11T00:48:06.432Z",
+            "error": "exit 1: Credit balance is too low",
+            "tracePath": "/private/tmp/e-TM1wFA/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: judge call failed: Credit balance is too low",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 2,
+            "startedAt": "2026-09-11T00:48:08.641Z",
+            "error": "exit 1: Credit balance is too low",
+            "tracePath": "/private/tmp/e-84z6Uf/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: judge call failed: Credit balance is too low",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 0,
+        "passRate": 0,
+        "scoreWithout": 0,
+        "passRateWithout": 0,
+        "delta": 0
+      }
+    },
+    {
+      "name": "limb3-class-i",
+      "dir": "evals/04-limb3-class-i",
+      "source": "prose",
+      "promptMarkdown": "What class is this under MDR Annex VIII?\n\nStandalone software used in hospitals. It takes the finished, clinician-signed\nradiology report and reformats it into the referring GP's preferred layout, then files\nit to the GP's inbox. It does not analyse images, does not alter clinical content, and\nadds nothing to the report. Qualification as a medical device is already established\nand not in question. Intended purpose: \"to reformat and route finalised radiology\nreports to referring physicians.\"",
+      "runsPerCase": 3,
+      "timeoutSeconds": 300,
+      "maxTurns": 10,
+      "graders": [
+        {
+          "name": "criteria",
+          "type": "llm",
+          "weight": 1,
+          "graderMarkdown": "The software provides no information used to take a diagnostic or therapeutic\ndecision — it moves an already-final report. It monitors no physiological process. It\nis independent, so 3.3 does not divert it. Rule 11 limb 3: all other software is\nclass I.\n\nPASS requires:\n(1) The stated class is **I**.\n(2) It reaches I via Rule 11 limb 3 (\"all other software\"), having considered and\n    rejected limbs 1 and 2.\n(3) The stated class is I and the response does not inflate it to IIa or higher.\n    Hedging that the class should be confirmed by a regulatory lead, or flagging a 3.5\n    open question, does NOT count as inflation — SKILL.md requires that gate for a\n    non-regulatory user.\n\nNote for the judge: the \"it only moves an already-final report\" reading tracks\nMDCG 2019-11, not the Rule 11 text this skill carries. A response reaching class I while\nnoting that the distinction is guidance-derived and unverified is giving a BETTER answer,\nnot a worse one.\n\nThe response may legitimately note that if the software ever altered or generated\nclinical content the class would change, or may flag a 3.5 open question. Neither\ncosts the pass so long as the stated class is I.\n\nFAIL if the answer is IIa or higher. This tests whether the skill can return the\nlowest class rather than inflating — the model equivalent of over-flagging.",
+          "config": {
+            "criteria": "The software provides no information used to take a diagnostic or therapeutic\ndecision — it moves an already-final report. It monitors no physiological process. It\nis independent, so 3.3 does not divert it. Rule 11 limb 3: all other software is\nclass I.\n\nPASS requires:\n(1) The stated class is **I**.\n(2) It reaches I via Rule 11 limb 3 (\"all other software\"), having considered and\n    rejected limbs 1 and 2.\n(3) The stated class is I and the response does not inflate it to IIa or higher.\n    Hedging that the class should be confirmed by a regulatory lead, or flagging a 3.5\n    open question, does NOT count as inflation — SKILL.md requires that gate for a\n    non-regulatory user.\n\nNote for the judge: the \"it only moves an already-final report\" reading tracks\nMDCG 2019-11, not the Rule 11 text this skill carries. A response reaching class I while\nnoting that the distinction is guidance-derived and unverified is giving a BETTER answer,\nnot a worse one.\n\nThe response may legitimately note that if the software ever altered or generated\nclinical content the class would change, or may flag a 3.5 open question. Neither\ncosts the pass so long as the stated class is I.\n\nFAIL if the answer is IIa or higher. This tests whether the skill can return the\nlowest class rather than inflating — the model equivalent of over-flagging.",
+            "focus": "last_message"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 4,
+            "startedAt": "2026-09-11T00:48:10.772Z",
+            "error": "exit 1: Credit balance is too low",
+            "tracePath": "/private/tmp/e-EEAVDq/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: judge call failed: Credit balance is too low",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 4,
+            "startedAt": "2026-09-11T00:48:14.816Z",
+            "error": "exit 1: Credit balance is too low",
+            "tracePath": "/private/tmp/e-RA7AsT/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: judge call failed: Credit balance is too low",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 3,
+            "startedAt": "2026-09-11T00:48:18.467Z",
+            "error": "exit 1: Credit balance is too low",
+            "tracePath": "/private/tmp/e-AdFs2T/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: judge call failed: Credit balance is too low",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ],
+        "without": [
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 2,
+            "startedAt": "2026-09-11T00:48:21.260Z",
+            "error": "exit 1: Credit balance is too low",
+            "tracePath": "/private/tmp/e-NZl3iZ/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: judge call failed: Credit balance is too low",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 4,
+            "startedAt": "2026-09-11T00:48:23.540Z",
+            "error": "exit 1: Credit balance is too low",
+            "tracePath": "/private/tmp/e-gIJYTo/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: judge call failed: Credit balance is too low",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 0,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 0,
+            "startedAt": "2026-09-11T00:48:27.367Z",
+            "error": "Error: EACCES: permission denied, posix_spawn '/opt/homebrew/lib/node_modules/@anthropic-ai/claude-code/bin/claude.exe'",
+            "tracePath": "/private/tmp/e-GzxHbg/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: judge call failed: Credit balance is too low",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 0,
+        "passRate": 0,
+        "scoreWithout": 0,
+        "passRateWithout": 0,
+        "delta": 0
+      }
+    },
+    {
+      "name": "qualification-not-established",
+      "dir": "evals/05-qualification-not-established",
+      "source": "prose",
+      "promptMarkdown": "Can you give me the MDR class for our app? It's a habit tracker — users log water\nintake, steps and sleep, and it gives them a weekly wellness score and some\nencouragement messages. We're not making any medical claims. Marketing wants to know\nwhat class we'd be so they can put it on the website.",
+      "runsPerCase": 3,
+      "timeoutSeconds": 300,
+      "maxTurns": 10,
+      "graders": [
+        {
+          "name": "criteria",
+          "type": "llm",
+          "weight": 1,
+          "graderMarkdown": "A wellness habit tracker making no medical claims is very likely not a medical device\nunder Art. 2(1) at all. Classification presumes qualification, and the skill states\nthat qualification is a prior question it does not answer.\n\nPASS requires:\n(1) No MDR class is assigned TO THE PRODUCT AS DESCRIBED. Judge how a class is used,\n    not whether the string appears. PASS: a class named inside an explicit conditional\n    about what would pull the product into scope (\"if you added a medical claim it\n    would qualify, and on Rule 11 limb 3 it would land at class I\"). FAIL: a class\n    stated as this product's class.\n(2) It raises qualification under Art. 2(1) as the prior question, and says that if\n    the product is not a device there is no MDR class to give.\n(3) It does not simply refuse and stop — it explains what would need to be\n    established, or what would pull the product into scope.\n\nA useful bonus, not required: noting that publishing an MDR class on a website for a\nproduct that is not a device would itself be a misleading claim.\n\nFAIL if any MDR class is assigned. FAIL if it says \"class I\" on the reasoning that\nlow-risk software defaults to class I — a non-device has no class at all, and that\nconflation is the error being tested.",
+          "config": {
+            "criteria": "A wellness habit tracker making no medical claims is very likely not a medical device\nunder Art. 2(1) at all. Classification presumes qualification, and the skill states\nthat qualification is a prior question it does not answer.\n\nPASS requires:\n(1) No MDR class is assigned TO THE PRODUCT AS DESCRIBED. Judge how a class is used,\n    not whether the string appears. PASS: a class named inside an explicit conditional\n    about what would pull the product into scope (\"if you added a medical claim it\n    would qualify, and on Rule 11 limb 3 it would land at class I\"). FAIL: a class\n    stated as this product's class.\n(2) It raises qualification under Art. 2(1) as the prior question, and says that if\n    the product is not a device there is no MDR class to give.\n(3) It does not simply refuse and stop — it explains what would need to be\n    established, or what would pull the product into scope.\n\nA useful bonus, not required: noting that publishing an MDR class on a website for a\nproduct that is not a device would itself be a misleading claim.\n\nFAIL if any MDR class is assigned. FAIL if it says \"class I\" on the reasoning that\nlow-risk software defaults to class I — a non-device has no class at all, and that\nconflation is the error being tested.",
+            "focus": "last_message"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 0,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 0,
+            "startedAt": "2026-09-11T00:48:27.843Z",
+            "error": "Error: EACCES: permission denied, posix_spawn '/opt/homebrew/lib/node_modules/@anthropic-ai/claude-code/bin/claude.exe'",
+            "tracePath": "/private/tmp/e-zVcaao/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: judge call failed: Credit balance is too low",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 5,
+            "startedAt": "2026-09-11T00:48:28.147Z",
+            "error": "exit 1: Credit balance is too low",
+            "tracePath": "/private/tmp/e-JHMly7/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: judge call failed: Credit balance is too low",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 24,
+            "startedAt": "2026-09-11T00:48:33.449Z",
+            "error": "exit 1: Credit balance is too low",
+            "tracePath": "/private/tmp/e-FDOg5M/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: judge call failed: Credit balance is too low",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ],
+        "without": [
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 14,
+            "startedAt": "2026-09-11T00:48:57.321Z",
+            "error": "exit 1: Credit balance is too low",
+            "tracePath": "/private/tmp/e-p7XXkB/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: judge call failed: Credit balance is too low",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 6,
+            "startedAt": "2026-09-11T00:49:10.824Z",
+            "error": "exit 1: Credit balance is too low",
+            "tracePath": "/private/tmp/e-k0Cz1k/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: judge call failed: Credit balance is too low",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 21,
+            "startedAt": "2026-09-11T00:49:17.164Z",
+            "error": "exit 1: Credit balance is too low",
+            "tracePath": "/private/tmp/e-gsiJ87/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: judge call failed: Credit balance is too low",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 0,
+        "passRate": 0,
+        "scoreWithout": 0,
+        "passRateWithout": 0,
+        "delta": 0
+      }
+    },
+    {
+      "name": "rule-not-carried",
+      "dir": "evals/06-rule-not-carried",
+      "source": "prose",
+      "promptMarkdown": "MDR class for our product please.\n\nIt's a standalone prescription digital therapeutic for chronic insomnia. It delivers\na structured CBT-I programme directly to the patient over 6-9 weeks — sleep\nrestriction scheduling, stimulus control instructions, cognitive restructuring\nexercises. It is the treatment itself; there's no clinician in the loop during the\nprogramme and it doesn't feed information to anyone to decide anything. Qualification\nas a medical device is established. Intended purpose: \"to treat chronic insomnia in\nadults by delivering cognitive behavioural therapy for insomnia.\"",
+      "runsPerCase": 3,
+      "timeoutSeconds": 300,
+      "maxTurns": 10,
+      "graders": [
+        {
+          "name": "criteria",
+          "type": "llm",
+          "weight": 1,
+          "graderMarkdown": "This is the boundary test. The software TREATS. It does not provide information used\nto take a decision (limb 1) and does not monitor physiological processes (limb 2), so\nRule 11 alone lands it at limb 3 — \"all other software\" — which is class I.\n\nThat is almost certainly the wrong final answer, because implementing rule 3.5 says\nthe strictest applicable rule wins, and this skill carries only Rule 11 — one of\ntwenty-two.\n\nNote for the judge: do NOT expect, or reward, a specific uncarried rule number. The\nreference carries Chapter I definition 2.4 (\"active therapeutic device\") but none of the\noperative rules for active devices, and SKILL.md says \"Never invent a rule number\". A\nresponse naming a particular rule as the one that reaches this software is guessing at\ntext it does not have.\n\nPASS requires BOTH:\n(1) It does NOT present a confident final class. It must flag that implementing rule\n    3.5 means a stricter rule may apply, and that Rules 1-10 and 12-22 are not carried\n    here, so the Rule 11 result is a floor rather than the answer.\n(2) Accept EITHER limb 3 / class I OR limb 1 / class IIa as the Rule-11-only result,\n    provided the reasoning is stated. A CBT-I programme that outputs sleep schedules the\n    patient acts on is arguably limb-1 information; that reading is at least as good.\n    The class reached under Rule 11 is not what this case scores — (1) is.\n\nFAIL if it states a final class (I, IIa, IIb or III) without flagging the 3.5 /\nuncarried-rule problem. A confident \"class I\" is the specific failure being tested:\ntechnically correct on Rule 11, wrong as an answer, and expensive if acted on.",
+          "config": {
+            "criteria": "This is the boundary test. The software TREATS. It does not provide information used\nto take a decision (limb 1) and does not monitor physiological processes (limb 2), so\nRule 11 alone lands it at limb 3 — \"all other software\" — which is class I.\n\nThat is almost certainly the wrong final answer, because implementing rule 3.5 says\nthe strictest applicable rule wins, and this skill carries only Rule 11 — one of\ntwenty-two.\n\nNote for the judge: do NOT expect, or reward, a specific uncarried rule number. The\nreference carries Chapter I definition 2.4 (\"active therapeutic device\") but none of the\noperative rules for active devices, and SKILL.md says \"Never invent a rule number\". A\nresponse naming a particular rule as the one that reaches this software is guessing at\ntext it does not have.\n\nPASS requires BOTH:\n(1) It does NOT present a confident final class. It must flag that implementing rule\n    3.5 means a stricter rule may apply, and that Rules 1-10 and 12-22 are not carried\n    here, so the Rule 11 result is a floor rather than the answer.\n(2) Accept EITHER limb 3 / class I OR limb 1 / class IIa as the Rule-11-only result,\n    provided the reasoning is stated. A CBT-I programme that outputs sleep schedules the\n    patient acts on is arguably limb-1 information; that reading is at least as good.\n    The class reached under Rule 11 is not what this case scores — (1) is.\n\nFAIL if it states a final class (I, IIa, IIb or III) without flagging the 3.5 /\nuncarried-rule problem. A confident \"class I\" is the specific failure being tested:\ntechnically correct on Rule 11, wrong as an answer, and expensive if acted on.",
+            "focus": "last_message"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 7,
+            "startedAt": "2026-09-11T00:49:38.323Z",
+            "error": "exit 1: Credit balance is too low",
+            "tracePath": "/private/tmp/e-XrCobs/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: judge call failed: Credit balance is too low",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 4,
+            "startedAt": "2026-09-11T00:49:45.332Z",
+            "error": "exit 1: Credit balance is too low",
+            "tracePath": "/private/tmp/e-txNX3V/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: judge call failed: Credit balance is too low",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 6,
+            "startedAt": "2026-09-11T00:49:49.048Z",
+            "error": "exit 1: Credit balance is too low",
+            "tracePath": "/private/tmp/e-DL5X4e/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: judge call failed: Credit balance is too low",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ],
+        "without": [
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 3,
+            "startedAt": "2026-09-11T00:49:54.747Z",
+            "error": "exit 1: Credit balance is too low",
+            "tracePath": "/private/tmp/e-PAOXk6/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: judge call failed: Credit balance is too low",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 0,
+            "costUsd": 0,
+            "judgeCostUsd": 0,
+            "durationSeconds": 0,
+            "startedAt": "2026-09-11T00:49:58.174Z",
+            "error": "interrupted",
+            "tracePath": "/private/tmp/e-2iQmOF/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "grader threw: Request was aborted.",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 0,
+        "passRate": 0,
+        "scoreWithout": 0,
+        "passRateWithout": 0,
+        "delta": 0
+      }
+    }
+  ],
+  "aggregates": {
+    "casesTotal": 6,
+    "casesPassed": 1,
+    "overallScore": 0.16666666666666666,
+    "overallPassRate": 0.16666666666666666,
+    "meanDelta": 0.11111111111111112
+  }
+}
