@@ -33,16 +33,48 @@ ROOT = Path(__file__).resolve().parent.parent
 BENCH = ROOT / "benchmark" / "eu-mdr-bench.json"
 RUNS = ROOT / "benchmark" / "runs"
 
-def post(url, payload, headers, timeout=120):
-    req = urllib.request.Request(url, data=json.dumps(payload).encode(),
-                                 headers={"Content-Type": "application/json", **headers})
-    try:
-        with urllib.request.urlopen(req, timeout=timeout) as r:
-            return json.loads(r.read().decode()), None
-    except urllib.error.HTTPError as e:
-        return None, f"HTTP {e.code}: {e.read().decode()[:300]}"
-    except Exception as e:
-        return None, str(e)
+def bundle_for(area):
+    """The dist bundle a case's plugin ships, or None.
+
+    Prepending it is exactly what README tells a user to do in a tool that cannot read
+    the repo: paste the bundle, then ask. So the with-skill arm here measures the
+    portable path as documented, not a private variant of it.
+    """
+    hits = sorted((ROOT / area).glob("skills/*/SKILL.md"))
+    if not hits:
+        return None
+    b = ROOT / "dist" / f"{hits[0].parent.name}.bundle.md"
+    return b.read_text() if b.exists() else None
+
+RETRY_CODES = {429, 500, 502, 503, 504}
+
+def post(url, payload, headers, timeout=120, attempts=4):
+    """POST with backoff on transient failures.
+
+    503 "experiencing high demand" and 429 are routine on a shared endpoint, and a run
+    of 30+ calls will meet them. Without retries a whole arm reports as model failures
+    that were really queue failures -- the same confusion that once scored a billing
+    error as a skill error.
+    """
+    body = json.dumps(payload).encode()
+    last = None
+    for attempt in range(attempts):
+        req = urllib.request.Request(url, data=body,
+                                     headers={"Content-Type": "application/json", **headers})
+        try:
+            with urllib.request.urlopen(req, timeout=timeout) as r:
+                return json.loads(r.read().decode()), None
+        except urllib.error.HTTPError as e:
+            last = f"HTTP {e.code}: {e.read().decode()[:300]}"
+            if e.code not in RETRY_CODES:
+                return None, last
+        except Exception as e:
+            last = str(e)
+        if attempt < attempts - 1:
+            wait = 5 * (2 ** attempt)
+            print(f"      transient ({last[:40]}...), retrying in {wait}s")
+            time.sleep(wait)
+    return None, last
 
 def ask_gemini(prompt, model, key):
     url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
@@ -100,6 +132,11 @@ def main():
     ap.add_argument("--runs", type=int, default=3,
                     help="runs per case; 3 is the minimum that is evidence")
     ap.add_argument("--case", help="only this case id")
+    ap.add_argument("--with-skill", action="store_true",
+                    help="prepend the case's dist bundle, the way README tells a user to "
+                         "paste it into a chat. Without this the run measures the "
+                         "baseline: the model unaided, which is what baseline_pass_rate "
+                         "is. Run both to get a delta")
     ap.add_argument("--hard-only", action="store_true",
                     help="only cases where the measured baseline scored 0.00 -- the ones "
                          "that actually discriminate between models")
@@ -137,6 +174,7 @@ def main():
 
     RUNS.mkdir(parents=True, exist_ok=True)
     out = {"model": a.model, "provider": a.provider, "runs_per_case": a.runs,
+           "arm": "with-skill" if a.with_skill else "baseline",
            # The Claude column had no retrieval. A run that did is not comparable, so
            # every run file states its own condition rather than leaving it assumed.
            "retrieval": "none",
@@ -144,16 +182,24 @@ def main():
            "responses": []}
     for i, c in enumerate(cases, 1):
         for r in range(a.runs):
-            if a.provider == "gemini-cli": text, err = ask_gemini_cli(c["prompt"], a.model)
-            elif a.provider == "gemini": text, err = ask_gemini(c["prompt"], a.model, key)
-            elif a.provider == "vertex": text, err = ask_vertex(c["prompt"], a.model)
-            else:                        text, err = ask_openai(c["prompt"], a.model, key)
+            prompt = c["prompt"]
+            if a.with_skill:
+                bundle = bundle_for(c["area"])
+                if not bundle:
+                    print(f"  [{i}/{len(cases)}] {c['id']}: no bundle for {c['area']}, skipped")
+                    continue
+                prompt = f"{bundle}\n\n---\n\n{c['prompt']}"
+            if a.provider == "gemini-cli": text, err = ask_gemini_cli(prompt, a.model)
+            elif a.provider == "gemini": text, err = ask_gemini(prompt, a.model, key)
+            elif a.provider == "vertex": text, err = ask_vertex(prompt, a.model)
+            else:                        text, err = ask_openai(prompt, a.model, key)
             out["responses"].append({"case": c["id"], "run": r+1,
                                      "response": text, "error": err})
             print(f"  [{i}/{len(cases)}] {c['id']} run {r+1}: "
                   f"{'ok, ' + str(len(text)) + ' chars' if text else 'ERROR ' + (err or '')[:70]}")
             time.sleep(1)
-    f = RUNS / f"{a.model}-{datetime.now(timezone.utc):%Y%m%dT%H%M%SZ}.json"
+    arm = "with-skill" if a.with_skill else "baseline"
+    f = RUNS / f"{a.model}-{arm}-{datetime.now(timezone.utc):%Y%m%dT%H%M%SZ}.json"
     f.write_text(json.dumps(out, indent=2, ensure_ascii=False) + "\n")
     ok = sum(1 for x in out["responses"] if x["response"])
     print(f"\n  {ok}/{len(out['responses'])} responses saved -> {f.relative_to(ROOT)}")

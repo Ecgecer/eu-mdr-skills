@@ -1,0 +1,16 @@
+{
+  "model": "gemini-3.5-flash",
+  "provider": "gemini",
+  "runs_per_case": 1,
+  "arm": "with-skill",
+  "retrieval": "none",
+  "started": "2026-09-11T12:44:28+00:00",
+  "responses": [
+    {
+      "case": "hwg11-item-scope",
+      "run": 1,
+      "response": "# Device Claims Review: Public Web Copy for Home Blood-Pressure Monitor\n\n**Reviewed:** 2026-09-09\n**Device / IVD:** Home Blood-Pressure Monitor — Class IIa (assumed)\n**Intended purpose (as assessed):** NOT SUPPLIED — limb (d) not assessed\n**Audience:** Publikum (un-gated consumer web page)\n**Markets:** Germany\n\n---\n\n## Summary\n\n3 claims reviewed. 1 cut, 1 verify, 1 OK.\n\n**Ready to publish:** With changes below\n\n---\n\n## Findings\n\n### 1. \"Don't gamble with your heart\"\n**Claim:** \"Don't gamble with your heart\"\n**Breach:** HWG § 11(1) no. 7 [verified], MDR Art. 7(b) [verified]\n**Why:** It suggests that health is compromised by *not* using the device (breaching the prohibition on fear-of-not-using framing under HWG § 11(1) no. 7) and implies a preventative clinical benefit/outcome that a monitoring-only device cannot deliver on its own (breaching MDR Art. 7(b)).\n**Evidence needed:** n/a — cannot be cured by evidence\n**Also engaged:** none\n**Call:** Cut\n**Suggested fix:** Remove the alarmist framing entirely. Focus on proactive, objective tracking:\n> \"Track your blood pressure daily to support your heart health\"\n\n---\n\n### 2. \"Recommended by Professor Schmidt, cardiologist.\"\n**Claim:** \"Recommended by Professor Schmidt, cardiologist.\"\n**Breach:** none\n**Why:** Professional recommendations are not prohibited for medical devices under German law (for devices, HWG § 11(1) is restricted to nos. 7–9, 11, and 12; the restriction on professional endorsements in no. 2 does not apply to devices).\n**Evidence needed:** Documented proof of Professor Schmidt’s actual credentials, the written endorsement, and active consent to use his name/title in this marketing material.\n**",
+      "error": null
+    }
+  ]
+}
