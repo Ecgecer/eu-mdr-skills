@@ -66,6 +66,12 @@ over-apply, over-conclude, invent an authority or reach for boilerplate; zero wh
 already had what it needed. **These skills do not add knowledge. They add the discipline
 to stop.**
 
+That is a fact about a frontier model, not about the skills. Re-run pinned to **Haiku
+4.5**, the same suites invert: the knowledge cases that earn nothing against Opus earn
+**+1.00** each, and the boundary cases that earn +1.00 against Opus earn +0.33 or nothing.
+**The reference text transfers; the refusal discipline does not.**
+[**MODELS.md**](MODELS.md) has the per-case numbers and what they do not show.
+
 > **Numbers are being re-measured (2026-09-10).** An adversarial review of all 25 graders
 > found defects in both directions — graders failing correct answers, and graders that
 > would pass wrong ones — plus three prompts that reused worked examples from the very

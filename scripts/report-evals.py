@@ -237,6 +237,19 @@ def cost_summary():
     return " ".join(out)
 
 
+def splice_probes():
+    S, E = "<!-- probe-table:start -->", "<!-- probe-table:end -->"
+    f = ROOT / "MODELS.md"
+    if not f.exists():
+        return None, None
+    txt = f.read_text()
+    if S not in txt or E not in txt:
+        return f, None
+    head, rest = txt.split(S, 1)
+    _, tail = rest.split(E, 1)
+    return f, f"{head}{S}\n{probe_table()}\n{E}{tail}"
+
+
 def splice_cost():
     S, E = "<!-- eval-cost:start -->", "<!-- eval-cost:end -->"
     f = ROOT / "METHOD.md"
@@ -281,6 +294,9 @@ def do_write():
     cf, cnew = splice_cost()
     if cnew is not None and cf.read_text() != cnew:
         cf.write_text(cnew); print("  METHOD.md: eval cost rewritten")
+    pf, pnew = splice_probes()
+    if pnew is not None and pf.read_text() != pnew:
+        pf.write_text(pnew); print("  MODELS.md: probe table rewritten")
     return 0
 
 def do_check_tables():
@@ -295,6 +311,13 @@ def do_check_tables():
             bad = 1
         else:
             print(f"  {pl}: published table matches the stored runs")
+    pf, pnew = splice_probes()
+    if pnew is None:
+        print("  MODELS.md: no probe-table markers"); bad = 1
+    elif pf.read_text() != pnew:
+        print("  MODELS.md: probe table does not match the stored probe runs."); bad = 1
+    else:
+        print("  MODELS.md: probe table matches the stored probe runs")
     cf, cnew = splice_cost()
     if cnew is None:
         print("  METHOD.md: no eval-cost markers"); bad = 1

@@ -136,6 +136,14 @@ other models invited. It is also plausible that a model with less European regul
 text in training would fail the *knowledge* cases too, in which case the reference files
 would earn more rather than less. Nobody has measured it, and the file now says so.
 
+**Measured 2026-09-11, within the Claude family.** Re-running three suites pinned to Haiku
+4.5 shows exactly that: the knowledge cases that measure +0.00 against Opus measure
+**+1.00** against Haiku, whose baseline cites a different wrong Annex VIII rule on each of
+three runs. The guess was right about the references and wrong about the shape — the
+*discipline* half does not transfer, so the boundary cases measure +1.00 for Opus and
++0.33 or +0.00 for Haiku. [MODELS.md](MODELS.md) has it. GPT, Gemini and everything
+outside the Claude family remain untested, and this does not speak for them.
+
 ---
 
 ## 2026-09-11 — tables that said "generated" and were typed by hand
