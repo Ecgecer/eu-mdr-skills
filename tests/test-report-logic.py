@@ -17,16 +17,32 @@ still passes. These tests pin the behaviour instead of the output.
 
 Usage:  python3 tests/test-report-logic.py
 """
-import importlib.util
 import json
 import sys
 import tempfile
+import types
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-spec = importlib.util.spec_from_file_location("re_", ROOT / "scripts" / "report-evals.py")
-R = importlib.util.module_from_spec(spec)
-spec.loader.exec_module(R)
+
+
+def load_source(path, name):
+    """Execute a script's current source, bypassing the bytecode cache.
+
+    importlib reads cached bytecode, and on macOS that cache lives outside the repo
+    (sys.pycache_prefix is ~/Library/Caches/com.apple.python), so `find . -name
+    __pycache__` shows nothing and -B does not help -- it stops writing, not reading.
+    A stale .pyc made this file report that MIN_VALID_RUNS was 1 while the source on
+    disk said 3, which is a test measuring code that is not in the repo. Worse than no
+    test.
+    """
+    mod = types.ModuleType(name)
+    mod.__file__ = str(path)
+    exec(compile(path.read_text(), str(path), "exec"), mod.__dict__)
+    return mod
+
+
+R = load_source(ROOT / "scripts" / "report-evals.py", "report_evals")
 
 failures = []
 

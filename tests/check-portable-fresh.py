@@ -150,9 +150,11 @@ if rt.returncode:
 # rewriting. The stamp records the skill text they were produced from. The warning is
 # required while they differ and forbidden once they match, so regenerating the example
 # also clears the notice instead of leaving it to rot.
-import importlib.util as _ilu
-_spec = _ilu.spec_from_file_location("_re", ROOT / "scripts" / "report-evals.py")
-_re = _ilu.module_from_spec(_spec); _spec.loader.exec_module(_re)
+import types as _types
+_re = _types.ModuleType("_re")            # exec the source, not a cached .pyc; on macOS
+_p = ROOT / "scripts" / "report-evals.py"  # the cache lives outside the repo entirely
+_re.__file__ = str(_p)
+exec(compile(_p.read_text(), str(_p), "exec"), _re.__dict__)
 
 ex_readme = ROOT / "examples" / "README.md"
 ex_stamp = ROOT / "examples" / ".skill-version.json"
