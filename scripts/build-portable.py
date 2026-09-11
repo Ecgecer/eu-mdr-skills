@@ -63,6 +63,23 @@ def build_bundle(plugin, skill, skill_dir):
             parts += [f"## {r}", "", (skill_dir / "references" / r).read_text().rstrip(), "", "---", ""]
     return "\n".join(parts).rstrip() + "\n"
 
+def readme_toc(txt):
+    """Contents built from README's own headings.
+
+    A hand-written table of contents in a repo that generates every other table would
+    be the one list that silently stops matching its document.
+    """
+    def slug(h):
+        keep = "".join(c for c in h.lower() if c.isalnum() or c in " -")
+        return keep.strip().replace(" ", "-")
+    out = []
+    for line in txt.split("\n"):
+        if line.startswith("## ") and not line.startswith("## <!--"):
+            h = line[3:].strip()
+            out.append(f"- [{h}](#{slug(h)})")
+    return "\n".join(out)
+
+
 def reference_table():
     """The provenance table for README, read out of the reference files themselves.
 
@@ -203,9 +220,24 @@ def main():
         else:
             path.parent.mkdir(parents=True, exist_ok=True)
             path.write_text(want); print(f"  wrote       {rel}  ({len(want)} bytes)")
+    # README's contents list is a splice, built from the file's own headings.
+    readme = ROOT / "README.md"
+    if readme.exists():
+        TS, TE = "<!-- toc:start -->", "<!-- toc:end -->"
+        txt = readme.read_text()
+        if TS in txt and TE in txt:
+            head, rest = txt.split(TS, 1)
+            _, tail = rest.split(TE, 1)
+            want = f"{head}{TS}\n{readme_toc(txt)}\n{TE}{tail}"
+            if txt == want:
+                print("  up to date  README.md (contents)")
+            elif check:
+                stale.append(Path("README.md")); print("  STALE       README.md (contents)")
+            else:
+                readme.write_text(want); print("  wrote       README.md (contents)")
+
     # README's provenance table is a splice rather than a whole generated file.
     S, E = "<!-- references:start -->", "<!-- references:end -->"
-    readme = ROOT / "README.md"
     if readme.exists():
         txt = readme.read_text()
         if S in txt and E in txt:

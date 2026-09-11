@@ -328,4 +328,27 @@ if unbacked:
 else:
     print("  every provision cited in a skill is carried by its references")
 
+# 13. README's install block offers every plugin the marketplace ships
+#
+# It listed four of five: mdr-transition was installable and undocumented, so the only
+# way to find it was to read marketplace.json. An install list is the one part of a
+# README a reader copies verbatim rather than reads.
+rm_txt = (ROOT / "README.md").read_text()
+mk_file = ROOT / ".claude-plugin" / "marketplace.json"
+if mk_file.exists():
+    import json as _j2
+    shipped = {e["name"] for e in _j2.loads(mk_file.read_text()).get("plugins", [])}
+    offered = set(re.findall(r'claude plugin install ([a-z0-9-]+)@', rm_txt))
+    missing = sorted(shipped - offered)
+    extra = sorted(offered - shipped)
+    if missing or extra:
+        print("\n  README install block and marketplace disagree:")
+        for m in missing:
+            print(f"    {m} ships but README never offers it")
+        for e in extra:
+            print(f"    README offers {e}, which the marketplace does not ship")
+        failed = 1
+    else:
+        print(f"  README offers all {len(shipped)} shipped plugin(s)")
+
 sys.exit(failed)

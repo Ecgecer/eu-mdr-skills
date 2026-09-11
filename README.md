@@ -5,6 +5,31 @@
 
 Agent skills for EU medical device regulation that **say where the rules stop.**
 
+```
+claude plugin marketplace add Ecgecer/eu-mdr-skills
+claude plugin install device-claims@eu-mdr-skills
+/device-claims:device-claims-review
+```
+
+Not using Claude Code? Paste any file from [`dist/`](dist/) into any chat — each one
+carries a skill and its verbatim statute text in a single document. Nothing else needed.
+[Full install and usage](#install) · [worked example](examples/) · [what it does not
+do](#scope-limits-stated-up-front)
+
+<!-- toc:start -->
+- [A benchmark, if you build regulatory AI](#a-benchmark-if-you-build-regulatory-ai)
+- [See it before you install it](#see-it-before-you-install-it)
+- [The method, if you want to copy it](#the-method-if-you-want-to-copy-it)
+- [Verify the claim yourself, in one command](#verify-the-claim-yourself-in-one-command)
+- [Scope limits, stated up front](#scope-limits-stated-up-front)
+- [Which one do you want](#which-one-do-you-want)
+- [Install](#install)
+- [Use](#use)
+- [Using it outside Claude Code](#using-it-outside-claude-code)
+- [Evals](#evals)
+- [Licence and attribution](#licence-and-attribution)
+<!-- toc:end -->
+
 The `verify` badge is not decoration. It runs `scripts/verify-sources.py`, which
 re-fetches every statute source and diffs each quoted passage against it — so a green
 badge means the text in this repo still matches the law it claims to quote, as of the
@@ -73,16 +98,6 @@ That is a fact about a frontier model, not about the skills. Re-run pinned to **
 **+1.00** each, and the boundary cases that earn +1.00 against Opus earn +0.33 or nothing.
 **The reference text transfers; the refusal discipline does not.**
 [**MODELS.md**](MODELS.md) has the per-case numbers and what they do not show.
-
-> **Numbers are being re-measured (2026-09-10).** An adversarial review of all 25 graders
-> found defects in both directions — graders failing correct answers, and graders that
-> would pass wrong ones — plus three prompts that reused worked examples from the very
-> reference files the with-skill arm loads. One published claim was false: the
-> classification suite described a baseline failure that the stored runs show never
-> happened, and that suite's only earning case is a grader artifact. Graders and prompts
-> are fixed; the tables above will change when they re-run. What was wrong, and why, is
-> written into each suite's eval README rather than quietly corrected. See
-> [CORRECTIONS.md](CORRECTIONS.md).
 
 **Not legal advice.** Drafting and risk-triage aids, not a substitute for a regulatory
 professional or a Fachanwalt.
@@ -246,6 +261,7 @@ claude plugin marketplace add Ecgecer/eu-mdr-skills
 
 claude plugin install device-claims@eu-mdr-skills         # advertising claims
 claude plugin install mdr-classification@eu-mdr-skills    # software classification
+claude plugin install mdr-transition@eu-mdr-skills        # Article 120 legacy transition
 claude plugin install mpdg-germany@eu-mdr-skills          # German additions to MDR
 claude plugin install scope-statement@eu-mdr-skills       # bound a compliance claim
 ```
@@ -255,6 +271,7 @@ claude plugin install scope-statement@eu-mdr-skills       # bound a compliance c
 ```
 /device-claims:device-claims-review              # review advertising copy
 /mdr-classification:software-classification      # classify software under Annex VIII
+/mdr-transition:legacy-transition                # how long a legacy device may be sold
 /mpdg-germany:german-additions                   # what Germany adds on top of MDR
 /scope-statement:scope-statement                 # bound a compliance result
 ```
