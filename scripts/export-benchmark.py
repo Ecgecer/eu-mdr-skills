@@ -96,6 +96,9 @@ def main():
                   key=lambda c: c["id"])
     free = sorted([c for c in cases if c["measured"] and c["measured"]["baseline_pass_rate"] == 1.0],
                   key=lambda c: c["id"])
+    partial = sorted([c for c in cases if c["measured"]
+                      and 0.0 < c["measured"]["baseline_pass_rate"] < 1.0],
+                     key=lambda c: c["id"])
     unmeasured = [c for c in cases if not c["measured"]]
 
     lines = [
@@ -154,6 +157,18 @@ def main():
               "These measure nothing about boundary discipline; a model gets them right unaided.", ""]
     for c in free:
         lines.append(f"- `{c['id']}` ({c['area']})")
+    if partial:
+        # These were in no section at all until 2026-09-11, so the file listed 23 of its
+        # own 30 cases and a reader could not account for the rest. They are the most
+        # diagnostic group: the baseline gets them right sometimes, which means the
+        # failure is not a knowledge gap but an inconsistency.
+        lines += ["", f"## Cases a baseline passes only sometimes ({len(partial)})", "",
+                  "The baseline scored above 0.00 and below 1.00 across three runs. These",
+                  "discriminate most sharply: the model can reach the right answer and does",
+                  "not do so reliably, so a single run of any of them proves nothing.", ""]
+        for c in partial:
+            r = c["measured"]["baseline_pass_rate"]
+            lines.append(f"- `{c['id']}` ({c['area']}) — baseline {r:.2f}")
     if unmeasured:
         lines += ["", f"## Not yet measured ({len(unmeasured)})", ""]
         for c in unmeasured:
@@ -169,10 +184,10 @@ def main():
         "too — in which case the reference files would earn more, not less. Nobody has",
         "measured it.", "",
         "What it got wrong, repeatedly, was reach — citing a German advertising provision",
-        "against a device that provision does not cover, applying German law to a",
-        "French-market asset, telling a manufacturer to translate a Declaration of",
-        "Conformity that its member state accepts in English, and answering a question the",
-        "rule it cited does not settle.", "",
+        "against a device that provision does not cover, asserting French advertising",
+        "rules it cannot cite once told German law did not apply, telling a manufacturer",
+        "to translate a Declaration of Conformity that its member state accepts in",
+        "English, and answering a question the rule it cited does not settle.", "",
         "Every one of those is plausible, well-reasoned and wrong in a way you cannot see",
         "from the answer. That is what this benchmark is for.", "",
         "## Provenance", "",
@@ -183,6 +198,23 @@ def main():
         "than quietly fixed.", "",
     ]
     emit(OUT / "README.md", "\n".join(lines) + "\n")
+
+    # The root README stated these counts by hand and drifted to "12 of the 30 ... 13
+    # already pass", which described neither the benchmark nor arithmetic: 12 + 13 is
+    # not 30, and the real split was 11/12/7. Generated and CI-checked now.
+    S, E = "<!-- bench-counts:start -->", "<!-- bench-counts:end -->"
+    root = ROOT / "README.md"
+    txt = root.read_text()
+    if S in txt and E in txt:
+        block = (f"{S}\n"
+                 f"Of the {len(cases)} cases, **{len(hard)} are ones Claude failed in every "
+                 f"run** with no reference material and no\nweb access, {len(free)} it passed "
+                 f"in every run, and {len(partial)} it passed only sometimes. All three\n"
+                 f"groups are published, because a benchmark that hides its easy cases "
+                 f"overstates itself.\n{E}")
+        head, rest = txt.split(S, 1)
+        _, tail = rest.split(E, 1)
+        emit(root, head + block + tail)
     if check:
         stale = [p for p, ok in written.items() if not ok]
         for p in stale:
@@ -193,7 +225,10 @@ def main():
         print("  benchmark up to date")
         return 0
     print(f"  {len(cases)} cases exported")
-    print(f"  hard (baseline 0.00): {len(hard)}   baseline already passes: {len(free)}   unmeasured: {len(unmeasured)}")
+    print(f"  hard (baseline 0.00): {len(hard)}   always passes: {len(free)}   "
+          f"passes sometimes: {len(partial)}   unmeasured: {len(unmeasured)}")
+    assert len(hard) + len(free) + len(partial) + len(unmeasured) == len(cases), \
+        "every case must fall in exactly one bucket"
     return 0
 
 if __name__ == "__main__":

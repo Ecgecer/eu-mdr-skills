@@ -173,6 +173,55 @@ table, not from the commit log. All five suites carry it as this is written.
 
 ---
 
+## 2026-09-11 — a retracted claim still on the front page
+
+**Published:** the README's opening pitch listed four measured failures, among them "It
+escalated a device class on half of a two-part condition in 3 of 3."
+
+**Actually:** that is the same claim this file retracted a day earlier. The stored
+baseline runs for `limb2-both-conditions` answer Class **IIa** in all three and score
+**1.00** — the baseline gets it right. The correction was written into the suite's eval
+README and into this file, and nobody checked whether the sentence it retracted appeared
+anywhere else. It did, in the most-read paragraph in the repo.
+
+A second claim in the same paragraph was wrong on its own terms: "It applied German law
+to a French-market asset in 2 of 3." The baseline does the opposite. In 3 of 3 runs it
+explicitly drops German law — *"the France-only scoping is correct as far as it goes —
+the German HWG doesn't reach this page"* — and then asserts French advertising rules it
+cannot cite, which is what the grader actually fails it for. Same defect family, wrong
+country, and published as a different failure than the one measured.
+
+**Fix:** both replaced with claims checked against the stored runs one at a time. The
+same false French-market sentence was also in `scripts/export-benchmark.py`, so it was
+being generated into `benchmark/README.md` on every run; fixed at the generator.
+
+**What this says about the method:** retracting a claim in the file where it was found is
+not retracting it. There was no step that asked where else the sentence lived.
+
+---
+
+## 2026-09-11 — a benchmark that listed 23 of its own 30 cases
+
+**Published:** `benchmark/README.md` split its cases into "hard" (baseline 0.00) and
+"cases a baseline already passes" (baseline 1.00), and the root README said "12 of the 30
+... the 13 cases a baseline already passes".
+
+**Actually:** the two generated sections covered 11 and 12 cases. The other **7 — the
+ones the baseline passes only sometimes — were in no section at all**, so the file
+silently omitted a quarter of itself. The root README's hand-typed 12 and 13 matched
+neither the generator nor each other: 12 + 13 is not 30.
+
+The omitted group is the most diagnostic one. A baseline that scores 0.33 or 0.67 across
+three runs can reach the right answer and does not do so reliably, which is a different
+finding from either "knows it" or "does not know it" — and it is the group that proves
+why three runs is the minimum.
+
+**Fix:** a third section lists them with their baseline rates, an assertion in the
+generator fails if the buckets do not sum to the case count, and the root README's counts
+are spliced in from the data and checked in CI.
+
+---
+
 ## What these have in common
 
 Every one is the same failure: **a claim asserted from something other than the thing it

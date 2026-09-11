@@ -10,15 +10,17 @@ re-fetches every statute source and diffs each quoted passage against it — so 
 badge means the text in this repo still matches the law it claims to quote, as of the
 last run. It runs again every Monday.
 
-Claude already knows MDR. Measured across 17 cases, it recalls implementing rule 3.3
-verbatim, applies Rule 11's escalations correctly, and refuses to classify a non-device.
-Knowledge is not the gap.
+Claude already knows MDR. Across this repo's 30 eval cases, the no-plugin baseline
+recalls implementing rule 3.3 verbatim, applies Rule 11's escalations correctly, and
+refuses to classify a non-device. Knowledge is not the gap.
 
-The gap is **confident over-reach.** In those same measurements it cited a German
-advertising provision against a medical device that provision does not reach, in 3 of 3
-runs. It applied German law to a French-market asset in 2 of 3. It escalated a device
-class on half of a two-part condition in 3 of 3. It answered *"Class IIa, plan for a
-notified body"* to a question the rule it cited does not settle.
+The gap is **confident over-reach.** In those same measurements it cited HWG § 11(1)
+no. 2 against a medical device, when only nos. 7 to 9, 11 and 12 reach devices, in 3 of
+3 runs. Told a page was French-market only, it correctly dropped German law and then
+asserted French advertising rules it cannot cite, in 3 of 3. It told a Dutch manufacturer
+to translate a Declaration of Conformity into German on the authority of MDR Art. 19(4),
+when MPDG § 8(1) accepts German **or** English, in 3 of 3. It answered *"Class IIa, plan
+for a notified body"* to a question the rule it cited does not settle.
 
 Every one of those is plausible, well-reasoned, and wrong in a way you cannot see from
 the answer. Not a hallucinated rule — a real rule applied one step past where it reaches.
@@ -73,13 +75,16 @@ or tool, not just this one:
 > Does it apply EU medical device regulation to products, markets and audiences the
 > provision it cites does not reach?
 
-**12 of the 30 cases are ones Claude failed in every run** with no reference material
-and no web access — telling a manufacturer to translate a Declaration of Conformity its member
-state accepts in English, citing a German advertising item that does not reach devices,
-applying German law to a French-market asset, manufacturing findings on clean copy.
+<!-- bench-counts:start -->
+Of the 30 cases, **11 are ones Claude failed in every run** with no reference material and no
+web access, 12 it passed in every run, and 7 it passed only sometimes. All three
+groups are published, because a benchmark that hides its easy cases overstates itself.
+<!-- bench-counts:end -->
 
-The 13 cases a baseline already passes are published too, because a benchmark that hides
-its easy cases overstates itself.
+Those hardest cases are what the benchmark is for — telling a manufacturer to translate a
+Declaration of Conformity its member state accepts in English, citing a German advertising
+item that does not reach devices, asserting French advertising rules it cannot cite once
+told German law does not apply, manufacturing findings on clean copy.
 
 **Only Claude has been tested.** GPT, Gemini and everything else are untested, and the
 benchmark says so rather than generalising from one model — which would be the exact

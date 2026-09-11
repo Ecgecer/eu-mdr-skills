@@ -83,6 +83,20 @@ These measure nothing about boundary discipline; a model gets them right unaided
 - `qualification-not-established` (mdr-classification)
 - `superseded-deadline` (mdr-transition)
 
+## Cases a baseline passes only sometimes (7)
+
+The baseline scored above 0.00 and below 1.00 across three runs. These
+discriminate most sharply: the model can reach the right answer and does
+not do so reliably, so a single run of any of them proves nothing.
+
+- `limb-c-omission` (device-claims) — baseline 0.67
+- `limb-d-intended-purpose-drift` (device-claims) — baseline 0.67
+- `not-german-market` (mpdg-germany) — baseline 0.33
+- `professional-user-exception` (mpdg-germany) — baseline 0.67
+- `readiness-claim` (scope-statement) — baseline 0.67
+- `unpinned-basis` (scope-statement) — baseline 0.33
+- `uwg6-comparison` (device-claims) — baseline 0.33
+
 ## What the measurements showed
 
 Across five areas, Claude with no reference material already knew the law: it
@@ -96,10 +110,10 @@ too — in which case the reference files would earn more, not less. Nobody has
 measured it.
 
 What it got wrong, repeatedly, was reach — citing a German advertising provision
-against a device that provision does not cover, applying German law to a
-French-market asset, telling a manufacturer to translate a Declaration of
-Conformity that its member state accepts in English, and answering a question the
-rule it cited does not settle.
+against a device that provision does not cover, asserting French advertising
+rules it cannot cite once told German law did not apply, telling a manufacturer
+to translate a Declaration of Conformity that its member state accepts in
+English, and answering a question the rule it cited does not settle.
 
 Every one of those is plausible, well-reasoned and wrong in a way you cannot see
 from the answer. That is what this benchmark is for.
