@@ -46,8 +46,16 @@ they share these failure modes is an open question, and this file deliberately d
 not guess — a benchmark that generalises from one model is doing the exact thing it
 measures.
 
-If you run it against another model, the results are welcome as a PR. The cases and
-criteria are model-agnostic by design; only the measured column is not.
+If you run it against another model, the results are welcome as a PR.
+
+**12 of these 30 cases carry criteria that assume the skill's own output shape** —
+a `## Limits` block, a `Ready to publish` line, the `Breach:` / `Call:` /
+`Also engaged:` fields — or refer the judge to `SKILL.md`, which is not in this
+directory. No model can satisfy those without the plugin loaded, so scoring a
+baseline against them measures format rather than reasoning. They are marked
+`criteria_assume_skill_format` in the JSON; judge the substance and say so.
+This file used to claim its criteria were model-agnostic by design. They are not,
+and it took running a non-Claude model to notice.
 
 **Give the model no web access.** The Claude column was measured with none, so a
 run that retrieved is not comparable to it. This is easy to do by accident: an

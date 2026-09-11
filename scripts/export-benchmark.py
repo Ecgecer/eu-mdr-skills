@@ -17,6 +17,8 @@ from collections import defaultdict
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
+FORMAT_RE = re.compile(r'##\s*Limits|Ready to publish|`Breach:|Breach: line|`Call:'
+                       r'|`Also engaged:|SKILL\.md', re.I)
 OUT = ROOT / "benchmark"
 
 def baseline_scores():
@@ -64,6 +66,14 @@ def main():
             "tags": tags,
             "prompt": body,
             "correct_answer_criteria": grader,
+            # A property of the criteria, not of any measurement, so it sits on the case
+            # and survives when a case is unmeasured. True when the criteria reference
+            # the skill's own output shape -- a "## Limits" block, "Ready to publish",
+            # the Breach:/Call:/Also engaged: lines -- or point at SKILL.md. No model
+            # without the plugin loaded can satisfy those, so a cross-model judge must
+            # score substance only. Found by judging a Gemini run against criteria that
+            # assumed the format: 12 of 30 cases, in a file calling itself model-agnostic.
+            "criteria_assume_skill_format": bool(FORMAT_RE.search(grader)),
             "measured": {
                 "baseline_pass_rate": base,
                 "with_reference_pass_rate": withskill,
@@ -139,8 +149,15 @@ def main():
         "they share these failure modes is an open question, and this file deliberately does",
         "not guess — a benchmark that generalises from one model is doing the exact thing it",
         "measures.", "",
-        "If you run it against another model, the results are welcome as a PR. The cases and",
-        "criteria are model-agnostic by design; only the measured column is not.", "",
+        "If you run it against another model, the results are welcome as a PR.", "",
+        "**12 of these 30 cases carry criteria that assume the skill's own output shape** —",
+        "a `## Limits` block, a `Ready to publish` line, the `Breach:` / `Call:` /",
+        "`Also engaged:` fields — or refer the judge to `SKILL.md`, which is not in this",
+        "directory. No model can satisfy those without the plugin loaded, so scoring a",
+        "baseline against them measures format rather than reasoning. They are marked",
+        "`criteria_assume_skill_format` in the JSON; judge the substance and say so.",
+        "This file used to claim its criteria were model-agnostic by design. They are not,",
+        "and it took running a non-Claude model to notice.", "",
         "**Give the model no web access.** The Claude column was measured with none, so a",
         "run that retrieved is not comparable to it. This is easy to do by accident: an",
         "agent CLI will quietly reach for a search tool on these prompts — the Gemini CLI",
