@@ -107,7 +107,10 @@ Declaration of Conformity its member state accepts in English, citing a German a
 item that does not reach devices, asserting French advertising rules it cannot cite once
 told German law does not apply, manufacturing findings on clean copy.
 
-**Only Claude has been tested.** GPT, Gemini and everything else are untested, and the
+**Almost only Claude has been tested.** One non-Claude run exists — Gemini 3.5 Flash,
+baseline arm, six cases, with every verdict and its reason in `benchmark/judgments/`.
+Four failure modes reproduced, two did not, and no skill arm ever ran. GPT, Llama,
+Mistral and Gemini Pro are untested, and the
 benchmark says so rather than generalising from one model — which would be the exact
 failure it measures. Results from another model are welcome as a PR.
 

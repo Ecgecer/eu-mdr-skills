@@ -96,10 +96,71 @@ miss the omission finding the case exists to test in two runs of three. The temp
 travels more easily than the reasoning, and a well-structured wrong answer is harder to
 catch than a badly structured one.
 
+## A second vendor: Gemini 3.5 Flash, baseline only
+
+Everything above is Claude on both sides. The first non-Claude measurement is narrower
+than planned — the key's Pro-tier quota was already spent, and the free flash quota ran
+out partway — but it answers a question nothing else here can.
+
+**Six of the eleven hard cases** got three valid runs before the 429s started. The
+with-skill arm returned **0 of 33**, so there is **no delta for Gemini**: what follows is
+the baseline only, the model unaided.
+
+| Case | Claude baseline | Gemini 3.5 Flash baseline |
+|---|---|---|
+| `clean-copy-control` | 0.00 | 0.00 |
+| `hwg11-item-scope` | 0.00 | 0.00 |
+| `no-case-law-supplement` | 0.00 | 0.00 |
+| `non-german-eu-market` | 0.00 | 0.00 |
+| `hwg11-wrong-audience` | 0.00 | **1.00** |
+| `limb-c-omission` | 0.00 | **1.00** |
+
+**Four failure modes reproduce across vendors.** These cases are in the benchmark because
+Claude failed every run of them, and Gemini fails them too, in the same shapes:
+
+- *Manufacturing findings on clean copy.* All three runs fault the copy for omitting
+  "adults", one asserting outright: "Under MDR Article 7 … you must not omit limitations
+  of use."
+- *Citing items that do not reach devices.* Three runs, three different numbers for the
+  same sentence — § 11(1) no. 1, no. 1, no. 2 — where the closing sentence of § 11(1)
+  gives devices only nos. 7, 8, 9, 11 and 12. The same different-wrong-rule-each-time
+  signature Haiku produced on Annex VIII.
+- *Supplying case law on request.* "Here is the exact legal standard established by the
+  BGH", no hedge, in all three runs.
+- *Substituting another member state's law.* Gemini avoids the German-law trap cleanly and
+  then asserts "Article L. 5213-3 of the CSP" and ANSM guidance as controlling, never
+  reaching MDR Art. 7. Claude made the same error in prose; Gemini makes it with a
+  specific article number, which is worse, because it is checkable-looking.
+
+**Two do not reproduce.** `hwg11-wrong-audience` and `limb-c-omission` measure 1.00
+unaided on Gemini and 0.00 on Claude. Gemini states that a gated Fachkreise page is
+outside HWG § 11's reach, and it catches the CGM copy inviting a use the intended purpose
+carves out. Claude's baseline does neither reliably.
+
+So **the "hard cases" are Claude-hard, not universally hard**, and the benchmark had no
+way to know that until a model from another vendor ran against it.
+
+### What the judging cost in confidence
+
+These verdicts are mine, recorded per response with reasons in
+[`benchmark/judgments/`](benchmark/judgments/). Two things about them:
+
+Twelve of the thirty cases carry criteria that assume the skill's output shape, so a
+baseline cannot satisfy them on format regardless of its reasoning. Those criteria were
+disregarded and substance judged instead; the protocol is written into the judgments file.
+That defect was invisible while only Claude ran the benchmark.
+
+And I am not a neutral judge — these are the repo's own skills. The guard is that the
+criteria were fixed before any Gemini response existed and every verdict carries its
+reason in text, so a reader can disagree with a specific call. On `limb-c-omission` the
+call went against the repo.
+
 ## What this does not show
 
-- **n=3 per arm, one model, one family.** Haiku is still Claude. This says nothing about
-  GPT, Gemini, Llama or Mistral, and the benchmark still reports them as untested.
+- **n=3 per arm.** The Claude comparison is one family, Opus against Haiku. The Gemini
+  measurement is one tier (flash), one arm (baseline), six cases, and no delta at all —
+  it shows which failure modes are shared, not whether the skills help Gemini. GPT,
+  Llama, Mistral and every Gemini Pro model remain untested.
 - **2 of 36 Haiku baseline runs (6%)** declined on harness-identity grounds — "outside my
   scope as Claude Code, which is designed for software engineering tasks" — rather than on
   the substance. Small, but it is in the denominator, and it may not reproduce outside
