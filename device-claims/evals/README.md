@@ -37,6 +37,8 @@ Do not hand-edit the table.
 - `uwg6-comparison` — earlier runs: 2026-09-09 0.67/0.67; 2026-09-09 0.33/0.67; 2026-09-09 1.00/1.00; 2026-09-10 —/— (6 errored); 2026-09-10 0.00/0.00
 
 Listed because publishing only the most favourable run of several is how the earlier tables went wrong.
+
+<sub>Claude Code 2.1.266, 2.1.267, 2.1.268. The harness records the CLI version, not the model; these runs used the CLI default. A run pinned to another model with `--model` belongs in `evals/model-probes/`, which this table does not read.</sub>
 <!-- report-evals:end -->
 
 ---

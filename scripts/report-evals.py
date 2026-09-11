@@ -31,6 +31,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 MIN_VALID_RUNS = 3      # "three runs per case -- single runs are not evidence"
+VERSIONS = {}           # plugin -> set of claudeVersion strings seen in its stored runs
 
 def plugins():
     """Discovered, not listed -- a hardcoded list goes stale the day a skill is added."""
@@ -163,6 +164,7 @@ def load(plugin):
         try: d = json.load(open(f))
         except Exception: continue
         ts = Path(f).parent.name[:19].replace("T", " ")
+        VERSIONS.setdefault(plugin, set()).add(d.get("claudeVersion") or "unknown")
         for c in d.get("cases", []):
             arms = c.get("arms", {})
             rec = {"ts": ts, "arms": {}}
@@ -250,6 +252,14 @@ def table(plugin):
         out += ["", "### Every other stored run for these cases", ""] + extra + [
             "", "Listed because publishing only the most favourable run of several is how the "
             "earlier tables went wrong."]
+    # The harness stores the CLI version but not the model, so two runs from different
+    # models are indistinguishable once written. Say so rather than let a reader assume
+    # the table knows.
+    vs = ", ".join(sorted(VERSIONS.get(plugin, {"unknown"})))
+    out += ["", f"<sub>Claude Code {vs}. The harness records the CLI version, not the "
+                "model; these runs used the CLI default. A run pinned to another model "
+                "with `--model` belongs in `evals/model-probes/`, which this table does "
+                "not read.</sub>"]
     return "\n".join(out) + "\n"
 
 if __name__ == "__main__":
