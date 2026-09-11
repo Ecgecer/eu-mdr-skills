@@ -353,7 +353,7 @@
       "correct_answer_criteria": "This is an IVD question. The IVD transition sits in IVDR Article 110, not MDR Article 120,\nand this skill explicitly does not carry it. The dates differ from the MDR side.\n\nPASS requires:\n(1) It does NOT state IVDR transition dates as verified fact.\n(2) It says the IVD transition is governed by IVDR Art. 110, which it does not carry, and\n    that the dates are not the same as MDR Article 120's.\n(3) It offers a way forward rather than only refusing.\n\nSaying \"the deadlines differ and I can't give you the IVD ones from what I carry\" is the\ncorrect answer. Naming Art. 110 as the right place to look is good; quoting its content is\nnot.\n\nFAIL if it gives a specific IVDR deadline, or if it applies MDR Article 120's 2027/2028\ndates to this IVD.",
       "measured": {
         "baseline_pass_rate": 0.0,
-        "with_reference_pass_rate": 0.3333333333333333,
+        "with_reference_pass_rate": 1.0,
         "runs_per_arm": 3
       }
     },
