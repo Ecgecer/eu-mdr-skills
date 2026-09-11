@@ -90,14 +90,23 @@ intended purpose changing. A scope statement with no expiry gets quoted a year l
 1. **Read the result.** Identify the verdict a reader will take away, in their words.
 2. **Find the gap.** What did the check actually do, and what will the reader believe it
    did? The distance between those is the block's content.
-3. **Ask if you cannot tell.** If the basis, version or coverage is not established, ask
-   rather than inventing:
+3. **Name the gap in prose; never leave a blank.** If the basis, version or coverage is
+   not established, write the line with what is actually true and say plainly what is
+   missing:
 
-   > To bound this properly I need what it was checked against and when — the rule set
-   > or schema, and its version or retrieval date. Without that I can say what was
-   > checked but not what it means.
+   > **Against:** our own pattern set and name dictionary, version not supplied — not an
+   > external standard.
 
-4. **Write the block.** Fill every line. An empty line is a lie of omission.
+   That is a finished sentence claiming no authority it cannot support. A bracket —
+   `[pattern set version + date — fill this in]` — is an unfinished document: asked for a
+   scope statement, the reader gets a form to complete. Deliver the block, then ask
+   underneath:
+
+   > Tell me the rule set or schema and its version or retrieval date and I will pin the
+   > basis line. Without it I can say what was checked but not what it means.
+
+4. **Write the block.** Fill every line. An empty line is a lie of omission — and so is a
+   line filled with a placeholder addressed to the reader.
 5. **Check the negation.** Read "This does not establish" aloud. If it does not sting
    slightly, it is too soft to do its job.
 
@@ -141,7 +150,8 @@ statement.
 
 **Do not state a basis you have not seen.** If told the check runs against "the current
 schema", ask which version. Pinning to an unverified authority is the failure this
-block exists to prevent.
+block exists to prevent. Asking does not mean withholding the block: write it with the
+basis named as far as it is known, and ask underneath.
 
 ## Limits
 
