@@ -174,6 +174,14 @@ if ex_stamp.exists() and ex_readme.exists():
     else:
         print("  worked example: " + ("current" if not stale else "stale, and says so"))
 
+    # And when it is current, its transcripts must still match the run they cite --
+    # otherwise "verbatim, straight from the eval harness" is an assertion, not a fact.
+    rex = subprocess.run([sys.executable, str(ROOT / "scripts" / "build-example.py"),
+                          "--check"], capture_output=True, text=True)
+    if rex.returncode:
+        print(rex.stdout.rstrip())
+        failed = 1
+
 # 8. a retracted claim must not survive anywhere else
 #
 # "It escalated a device class on half of a two-part condition in 3 of 3" was retracted
