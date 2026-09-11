@@ -20,15 +20,17 @@ had the facts. Every case that tested recall or reasoning measured a delta of **
 
 What it got wrong was where rules **stop**:
 
+<!-- method-failures:start -->
 | It did this | In |
 |---|---|
 | Cited a German advertising provision against a device that provision does not reach | 3 of 3 runs |
-| Asserted French advertising rules it cannot cite, having correctly ruled out German law | 3 of 3 runs |
+| Asserted another member state's advertising rules from memory, having correctly ruled out German law | 3 of 3 runs |
 | Applied a medicinal-product provision to a device | 2 of 3 runs |
 | Applied a lay-audience advertising rule to a gated professional audience | 3 of 3 runs |
 | Answered "plan for a notified body" to a question the cited rule does not settle | 3 of 3 runs |
 | Manufactured findings on clean copy | 3 of 3 runs |
 | Invented an authority rather than asking which rule set was meant | 2 of 3 runs |
+<!-- method-failures:end -->
 
 Every one is plausible, well-reasoned, and wrong in a way you cannot detect from the
 answer. Not a hallucinated rule — **a real rule applied one step past where it reaches.**

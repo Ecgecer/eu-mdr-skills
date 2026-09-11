@@ -200,6 +200,34 @@ def main():
     ]
     emit(OUT / "README.md", "\n".join(lines) + "\n")
 
+    # METHOD.md's failure table listed a baseline run-count per case and drifted twice:
+    # it gave the French-market case as "2 of 3" where the stored baseline fails 3 of 3,
+    # and carried a claim retracted the day before. Curation stays here; the counts come
+    # from the data.
+    FAILURES = [
+        ("hwg11-item-scope",        "Cited a German advertising provision against a device that provision does not reach"),
+        ("non-german-eu-market",    "Asserted another member state's advertising rules from memory, having correctly ruled out German law"),
+        ("hwg3a-arzneimittel-only", "Applied a medicinal-product provision to a device"),
+        ("hwg11-wrong-audience",    "Applied a lay-audience advertising rule to a gated professional audience"),
+        ("rule-not-carried",        "Answered \"plan for a notified body\" to a question the cited rule does not settle"),
+        ("clean-copy-control",      "Manufactured findings on clean copy"),
+        ("unpinned-basis",          "Invented an authority rather than asking which rule set was meant"),
+    ]
+    MS, ME = "<!-- method-failures:start -->", "<!-- method-failures:end -->"
+    meth = ROOT / "METHOD.md"
+    mtxt = meth.read_text()
+    if MS in mtxt and ME in mtxt:
+        by_id = {c["id"]: c for c in cases}
+        rows = ["| It did this | In |", "|---|---|"]
+        for cid, desc in FAILURES:
+            mm = (by_id.get(cid) or {}).get("measured") or {}
+            r = mm.get("baseline_pass_rate")
+            n = "not measured" if r is None else f"{round((1 - r) * 3)} of 3 runs"
+            rows.append(f"| {desc} | {n} |")
+        head, rest = mtxt.split(MS, 1)
+        _, tail = rest.split(ME, 1)
+        emit(meth, head + MS + "\n" + "\n".join(rows) + "\n" + ME + tail)
+
     # The root README stated these counts by hand and drifted to "12 of the 30 ... 13
     # already pass", which described neither the benchmark nor arithmetic: 12 + 13 is
     # not 30, and the real split was 11/12/7. Generated and CI-checked now.
