@@ -6,3 +6,10 @@
 # nothing to check for the one suite carrying the headline figure.
 # The HTML viewer beside it is regenerable and large, so new ones stay out.
 */evals/results/*/report.html
+
+# model-probes/ holds runs pinned to a model other than the CLI default. report-evals.py
+# does not read this path -- the harness records no model id, so a probe landing in
+# results/ would average silently into the published Opus tables. The aggregate JSON is
+# kept as evidence; the viewer and the throwaway preflight are not.
+*/evals/model-probes/*/report.html
+*/evals/model-probes/preflight-*/
