@@ -186,6 +186,20 @@ Comparative advertising is **lawful** in Germany when it clears every limb of
    characteristics. *Verifiable* is the sharp edge: can the reader check it from
    public information?
 
+**Failing no. 2 is a breach, not an evidence gap.** A comparative figure with an
+undefined comparator — "half the rework of what most teams use today", "twice as fast as
+conventional systems" — breaches § 6(2) no. 2 on the face of the copy. Do not record it
+as `Breach: none` pending data. Verifiability is about what the **reader** can check,
+not about what the advertiser holds: a perfectly sound internal study does not make an
+undefined comparator verifiable, so no amount of evidence cures it. The fix is to name
+the comparator and publish the basis, or drop the comparison.
+
+That distinction matters because § 5 and § 6(2) no. 2 ask different questions. § 5 asks
+whether the claim misleads; § 6(2) no. 2 asks whether the reader can check it. A
+comparison that is entirely **true** and unverifiable still breaches no. 2. Routing an
+undefined comparator to § 5(2) no. 1 alone treats a structural defect as a substantiation
+problem and tells the user to go find data that cannot fix it.
+
 A competitor need not be named. "Unlike legacy tools" is comparative advertising if
 the market can tell who is meant.
 
