@@ -4,6 +4,31 @@ Things this repo published that were wrong, what was wrong with them, and what r
 them. Kept because a repo whose claim is accuracy should show its errors rather than
 quietly fix them, and because the errors are instructive.
 
+Every entry below is a mistake that a person had to catch. Most of them now cannot
+recur, because each one was turned into something that fails automatically:
+
+| What went wrong | What stops it now |
+|---|---|
+| Arm values inferred from a reported delta; the most favourable of several runs published | Tables generated from the stored JSON, every run listed — `report-evals.py` |
+| Tables headed "generated, do not hand-edit" and then hand-edited | `--check-tables` fails CI when a published table and its runs disagree |
+| A billing failure counted as a score of zero | Errored runs excluded from scoring and marked ⚠ |
+| An arm scored from whichever runs survived | An arm needs three valid runs or it reports "—" |
+| A single hand-run pass reported as evidence | Three runs per case, enforced by the same rule |
+| Numbers describing skill text that had since changed | Content hash of skill **and** eval cases; the table carries a banner until re-measured |
+| A retracted claim still live in four other files | Registered strings in this file, checked across all Markdown |
+| An eval prompt that leaked its own answer | Grader quotes checked against prompt and skill text |
+| A benchmark that listed 23 of its own 30 cases | The generator asserts its buckets sum to the case count |
+| Counts and ranges typed into prose, drifting | README, ROADMAP and METHOD figures spliced from the data |
+
+Three things on that list were found by the mechanism built for the one above it. The
+retracted-claim register found the claim in three more files each time it was made less
+literal, and it found a second retracted claim nobody had looked for.
+
+What is **not** automated: whether a grader is fair, and whether a measurement means what
+you say it means. Both have gone wrong here in both directions — graders that failed
+correct reasoning and graders that would have passed wrong answers — and both were caught
+by reading transcripts, not by reading scores.
+
 ---
 
 ## 2026-09-10 — a false claim about a measured result
