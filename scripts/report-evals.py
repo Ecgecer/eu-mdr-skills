@@ -157,15 +157,23 @@ def suite_summary():
         out.append(f"| `{pl}` | {val} | {n} | {CONTENT.get(pl, '')} |")
     return "\n".join(out)
 
-def splice_roadmap():
+SUMMARY_FILES = ["ROADMAP.md", "README.md"]
+
+def splice_summary():
+    """Yield (path, wanted_text) for every file carrying the suite-summary markers."""
     S, E = "<!-- suite-summary:start -->", "<!-- suite-summary:end -->"
-    f = ROOT / "ROADMAP.md"
-    if not f.exists(): return None, None
-    txt = f.read_text()
-    if S not in txt or E not in txt: return f, None
-    head, rest = txt.split(S, 1)
-    _, tail = rest.split(E, 1)
-    return f, f"{head}{S}\n{suite_summary()}\n{E}{tail}"
+    body = suite_summary()
+    for name in SUMMARY_FILES:
+        f = ROOT / name
+        if not f.exists():
+            continue
+        txt = f.read_text()
+        if S not in txt or E not in txt:
+            yield f, None
+            continue
+        head, rest = txt.split(S, 1)
+        _, tail = rest.split(E, 1)
+        yield f, f"{head}{S}\n{body}\n{E}{tail}"
 
 def do_write():
     for pl in plugins():
@@ -177,9 +185,9 @@ def do_write():
             print(f"  {pl}: already current")
         else:
             f.write_text(new); print(f"  {pl}: table rewritten from stored runs")
-    rf, rnew = splice_roadmap()
-    if rnew is not None and rf.read_text() != rnew:
-        rf.write_text(rnew); print("  ROADMAP.md: suite summary rewritten")
+    for rf, rnew in splice_summary():
+        if rnew is not None and rf.read_text() != rnew:
+            rf.write_text(rnew); print(f"  {rf.name}: suite summary rewritten")
     return 0
 
 def do_check_tables():
@@ -194,13 +202,13 @@ def do_check_tables():
             bad = 1
         else:
             print(f"  {pl}: published table matches the stored runs")
-    rf, rnew = splice_roadmap()
-    if rnew is None:
-        print("  ROADMAP.md: no suite-summary markers"); bad = 1
-    elif rf.read_text() != rnew:
-        print("  ROADMAP.md: suite summary does not match the stored runs."); bad = 1
-    else:
-        print("  ROADMAP.md: suite summary matches the stored runs")
+    for rf, rnew in splice_summary():
+        if rnew is None:
+            print(f"  {rf.name}: no suite-summary markers"); bad = 1
+        elif rf.read_text() != rnew:
+            print(f"  {rf.name}: suite summary does not match the stored runs."); bad = 1
+        else:
+            print(f"  {rf.name}: suite summary matches the stored runs")
     return bad
 
 def do_check():

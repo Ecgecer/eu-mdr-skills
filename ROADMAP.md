@@ -20,9 +20,16 @@ Measured across 5 suites, 30 cases:
 | `mdr-transition` | +0.08 | 4 | EU-level only |
 <!-- suite-summary:end -->
 
-**The two that earn are the two carrying German national law.** The EU-only skills trail
-them because Claude already knows the Regulations — it quotes implementing rule 3.3
-verbatim, cites 2023/607 by number, gets the suture carve-out right.
+**The two highest carry German national law.** The EU-only skills trail them because
+Claude already knows the Regulations — it quotes implementing rule 3.3 verbatim, cites
+2023/607 by number, gets the suture carve-out right.
+
+But the ordering is not simply "national law earns". `scope-statement` carries **no
+statute at all** and sits third, above both EU-only suites, after a fix that stopped it
+handing back a form instead of a finished statement. It earns by imposing a discipline —
+name the gap, do not pin to an authority you have not seen — on a task the model
+otherwise does loosely. That is the same thing the German skills earn for, reached
+without any national law, and it is the better statement of what this repo is for.
 
 So the pattern is not "EU MDR is hard". It is **national law a model reaches for and
 misapplies**. The cases measuring +1.00 are exactly that: a German advertising item

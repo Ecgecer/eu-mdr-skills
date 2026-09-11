@@ -39,9 +39,22 @@ carry, and stop rather than conclude past their own boundary.
 Every skill ships an eval suite measured against a **no-plugin baseline**, and every suite
 publishes the cases where the skill adds **nothing** — roughly half of them do.
 
-**Measured numbers are deliberately not on this page.** They live in each suite's eval
-README, generated from the stored run data by `scripts/report-evals.py`, because
-hand-typed figures on a front page are how this repo published three wrong ones. See
+<!-- suite-summary:start -->
+Measured across 5 suites, 30 cases:
+
+| Suite | Mean delta | Cases measured | Content |
+|---|---|---|---|
+| `device-claims` | **+0.63** | 10 | MDR/IVDR Art. 7 **plus HWG and UWG** |
+| `mpdg-germany` | **+0.50** | 4 | German national law only |
+| `scope-statement` | +0.44 | 3 | domain-general |
+| `mdr-classification` | +0.17 | 6 | EU-level only |
+| `mdr-transition` | +0.08 | 4 | EU-level only |
+<!-- suite-summary:end -->
+
+This table is spliced in from the stored run data by `scripts/report-evals.py` and CI
+fails if it drifts. It was kept off this page for a while because hand-typed figures are
+how the repo published three wrong ones — the answer turned out to be generating it, not
+hiding it. Per-case numbers, including every case where the skill adds nothing:
 [device-claims](device-claims/evals/README.md) ·
 [mdr-classification](mdr-classification/evals/README.md) ·
 [mdr-transition](mdr-transition/evals/README.md) ·
