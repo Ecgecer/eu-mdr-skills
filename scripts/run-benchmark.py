@@ -115,8 +115,9 @@ def main():
     if a.list:
         for c in bench["cases"]:
             m = c.get("measured") or {}
+            r = m.get("baseline_pass_rate")
             print(f"  {c['id']:<34} {c['area']:<20} claude_baseline="
-                  f"{m.get('baseline_pass_rate','—')}")
+                  f"{'—' if r is None else format(r, '.2f')}")
         return 0
     if not a.provider:
         ap.error("--provider is required unless --list")

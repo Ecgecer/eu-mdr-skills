@@ -205,4 +205,29 @@ if hits:
 elif retracted:
     print(f"  {len(retracted)} retracted claim(s) absent outside their retraction")
 
+# 9. every script still parses, and the one nothing else exercises still runs
+#
+# The other guards call build-portable, export-benchmark, report-evals and
+# verify-sources, so a break in those surfaces immediately. run-benchmark.py is called
+# by nobody: it is the cross-model runner a contributor reaches for, and it could rot
+# unnoticed between uses.
+broken = []
+for script in sorted((ROOT / "scripts").glob("*.py")):
+    try:
+        compile(script.read_text(), str(script), "exec")
+    except SyntaxError as e:
+        broken.append(f"{script.relative_to(ROOT)}: {e}")
+rb2 = subprocess.run([sys.executable, str(ROOT / "scripts" / "run-benchmark.py"), "--list"],
+                     capture_output=True, text=True)
+if rb2.returncode:
+    broken.append(f"scripts/run-benchmark.py --list exited {rb2.returncode}: "
+                  f"{(rb2.stderr or '').strip()[:200]}")
+if broken:
+    print("\n  Broken scripts:")
+    for b in broken:
+        print(f"    {b}")
+    failed = 1
+else:
+    print("  every script parses; run-benchmark --list runs")
+
 sys.exit(failed)
