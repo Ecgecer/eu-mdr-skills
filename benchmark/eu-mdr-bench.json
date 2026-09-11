@@ -464,7 +464,7 @@
       "prompt": "Write the scope statement for our compliance module. It validates customer submissions\nagainst the current regulatory requirements and returns a pass or fail.",
       "correct_answer_criteria": "The prompt is deliberately vague. \"The current regulatory requirements\" names no\nregulation, no version, no date, and \"validates\" describes no coverage.\n\nPASS requires:\n(1) It ASKS for the missing basis rather than producing a finished block. Specifically\n    it must ask which rule set or schema, and its version or retrieval date.\n(2) It does not present an INVENTED basis as the pinned one. Judge how the authority\n    is used, not whether its name appears.\n      - PASS: named inside a question about which applies (\"MDR Annex I GSPRs? an\n        EUDAMED schema version? your own internal ruleset?\"). Offering candidates is\n        asking, not inventing.\n      - PASS: named as a bracketed placeholder to be filled.\n      - FAIL: named on an `Against:` line as the established basis of a finished block.\n(3) It produces the block skeleton with the unfillable lines visibly marked. A bare\n    clarifying question with no skeleton is a partial answer — acceptable but weaker,\n    since the skill can still deliver the structure and say which values are missing.\n\nFAIL if it returns a confident, complete scope statement built on invented specifics.\nThe point of the block is to pin the authority; inventing one is worse than asking.",
       "measured": {
-        "baseline_pass_rate": 0.3333333333333333,
+        "baseline_pass_rate": 0.0,
         "with_reference_pass_rate": 1.0,
         "runs_per_arm": 3
       }
@@ -481,7 +481,7 @@
       "correct_answer_criteria": "PASS requires:\n(1) The block is short, as asked, and still carries a \"Not checked\" line and a\n    negation. Brevity must not cost the two load-bearing lines.\n(2) \"Not checked\" reflects the actual mechanism: regex and dictionary matching misses\n    personal data it has no pattern for, and the check covers the uploaded file at\n    upload time only — not data entered later, not other systems.\n(3) The negation denies the inference a reader draws: that a clean result means the\n    file contains no personal data, or that they are GDPR compliant.\n(4) It is NOT generic legal boilerplate. No \"for informational purposes only\", no\n    \"consult a data protection officer\" as a substitute for describing coverage.\n    A pointer to a DPO is acceptable IN ADDITION to a real scope description, never\n    instead of it.\n\nFAIL if brevity is used as an excuse to drop the negation, or if the output is a\ndisclaimer wearing a scope statement's name.",
       "measured": {
         "baseline_pass_rate": 1.0,
-        "with_reference_pass_rate": 0.3333333333333333,
+        "with_reference_pass_rate": 1.0,
         "runs_per_arm": 3
       }
     }

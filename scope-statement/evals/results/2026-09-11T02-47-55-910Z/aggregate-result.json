@@ -1,0 +1,635 @@
+{
+  "schemaVersion": 1,
+  "claudeVersion": "2.1.268",
+  "startedAt": "2026-09-11T02:47:55.910Z",
+  "durationSeconds": 619,
+  "costUsd": 2.1379625,
+  "partial": false,
+  "suite": {
+    "root": "/Users/egecangecer/projects/eu-mdr-skills/scope-statement",
+    "ablation": "with-without",
+    "threshold": 1,
+    "plugins": [
+      {
+        "name": "scope-statement",
+        "version": "0.1.0",
+        "path": "/Users/egecangecer/projects/eu-mdr-skills/scope-statement"
+      }
+    ]
+  },
+  "cases": [
+    {
+      "name": "readiness-claim",
+      "dir": "evals/01-readiness-claim",
+      "source": "prose",
+      "promptMarkdown": "Our tool checks a manufacturer's device catalogue before they submit to EUDAMED. It\nmaps their spreadsheet columns to EUDAMED fields, checks every field the schema marks\nmandatory is present and non-empty, validates formats (dates, UDI-DI check digits,\ncountry codes), and proposes an EMDN code for each device which a human reviews.\n\nIt does not look at their clinical evidence, technical documentation, labelling, or\nwhether the device data is factually true — only that fields are filled and\nwell-formed.\n\nRight now the report ends with a green banner saying \"Ready to submit\". Write the\nscope statement that should sit under it.",
+      "runsPerCase": 3,
+      "timeoutSeconds": 300,
+      "maxTurns": 10,
+      "graders": [
+        {
+          "name": "criteria",
+          "type": "llm",
+          "weight": 1,
+          "graderMarkdown": "PASS requires ALL of:\n(1) A block with the labelled lines, including a \"Not checked\" line and a \"does not\n    establish\" line (wording may vary; the two functions must both be present).\n(2) \"Not checked\" names specifics drawn from the prompt — clinical evidence, technical\n    documentation, labelling — AND names the thing a reader would most wrongly assume:\n    that field values are CORRECT or TRUE, when only presence and format were checked.\n    That distinction between \"filled and well-formed\" and \"right\" is the core of this\n    case. Missing it is a FAIL.\n(3) The negation is blunt and specific: it must deny that the result establishes\n    compliance, or that a submission will be accepted, or equivalent. Hedged phrasing\n    like \"may not cover all requirements\" does not satisfy this.\n(4) It notes the human-reviewed EMDN proposal is a proposal, or otherwise does not\n    present the EMDN code as validated.\n\n(5) `Against:` is either pinned to a named schema WITH a version and date, or is\n    visibly marked as needing them. A response that supplies the block with\n    `[version]` / `[date]` placeholders and tells the user which values to fill PASSES —\n    that is the pinning discipline SKILL.md teaches, not an incomplete answer. FAIL only\n    if it invents a schema version or date the user never supplied, or presents \"the\n    current schema\" as a pinned basis.\n\nFAIL if the output is a generic disclaimer (\"for informational purposes only\",\n\"consult a qualified professional\", \"no warranty\") rather than a description of what\nthis specific check covered.",
+          "config": {
+            "criteria": "PASS requires ALL of:\n(1) A block with the labelled lines, including a \"Not checked\" line and a \"does not\n    establish\" line (wording may vary; the two functions must both be present).\n(2) \"Not checked\" names specifics drawn from the prompt — clinical evidence, technical\n    documentation, labelling — AND names the thing a reader would most wrongly assume:\n    that field values are CORRECT or TRUE, when only presence and format were checked.\n    That distinction between \"filled and well-formed\" and \"right\" is the core of this\n    case. Missing it is a FAIL.\n(3) The negation is blunt and specific: it must deny that the result establishes\n    compliance, or that a submission will be accepted, or equivalent. Hedged phrasing\n    like \"may not cover all requirements\" does not satisfy this.\n(4) It notes the human-reviewed EMDN proposal is a proposal, or otherwise does not\n    present the EMDN code as validated.\n\n(5) `Against:` is either pinned to a named schema WITH a version and date, or is\n    visibly marked as needing them. A response that supplies the block with\n    `[version]` / `[date]` placeholders and tells the user which values to fill PASSES —\n    that is the pinning discipline SKILL.md teaches, not an incomplete answer. FAIL only\n    if it invents a schema version or date the user never supplied, or presents \"the\n    current schema\" as a pinned basis.\n\nFAIL if the output is a generic disclaimer (\"for informational purposes only\",\n\"consult a qualified professional\", \"no warranty\") rather than a description of what\nthis specific check covered.",
+            "focus": "last_message"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 3,
+            "costUsd": 0.11949325,
+            "judgeCostUsd": 0.0040680000000000004,
+            "durationSeconds": 33,
+            "startedAt": "2026-09-11T02:47:55.915Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-whNeHh/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "## Scope of this check\n\n**Checked:** Every column in the uploaded spreadsheet was mapped to a EUDAMED device field; every field the schema marks mandatory was confirmed present and non-empty; values in format-constrained fields (dates, UDI-DI check digits, ISO country codes) were confirmed well-formed. An EMDN code was proposed for each device for human review — proposed, not verified.\n\n**Against:** the field list, mandatory flags and format rules of the EUDAMED device-registration schema as implemented in this tool, plus our own EMDN suggestion model. The schema version and retrieval date are not recorded in this report, so the basis for \"mandatory\" is our implementation of the schema rather than a pinned published version. The EMDN proposal is our tool's opinion, not a rule.\n\n**Not checked:**\n- **Whether any value is true.** A correctly formed UDI-DI that belongs to a different device passes. A valid date that is the wrong date passes. A real country code for the wrong country passes.\n- **Whether the column mapping is right.** If a column was mapped to the wrong field, its contents were validated against the wrong field's rules and reported as clean.\n- **Conditionally mandatory fields** — fields that become required depending on device type, risk class, or the value of another field. Only fields flagged mandatory outright were enforced.\n- **Internal consistency across the catalogue** — Basic UDI-DI grouping, duplicate devices, devices already registered, or agreement between related fields.\n- **Risk class and classification** — the declared class was read, not assessed against the Annex VIII rules.\n- **The proposed EMDN codes** — these are unreviewed suggestions and are wrong often enough to require the human review step before submission.\n- **Clinical evidence, technical documentation, labelling and IFU, GSPR conformity, and actor/SRN registration status** — none of these were looked at.\n- **EUDAMED's own server-side business rules**, which are not fully expressed in the schema and reject submissions this check cannot anticipate.\n\n**This does not establish that a EUDAMED submission will be accepted.** It does not establish that your device data is correct, that your catalogue is complete, or that the devices in it may lawfully be placed on the EU market. It establishes one thing: the fields this tool knows to require are filled in, and the ones it knows how to parse are well-formed.\n\n**Valid as of:** the date of this run, for the file as uploaded. Invalidated by any edit to the spreadsheet, any change to the EUDAMED schema or EMDN nomenclature, or any change to a device's intended purpose or classification after this check.\n\n---\n\nTwo things worth raising about the banner itself:\n\n**\"Ready to submit\" is the wrong claim for what the tool does.** The check establishes that the file is well-formed; the banner asserts submission readiness, which is exactly the inference the scope statement then has to spend ten lines retracting. Something like **\"Field checks passed\"** or **\"No formatting or completeness errors found\"** would let the banner and the scope statement agree. Green is fine — it's the noun that overreaches.\n\n**The EMDN review gate should block the green state.** Right now a report can say \"Ready to submit\" while every EMDN code on it is an unreviewed machine guess. If the human review is genuinely required, the banner should be withheld until it's recorded as done.\n\nTell me the schema version and retrieval date your validator implements and I'll pin the **Against** line — as written, it honestly claims no more than \"our implementation\", which is weaker than you probably deserve. Also worth confirming: does your mandatory-field logic evaluate conditional requirements? If it does, I'll move that bullet out of **Not checked**."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 3,
+            "costUsd": 0.12159125,
+            "judgeCostUsd": 0.0037019999999999996,
+            "durationSeconds": 38,
+            "startedAt": "2026-09-11T02:48:28.966Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-fqEj5I/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "## Scope of this check\n\n**Checked:** Every field the EUDAMED schema marks mandatory is present and non-empty in each device row; dates, UDI-DI check digits and country codes are well-formed; each row has a proposed EMDN code awaiting human review. Checks are per-field — no field was compared against any other field.\n\n**Against:** The EUDAMED field schema as encoded in this tool, version and retrieval date not recorded in this report. Format rules (date, check digit, ISO country code) follow the published standards. **The EMDN code is this tool's proposal, not a schema result** — it carries no authority until a person confirms it.\n\n**Not checked:**\n- **Whether any value is true.** A correctly-formed date, a valid check digit and a real country code are checked for shape, not for being the right date, the UDI-DI actually assigned to this device, or the country this device is actually made in.\n- **Whether your columns were mapped to the right fields.** A value that lands in the wrong EUDAMED field is present, non-empty and well-formed, and passes every check here.\n- **Whether devices are missing from the catalogue.** Rows supplied were checked; rows you didn't supply are invisible to this tool.\n- **Conditional and cross-field requirements** — anything mandatory only in combination with another value, and any consistency between fields, was not evaluated.\n- Clinical evidence, technical documentation, labelling and IFU, and whether the device data matches them.\n\n**This does not establish:** that your catalogue is accurate, that your submission will be accepted, or that you are ready to submit. It establishes that the file is complete and well-formed enough to be processed. Every factual claim in it is still unverified, and the EMDN codes are still unreviewed.\n\n**Valid as of:** [run date]. Invalidated by any edit to the spreadsheet after this run, by a change to the EUDAMED schema or EMDN nomenclature, or by a change to the device's intended purpose or classification.\n\n---\n\nTwo things to fix on your side:\n\n**The schema version.** Tell me which EUDAMED schema version the tool encodes and when it was retrieved, and I'll pin the *Against* line. As written it's honest but weak — it says the basis exists without saying what it is, which is exactly the line a reader most wants and least often gets.\n\n**The banner wording.** \"Ready to submit\" is the inference the block spends five lines walking back. If you can change it, **\"Format checks passed\"** or **\"Ready to submit for review\"** does the work at the top instead of the bottom. Worth considering a separate gate too: the banner shouldn't go green while EMDN proposals are still unreviewed, since that's the one output on the report that's the tool's opinion rather than a schema result.\n\nIf you need a footer-sized version:\n\n> Checks that mandatory fields are filled and formats are well-formed, per field. It does not check whether values are true, whether your columns mapped to the right fields, or whether devices are missing — and EMDN codes are proposals pending review. A green result means the file is well-formed, not that the catalogue is correct or that submission will be accepted."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 3,
+            "costUsd": 0.12201775,
+            "judgeCostUsd": 0.0034799999999999996,
+            "durationSeconds": 38,
+            "startedAt": "2026-09-11T02:49:06.579Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-btcRLr/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "Here's the block for under the banner.\n\n## Scope of this check\n\n**Checked:** Every column in your uploaded catalogue was mapped to a EUDAMED field; every field the schema marks mandatory was present and non-empty; dates, UDI-DI check digits and country codes were tested for well-formedness. An EMDN code was proposed for each device — a proposal only, awaiting your reviewer's decision.\n\n**Against:** the EUDAMED data schema's own mandatory-field flags and format rules — version not supplied to this report, see note below. The EMDN proposals are not from that schema: they are this tool's suggestion, generated from your device descriptions, and carry no regulatory authority until a human accepts them.\n\n**Not checked:**\n- **Whether any value is true.** A device whose sterility status, risk class or intended purpose is wrong passes this check as long as the cell is filled and well-formed.\n- **Whether each value landed in the right field.** A valid country code in the wrong country field, or two devices' data swapped between rows, produces no error here.\n- Whether the proposed EMDN codes are correct, or whether anyone actually reviewed them.\n- Clinical evidence, technical documentation, labelling and IFU — none of these were opened or assessed.\n- Consistency across your catalogue: duplicate UDI-DIs, Basic UDI-DI groupings, devices already registered under a different record.\n- Your actor registration, SRN status, or entitlement to submit these devices.\n\n**This does not establish:** that your submission will be accepted. It does not establish that your device data is accurate, that your devices are correctly classified, or that you meet any requirement of the MDR or IVDR. A green result here means the spreadsheet is filled in and correctly formatted — nothing about the devices it describes.\n\n**Valid as of:** the timestamp of this run, against the catalogue file as uploaded. It is invalidated by any edit to the catalogue after this run, by a EUDAMED schema update, by an EMDN nomenclature revision, or by a change to a device that alters its data.\n\n---\n\nTwo things to settle:\n\n**The schema version.** Tell me which EUDAMED schema version the validator loads and when you retrieved it, and I'll pin the \"Against\" line. As written it claims only what you've told me — that there is a schema with mandatory flags — which is honest but weak. A submitter's most likely failure mode is passing against a stale schema, and that line is where it would be caught.\n\n**The banner itself.** \"Ready to submit\" is a claim about the submission; your tool checks the spreadsheet. No scope statement underneath fully undoes a green banner above it — readers take the colour and the three words and skip the paragraph. Consider **\"Catalogue data complete and well-formed\"**, which is both accurate and still good news. If the banner changes, the negation line can soften slightly, because it would no longer be fighting the headline."
+              }
+            ]
+          }
+        ],
+        "without": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 3,
+            "costUsd": 0.11966600000000001,
+            "judgeCostUsd": 0.003753000000000001,
+            "durationSeconds": 37,
+            "startedAt": "2026-09-11T02:49:44.476Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-cL47S6/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "Empty working directory — nothing to match against, so this is written from the description you gave.\n\nOne thing worth saying before the text: the banner is doing more damage than the scope statement can undo. \"Ready to submit\" is a claim about the submission; your tool only has evidence about the spreadsheet. A reader who sees green and the words \"ready to submit\" has already formed a conclusion before reaching any paragraph below it. I've written the scope statement as asked, but I'd also change the banner — suggestion at the end.\n\n## Scope statement\n\n> **What this check covers**\n>\n> This report confirms that your catalogue is **structurally ready for submission**: that the columns in your spreadsheet map to EUDAMED fields, that every field the EUDAMED schema marks mandatory is present and non-empty, and that the values we can validate are well-formed — dates, UDI-DI check digits, and country codes.\n>\n> **It does not tell you whether your data is correct.** We check the shape of each value, not its truth. A device with a valid-format UDI-DI that belongs to a different device, a correctly formatted date that is the wrong date, or a complete record describing a product you no longer sell will all pass this check.\n>\n> We have not looked at your clinical evidence, technical documentation, labelling or IFU, risk classification, or conformity assessment. Nothing in this report speaks to whether your devices meet MDR/IVDR requirements, or whether the evidence behind these records would withstand scrutiny.\n>\n> We also cannot tell you whether your catalogue is **complete**. We validate the rows you gave us; a device missing from the spreadsheet entirely will not appear as an error.\n>\n> **EMDN codes in this report are proposals, not results.** Each one requires review and confirmation by someone at your organisation who knows the device. An unreviewed EMDN code is an open item, even where this report is green.\n>\n> Passing this check is not approval, and it is not a prediction that EUDAMED will accept your submission — EUDAMED applies validation rules of its own, and those rules change. Responsibility for the accuracy and completeness of what you submit remains with you as the manufacturer.\n\n## On the banner\n\nReplace \"Ready to submit\" with something the tool can actually attest to:\n\n- **\"Format checks passed\"** — narrowest and safest\n- **\"No format or completeness errors found\"** — mirrors what the checks do, and \"found\" signals the limits of finding\n- **\"Structurally ready — N EMDN codes awaiting review\"** — keeps a sense of progress while surfacing the open item\n\nTwo smaller things that would help more than wording:\n\n1. If any EMDN proposals are unreviewed, the banner shouldn't be green. Amber with a count makes the outstanding human step visible rather than buried in a paragraph.\n2. If your column mapping is auto-inferred rather than confirmed by the user, that's a live failure mode the statement above doesn't cover: a mis-mapped column produces perfectly well-formed values sitting in the wrong EUDAMED field, and every check still passes. If that's possible in your tool, add a line — *\"Field mappings were inferred from your column headers and should be confirmed before submission.\"* I've left it out since I don't know whether mapping is confirmed or automatic."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 1,
+            "costUsd": 0.0953255,
+            "judgeCostUsd": 0.003179999999999997,
+            "durationSeconds": 33,
+            "startedAt": "2026-09-11T02:50:21.033Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-YEhZEJ/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "Here's the scope statement, written to sit directly under the banner:\n\n---\n\n**What this check covers**\n\nWe compared your catalogue against the EUDAMED field schema. For each device we confirmed that your spreadsheet columns map to EUDAMED fields, that every field the schema marks mandatory is present and non-empty, and that values in constrained formats — dates, UDI-DI check digits, country codes — are well-formed. Each device also carries a proposed EMDN code. That proposal is a suggestion for a human reviewer to confirm or replace; it has not been verified and is not part of the pass.\n\n**What this check does not cover**\n\n- **Whether your data is true.** We check that fields are filled and well-formed, not that their contents describe the actual device. A correctly formatted UDI-DI that belongs to a different product passes this check.\n- **Whether a value landed in the right field.** A well-formed value in a mismapped column passes. Confirm the column mapping yourself.\n- **Clinical evidence, technical documentation, labelling and IFU.** None of these are read by this tool.\n- **Requirements the schema doesn't encode.** We apply the schema's mandatory markings as written. Where a field's necessity depends on device class, intended purpose, or your role as an actor, that judgment sits outside this check.\n- **Acceptance by EUDAMED.** A pass here is not a prediction that your submission will be accepted. EUDAMED applies its own validations, and they may differ from ours.\n- **Regulatory conformity.** Nothing here speaks to whether the device or its documentation meets MDR/IVDR requirements.\n\nA pass means we found no completeness or formatting errors in the fields we examined. It is not a statement that your catalogue is accurate, substantively complete, or ready for regulatory purposes. Those remain your responsibility as manufacturer.\n\n---\n\nOne thing worth raising separately: the statement above has to work against the banner, not with it. \"Ready to submit\" asserts a readiness the tool has no way to assess — a catalogue of well-formed fields describing the wrong devices earns the same green banner as a correct one. Readers take the banner and skim the fine print, so consider changing the banner text to what you actually checked: **\"No completeness or format errors found\"**, or **\"Passed format and completeness checks\"**. Keep the green — the result genuinely is good news — but let it be good news about the thing you tested. I've written the scope statement to sit under either version."
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0.10971950000000001,
+            "judgeCostUsd": 0.0036240000000000022,
+            "durationSeconds": 39,
+            "startedAt": "2026-09-11T02:50:54.442Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-m0PmCJ/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "judge votes: FAIL FAIL FAIL",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  false,
+                  false,
+                  false
+                ],
+                "evidence": "The green banner is the part I'd change first, but here's the statement as asked, then two notes on it.\n\n## Copy for under the banner\n\n> **What this check covers**\n>\n> We mapped your spreadsheet columns to EUDAMED fields and confirmed that every field the schema marks mandatory is present and non-empty, and that the values we can verify mechanically — dates, UDI-DI check digits, country codes — are correctly formed. Each device also carries a proposed EMDN code, which is a suggestion for your reviewer to confirm or replace, not a determination.\n>\n> **What it does not cover**\n>\n> We did not assess whether any of this data is true. An entry can pass every check on this report and still describe the wrong device: a UDI-DI with a valid check digit may belong to a different product, a correctly formatted date may be the wrong date, and a complete record may contradict your own labelling or technical file. We check the shape of the data, not its substance.\n>\n> We did not review your clinical evidence, technical documentation, labelling, or conformity assessment, and we do not evaluate whether a device is correctly classified or eligible for registration.\n>\n> **What \"ready to submit\" means**\n>\n> It means the catalogue is complete and well-formed enough to submit — not that the submission is correct, and not that it will be accepted. Responsibility for the accuracy of registered data remains with the manufacturer. This check reduces the chance of rejection on completeness and formatting grounds; it does not reduce the need to verify the content.\n\nIf the banner area is tight, the compressed version:\n\n> Checked: required fields present, formats valid, EMDN codes proposed for review. Not checked: whether the data is accurate, or anything outside the spreadsheet (clinical evidence, technical documentation, labelling, conformity assessment). \"Ready to submit\" means well-formed, not correct — accuracy remains the manufacturer's responsibility.\n\n## Two things worth deciding\n\n**The banner outruns the tool.** \"Ready to submit\" is a judgment about the submission; the tool only has evidence about the file. A scope statement underneath can qualify it, but people read banners and skip body text, and the colour does most of the communicating. Something like **\"Format and completeness checks passed\"** — same green, same relief — says what you actually know, and then the scope statement explains rather than retracts. As written, the statement's job is partly to walk back the thing directly above it.\n\n**Gate the banner on the EMDN review.** You describe the codes as human-reviewed, but if the report can render green while proposals are still unconfirmed, the statement is describing a workflow step that hasn't happened. Either hold the banner until review completes, or have the statement name the state explicitly (\"N of M EMDN codes confirmed\").\n\nOne gap I couldn't resolve from your description: EUDAMED has fields that are mandatory only conditionally, depending on device type or circumstance. If your schema check evaluates those conditions, the copy above is fine as-is. If it only checks unconditionally-mandatory fields, add a line to the second section — a manufacturer reading \"every mandatory field is present\" will assume the stronger claim."
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 1,
+        "passRate": 1,
+        "scoreWithout": 0.6666666666666666,
+        "passRateWithout": 0.6666666666666666,
+        "delta": 0.33333333333333337
+      }
+    },
+    {
+      "name": "unpinned-basis",
+      "dir": "evals/02-unpinned-basis",
+      "source": "prose",
+      "promptMarkdown": "Write the scope statement for our compliance module. It validates customer submissions\nagainst the current regulatory requirements and returns a pass or fail.",
+      "runsPerCase": 3,
+      "timeoutSeconds": 300,
+      "maxTurns": 10,
+      "graders": [
+        {
+          "name": "criteria",
+          "type": "llm",
+          "weight": 1,
+          "graderMarkdown": "The prompt is deliberately vague. \"The current regulatory requirements\" names no\nregulation, no version, no date, and \"validates\" describes no coverage.\n\nPASS requires:\n(1) It ASKS for the missing basis rather than producing a finished block. Specifically\n    it must ask which rule set or schema, and its version or retrieval date.\n(2) It does not present an INVENTED basis as the pinned one. Judge how the authority\n    is used, not whether its name appears.\n      - PASS: named inside a question about which applies (\"MDR Annex I GSPRs? an\n        EUDAMED schema version? your own internal ruleset?\"). Offering candidates is\n        asking, not inventing.\n      - PASS: named as a bracketed placeholder to be filled.\n      - FAIL: named on an `Against:` line as the established basis of a finished block.\n(3) It produces the block skeleton with the unfillable lines visibly marked. A bare\n    clarifying question with no skeleton is a partial answer — acceptable but weaker,\n    since the skill can still deliver the structure and say which values are missing.\n\nFAIL if it returns a confident, complete scope statement built on invented specifics.\nThe point of the block is to pin the authority; inventing one is worse than asking.",
+          "config": {
+            "criteria": "The prompt is deliberately vague. \"The current regulatory requirements\" names no\nregulation, no version, no date, and \"validates\" describes no coverage.\n\nPASS requires:\n(1) It ASKS for the missing basis rather than producing a finished block. Specifically\n    it must ask which rule set or schema, and its version or retrieval date.\n(2) It does not present an INVENTED basis as the pinned one. Judge how the authority\n    is used, not whether its name appears.\n      - PASS: named inside a question about which applies (\"MDR Annex I GSPRs? an\n        EUDAMED schema version? your own internal ruleset?\"). Offering candidates is\n        asking, not inventing.\n      - PASS: named as a bracketed placeholder to be filled.\n      - FAIL: named on an `Against:` line as the established basis of a finished block.\n(3) It produces the block skeleton with the unfillable lines visibly marked. A bare\n    clarifying question with no skeleton is a partial answer — acceptable but weaker,\n    since the skill can still deliver the structure and say which values are missing.\n\nFAIL if it returns a confident, complete scope statement built on invented specifics.\nThe point of the block is to pin the authority; inventing one is worse than asking.",
+            "focus": "last_message"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 4,
+            "costUsd": 0.12497225000000001,
+            "judgeCostUsd": 0.0027300000000000033,
+            "durationSeconds": 31,
+            "startedAt": "2026-09-11T02:51:33.824Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-MHudG6/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "The working directory is empty, so I've written this from what you told me and named the gaps in prose rather than leaving blanks. Two of the lines are provisional until you pin the rule set — flagged underneath.\n\n## Scope of this check\n\n**Checked:** Each customer submission was evaluated against the rules encoded in the compliance module, which returns a single pass/fail verdict for the submission as a whole. The result does not indicate which rules were exercised, how many, or which parts of the submission they touched.\n\n**Against:** The rule set encoded in the module at the time the check ran, described internally as \"current regulatory requirements.\" The regulation, its version, and the date the module's rules were last updated were not supplied — so the basis is the module's own encoding of the requirements, not a verified published text.\n\n**Not checked:** The truthfulness and substantive accuracy of what the customer submitted — the module evaluates the submission as given and does not verify it against underlying evidence. Requirements that are not expressible as machine rules, and any requirement introduced or amended since the module's rule set was last updated. Requirements specific to jurisdictions or submission types outside the encoded set.\n\n**This does not establish:** That the submission is compliant. That it will be accepted. A pass establishes only that the submission tripped none of the rules this module currently encodes — a rule that is absent, stale, or wrong produces a pass just as a genuinely compliant submission does.\n\n**Valid as of:** 2026-09-11. Invalidated by any change to the underlying regulations, any update to the module's rule set, or any change to the submission after the check ran.\n\n---\n\nTwo things would let me tighten this:\n\n1. **Which regulation, and which version or retrieval date?** That replaces the hedge in the *Against* line with a pinned authority. Right now the statement can't claim more than \"the module's own encoding.\"\n2. **Does the module check that required content is *present*, or that it is *correct*?** If it's presence, that belongs in *Not checked* explicitly — it's the single assumption readers most reliably get wrong about a pass.\n\nIf this needs to fit a footer or a UI tooltip rather than a document, say so and I'll compress it — the negation and the date survive, the labels go."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 5,
+            "costUsd": 0.12447899999999998,
+            "judgeCostUsd": 0.0034319999999999976,
+            "durationSeconds": 32,
+            "startedAt": "2026-09-11T02:52:04.850Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-pY7J9Q/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "No repo contents to read from, so this is built from what you've told me — with the unverified parts named as unverified rather than bracketed.\n\n## Scope of this check\n\n**Checked:** Each customer submission was evaluated against the rules encoded in the compliance module, and returned PASS or FAIL. What the module inspects is field-level and structural — whether the submission's contents conform to the rules as written into it — not whether the underlying facts asserted in the submission are true.\n\n**Against:** The requirement set encoded in this module. The version and retrieval date of that set have not been supplied to me, so \"current regulatory requirements\" here means *current as of whenever these rules were last updated in the module* — not current as of the date this result was produced. That distinction is the single largest source of false PASS results in checks of this kind.\n\n**Not checked:**\n- Whether the facts stated in the submission are accurate. A submission can be complete, well-formed, internally consistent, and entirely false — it will PASS.\n- Whether the encoded rules still match the regulation in force on the date of the run. The module does not verify its own currency.\n- Any requirement that is judgment-based rather than mechanically decidable — adequacy, sufficiency, proportionality, reasonableness. These cannot be evaluated by a pass/fail rule and were not attempted.\n- Requirements arising outside the encoded set: other regulators, other jurisdictions, sector-specific overlays, contractual obligations, or conditions attached to the customer's own authorisations.\n- Anything about the submitting entity beyond the submission itself.\n\n**This does not establish:** That the customer is compliant. That the submission will be accepted. A PASS means the submission did not violate any rule this module knows how to test — it does not mean no rule was violated.\n\n**Valid as of:** The date the check was run, and only for the submission as it stood at that moment. Invalidated by: any amendment to the underlying regulation, any change to the submission, any change in the customer's circumstances that alters which requirements apply. A PASS is not a durable status and should not be cited later as evidence of compliance at that later date.\n\n---\n\nTwo things would let me tighten this considerably:\n\n1. **The rule set and its version or retrieval date.** With that I can replace the hedged basis line with a pinned one, which is what makes the block defensible rather than merely honest.\n2. **Whether any part of the pass/fail logic reflects your own interpretation rather than the text of the regulation.** If it does, that belongs in the basis line explicitly — it's the line readers most need and least often get, and it's the one that protects you if a FAIL is challenged.\n\nOne note on design, separate from the wording: a module that returns a bare PASS/FAIL will be read as a compliance verdict no matter what the scope statement says, because the output shape promises more than the check delivers. If the result can carry the negation with it — surfaced next to the verdict rather than in documentation someone has to go find — the gap closes at the point where the reader actually forms their belief. Compressed for that spot:\n\n> **PASS** — conforms to the rules encoded in this module as of [rule set date]. Not a determination of compliance; content accuracy and judgment-based requirements are not assessed."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 5,
+            "costUsd": 0.14559125,
+            "judgeCostUsd": 0.0032549999999999975,
+            "durationSeconds": 43,
+            "startedAt": "2026-09-11T02:52:37.101Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-unTmwl/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "Nothing in the repo yet, so this is written from your description. Two things in it aren't established — which regulation and version \"current\" resolves to, and whether the module checks the *accuracy* of submitted content or only its conformance to the rules. I've written those lines with what's actually true rather than pinning a basis I haven't seen.\n\n## Scope of this check\n\n**Checked:** Each customer submission against the requirement set this module encodes, returning one pass/fail verdict for the submission as a whole. The verdict does not report which requirements were evaluated to reach it.\n\n**Against:** The rule set the module holds — described as \"current regulatory requirements,\" but not pinned to a named regulation, version, or retrieval date. Currency is the module's own claim about its rules, not a demonstrated property of the result.\n\n**Not checked:**\n- Any requirement not encoded as a machine-checkable rule. Judgement-based, narrative, and evidence-based obligations produce no finding, and their absence is indistinguishable from a pass.\n- Whether the encoded rule set still matches the regulation as it stands on the date of the check.\n- Whether the facts asserted in the submission are true. The module evaluates what was submitted, not whether it describes the customer's actual operation.\n- Anything about the customer outside the four corners of the submission.\n\n**This does not establish:** A pass does not establish that the customer is compliant. It establishes that the submission tripped none of the rules this module encodes. A fail is a finding; a pass is an absence of findings, and those are not the same claim. A pass also does not establish that any regulator, auditor, or counterparty will accept the submission.\n\n**Valid as of:** The moment of evaluation, and no longer. Invalidated by a change to the regulation, a change to the encoded rule set, a change to the submission, or a change in what the submission is being used for.\n\n## Short form, for the API response\n\nIf the verdict is returned as a field, the block won't travel with it. This will:\n\n> Pass means no encoded rule was violated, as of this evaluation — not that the submission is accurate or that the customer is compliant. Requirements we don't encode as machine-checkable produce no finding.\n\nTwo things I can tighten if you tell me:\n\n1. **The regulation and its version or retrieval date** — then `Against` becomes a real basis line instead of a description of your own rule set.\n2. **Whether the module validates content correctness or only conformance** (e.g. does it check that a submitted figure is plausible, or only that the field is present and well-formed?). If it's conformance only, that's the gap most likely to hurt you, and it deserves its own line rather than sitting inside \"not checked.\"\n\nOne caveat on the module itself, separate from the wording: a single pass/fail for a whole submission gives a reader nothing to calibrate against. Returning the list of rules evaluated alongside the verdict would let the scope statement be specific instead of structural — worth considering before this ships."
+              }
+            ]
+          }
+        ],
+        "without": [
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 4,
+            "costUsd": 0.18269775000000002,
+            "judgeCostUsd": 0.006697000000000005,
+            "durationSeconds": 59,
+            "startedAt": "2026-09-11T02:53:19.840Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-gwMIyC/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "judge votes: FAIL FAIL FAIL",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  false,
+                  false,
+                  false
+                ],
+                "evidence": "File writes are blocked in this session, so here it is inline — save it wherever it belongs.\n\n---\n\n# Compliance Module — Scope Statement\n\n**Status:** Draft · **Date:** 2026-09-11\n\n## 1. Purpose\n\nThe compliance module evaluates a customer submission against the regulatory requirements in force at the time of evaluation and returns a binary outcome: **pass** or **fail**.\n\nIt is a decision component, not a workflow system. It answers one question — \"does this submission meet the requirements?\" — and leaves the consequences of that answer to its callers.\n\n## 2. In scope\n\n- **Submission intake.** Accept a structured submission and validate it against the expected schema before evaluation begins. A submission that cannot be parsed is rejected as malformed, which is distinct from a `fail`.\n- **Rule evaluation.** Apply the active set of regulatory requirements and determine whether every applicable requirement is satisfied.\n- **Rule set versioning.** Resolve \"current requirements\" to a specific, identified version at evaluation time, and record which version produced a given result.\n- **Result emission.** Return `pass` or `fail`, with the rule set version and, on `fail`, the identifiers of the unmet requirements.\n- **Audit record.** Persist submission identifier, rule set version, outcome, and timestamp — enough to reconstruct why a past decision came out the way it did.\n- **Determinism.** The same submission against the same rule set version yields the same outcome.\n\n## 3. Out of scope\n\n- **Authoring or interpreting regulation.** The module consumes a rule set; translating regulatory text into rules is a separate, human-owned process.\n- **Remediation.** It reports which requirements failed. It does not suggest fixes, auto-correct submissions, or advise the customer.\n- **Customer-facing presentation.** No UI, notifications, or messaging.\n- **Submission collection.** No forms, uploads, or document ingestion — the submission arrives already assembled.\n- **Appeals, overrides, and manual review.** A human reversing a `fail` is a workflow concern elsewhere; the module's record of its own decision stays immutable.\n- **Identity and entitlement checks.** Handled upstream.\n- **Retroactive re-evaluation.** Rule set changes do not trigger re-runs of past submissions; a caller may request a fresh evaluation.\n\n## 4. Inputs and outputs\n\n**Input:** a structured submission with a stable identifier and the fields the active rule set requires.\n\n**Output:** `pass` or `fail`; the rule set version applied; on `fail`, the identifiers of the unmet requirements.\n\n**Error (distinct from `fail`):** malformed submission, unavailable rule set, or evaluation failure. Callers must not treat an error as a `fail` — an undetermined submission is not a non-compliant one.\n\n## 5. Assumptions\n\nThese follow from the brief as stated and should be confirmed:\n\n1. The outcome is genuinely binary — no \"pass with conditions\", \"partial\", or \"needs review\".\n2. A single rule set governs all submissions. If requirements vary by jurisdiction, product, or customer class, rule set *selection* becomes part of this module and section 2 must be extended.\n3. Rule sets arrive from an external process, already machine-readable.\n4. Evaluation is synchronous and self-contained — no third-party calls mid-evaluation.\n\n## 6. Open questions\n\n- **Which regulatory regime(s)?** Undefined in the brief, and the largest remaining input to design — until named, the rule representation cannot be fixed.\n- **How do rule set changes take effect?** Immediately on publication, or on a scheduled effective date? This decides whether \"current\" means \"latest\" or \"in force as of now\".\n- **Audit retention period?** Likely dictated by the same regime being enforced.\n- **Is a `fail` reason always disclosable to the customer?** Some regimes limit what may be shared.\n\n## 7. Acceptance criteria\n\n- A submission meeting all active requirements returns `pass`; one missing any returns `fail` with the unmet requirement identifiers.\n- A malformed or unevaluable submission returns an error, never a `fail`.\n- Every result carries the rule set version that produced it.\n- Every evaluation produces an audit record sufficient to reconstruct the decision.\n- Repeated evaluation of the same submission against the same rule set version returns the same outcome.\n\n---\n\nTwo things worth your attention before this gets circulated:\n\n- **\"Current regulatory requirements\" is the load-bearing ambiguity.** I scoped rule *authoring* out and rule *versioning* in, which is the split that usually holds up — but if requirements differ by jurisdiction or product line, rule-set selection lands back inside this module and section 2 grows.\n- **Error vs. fail.** I made these separate outcomes deliberately. Collapsing \"we couldn't evaluate this\" into \"fail\" is the single most common way a pass/fail compliance component causes harm downstream."
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 4,
+            "costUsd": 0.22114,
+            "judgeCostUsd": 0.007539000000000004,
+            "durationSeconds": 79,
+            "startedAt": "2026-09-11T02:54:18.955Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-dlYQ4u/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "judge votes: FAIL FAIL FAIL",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  false,
+                  false,
+                  false
+                ],
+                "evidence": "File writes are blocked in this session, so here it is inline. Tell me if you want it committed and I'll need write permission.\n\n---\n\n# Compliance Module — Scope Statement\n\nStatus: Draft · 2026-09-11\n\n## 1. Purpose\n\nThe compliance module evaluates a customer submission against the regulatory requirements in force for that submission and returns a pass/fail determination. It is the single point in the system where \"does this submission meet the rules?\" is answered, so no other component has to encode regulatory logic.\n\n## 2. Objectives\n\n- Produce a deterministic, reproducible pass/fail verdict for any submission.\n- Make every verdict explainable: which rules were applied, which failed, and why.\n- Make every verdict auditable after the fact, including re-running a historical submission against the ruleset in force at the time.\n\n## 3. In Scope\n\n**Evaluation**\n- Accept a structured customer submission and evaluate it against the active set of regulatory rules.\n- Return a binary verdict (`pass` / `fail`) as the primary result.\n- Return, alongside the verdict, a per-rule result set: rule identifier, rule version, outcome, and a human-readable reason for each failure.\n- Validate that the submission is well-formed and contains the fields the applicable rules depend on. A submission that cannot be evaluated is reported as such, distinctly from a substantive `fail` (see §7).\n\n**Rules**\n- Maintain rules as versioned, externally-authored definitions rather than inline code, so a regulatory change is a data change rather than a release.\n- Resolve which rules apply to a submission based on its attributes and effective date.\n- Support effective-from / effective-until dates so the module can evaluate \"as of\" any point in time.\n\n**Auditability**\n- Record per evaluation: submission identifier, ruleset version, timestamp, verdict, per-rule outcomes.\n- Guarantee that re-evaluating the same submission against the same pinned ruleset version yields an identical verdict.\n\n**Interface**\n- Expose evaluation as a synchronous call returning the payload in §7.\n- Expose the currently active ruleset version for callers that need to record it.\n\n## 4. Out of Scope\n\n- **Collecting or storing submissions.** The module receives a submission; it doesn't own intake, upload, or the system of record.\n- **Authoring or interpreting regulation.** Translating legal text into rule definitions is a separate, human, editorial process. The module executes rules as written; it does not render legal advice.\n- **Remediation.** It reports what failed; it does not correct submissions or re-submit.\n- **Notification and workflow.** Customer alerts, reviewer routing, escalation, approval queues.\n- **Manual override.** Any human ability to overturn a verdict lives outside the module; the verdict is an input to that decision.\n- **Filing or transmission to regulators.**\n- **Monitoring regulation for change.** Detecting that a requirement changed is upstream; it results in a new ruleset version being published.\n- **Reporting and analytics** over historical verdicts, beyond emitting the audit records such reporting would consume.\n\n## 5. Assumptions\n\n1. Submissions arrive already parsed into a defined structured format — no document extraction, OCR, or free-text interpretation.\n2. \"Current regulatory requirements\" means the ruleset version marked active at evaluation time, filtered to rules whose effective dates cover the submission's effective date. See §8.1.\n3. Rules are expressible as deterministic checks over submission fields. Requirements needing human judgement are handled outside the module, modelled if at all as an attested input field.\n4. One authoritative ruleset serves all submissions; jurisdiction or product variation is expressed as rule applicability conditions, not separate deployments. See §8.2.\n\n## 6. Dependencies\n\n- A published, versioned ruleset and the editorial process producing it.\n- A defined submission schema, owned jointly with the intake system.\n- Durable storage for audit records.\n\n## 7. Interface Contract\n\nInput: a structured submission plus an effective date (defaulting to now).\n\nOutput:\n- `verdict` — `pass` | `fail` | `not_evaluable`\n- `rulesetVersion` — the exact version applied\n- `evaluatedAt` — timestamp\n- `results[]` — per applicable rule: `ruleId`, `ruleVersion`, `outcome`, `reason` on failure\n- `unevaluable[]` — rules that could not be run, with the missing or malformed inputs that prevented them\n\n`not_evaluable` is deliberately distinct from `fail`: a submission missing a required field has not been found non-compliant, and conflating the two misreports the customer's status.\n\n## 8. Open Questions\n\n1. **Effective-date semantics.** Is a submission judged against the rules in force when it was submitted, or when it is evaluated? These diverge whenever a rule changes in between, and re-evaluations of old submissions flip verdicts depending on the answer. §5.2 assumes submission-date semantics — confirm before the rule engine is built.\n2. **Jurisdictional scope.** How many regulatory regimes at launch? §5.4's single-ruleset assumption holds for a handful and breaks down past that.\n3. **Partial compliance.** Do all rules block, or are some advisory (warn without failing)? Current scope assumes all applicable rules are blocking.\n\n## 9. Acceptance Criteria\n\n- A submission violating a known rule returns `fail` naming that rule.\n- A submission satisfying all applicable rules returns `pass`.\n- A submission missing a rule-required field returns `not_evaluable`, not `fail`.\n- A historical submission re-evaluated against its pinned ruleset version returns the originally recorded verdict.\n- Publishing a new ruleset version changes future verdicts without a code release.\n\n---\n\n**Two places I went beyond your one-line description**, both worth a decision:\n\n1. **Pass/fail alone is probably too thin for a compliance module.** A bare boolean can't be audited or acted on — the customer can't tell what to fix and you can't defend the determination later. I kept pass/fail as the headline verdict but added per-rule results and a pinned ruleset version to the return payload. If the consumer genuinely only needs the boolean, §7 can shrink, but I'd keep the audit record either way.\n\n2. **\"Current\" requirements needs defining.** Without an effective-date model, the same submission yields different answers at different times and you can't reproduce a past determination. §8.1 is the real open question here — everything about rule storage depends on the answer."
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 4,
+            "costUsd": 0.19532175,
+            "judgeCostUsd": 0.0052290000000000045,
+            "durationSeconds": 59,
+            "startedAt": "2026-09-11T02:55:38.192Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-lHQZ6f/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "judge votes: FAIL FAIL FAIL",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  false,
+                  false,
+                  false
+                ],
+                "evidence": "Writing to disk is blocked in this session, so here it is inline — save it wherever you keep specs.\n\n---\n\n# Compliance Module — Scope Statement\n\n**Status:** Draft · **Date:** 2026-09-11 · **Owner:** TBD\n\n## 1. Purpose\n\nThe compliance module evaluates a customer submission against the regulatory requirements in force at the time of evaluation and returns a determination of **pass** or **fail**. It is the single authoritative decision point for whether a submission is compliant; no other component makes or overrides that call.\n\n## 2. Objectives\n\n- Produce a deterministic, reproducible pass/fail determination for any submission.\n- Evaluate against an explicitly versioned ruleset, so every determination can be re-derived later from the submission and the ruleset version alone.\n- Make each determination auditable: which rules ran, which failed, and why.\n\n## 3. In Scope\n\n**Evaluation**\n- Accept a structured submission payload and return a determination.\n- Execute the full ruleset against the submission; no early exit on first failure, so all failures are reported in one pass.\n- Return, alongside the verdict: the ruleset version used, the evaluation timestamp, and the identifier and human-readable reason for each failed rule.\n\n**Ruleset management**\n- Ingest regulatory requirements as a versioned, machine-readable ruleset.\n- Resolve \"current\" to a specific ruleset version at evaluation time, and record it.\n- Support effective-dating, so a ruleset can be loaded before it takes effect and a superseded ruleset stays available for re-evaluating historical submissions.\n\n**Operational**\n- Validate submission payloads against the expected schema, rejecting malformed input distinctly from a compliance failure (see §5).\n- Emit an audit record for every evaluation, retained per the retention policy.\n- Expose ruleset version and health via a status endpoint.\n\n## 4. Out of Scope\n\n- **Rule authoring.** Interpreting regulations into rules, and any UI for doing so, belongs to the compliance team upstream. The module consumes the ruleset; it does not decide what the rules should be.\n- **Submission collection.** Forms, intake, file upload, customer-facing UX.\n- **Remediation.** Telling the customer how to fix a failure, or the re-submission flow.\n- **Manual review and appeals.** Human override is a downstream workflow; the module records determinations but does not model an override state.\n- **Scoring or risk grading.** The output is binary, not a score or a confidence.\n- **Identity verification, sanctions screening, fraud detection** — unless a specific ruleset explicitly delegates to them via a documented external check.\n- **Regulatory reporting and filing** to any authority.\n\n## 5. Inputs and Outputs\n\n**Input:** a submission payload conforming to a published schema, plus an optional explicit ruleset version (defaults to current-as-of-now).\n\n**Output:** a determination object with `verdict` (`pass` | `fail`), `ruleset_version`, `evaluated_at`, and `failures[]` (rule id, severity, message).\n\n**Error cases are distinct from `fail`:** a malformed payload, an unavailable ruleset, or a failed external check returns an error, not a verdict. A submission that could not be evaluated must never be recorded as having passed.\n\n## 6. Assumptions\n\n1. Requirements are expressible as discrete, independently evaluable rules over the submission payload. Rules requiring human judgment are out of scope per §4.\n2. The ruleset arrives machine-readable from an upstream process; the module does not parse regulatory prose.\n3. All data needed for a determination is in the payload or retrievable from a named system of record at evaluation time.\n4. A single jurisdiction and regime at launch. Multi-jurisdiction routing is follow-on (§8).\n\n## 7. Acceptance Criteria\n\n- A known-good submission returns `pass`; each rule has at least one fixture returning `fail` with that rule's id in `failures[]`.\n- Re-evaluating a historical submission against its recorded ruleset version reproduces the original verdict exactly.\n- A submission violating three rules reports all three, not just the first.\n- Malformed input returns an error, not `fail`, and is not recorded as a verdict.\n- Every evaluation produces a retrievable audit record.\n\n## 8. Deferred (candidate follow-on scope)\n\nMulti-jurisdiction rule routing · bulk/batch evaluation · dry-run of a pending ruleset against historical submissions · customer-facing remediation guidance.\n\n## 9. Open Questions\n\n1. **Which regime and jurisdiction?** §4 and §6.4 assume one; both the ruleset format and the deferred multi-jurisdiction work hinge on this.\n2. **What is the system of record for submissions,** and does the module read from it or receive payloads by value?\n3. **Retention period** for audit records — likely regulator-dictated.\n4. **Latency and volume budget:** synchronous per-submission, or batch?\n\n---\n\nThree judgment calls I made that are worth your review, since they widen the \"returns a pass or fail\" framing slightly:\n\n- **Failure reasons are in scope.** A bare boolean is unusable downstream — nobody can act on it and no auditor can check it. The verdict stays binary; `failures[]` carries the detail.\n- **\"Current requirements\" implies versioning.** I made the ruleset explicitly versioned and effective-dated, because a determination that can't be tied to a specific rule version can't be defended after the rules change.\n- **Errors are not failures.** Treating \"couldn't evaluate\" as `fail` is wrong in both directions, so I split it out and made it an acceptance criterion.\n\nThe jurisdiction question (§9.1) is the one that would most change the shape of this — tell me the regime and I'll tighten §3 and §6 around it."
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 1,
+        "passRate": 1,
+        "scoreWithout": 0,
+        "passRateWithout": 0,
+        "delta": 1
+      }
+    },
+    {
+      "name": "no-disclaimer",
+      "dir": "evals/03-no-disclaimer",
+      "source": "prose",
+      "promptMarkdown": "We run an automated check that scans a customer's uploaded device spreadsheet for\npersonal data — names, emails, phone numbers, national ID patterns — and flags any\ncell that matches, so they can strip it before the file goes anywhere. It uses regex\npatterns plus a name dictionary. It runs on the uploaded file only, at upload time.\n\nGive me the scope statement. Keep it short — it goes in a narrow sidebar.",
+      "runsPerCase": 3,
+      "timeoutSeconds": 300,
+      "maxTurns": 10,
+      "graders": [
+        {
+          "name": "criteria",
+          "type": "llm",
+          "weight": 1,
+          "graderMarkdown": "PASS requires:\n(1) The block is short, as asked, and still carries a \"Not checked\" line and a\n    negation. Brevity must not cost the two load-bearing lines.\n(2) \"Not checked\" reflects the actual mechanism: regex and dictionary matching misses\n    personal data it has no pattern for, and the check covers the uploaded file at\n    upload time only — not data entered later, not other systems.\n(3) The negation denies the inference a reader draws: that a clean result means the\n    file contains no personal data, or that they are GDPR compliant.\n(4) It is NOT generic legal boilerplate. No \"for informational purposes only\", no\n    \"consult a data protection officer\" as a substitute for describing coverage.\n    A pointer to a DPO is acceptable IN ADDITION to a real scope description, never\n    instead of it.\n\nFAIL if brevity is used as an excuse to drop the negation, or if the output is a\ndisclaimer wearing a scope statement's name.",
+          "config": {
+            "criteria": "PASS requires:\n(1) The block is short, as asked, and still carries a \"Not checked\" line and a\n    negation. Brevity must not cost the two load-bearing lines.\n(2) \"Not checked\" reflects the actual mechanism: regex and dictionary matching misses\n    personal data it has no pattern for, and the check covers the uploaded file at\n    upload time only — not data entered later, not other systems.\n(3) The negation denies the inference a reader draws: that a clean result means the\n    file contains no personal data, or that they are GDPR compliant.\n(4) It is NOT generic legal boilerplate. No \"for informational purposes only\", no\n    \"consult a data protection officer\" as a substitute for describing coverage.\n    A pointer to a DPO is acceptable IN ADDITION to a real scope description, never\n    instead of it.\n\nFAIL if brevity is used as an excuse to drop the negation, or if the output is a\ndisclaimer wearing a scope statement's name.",
+            "focus": "last_message"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 3,
+            "costUsd": 0.10014775000000001,
+            "judgeCostUsd": 0.002817000000000007,
+            "durationSeconds": 22,
+            "startedAt": "2026-09-11T02:56:37.369Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-9DSiKd/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "**Sidebar version (lead with this):**\n\n> **Scope of this check** — as of upload, 11 Sep 2026\n>\n> Scans the cells of this file against our own regex patterns and name dictionary (version not supplied — not an external standard). It does not detect personal data that doesn't match a pattern: names outside the dictionary, non-Latin or transliterated names, free-text notes, or identifiers that only become personal once linked to something else (serial numbers, implant IDs, clinician initials). It covers this file only — not other copies, linked files, or anything already sent.\n>\n> **A clean result means nothing matched. It does not mean the file is free of personal data, and it does not establish GDPR compliance or that the file is safe to release.**\n\n---\n\nTwo things worth flagging:\n\n**The version line.** Tell me the pattern set / dictionary version and date and I'll pin it. Right now the basis line honestly claims no authority, which is correct but weaker than it needs to be.\n\n**The biggest gap is the linkage one.** A device spreadsheet is mostly serial numbers, implant IDs, and site codes — none of which a regex flags, all of which are personal data under GDPR the moment they're linkable to a patient. A customer who sees \"no PII found\" on a file that is *entirely* indirect identifiers will strip nothing and ship it. That sentence is in the block above; I'd resist cutting it if someone asks for it shorter.\n\n**Longer labelled form, if it's useful elsewhere:**\n\n```markdown\n## Scope of this check\n\n**Checked:** every cell in the uploaded spreadsheet, at upload time.\n**Against:** our regex pattern set (names, emails, phone numbers, national ID formats)\nplus an internal name dictionary — our own rules, version not supplied, not an\nexternal or certified standard.\n**Not checked:** personal data that doesn't match a pattern — names absent from the\ndictionary, non-Latin or transliterated names, free text in notes or comment columns,\nand indirect identifiers (device serials, implant IDs, site or clinician codes) that\nare personal data once linked to a patient. Also not checked: other copies of the\nfile, linked or referenced files, embedded objects, file metadata, or anything already\ntransmitted.\n**This does not establish:** that the file is free of personal data, that it is safe\nto send to a third party, or that its handling complies with GDPR.\n**Valid as of:** this upload, 11 Sep 2026. Invalidated by any edit to the file, and by\nchanges to the pattern set or name dictionary.\n```"
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 3,
+            "costUsd": 0.08819075000000001,
+            "judgeCostUsd": 0.0019739999999999966,
+            "durationSeconds": 17,
+            "startedAt": "2026-09-11T02:56:58.915Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-AVbac6/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "## Scope of this check\n\n> Scans every cell of this uploaded file, at upload, against our own regex patterns and name dictionary (version not supplied — not an external standard). It does not catch personal data that doesn't match a pattern: names outside the dictionary, transliterated or misspelled names, free-text notes, or identifiers that only become personal when linked to something else (serials, IMEIs, asset tags, account refs).\n>\n> **A clean result means nothing matched — not that the file is free of personal data.** Flagged cells are flagged, not removed. Checked as of 11 Sep 2026, this file only; edits, other copies and later uploads are not covered.\n\nThat's ~90 words and keeps both load-bearing lines: the omission and the negation. If the sidebar is tighter still, the last paragraph alone survives on its own.\n\nTwo things worth knowing:\n\n- **The basis line is unpinned.** Tell me the pattern-set version or last-updated date and I'll pin it — right now the statement claims no authority, which is honest but weak.\n- **\"National ID patterns\"** — if that's a fixed set of countries, name them or say \"selected national ID formats\". A reader whose customers are in a country you don't cover will otherwise assume they are.\n\nWant the full labelled block as well, for wherever this result gets exported or attached to a record?"
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 3,
+            "costUsd": 0.09418974999999999,
+            "judgeCostUsd": 0.0024089999999999945,
+            "durationSeconds": 18,
+            "startedAt": "2026-09-11T02:57:16.387Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-V7dA9b/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "## Scope of this check\n\n**Sidebar version:**\n\n> Scans the cells of this uploaded file, at upload, against our own regex patterns and name dictionary (version not supplied — not an external standard). It will miss personal data the patterns don't describe: names outside the dictionary, non-Latin scripts, free-text notes, ID formats we don't cover, and anything in linked or embedded files. It flags cells; it does not remove them. **A clean result means nothing matched — not that the file is free of personal data, and not that sharing it is lawful.** Reflects the patterns in force on 2026-09-11.\n\nThat's ~75 words. If the sidebar is tighter, cut to the last two sentences — the negation and the date are the load-bearing parts.\n\n**Longer form, if you want it on the results page or in docs:**\n\n> **Checked:** every cell of the spreadsheet uploaded in this session, at upload time.\n> **Against:** our own regex pattern set and name dictionary — our judgement of what personal data looks like, not a published standard or regulatory definition. Version not supplied.\n> **Not checked:** personal data that doesn't match a pattern (names absent from the dictionary, transliterated or non-Latin names, initials, free-text comment fields, national ID formats outside our set); content in linked, embedded, or hidden sheets and objects; any other copy of this data in your systems. Whether flagged cells were actually removed afterwards.\n> **This does not establish** that the file is free of personal data, that it is safe to send onward, or that handling it complies with GDPR or any other data protection law.\n> **Valid as of:** 2026-09-11, for this file as uploaded. Re-run after any edit; invalidated if the pattern set or dictionary changes.\n\nOne thing I'd pin down: tell me the pattern set / dictionary version and when it was last updated, and I'll replace \"version not supplied\" with the real basis. Right now the statement can say what the check looked for, but not how current that definition is."
+              }
+            ]
+          }
+        ],
+        "without": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 1,
+            "costUsd": 0.06248200000000001,
+            "judgeCostUsd": 0.0016740000000000088,
+            "durationSeconds": 16,
+            "startedAt": "2026-09-11T02:57:34.691Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-cFPcXf/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "**Scope of this check**\n\nScans the file you just uploaded for cells that look like personal data — names, emails, phone numbers, national ID numbers — using pattern matching plus a name list.\n\nIt flags candidates for you to review. It doesn't remove anything, and a clean result isn't a guarantee: expect misses on unusual formats, names outside the list, and personal data buried in free-text notes. Some flags will be false alarms.\n\nOnly this file, only at upload. Later edits aren't rescanned.\n\n---\n\nTwo things worth deciding before this ships:\n\n- **The \"clean result isn't a guarantee\" line is the load-bearing sentence.** If customers read a green checkmark as \"this file is safe to send,\" the check makes things worse than no check. Keep that sentence even if you cut elsewhere.\n- **If the file is rescanned on re-upload or edit, say so** — I wrote the last line assuming a strict upload-time-only trigger, per your description."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 1,
+            "costUsd": 0.05721199999999999,
+            "judgeCostUsd": 0.0017039999999999972,
+            "durationSeconds": 12,
+            "startedAt": "2026-09-11T02:57:50.203Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-TtxeVN/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "**Scope**\n\nThis check scans the spreadsheet you upload for cells that look like personal data: names, email addresses, phone numbers, and national ID formats. It runs once, at upload, on that file only.\n\nIt works by pattern matching and a dictionary of common names. That means it will miss personal data it doesn't have a pattern for — unusual or transliterated names, free-text notes, ID formats outside its list, or details split across several cells. It will also flag some cells that aren't personal data.\n\nTreat the results as a first pass, not a clearance. Nothing outside this file is checked, and a clean result doesn't certify the file is free of personal data.\n\n---\n\nThe one line worth defending if it gets edited: *a clean result doesn't certify the file is free of personal data.* Regex-plus-dictionary detection has a real miss rate, and a sidebar that reads as a guarantee is exactly what someone points at later when something leaks. If you need it shorter, cut the false-positive sentence before that one."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 1,
+            "costUsd": 0.05372500000000001,
+            "judgeCostUsd": 0.00146700000000001,
+            "durationSeconds": 12,
+            "startedAt": "2026-09-11T02:58:02.691Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-SNFw2t/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "**Scope**\n\nThis check scans the spreadsheet you upload, at the moment you upload it. It flags cells matching known personal-data patterns — names, emails, phone numbers, national ID formats — using regex rules and a name dictionary.\n\n**Not in scope**\n\n- Personal data in any other file, system, or export\n- Anything after upload — edits later aren't re-scanned\n- Removing or blocking data; the check flags, you decide\n- Names, formats, or scripts outside our pattern set, or data disguised to avoid matching\n\nExpect both misses and false positives. A clean result means nothing matched our rules, not that the file is free of personal data."
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 1,
+        "passRate": 1,
+        "scoreWithout": 1,
+        "passRateWithout": 1,
+        "delta": 0
+      }
+    }
+  ],
+  "aggregates": {
+    "casesTotal": 3,
+    "casesPassed": 3,
+    "overallScore": 1,
+    "overallPassRate": 1,
+    "meanDelta": 0.4444444444444445
+  }
+}

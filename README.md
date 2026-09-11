@@ -76,8 +76,8 @@ or tool, not just this one:
 > provision it cites does not reach?
 
 <!-- bench-counts:start -->
-Of the 30 cases, **10 are ones Claude failed in every run** with no reference material and no
-web access, 12 it passed in every run, and 8 it passed only sometimes. All three
+Of the 30 cases, **11 are ones Claude failed in every run** with no reference material and no
+web access, 12 it passed in every run, and 7 it passed only sometimes. All three
 groups are published, because a benchmark that hides its easy cases overstates itself.
 <!-- bench-counts:end -->
 

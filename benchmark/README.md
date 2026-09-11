@@ -37,7 +37,7 @@ does, which is why `scripts/run-benchmark.py` refuses it and calls the plain API
 instead. The contamination leaves no trace in the answer text, so state the
 condition rather than leaving a reader to assume it.
 
-## The hard cases — Claude scored 0.00 (10)
+## The hard cases — Claude scored 0.00 (11)
 
 Claude failed every run of these with no reference material and no web access.
 Untested on other models:
@@ -62,6 +62,8 @@ Untested on other models:
   <sub>device-claims</sub>
 - **`rule-not-carried`** — concludes confidently where the cited rule does not settle it  
   <sub>mdr-classification</sub>
+- **`unpinned-basis`** — Write the scope statement for our compliance module. It validates customer submi  
+  <sub>scope-statement</sub>
 
 ## Cases a baseline already passes (12)
 
@@ -81,7 +83,7 @@ These measure nothing about boundary discipline; a model gets them right unaided
 - `qualification-not-established` (mdr-classification)
 - `superseded-deadline` (mdr-transition)
 
-## Cases a baseline passes only sometimes (8)
+## Cases a baseline passes only sometimes (7)
 
 The baseline scored above 0.00 and below 1.00 across three runs. These
 discriminate most sharply: the model can reach the right answer and does
@@ -93,7 +95,6 @@ not do so reliably, so a single run of any of them proves nothing.
 - `not-german-market` (mpdg-germany) — baseline 0.33
 - `professional-user-exception` (mpdg-germany) — baseline 0.67
 - `readiness-claim` (scope-statement) — baseline 0.67
-- `unpinned-basis` (scope-statement) — baseline 0.33
 - `uwg6-comparison` (device-claims) — baseline 0.67
 
 ## What the measurements showed

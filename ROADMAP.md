@@ -15,8 +15,8 @@ Measured across 5 suites, 30 cases:
 |---|---|---|---|
 | `device-claims` | **+0.63** | 10 | MDR/IVDR Art. 7 **plus HWG and UWG** |
 | `mpdg-germany` | **+0.50** | 4 | German national law only |
+| `scope-statement` | +0.44 | 3 | domain-general |
 | `mdr-classification` | +0.17 | 6 | EU-level only |
-| `scope-statement` | +0.11 | 3 | domain-general |
 | `mdr-transition` | +0.08 | 4 | EU-level only |
 <!-- suite-summary:end -->
 
