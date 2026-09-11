@@ -12,6 +12,7 @@ fails if any of it is stale or missing.
 
 Usage:  python3 scripts/build-portable.py [--check]
 """
+import re
 import sys
 from pathlib import Path
 
@@ -61,6 +62,29 @@ def build_bundle(plugin, skill, skill_dir):
         for r in refs:
             parts += [f"## {r}", "", (skill_dir / "references" / r).read_text().rstrip(), "", "---", ""]
     return "\n".join(parts).rstrip() + "\n"
+
+def reference_table():
+    """The provenance table for README, read out of the reference files themselves.
+
+    Typed by hand it listed four of six references and marked two of them
+    "not auto-verifiable", which stopped being true when MDR and IVDR were rerouted
+    through the Publications Office. A table of what the repo verifies should not be the
+    part of the repo that is wrong.
+    """
+    rows = []
+    for ref in sorted(ROOT.glob("*/skills/*/references/*.md")):
+        txt = ref.read_text()
+        src = re.search(r"\*\*Source:\*\*\s*(.+)", txt)
+        url = re.search(r"<(https?://[^>]+)>", txt)
+        got = re.search(r"\*\*Retrieved:\*\*\s*([0-9]{4}-[0-9]{2}-[0-9]{2})", txt)
+        src_txt = (src.group(1).strip().rstrip("—").strip() if src else "—")
+        if url:
+            src_txt = f"[{src_txt}]({url.group(1)})"
+        # parts: <plugin>/skills/<skill>/references/<file>.md -- the plugin is -5.
+        plugin = ref.parts[-5]
+        rows.append(f"| `{ref.name}` | `{plugin}` | {src_txt} | {got.group(1) if got else '—'} |")
+    return "\n".join(["| Reference | Skill | Source | Retrieved |", "|---|---|---|---|"] + rows)
+
 
 def build_gemini(skills):
     lines = [
@@ -179,6 +203,24 @@ def main():
         else:
             path.parent.mkdir(parents=True, exist_ok=True)
             path.write_text(want); print(f"  wrote       {rel}  ({len(want)} bytes)")
+    # README's provenance table is a splice rather than a whole generated file.
+    S, E = "<!-- references:start -->", "<!-- references:end -->"
+    readme = ROOT / "README.md"
+    if readme.exists():
+        txt = readme.read_text()
+        if S in txt and E in txt:
+            head, rest = txt.split(S, 1)
+            _, tail = rest.split(E, 1)
+            want = f"{head}{S}\n{reference_table()}\n{E}{tail}"
+            if txt == want:
+                print("  up to date  README.md (reference table)")
+            elif check:
+                stale.append(Path("README.md")); print("  STALE       README.md (reference table)")
+            else:
+                readme.write_text(want); print("  wrote       README.md (reference table)")
+        else:
+            print("  README.md has no reference-table markers"); stale.append(Path("README.md"))
+
     if check and stale:
         print(f"\n{len(stale)} generated file(s) out of date. Run: python3 scripts/build-portable.py")
         return 1

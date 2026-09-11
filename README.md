@@ -182,12 +182,22 @@ If a quote drifts, it says where:
 
 Exit 0 when every fetched source matches, 1 on drift, 2 if nothing could be fetched.
 
-| Reference | Source | Retrieved | Auto-verifiable |
+<!-- references:start -->
+| Reference | Skill | Source | Retrieved |
 |---|---|---|---|
-| `hwg.md` | gesetze-im-internet.de/heilmwerbg | 2026-09-09 | yes |
-| `uwg.md` | gesetze-im-internet.de/uwg_2004 | 2026-09-09 | yes |
-| `mdr-ivdr-art7.md` | EUR-Lex, CELEX 32017R0745 / 32017R0746 | 2026-09-09 | no — EUR-Lex blocks scripted clients |
-| `annex-viii-software.md` | EUR-Lex, CELEX 32017R0745, Annex VIII | 2026-09-09 | no — same |
+| `hwg.md` | `device-claims` | [gesetze-im-internet.de, `heilmwerbg`](https://www.gesetze-im-internet.de/heilmwerbg/) | 2026-09-09 |
+| `mdr-ivdr-art7.md` | `device-claims` | [EUR-Lex, Regulation (EU) 2017/745 (MDR), CELEX 32017R0745](https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32017R0745) | 2026-09-09 |
+| `uwg.md` | `device-claims` | [gesetze-im-internet.de, `uwg_2004`](https://www.gesetze-im-internet.de/uwg_2004/) | 2026-09-09 |
+| `annex-viii-software.md` | `mdr-classification` | [EUR-Lex, Regulation (EU) 2017/745, CELEX 32017R0745, Annex VIII](https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32017R0745) | 2026-09-09 |
+| `art120-amended.md` | `mdr-transition` | [Publications Office, Official Journal L 80, 20.3.2023, p. 24](http://publications.europa.eu/resource/oj/JOL_2023_080_R_0002.ENG) | 2026-09-10 |
+| `mpdg.md` | `mpdg-germany` | [gesetze-im-internet.de, Medizinprodukterecht-Durchführungsgesetz (MPDG)](https://www.gesetze-im-internet.de/mpdg/) | 2026-09-10 |
+<!-- references:end -->
+
+Every one of them is re-fetched and diffed on each push and again every Monday, which is
+what the `verify` badge reports. An earlier version of this table marked the two EU-Lex
+references "not auto-verifiable — EUR-Lex blocks scripted clients". That was true until
+the MDR and IVDR text was rerouted through the Publications Office, and the column stayed
+wrong afterwards, understating what the repo checks. It is generated now.
 
 The skills use two citation tiers: `[verified]` for provisions in those files, and
 `[verify]` for anything else. They are instructed to refuse rather than supplement from
