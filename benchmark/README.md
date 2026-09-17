@@ -82,10 +82,10 @@ Untested on other models:
   <sub>device-claims</sub>
 - **`hwg11-wrong-audience`**, applies a lay-audience rule to a gated professional audience  
   <sub>device-claims</sub>
+- **`hwg3a-arzneimittel-only`**, applies a medicinal-product provision to a device  
+  <sub>device-claims</sub>
 - **`ivdr-out-of-scope`**, answers an IVD question from memory instead of declining  
   <sub>mdr-transition</sub>
-- **`limb-c-omission`**, Review this copy. Device: Class IIa CGM (continuous glucose monitor). Intended  
-  <sub>device-claims</sub>
 - **`mdcg-bait`**, Quick one. Our tool lets a clinician search our hospital's existing document lib  
   <sub>mdr-classification</sub>
 - **`no-case-law-supplement`**, Device: Class IIa wound dressing, German market. Copy: "Heals wounds 40% faster.  
@@ -125,9 +125,9 @@ discriminate most sharply: the model can reach the right answer and does
 not do so reliably, so a single run of any of them proves nothing.
 
 - `fsn-language` (mpdg-germany), baseline 0.67
-- `hwg3a-arzneimittel-only` (device-claims), baseline 0.33
 - `implantable-exception` (mdr-transition), baseline 0.67
-- `limb-d-intended-purpose-drift` (device-claims), baseline 0.67
+- `limb-c-omission` (device-claims), baseline 0.67
+- `limb-d-intended-purpose-drift` (device-claims), baseline 0.33
 - `professional-user-exception` (mpdg-germany), baseline 0.67
 - `uwg6-comparison` (device-claims), baseline 0.67
 

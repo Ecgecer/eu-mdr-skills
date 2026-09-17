@@ -17,16 +17,16 @@ plugin's `evals/model-probes/`, which the published tables never read.
 
 | Case | default baseline | default Δ | haiku baseline | haiku Δ |
 |---|---|---|---|---|
-| `hwg3a-arzneimittel-only` | 0.33 | +0.33 | 0.00 | +1.00 |
+| `hwg3a-arzneimittel-only` | 0.00 | +0.67 | 0.00 | +1.00 |
+| `clean-copy-control` | 0.00 | +0.67 | 0.00 | +0.67 |
 | `puffery-restraint` | 0.00 | +1.00 | 0.00 | +1.00 |
-| `limb-d-intended-purpose-drift` | 0.67 | +0.33 | 0.00 | +0.33 |
 | `uwg6-comparison` | 0.67 | +0.33 | 0.00 | +0.33 |
-| `clean-copy-control` | 0.00 | +1.00 | 0.00 | +0.67 |
 | `non-german-eu-market` | 0.00 | +1.00 | 0.00 | +0.67 |
-| `no-case-law-supplement` | 0.00 | +0.67 | 0.67 | +0.00 |
+| `limb-d-intended-purpose-drift` | 0.33 | +0.67 | 0.00 | +0.33 |
 | `hwg11-item-scope` | 0.00 | +1.00 | 0.00 | +0.33 |
 | `hwg11-wrong-audience` | 0.00 | +1.00 | 0.00 | +0.33 |
-| `limb-c-omission` | 0.00 | +1.00 | 0.67 | -0.33 |
+| `limb-c-omission` | 0.67 | +0.33 | 0.67 | -0.33 |
+| `no-case-law-supplement` | 0.00 | +1.00 | 0.67 | +0.00 |
 
 **`mdr-classification`**, 7 cases. Mean delta **+0.29** on the CLI default, **+0.67** on `haiku`.
 

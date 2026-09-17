@@ -25,7 +25,7 @@ What it got wrong was where rules **stop**:
 |---|---|
 | Cited a German advertising provision against a device that provision does not reach | 3 of 3 runs |
 | Asserted another member state's advertising rules from memory, having correctly ruled out German law | 3 of 3 runs |
-| Applied a medicinal-product provision to a device | 2 of 3 runs |
+| Applied a medicinal-product provision to a device | 3 of 3 runs |
 | Applied a lay-audience advertising rule to a gated professional audience | 3 of 3 runs |
 | Answered "plan for a notified body" to a question the cited rule does not settle | 3 of 3 runs |
 | Manufactured findings on clean copy | 3 of 3 runs |
@@ -208,7 +208,7 @@ since; its current figure is in its own eval README rather than restated here. T
 ## What it costs
 
 <!-- eval-cost:start -->
-**$182 of eval spend so far**, across 46 stored runs of 5 suites and 30 cases, at 3 runs per case per arm. The largest single run (`device-claims`, 10 cases, both arms) was **$16.39** and took 97 minutes.
+**$197 of eval spend so far**, across 47 stored runs of 5 suites and 30 cases, at 3 runs per case per arm. The largest single run (`device-claims`, 10 cases, both arms) was **$16.39** and took 97 minutes.
 <!-- eval-cost:end -->
 
 Budget for re-running after every substantive change, because that is when a suite earns

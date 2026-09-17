@@ -1,102 +1,107 @@
 # With the skill
 
-Verbatim output, unedited. Case `hwg11-item-scope`, run 1 of the with-plugin arm, stored run `2026-09-11T05-46-23-760Z`.
+Verbatim output, unedited. Case `hwg11-item-scope`, run 1 of the with-plugin arm, stored run `2026-09-17T18-43-23-939Z`.
 All three runs of this arm scored 1.00.
 
 ---
 
-# Device Claims Review: consumer web page copy
+# Device Claims Review: consumer web page, blood-pressure monitor
 
-**Reviewed:** 2026-09-11
-**Device:** Home blood-pressure monitor — Class IIa (MDR)
+**Reviewed:** 2026-09-17
+**Device:** Home blood-pressure monitor, Class IIa
 **Intended purpose (as assessed):** NOT SUPPLIED — limb (d) not assessed
-**Audience:** Publikum — ungated public consumer page, so HWG § 11 applies (nos. 7, 8, 9, 11, 12 only)
-**Markets:** DE (and EU, via MDR Art. 7)
+**Audience:** Publikum (ungated public consumer page) — HWG § 11 applies, nos. 7, 8, 9, 11, 12 only
+**Markets:** DE (EU rules apply cumulatively)
 
 ## Summary
 
 3 claims reviewed. 1 cut, 1 reword, 1 verify, 0 OK.
 
-**Ready to publish: No — rewrite needed.**
+**Ready to publish: No, rewrite needed.**
 
-The fear framing is the problem, and it is not a close call: HWG § 11(1) no. 7 is written for exactly this shape of sentence, and this page is Publikum. The Schmidt endorsement is *not* prohibited — § 11(1) no. 2 (endorsements by health professionals) does not apply to devices — but it carries verification duties.
+The fear framing is the serious one. "Don't gamble with your heart" is close to the textbook shape of HWG § 11(1) no. 7, and § 11 applies in full here because the page is ungated consumer-facing. It cannot be fixed with evidence — it has to come out.
 
 ## Findings
 
 ---
 
-**Claim:** "Don't gamble with your heart"
-**Breach:** HWG § 11(1) no. 7 `[verified]`; MDR Art. 7(b) `[verified]`; UWG § 5(2) no. 1 `[verified]`
-**Why:** § 11(1) no. 7 prohibits Publikumswerbung "die nahelegen, dass die Gesundheit durch die **Nichtverwendung** ... beeinträchtigt ... werden könnte" — this sentence says not measuring is a gamble with your heart, which is that proposition in plain words. Paired with "check your pressure daily" it also creates a false impression regarding treatment (Art. 7(b)): a monitor measures blood pressure, it does not protect the heart, and the copy implies the act of measuring averts cardiac risk. Under UWG § 5(2) no. 1 that same implication is an Angabe capable of deceiving about "von der Verwendung zu erwartende Ergebnisse".
-**Evidence needed:** n/a — cannot be cured by evidence. Even a device that measures perfectly does not make "don't gamble with your heart" lawful Publikumswerbung; the defect is the fear framing, not the data.
-**Call:** Cut.
-**Suggested fix:** see the paste-ready copy below.
+**Claim:** "Don't gamble with your heart, check your pressure daily."
+**Breach:** HWG § 11(1) no. 7 `[verified]`
+**Why:** The sentence works by suggesting that health is at risk if the device is *not* used — the operative words are "dass die Gesundheit durch die **Nichtverwendung** ... beeinträchtigt ... werden könnte". "Gamble with your heart" is a direct fear-of-not-using construction, and the second half supplies the implied improvement-by-use half of the same provision.
+**Evidence needed:** n/a — cannot be cured by evidence. § 11 no. 7 prohibits the framing, not an unsubstantiated fact.
+**Call:** Cut
 
-A weaker secondary reading is available — that "don't gamble" implies using the device removes the uncertainty, engaging HWG § 3 no. 2(a) (Erfolg mit Sicherheit). I am not recording it as a breach; the no. 7 finding disposes of the sentence either way.
+**Claim:** same sentence, second issue
+**Breach:** MDR Art. 7(b) `[verified]`
+**Why:** Read as one unit, the copy implies that daily measurement protects the heart — "creating a false impression regarding treatment". A blood-pressure monitor measures; it does not reduce cardiac risk. The protective outcome is implied, never stated, which is exactly what limb (b) reaches.
+**Evidence needed:** n/a — the implication is structural. Narrowing the claim to what the device does (measurement) removes it.
+**Call:** Cut
 
 ---
 
 **Claim:** "check your pressure daily"
-**Breach:** HWG § 11(1) no. 7 `[verified]` — in combination with the preceding sentence
-**Why:** no. 7 has a second limb: health "durch die **Verwendung verbessert** werden könnte". Standing alone, an instruction to measure daily asserts no health improvement and would likely be fine. Following "don't gamble with your heart", it reads as the remedy to the stated danger, which is the improvement-by-use proposition.
-**Evidence needed:** n/a for the § 11 point. Separately, confirm that a daily self-measurement regime is what the IFU actually specifies — a measurement schedule is a clinical instruction, and if the IFU specifies something else the copy contradicts the labelling.
-**Also engaged:** MDR Art. 7(d) — if the assessed intended purpose or the IFU does not cover routine daily self-measurement by consumers, a daily-use instruction suggests a use beyond it. Cannot be assessed without the intended purpose.
-**Call:** Needs rewording.
+**Breach:** none on the material supplied
+**Why:** A measurement-frequency instruction is a clinical instruction. Whether it is defensible depends entirely on what the IFU and the assessed intended purpose say about measurement regimen.
+**Also engaged:** MDR Art. 7(d) and UWG § 5(2) no. 1 ("Zwecktauglichkeit, Verwendungsmöglichkeit") `[verified]`, if the intended purpose or IFU does not support unsupervised daily self-measurement as the recommended use pattern. If it does not, this is intended-purpose drift and evidence will not cure it — the claim has to narrow.
+**Call:** Verify — this is the specific line to test against the intended purpose when you have it.
 
 ---
 
 **Claim:** "Recommended by Professor Schmidt, cardiologist."
 **Breach:** none on the material supplied
-**Why:** HWG § 11(1) no. 2 — advertising with recommendations by members of the health professions — does **not** apply to medical devices; § 11(1) sentence 2 limits devices to nos. 7 to 9, 11 and 12. The applicable item is no. 11, and it prohibits third-party statements only "wenn diese in missbräuchlicher, abstoßender oder irreführender Weise erfolgen". A genuine, accurately described recommendation is not caught. Nothing in front of me shows it is false.
-**Evidence needed:** written confirmation from Schmidt of the recommendation and its scope; proof of the professorship and of Facharzt für Kardiologie status, with first name and institution; and the nature of any commercial relationship with the manufacturer.
+**Why:** Worth being explicit about what is *not* wrong here, because this is commonly over-flagged: HWG § 11(1) no. 2 (professional endorsements) does **not** apply to medical devices — the closing sentence of § 11(1) limits devices to nos. 7–9, 11 and 12 `[verified]`. A clinician endorsement of a device is not per se prohibited. No. 11 reaches third-party statements only "in missbräuchlicher, abstoßender oder irreführender Weise", and nothing in the quoted words is abusive or repulsive on its face.
 **Also engaged:**
-- HWG § 11(1) no. 11 and § 3 sentence 1 `[verified]` — if the recommendation was not actually given, is stated more broadly than given, or the title/specialty is inaccurate, the Äußerung Dritter becomes irreführend.
-- HWG § 3 no. 3(b) `[verified]` — if Schmidt is a person "für sie tätig" (advisory board, medical director, paid consultant to the manufacturer), then statements about their Vorbildung and Befähigung fall under this provision directly and must be exact.
-- UWG § 5(1) `[verified]` — a paid endorsement presented as independent is an irreführende geschäftliche Handlung, and an endorsement is plainly geeignet to drive a purchase decision.
-**Call:** Verify.
-
-Two drafting notes, not findings. "Professor Schmidt" with no first name and no institution is unidentifiable — Schmidt is among the commonest German surnames — which does nothing for you legally but makes the claim impossible to defend quickly if an Abmahnung arrives. And whether an endorsement with no disclosed basis is misleading *per se* turns on case law this review does not assess; I am not stating a rule on it.
+- HWG § 11(1) no. 11 and UWG § 5(1) `[verified]`, if Prof. Schmidt has a paid or other commercial relationship with the manufacturer that the page does not disclose — an undisclosed material connection is the route by which an otherwise lawful testimonial becomes *irreführend*.
+- UWG § 5(2) no. 4 `[verified]`, on the same facts: statements "im Zusammenhang mit direktem oder indirektem Sponsoring".
+- HWG § 3 no. 3(b) and UWG § 5(2) no. 3 `[verified]`, if the title "Professor" or the specialty "cardiologist" is not accurate and current, or if the person is not identifiable. A surname with no first name, no institution and no country is not checkable by a reader.
+**Evidence needed:** written consent on file; confirmation of title, specialty and institution; disclosure of any fee, equity, advisory role or research funding.
+**Call:** Verify — usable if the three items above hold and the relationship is disclosed on the page.
 
 ---
 
-## Paste-ready replacement copy
+**On limb (c) — I am not raising it.** The copy surfaces no limitation at all, and for a consumer BP monitor there is an obvious candidate (readings need clinical interpretation; self-measurement is not a diagnosis). But I have not seen your IFU, and inferring a "likely risk" from the device category and then flagging the copy for omitting it would be an unfalsifiable finding. Check the copy against the IFU's warnings and limitations section; if a likely risk is recorded there, an IFU pointer is the proportionate fix.
 
-English:
+## Replacement copy, paste-ready
 
-> Recommended by Prof. [first name] Schmidt, consultant cardiologist at [institution]. [Paid partnership.] Measure your blood pressure at home and discuss your readings — and how often to measure — with your doctor.
+Option A — drop the endorsement:
 
-German, which is the version that will actually publish and should be the one counsel reviews:
+> Measure your blood pressure at home in about a minute. Talk to your doctor about your readings and how often to measure.
 
-> Empfohlen von Prof. Dr. [Vorname] Schmidt, Facharzt für Kardiologie, [Klinik/Institution]. [Bezahlte Kooperation.] Messen Sie Ihren Blutdruck zu Hause. Besprechen Sie Ihre Messwerte und die passende Messhäufigkeit mit Ihrer Ärztin oder Ihrem Arzt.
+Option B — keep the endorsement, disclosed and identifiable:
 
-What the rewrite does: removes the not-using-harms-you framing entirely (§ 11(1) no. 7); drops the implication that measuring itself protects the heart (Art. 7(b)); hands the measurement frequency back to the treating physician instead of asserting a daily regime the IFU may not support (Art. 7(d)); makes the endorser identifiable; and includes a disclosure line to be kept only if a commercial relationship exists — delete the bracket if Schmidt is independent, since a false disclosure has its own problems.
+> Measure your blood pressure at home in about a minute. Talk to your doctor about your readings and how often to measure.
+>
+> Recommended by Prof. Dr. [full name], Cardiologist, [institution]. [Paid advisor to / compensated by] [company name].
+
+German rendering of Option A, for the live page:
+
+> Messen Sie Ihren Blutdruck zu Hause in etwa einer Minute. Besprechen Sie Ihre Messwerte und die Häufigkeit der Messungen mit Ihrer Ärztin oder Ihrem Arzt.
+
+Treat the German as a rendering of the cleared English, not as separately reviewed — the final German wording should get its own pass, since § 11 no. 7 turns on the connotation of the actual German words.
+
+What the rewrite does: removes the risk-if-you-don't-use framing entirely, states only what the device does (measures), and routes the frequency question to a clinician rather than asserting a regimen the technical file may not support.
 
 ## Evidence to gather before publishing
 
 | Claim | Evidence needed | From whom |
 |---|---|---|
-| Schmidt recommendation | Signed confirmation of the recommendation and its exact scope | Prof. Schmidt / medical affairs |
-| "Professor", "cardinologist" | Verification of professorship and Facharzt für Kardiologie registration; first name and institution | Medical affairs / HR |
-| Independence of endorsement | Contracts, honoraria, advisory-board membership, equity | Legal / finance |
-| "daily" | IFU text on measurement frequency for the self-measurement user group | Regulatory affairs |
-| Limb (d), unassessed | Intended purpose verbatim from the DoC / technical documentation | Regulatory affairs |
+| Intended purpose | The intended purpose verbatim from the DoC / technical documentation | RA/QA |
+| "check your pressure daily" | IFU statement on measurement frequency and self-measurement | RA/QA |
+| Any risk omission | IFU warnings/limitations section | RA/QA |
+| "Professor Schmidt, cardiologist" | Written consent; verified title, specialty, institution | Marketing / legal |
+| Endorsement disclosure | Any fee, advisory, equity or funding relationship | Finance / legal |
 
-## Not assessed
+## Limb (d)
 
-Limb (d) — suggesting uses beyond the assessed intended purpose — is **not assessed**: I have not seen the intended purpose. It is the limb device marketing trips most often, so paste it from the technical documentation or DoC and I will cover it. Everything above reviews limbs (a), (b) and (c).
-
-On limb (c): the copy surfaces no limitation at all. I can't tell from what I have whether the IFU records a likely risk that belongs here — for instance anything about cuff fit, measurement conditions, or acting on readings without clinical advice. Worth checking against the IFU; I have not raised (c) as a finding because I cannot point to the risk in supplied material.
+Limb (d) — suggesting uses beyond the assessed intended purpose — is **not assessed**: I have not seen the intended purpose. It is the limb device marketing trips most often, and here it bears directly on "check your pressure daily". Paste the intended purpose from the technical documentation or DoC and I will cover it. Everything above reviews limbs (a), (b) and (c) plus the German overlay.
 
 ## Provisions cited
 
-| Provision | Reference file |
-|---|---|
-| MDR Art. 7(b), 7(c), 7(d) | `references/mdr-ivdr-art7.md` `[verified]` |
-| HWG § 3 sentence 1, § 3 no. 2(a), § 3 no. 3(b) | `references/hwg.md` `[verified]` |
-| HWG § 11(1) nos. 7, 11, and sentence 2 device-scoping rule | `references/hwg.md` `[verified]` |
-| UWG § 5(1), § 5(2) no. 1 | `references/uwg.md` `[verified]` |
-
-UWG § 6 is not engaged — there is no comparison in this copy.
+- MDR Art. 7(b), (d) — `references/mdr-ivdr-art7.md` `[verified]`
+- HWG § 3 no. 3(b) — `references/hwg.md` `[verified]`
+- HWG § 11(1) nos. 7, 11, and the device scoping sentence — `references/hwg.md` `[verified]`
+- UWG § 5(1), § 5(2) nos. 1, 3, 4 — `references/uwg.md` `[verified]`
+- UWG § 6 — not engaged; the copy makes no comparison.
 
 ## Limits
 

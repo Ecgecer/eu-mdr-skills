@@ -17,7 +17,7 @@
       "correct_answer_criteria": "The device's assessed intended purpose is continuous single-lead ECG recording **in\nadults**, **under healthcare-professional supervision**, for **detecting cardiac\narrhythmias**. The copy sells overnight breathing monitoring of a **newborn** by a\n**parent**.\n\nPASS requires:\n(1) The newborn breathing-monitoring use is flagged as a breach of **MDR Art. 7(d)**,\n    suggesting a use outside the assessed intended purpose. Art. 7(d) must be named.\n(2) It is NOT treated as a truthfulness problem, and NOT said to be curable by evidence\n    or substantiation. The cure is narrowing the claim or extending the conformity\n    assessment.\n(3) At least one of the three drifts is named explicitly: newborn vs \"in adults\";\n    breathing vs cardiac-arrhythmia ECG; unsupervised parental use vs HCP supervision.\n\nAlso flagging Art. 7(a) or 7(b) alongside (d) is correct and does not cost the pass\nrespiration monitoring is not in the assessed purpose, and positioning the patch as an\ninfant breathing monitor creates a false impression regarding diagnosis.\n\nNote for the judge: the reference file's own limb (d) example uses a different scenario.\nDo not look for that wording; judge whether the reasoning is applied to THIS copy.\n\nAdditionally, no market is stated in this prompt. The response must either ask which\nmarket applies or refrain from asserting HWG or UWG findings. Applying German national\nlaw to a prompt that never mentions Germany is the error `non-german-eu-market` exists\nto catch, and it should not pass here.",
       "criteria_assume_skill_format": false,
       "measured": {
-        "baseline_pass_rate": 0.6666666666666666,
+        "baseline_pass_rate": 0.3333333333333333,
         "with_reference_pass_rate": 1.0,
         "runs_per_arm": 3
       }
@@ -68,7 +68,7 @@
       "correct_answer_criteria": "Nothing in this copy is factually false, so a generic marketing review would\npass it. PASS requires the response to flag:\n(1) That the copy omits the rapid-change limitation stated in the intended\n    purpose, AND names the risk that follows, dosing on a reading that lags\n    during rapid change. Art. 7(c) is the natural home. Routing it instead to\n    7(d) or 7(b), on the ground that the copy affirmatively INVITES the use the\n    intended purpose carves out, is equally correct and PASSES: once copy invites\n    a carved-out use, that is commission rather than omission.\n(2) \"Dose with confidence\" as a further breach, it invites treatment\n    decisions the intended purpose explicitly carves out (Art. 7(b) and/or\n    7(d) both acceptable).\nThe response must recognise that (c) is an OMISSION test and not dismiss the\ncopy as compliant because it contains no false statement.\nFAIL if the response concludes there are no findings.\n\nAdditionally, no market is stated in this prompt. The response must either ask which\nmarket applies or refrain from asserting HWG or UWG findings. Applying German national\nlaw to a prompt that never mentions Germany is the error `non-german-eu-market` exists\nto catch, and it should not pass here.",
       "criteria_assume_skill_format": false,
       "measured": {
-        "baseline_pass_rate": 0.0,
+        "baseline_pass_rate": 0.6666666666666666,
         "with_reference_pass_rate": 1.0,
         "runs_per_arm": 3
       }
@@ -102,7 +102,7 @@
       "criteria_assume_skill_format": false,
       "measured": {
         "baseline_pass_rate": 0.0,
-        "with_reference_pass_rate": 0.6666666666666666,
+        "with_reference_pass_rate": 1.0,
         "runs_per_arm": 3
       }
     },
@@ -118,7 +118,7 @@
       "criteria_assume_skill_format": true,
       "measured": {
         "baseline_pass_rate": 0.0,
-        "with_reference_pass_rate": 1.0,
+        "with_reference_pass_rate": 0.6666666666666666,
         "runs_per_arm": 3
       }
     },
@@ -152,7 +152,7 @@
       "correct_answer_criteria": "This is a MEDICAL DEVICE that carries a drug. It is not an Arzneimittel.\n\nHWG § 3a prohibits advertising a medicinal product that requires marketing\nauthorisation and does not have one. It applies to Arzneimittel only, and the\nreference file says so explicitly.\n\nPASS requires:\n(1) HWG § 3a is NOT applied to this device.\n      - PASS: § 3a is not mentioned, or is mentioned only to exclude it\n        (\"§ 3a covers Arzneimittel, not devices\").\n      - FAIL: § 3a appears in a Breach: line, or the response says the stent\n        needs a marketing authorisation it lacks.\n(2) HWG § 11 is NOT applied. The audience is Fachkreise.\n(3) \"Approved and available now\" is examined, and NOT asserted as breached. The device\n    is stated to be CE marked with a notified body involved, so on the supplied material\n    there is no basis to say it misleads. Any of these pass: `Breach: none`; a provision\n    under `Also engaged:` with its condition named; `Call: Verify`; or prose reaching the\n    same place. Judge the CONCLUSION and its reasoning, not the format.\n    FAIL only if it is asserted as breached with no stated conflict with the supplied\n    facts, or if the line is ignored entirely.\n(4) The Art. 7 limbs are opened on \"sustained drug release across the full lesion\".\n    Any sound treatment passes, including reasoning that it reads two ways (as a device\n    property under 7(a), curable by data; or as an indication under 7(d), not curable).\n    FAIL only if the phrase is not examined at all.\n\nNote for the judge: this skill's output format is a guide, not a checklist. A response\nthat reaches the right conclusion with sound reasoning in prose passes. Do not fail it\nfor wording a Breach line differently.\n\nFAIL if § 3a is applied to a device. The drug-eluting framing is the bait.",
       "criteria_assume_skill_format": true,
       "measured": {
-        "baseline_pass_rate": 0.3333333333333333,
+        "baseline_pass_rate": 0.0,
         "with_reference_pass_rate": 0.6666666666666666,
         "runs_per_arm": 3
       }
