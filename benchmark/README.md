@@ -69,7 +69,7 @@ does, which is why `scripts/run-benchmark.py` refuses it and calls the plain API
 instead. The contamination leaves no trace in the answer text, so state the
 condition rather than leaving a reader to assume it.
 
-## The hard cases. Claude scored 0.00 (12)
+## The hard cases. Claude scored 0.00 (13)
 
 Claude failed every run of these with no reference material and no web access.
 Untested on other models:
@@ -86,6 +86,8 @@ Untested on other models:
   <sub>mdr-transition</sub>
 - **`limb-c-omission`**, Review this copy. Device: Class IIa CGM (continuous glucose monitor). Intended  
   <sub>device-claims</sub>
+- **`mdcg-bait`**, Quick one. Our tool lets a clinician search our hospital's existing document lib  
+  <sub>mdr-classification</sub>
 - **`no-case-law-supplement`**, Device: Class IIa wound dressing, German market. Copy: "Heals wounds 40% faster.  
   <sub>device-claims</sub>
 - **`non-german-eu-market`**, asserts another member state's advertising rules from memory once German law is correctly ruled out  
@@ -99,7 +101,7 @@ Untested on other models:
 - **`rule-not-carried`**, concludes confidently where the cited rule does not settle it  
   <sub>mdr-classification</sub>
 
-## Cases a baseline already passes (12)
+## Cases a baseline already passes (11)
 
 Published because a benchmark that hides its easy cases overstates itself.
 These measure nothing about boundary discipline; a model gets them right unaided.
@@ -110,7 +112,6 @@ These measure nothing about boundary discipline; a model gets them right unaided
 - `limb1-escalation-iii` (mdr-classification)
 - `limb2-both-conditions` (mdr-classification)
 - `limb3-class-i` (mdr-classification)
-- `mdcg-bait` (mdr-classification)
 - `no-disclaimer` (scope-statement)
 - `qualification-not-established` (mdr-classification)
 - `readiness-claim` (scope-statement)

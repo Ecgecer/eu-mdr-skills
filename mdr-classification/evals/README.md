@@ -5,36 +5,31 @@ data in `evals/results/`. Do not hand-edit the table; hand-edited tables are how
 corrections below happened.
 
 <!-- report-evals:start -->
-> ⚠ **The skill or its eval cases changed after these runs.** The numbers
-> below describe the earlier text, not what this plugin currently ships.
-> Re-measure with
-> `claude plugin eval ./mdr-classification --ablation with-without`.
-
 | Case | with | without | delta | runs | measured |
 |---|---|---|---|---|---|
-| `driving-software-3-3` | 1.00 | 1.00 | **+0.00** | 3×2 | 2026-09-11 |
-| `limb1-escalation-iii` | 1.00 | 1.00 | **+0.00** | 3×2 | 2026-09-11 |
-| `limb2-both-conditions` | 1.00 | 1.00 | **+0.00** | 9×2 | 2026-09-11 |
-| `limb3-class-i` | 1.00 | 1.00 | **+0.00** | 3×2 | 2026-09-11 |
-| `mdcg-bait` | 1.00 | 1.00 | **+0.00** | 3×2 | 2026-09-11 |
-| `qualification-not-established` | 1.00 | 1.00 | **+0.00** | 3×2 | 2026-09-11 |
-| `rule-not-carried` | 1.00 | 0.00 | **+1.00** | 3×2 | 2026-09-11 |
+| `driving-software-3-3` | 1.00 | 1.00 | **+0.00** | 3×2 | 2026-09-17 |
+| `limb1-escalation-iii` | 1.00 | 1.00 | **+0.00** | 3×2 | 2026-09-17 |
+| `limb2-both-conditions` | 1.00 | 1.00 | **+0.00** | 3×2 | 2026-09-17 |
+| `limb3-class-i` | 1.00 | 1.00 | **+0.00** | 3×2 | 2026-09-17 |
+| `mdcg-bait` | 1.00 | 0.00 | **+1.00** | 3×2 | 2026-09-17 |
+| `qualification-not-established` | 1.00 | 1.00 | **+0.00** | 3×2 | 2026-09-17 |
+| `rule-not-carried` | 1.00 | 0.00 | **+1.00** | 3×2 | 2026-09-17 |
 
-**Mean delta +0.14** across 7 case(s) with both arms measured.
+**Mean delta +0.29** across 7 case(s) with both arms measured.
 
 ### Every other stored run for these cases
 
-- `driving-software-3-3`, earlier runs: 2026-09-09 1.00/1.00; 2026-09-10 1.00/1.00; 2026-09-11 1.00/n/a (2 errored)
-- `limb1-escalation-iii`, earlier runs: 2026-09-09 1.00/1.00; 2026-09-10 1.00/1.00; 2026-09-11 n/a/n/a (6 errored)
-- `limb2-both-conditions`, earlier runs: 2026-09-09 1.00/0.00; 2026-09-10 1.00/1.00; 2026-09-11 n/a/n/a (6 errored); 2026-09-11 0.67/1.00
-- `limb3-class-i`, earlier runs: 2026-09-09 1.00/1.00; 2026-09-10 1.00/1.00; 2026-09-11 n/a/n/a (6 errored)
-- `mdcg-bait`, earlier runs: 2026-09-10 1.00/1.00; 2026-09-10 1.00/1.00
-- `qualification-not-established`, earlier runs: 2026-09-09 1.00/1.00; 2026-09-10 1.00/1.00; 2026-09-11 n/a/n/a (6 errored)
-- `rule-not-carried`, earlier runs: 2026-09-10 1.00/0.00; 2026-09-10 1.00/0.00; 2026-09-11 n/a/n/a (5 errored)
+- `driving-software-3-3`, earlier runs: 2026-09-09 1.00/1.00; 2026-09-10 1.00/1.00; 2026-09-11 1.00/n/a (2 errored); 2026-09-11 1.00/1.00
+- `limb1-escalation-iii`, earlier runs: 2026-09-09 1.00/1.00; 2026-09-10 1.00/1.00; 2026-09-11 n/a/n/a (6 errored); 2026-09-11 1.00/1.00
+- `limb2-both-conditions`, earlier runs: 2026-09-09 1.00/0.00; 2026-09-10 1.00/1.00; 2026-09-11 n/a/n/a (6 errored); 2026-09-11 0.67/1.00; 2026-09-11 1.00/1.00
+- `limb3-class-i`, earlier runs: 2026-09-09 1.00/1.00; 2026-09-10 1.00/1.00; 2026-09-11 n/a/n/a (6 errored); 2026-09-11 1.00/1.00
+- `mdcg-bait`, earlier runs: 2026-09-10 1.00/1.00; 2026-09-10 1.00/1.00; 2026-09-11 1.00/1.00
+- `qualification-not-established`, earlier runs: 2026-09-09 1.00/1.00; 2026-09-10 1.00/1.00; 2026-09-11 n/a/n/a (6 errored); 2026-09-11 1.00/1.00
+- `rule-not-carried`, earlier runs: 2026-09-10 1.00/0.00; 2026-09-10 1.00/0.00; 2026-09-11 n/a/n/a (5 errored); 2026-09-11 1.00/0.00
 
 Listed because publishing only the most favourable run of several is how the earlier tables went wrong.
 
-<sub>Claude Code 2.1.267, 2.1.268. The harness records the CLI version, not the model; these runs used the CLI default. A run pinned to another model with `--model` belongs in `evals/model-probes/`, which this table does not read. Each row is that case's most recent run with a scorable arm, so rows can come from different runs and the mean is a composite rather than any single run's figure, the dates say which.</sub>
+<sub>Claude Code 2.1.267, 2.1.268, 2.1.274. The harness records the CLI version, not the model; these runs used the CLI default. A run pinned to another model with `--model` belongs in `evals/model-probes/`, which this table does not read. Each row is that case's most recent run with a scorable arm, so rows can come from different runs and the mean is a composite rather than any single run's figure, the dates say which.</sub>
 <!-- report-evals:end -->
 
 ---
