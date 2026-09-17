@@ -25,7 +25,7 @@ reports it as UNVERIFIED with instructions, which is honest. Silence is not.
 `evals/<nn>-<name>/prompt.md` plus `evals/<nn>-<name>/graders/criteria.md`. Run:
 
 ```
-claude plugin eval. --ablation with-without
+claude plugin eval . --ablation with-without
 ```
 
 Three runs per case per arm, which is the default. One run is not evidence, a single
@@ -68,7 +68,7 @@ as failures and both were caught by luck.
 ## Before opening a PR
 
 ```
-claude plugin eval. --ablation with-without    # measure first; three runs per arm
+claude plugin eval . --ablation with-without    # measure first; three runs per arm
 
 python3 scripts/report-evals.py --stamp <plugin>   # record what the numbers describe
 python3 scripts/report-evals.py --write            # eval tables, README/ROADMAP, cost

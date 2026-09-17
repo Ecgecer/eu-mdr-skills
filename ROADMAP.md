@@ -104,7 +104,7 @@ outside `evals/` so nothing here reaches a published table. One command reproduc
 decision:
 
 ```
-cd mpdg-germany && claude plugin eval. --eval-dir roadmap-probe --ablation with-without
+cd mpdg-germany && claude plugin eval . --eval-dir roadmap-probe --ablation with-without
 ```
 
 The **without** arm is the measurement. Both graders judge whether the boundary was

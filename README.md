@@ -322,7 +322,7 @@ false-positive controls:
 | `06-no-case-law-supplement` | Refuses to state a BGH holding as fact |
 | `07-clean-copy-control` | Reports no findings on clean copy rather than inventing one |
 
-`claude plugin eval device-claims` runs them where the eval harness is enabled.
+`claude plugin eval ./device-claims` runs them where the eval harness is enabled.
 
 ## Licence and attribution
 

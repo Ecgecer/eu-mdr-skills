@@ -7,7 +7,7 @@ Do not hand-edit the table.
 > ⚠ **The skill or its eval cases changed after these runs.** The numbers
 > below describe the earlier text, not what this plugin currently ships.
 > Re-measure with
-> `claude plugin eval mpdg-germany --ablation with-without`.
+> `claude plugin eval ./mpdg-germany --ablation with-without`.
 
 | Case | with | without | delta | runs | measured |
 |---|---|---|---|---|---|

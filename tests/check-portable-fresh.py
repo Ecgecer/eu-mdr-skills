@@ -351,4 +351,77 @@ if mk_file.exists():
     else:
         print(f"  README offers all {len(shipped)} shipped plugin(s)")
 
+# 14. stored results were measured against this working tree, not an installed copy
+#
+# `claude plugin eval <name>` resolves the name to the INSTALLED plugin and runs that.
+# The install is a cache built from a GitHub clone, so it is whatever was last pushed
+# and synced -- on 2026-09-17 that cache was 67 commits behind and still carried the
+# pre-em-dash text, 13 em dashes where the repo has 1. A run against it would have
+# scored text that is not in this repo, and --stamp would then have recorded those
+# numbers as describing the current skill. The stamp compares the worktree hash to the
+# results timestamp; it never sees which files actually ran.
+#
+# `claude plugin eval ./<name>` (a path) is the form that measures the repo. This guard
+# reads the path each run recorded and refuses a cached one. Paths from the predecessor
+# repo (device-claims-review) are working trees too and stay valid.
+import json as _j3
+cached = []
+# A bare-name target writes results to ./evals/results/ at the repo root, which is no
+# plugin's eval dir -- report-evals.py never reads it, so the run leaves no trace in any
+# published table but does leave that directory behind. Its existence is the tell.
+_stray = sorted(ROOT.glob("evals/results/*/aggregate-result.json"))
+for _f in sorted(ROOT.glob("*/evals/results/*/aggregate-result.json")) + _stray:
+    try:
+        _plugins = _j3.loads(_f.read_text()).get("suite", {}).get("plugins", [])
+    except (ValueError, OSError):
+        continue
+    for _pl in _plugins:
+        _path = _pl.get("path") or ""
+        if "/plugins/cache/" in _path or "/plugins/marketplaces/" in _path:
+            cached.append(f"{_f.relative_to(ROOT)}: {_path}")
+if _stray:
+    cached.append(f"{ROOT.name}/evals/ exists at the repo root, which only a bare-name "
+                  f"target creates ({len(_stray)} run(s)); delete it")
+if cached:
+    print("\n  results measured against an INSTALLED plugin, not this repo:")
+    for c in cached:
+        print(f"    {c}")
+    print("  Those numbers describe whatever was last pushed and synced, not the text here.")
+    print("  Re-measure with a path target: claude plugin eval ./<plugin> --ablation with-without")
+    failed = 1
+else:
+    _n = len(list(ROOT.glob("*/evals/results/*/aggregate-result.json")))
+    print(f"  all {_n} stored run(s) measured a working tree, not an installed copy")
+
+# 15. every documented eval invocation targets a path, not a plugin name
+#
+# Two separate ways to get this wrong, both of which happened:
+#   `claude plugin eval device-claims`   resolves to the INSTALLED plugin, which is a
+#                                        cache of the last pushed+synced commit. It runs
+#                                        and reports, so nothing looks wrong (see 14).
+#   `claude plugin eval. --ablation ...` the punctuation rewrite of 2026-09-11 ate the
+#                                        space in `eval .`, in CONTRIBUTING twice and
+#                                        ROADMAP once. It falls through to generic help.
+#
+# The token after `claude plugin eval` must be a path: `.` or `./name`. A reader copies
+# these verbatim, so a wrong one is not a typo, it is a wrong measurement or no run.
+_bad_invocations = []
+for _f in sorted(list(ROOT.glob("*.md")) + list((ROOT / "scripts").glob("*.py"))):
+    for _i, _line in enumerate(_f.read_text().splitlines(), 1):
+        for _m in re.finditer(r"claude plugin eval(\S*)(?:\s+(\S+))?", _line):
+            _glued, _target = _m.group(1), _m.group(2) or ""
+            if _glued:
+                _bad_invocations.append(
+                    f"{_f.name}:{_i}: `eval{_glued}` -- the space before the path is gone")
+            elif not _target.startswith((".", "/", "{")) and not _target.startswith("--"):
+                _bad_invocations.append(
+                    f"{_f.name}:{_i}: `{_target}` is a plugin name; use ./{_target}")
+if _bad_invocations:
+    print("\n  documented eval invocations that do not target this repo:")
+    for _b in _bad_invocations:
+        print(f"    {_b}")
+    failed = 1
+else:
+    print("  every documented eval invocation targets a path")
+
 sys.exit(failed)

@@ -363,7 +363,7 @@ def do_check():
         if want != content_hash(pl):
             print(f"  {pl}: skill or eval text changed since it was measured.")
             print(f"    The published table describes the old text. Re-measure with")
-            print(f"    `claude plugin eval {pl} --ablation with-without`, then --stamp.")
+            print(f"    `claude plugin eval ./{pl} --ablation with-without`, then --stamp.")
             bad = 1
         else:
             print(f"  {pl}: numbers describe the current skill text")
@@ -411,7 +411,7 @@ def stale_banner(plugin):
     return ["> ⚠ **The skill or its eval cases changed after these runs.** The numbers",
             "> below describe the earlier text, not what this plugin currently ships.",
             "> Re-measure with",
-            f"> `claude plugin eval {plugin} --ablation with-without`.", ""]
+            f"> `claude plugin eval ./{plugin} --ablation with-without`.", ""]
 
 def current(case_runs):
     """The newest run that actually measured something.

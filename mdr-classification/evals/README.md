@@ -8,7 +8,7 @@ corrections below happened.
 > ⚠ **The skill or its eval cases changed after these runs.** The numbers
 > below describe the earlier text, not what this plugin currently ships.
 > Re-measure with
-> `claude plugin eval mdr-classification --ablation with-without`.
+> `claude plugin eval ./mdr-classification --ablation with-without`.
 
 | Case | with | without | delta | runs | measured |
 |---|---|---|---|---|---|
