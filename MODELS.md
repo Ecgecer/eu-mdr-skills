@@ -40,14 +40,14 @@ plugin's `evals/model-probes/`, which the published tables never read.
 | `qualification-not-established` | 1.00 | +0.00 | 1.00 | +0.00 |
 | `rule-not-carried` | 0.00 | +1.00 | 0.00 | +1.00 |
 
-**`mdr-transition`**, 5 cases. Mean delta **+0.20** on the CLI default, **+0.80** on `haiku`.
+**`mdr-transition`**, 5 cases. Mean delta **+0.27** on the CLI default, **+0.80** on `haiku`.
 
 | Case | default baseline | default Δ | haiku baseline | haiku Δ |
 |---|---|---|---|---|
 | `class-dependent-date` | 1.00 | +0.00 | 0.00 | +1.00 |
 | `conditions-not-automatic` | 1.00 | +0.00 | 0.00 | +1.00 |
-| `implantable-exception` | 1.00 | +0.00 | 0.00 | +1.00 |
 | `superseded-deadline` | 1.00 | +0.00 | 0.00 | +1.00 |
+| `implantable-exception` | 0.67 | +0.33 | 0.00 | +1.00 |
 | `ivdr-out-of-scope` | 0.00 | +1.00 | 0.00 | +0.00 |
 <!-- probe-table:end -->
 

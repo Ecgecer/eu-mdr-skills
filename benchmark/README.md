@@ -95,7 +95,7 @@ Untested on other models:
 - **`rule-not-carried`**, concludes confidently where the cited rule does not settle it  
   <sub>mdr-classification</sub>
 
-## Cases a baseline already passes (12)
+## Cases a baseline already passes (11)
 
 Published because a benchmark that hides its easy cases overstates itself.
 These measure nothing about boundary discipline; a model gets them right unaided.
@@ -104,7 +104,6 @@ These measure nothing about boundary discipline; a model gets them right unaided
 - `conditions-not-automatic` (mdr-transition)
 - `driving-software-3-3` (mdr-classification)
 - `fsn-language` (mpdg-germany)
-- `implantable-exception` (mdr-transition)
 - `limb1-escalation-iii` (mdr-classification)
 - `limb2-both-conditions` (mdr-classification)
 - `limb3-class-i` (mdr-classification)
@@ -113,7 +112,7 @@ These measure nothing about boundary discipline; a model gets them right unaided
 - `qualification-not-established` (mdr-classification)
 - `superseded-deadline` (mdr-transition)
 
-## Cases a baseline passes only sometimes (8)
+## Cases a baseline passes only sometimes (9)
 
 The baseline scored above 0.00 and below 1.00 across three runs. These
 discriminate most sharply: the model can reach the right answer and does
@@ -121,6 +120,7 @@ not do so reliably, so a single run of any of them proves nothing.
 
 - `doc-english-sufficient` (mpdg-germany), baseline 0.33
 - `hwg3a-arzneimittel-only` (device-claims), baseline 0.33
+- `implantable-exception` (mdr-transition), baseline 0.67
 - `limb-d-intended-purpose-drift` (device-claims), baseline 0.67
 - `not-german-market` (mpdg-germany), baseline 0.33
 - `professional-user-exception` (mpdg-germany), baseline 0.33

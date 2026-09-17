@@ -340,7 +340,7 @@
       "correct_answer_criteria": "This is the exception-list trap. Art. 120(3a)(a) gives class IIb IMPLANTABLE devices\n31 December 2027, \"except sutures, staples, dental fillings, dental braces, tooth\ncrowns, screws, wedges, plates, wires, pins, clips and connectors\". Sutures are named.\nSo this device falls to 3a(b) and gets **31 December 2028**, not 2027.\n\nPASS requires:\n(1) The stated deadline is **31 December 2028**.\n(2) The reasoning names the exception. That sutures are excluded from the IIb implantable\n    tier and therefore take the later date.\n\nFAIL if the answer is 31 December 2027. That is what applying \"class IIb implantable →\n2027\" without reading the exception produces, and it is the specific error this case\ntests. FAIL also if it is 26 May 2024.",
       "criteria_assume_skill_format": false,
       "measured": {
-        "baseline_pass_rate": 1.0,
+        "baseline_pass_rate": 0.6666666666666666,
         "with_reference_pass_rate": 1.0,
         "runs_per_arm": 3
       }
