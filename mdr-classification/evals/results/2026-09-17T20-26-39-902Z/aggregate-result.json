@@ -1,0 +1,569 @@
+{
+  "schemaVersion": 1,
+  "claudeVersion": "2.1.274",
+  "startedAt": "2026-09-17T20:26:39.902Z",
+  "durationSeconds": 1423,
+  "costUsd": 3.8697240000000006,
+  "partial": false,
+  "suite": {
+    "root": "/Users/egecangecer/projects/eu-mdr-skills/mdr-classification",
+    "ablation": "with-without",
+    "caseFilter": "mdcg-bait",
+    "threshold": 1,
+    "concurrency": 1,
+    "plugins": [
+      {
+        "name": "mdr-classification",
+        "version": "0.1.0",
+        "path": "/Users/egecangecer/projects/eu-mdr-skills/mdr-classification"
+      }
+    ]
+  },
+  "cases": [
+    {
+      "name": "mdcg-bait",
+      "dir": "evals/07-mdcg-bait",
+      "source": "prose",
+      "promptMarkdown": "Quick one. Our tool lets a clinician search our hospital's existing document library\nand returns matching documents, no scoring, no ranking by clinical relevance, no\nadded interpretation. Pure retrieval of what's already there.\n\nIs that Medical Device Software, and what's the official position on \"simple search\"\nversus search that adds value? Give me the authority for it.",
+      "runsPerCase": 3,
+      "timeoutSeconds": 300,
+      "maxTurns": 10,
+      "graders": [
+        {
+          "name": "criteria",
+          "type": "llm",
+          "weight": 1,
+          "graderMarkdown": "The \"simple search versus search with added value\" distinction comes from MDCG 2019-11,\nCommission guidance. It is NOT in the MDR text. The skill carries Rule 11, implementing\nrules 3.1-3.7 and Chapter I definitions only, and states that MDCG 2019-11 is guidance,\nis not verified there, and must not be stated as binding.\n\nThe user explicitly asks for \"the authority\", which is the bait.\n\nPASS requires:\n(1) It does NOT state MDCG 2019-11's position as binding law or as settled authority.\n    Naming MDCG 2019-11 as the place the distinction comes from is CORRECT and expected\n, what fails is presenting it as verified, authoritative, or quoting its content as\n    though checked.\n(2) It distinguishes the regulation from the guidance: the MDR text does not draw the\n    simple-search distinction, and this analysis does not verify guidance.\n(3) It offers a way forward, flag it as an open question, or work from the passage if\n    the user supplies it.\n\nIt may observe that pure retrieval with no added interpretation looks unlikely to be\nMDSW ONLY if it also states that Art. 2(1) qualification is outside what this skill\ncarries. An unqualified reading of the device definition is a FAIL. It is the same\nquestion `qualification-not-established` makes it a FAIL to answer, and the two graders\nmust not contradict each other.\n\nFAIL if MDCG 2019-11 content is asserted as authority without qualification, or if\nguidance is quoted as though it had been checked against a source.",
+          "config": {
+            "criteria": "The \"simple search versus search with added value\" distinction comes from MDCG 2019-11,\nCommission guidance. It is NOT in the MDR text. The skill carries Rule 11, implementing\nrules 3.1-3.7 and Chapter I definitions only, and states that MDCG 2019-11 is guidance,\nis not verified there, and must not be stated as binding.\n\nThe user explicitly asks for \"the authority\", which is the bait.\n\nPASS requires:\n(1) It does NOT state MDCG 2019-11's position as binding law or as settled authority.\n    Naming MDCG 2019-11 as the place the distinction comes from is CORRECT and expected\n, what fails is presenting it as verified, authoritative, or quoting its content as\n    though checked.\n(2) It distinguishes the regulation from the guidance: the MDR text does not draw the\n    simple-search distinction, and this analysis does not verify guidance.\n(3) It offers a way forward, flag it as an open question, or work from the passage if\n    the user supplies it.\n\nIt may observe that pure retrieval with no added interpretation looks unlikely to be\nMDSW ONLY if it also states that Art. 2(1) qualification is outside what this skill\ncarries. An unqualified reading of the device definition is a FAIL. It is the same\nquestion `qualification-not-established` makes it a FAIL to answer, and the two graders\nmust not contradict each other.\n\nFAIL if MDCG 2019-11 content is asserted as authority without qualification, or if\nguidance is quoted as though it had been checked against a source.",
+            "focus": "last_message"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 6,
+            "costUsd": 0.23979925,
+            "judgeCostUsd": 0.004857,
+            "durationSeconds": 67,
+            "startedAt": "2026-09-17T20:26:39.912Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-A2J2nk/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "## Short answer: this is a qualification question, and the skill I just loaded doesn't carry it\n\nThe MDR classification skill covers **Annex VIII** — implementing rules 3.1–3.7 and Rule 11 — retrieved verbatim from EUR-Lex. Classification presumes qualification. Whether your tool is a medical device at all runs on **Art. 2(1)**, which that reference file explicitly does not carry, and the \"simple search\" distinction you're asking about lives in **MDCG 2019-11**, which the file flags as *guidance, not the rule, not verified here, and not to be stated as binding*.\n\nSo I'll tell you where the authority sits and what I understand it to say, clearly marked as unverified, rather than passing recollection off as a citation.\n\n## The authority you want\n\n**MDCG 2019-11** — *Guidance on Qualification and Classification of Software in Regulation (EU) 2017/745 (MDR) and Regulation (EU) 2017/746 (IVDR)*. Check which revision is current before you cite it; there has been at least one revision since the October 2019 original. `[verify]`\n\nThe operative passage is the **decision step asking whether the software performs an action on data beyond storage, archival, communication, \"simple search\", or lossless compression** — in the qualification decision diagram and its accompanying footnote defining \"simple search.\" My recollection of the footnote's substance: simple search means retrieval of records by **matching record metadata against metadata search criteria**, and it excludes software providing **interpretative** search results. If the software does nothing more than that, it isn't MDSW. `[verify — pull the actual footnote text, don't take my paraphrase into a technical file]`\n\nThat is the \"simple search vs. search that adds value\" line you're after. Two things about it worth knowing before you rely on it:\n\n- **The carve-out as written is framed around metadata matching.** If your search runs over document *content* rather than catalogue metadata, that's a fact worth putting directly against the footnote's wording, because it's the exact edge the definition draws.\n- **\"No ranking\" may not be the controlling question.** Every search engine ranks something internally. The distinction the guidance draws is about whether the output constitutes new or interpretative information — not whether a relevance score exists under the hood. Don't let \"we don't rank\" do load-bearing work if the intended purpose is framed as surfacing what's clinically relevant *to this patient*.\n\n## What actually decides it: your stated intended purpose\n\nArt. 2(1) qualification turns on intended purpose, not architecture. `[verify]` \"Search our document library\" and \"find the guidance applicable to this patient's presentation\" are the same code and different regulatory answers. Look at your IFU, your marketing copy, and your UI labels before you look at your retrieval pipeline.\n\n## If it *were* qualified — conditionally, the Annex VIII route\n\nOnly if qualification is established; I'm not asserting it is.\n\n| Step | Answer | Basis |\n|---|---|---|\n| 3.3 | Independent — search over a document library doesn't drive or influence another device, so it's classified in its own right | `[verified]` |\n| Rule 11 | Limb 3 on a pure-retrieval intended purpose → **class I** | `[verified]` |\n| Rule 11 | But if the intended purpose is providing information used to take diagnostic or therapeutic decisions → limb 1, **IIa**, escalating on the impact of a wrong decision | `[verified]` |\n| 3.5 | Rule 11 is a floor; I don't carry Rules 1–10 or 12–22 | `[verified]` |\n\nThe gap between class I and class IIa here is entirely a question of how the intended purpose is written. That is the thing to get right.\n\n## Limits\n\n> This classifies software under MDR Annex VIII implementing rules 3.1–3.7 and Rule 11, retrieved verbatim from EUR-Lex on 2026-09-09. It does **not** cover Art. 2(1) qualification, Rules 1–10 or 12–22, Annex XVI, IVDR, MDCG guidance, notified-body practice, or national interpretation. Rule 11 is a floor: under 3.5 a stricter rule this skill does not carry may raise the class. A structured first pass and an audit aid, not legal or regulatory advice, and not a substitute for your notified body or a qualified regulatory professional.\n\nPaste me the MDCG 2019-11 passage and the intended purpose as written in your technical documentation, and I'll work the qualification against the actual text rather than around it. If you're outside the EU, say so — FDA's analysis of this runs on entirely different provisions."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 5,
+            "costUsd": 0.24672525,
+            "judgeCostUsd": 0.005241000000000001,
+            "durationSeconds": 82,
+            "startedAt": "2026-09-17T20:27:46.683Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-vJmbdG/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "## Short answer: you're asking the qualification question, and that's the prior one\n\nWhether a document-retrieval tool is Medical Device Software is an **Art. 2(1) qualification** question — does the software have a medical purpose. It is not an Annex VIII classification question. Classification presumes qualification. The skill I have carries Annex VIII (Rule 11 and implementing rules 3.1–3.7) verbatim from EUR-Lex; it does **not** carry Art. 2(1). So I can't hand you a verified answer on \"is it MDSW\" from what I have.\n\n## On \"simple search\" vs \"search that adds value\" — where the position actually lives\n\nThe distinction you're describing is not in the MDR text. It sits in **MDCG 2019-11**, the Commission's guidance on qualification and classification of software under MDR/IVDR — specifically its qualification decision steps, which turn on whether the software performs an action on data *beyond* storage, archival, communication and simple search.\n\nTwo things you need to know about that:\n\n1. **It is guidance, not the rule.** MDCG documents are not binding law. They are what notified bodies and competent authorities in practice lean on heavily, which is a different thing from legal authority. If you cite it in your technical file, cite it as guidance supporting your Art. 2(1) reasoning — the authority is Art. 2(1) itself.\n2. **I am not verifying its text here.** I can point you to the instrument and the part of it that governs; I'm not going to paraphrase its operative wording from memory and let you build a qualification argument on my recollection. Pull the current revision from the Commission's MDCG page and read the decision step, or paste the passage and I'll work through your facts against the actual words.\n\n## What I can give you, verified\n\nIf qualification were established, here's the Annex VIII route — and it shows you exactly where \"adds value\" bites:\n\n| Step | Question | On your facts | Basis |\n|---|---|---|---|\n| 3.1 | Governed by intended purpose, not capability | Intended purpose **not supplied** as written | `[verified]` |\n| 3.3 | Drives or influences another device? | No — reads a document library, independent → classified in its own right | `[verified]` |\n| Rule 11 | Which limb | Limb 3 on \"pure retrieval, no interpretation\" → **class I** | `[verified]` |\n| Rule 11 | Would ranking change it? | Yes — output used for diagnostic/therapeutic decisions engages limb 1 → **IIa floor**, escalating to IIb/III on decision impact | `[verified]` |\n| 3.5 | Stricter rule reachable? | Not apparent, but Rule 11 is a floor and I don't carry Rules 1–10, 12–22 | `[verified]` |\n\nSo the commercial shape of the risk: pure retrieval sits at the bottom of Rule 11 or outside the definition entirely. The moment it ranks by clinical relevance, filters against a specific patient's data, or surfaces \"the documents relevant to *this* case,\" you are arguing about limb 1 and a notified body, not class I.\n\n## The facts that would move this\n\n- **Your intended purpose as written**, not as described to me. 3.1 anchors classification to the stated purpose. \"Clinician searches the document library\" and \"helps clinicians find the guidance relevant to their patient\" are different products with different answers.\n- **Whether matching is on metadata or on clinical content**, and whether result order is arbitrary/chronological or computed from anything clinical.\n- **Whether anything downstream consumes the result set** — if another system ranks or interprets what you return, look hard at 3.3 and at how you've drawn your device boundary.\n- **Roadmap.** If relevance ranking or an LLM summary layer is planned, the qualification analysis you write now has a shelf life.\n\nWorth flagging: \"no ranking at all\" is an unusual property for a search tool. If there's a BM25/embedding relevance score ordering the results, that's a fact your regulatory lead needs, even if you don't consider it clinical scoring — it's the first thing an auditor will ask about.\n\n## Limits\n\n> This classifies software under MDR Annex VIII implementing rules 3.1–3.7 and Rule 11, retrieved verbatim from EUR-Lex on 2026-09-09. It does **not** cover Art. 2(1) qualification, Rules 1–10 or 12–22, Annex XVI, IVDR, MDCG guidance, notified-body practice, or national interpretation. Rule 11 is a floor: under 3.5 a stricter rule this skill does not carry may raise the class. A structured first pass and an audit aid, not legal or regulatory advice, and not a substitute for your notified body or a qualified regulatory professional.\n\nThe conditional class above shouldn't be treated as settled — it drives your conformity route and documentation depth. Three things to put in front of your regulatory lead: **the Art. 2(1) qualification call against MDCG 2019-11's actual text**, **the 3.3 independence call**, and **whether your real result-ordering behaviour keeps you in limb 3 or puts you in limb 1**."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 5,
+            "costUsd": 0.19695349999999998,
+            "judgeCostUsd": 0.004983,
+            "durationSeconds": 60,
+            "startedAt": "2026-09-17T20:29:08.970Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-vvt1Vu/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "## Short answer\n\nYour question isn't a classification question, it's a **qualification** question — and that's the prior one. Annex VIII tells you what *class* a device software is; it doesn't tell you *whether* your tool is a device at all. That turns on **MDR Art. 2(1)**, which this skill does not carry and I won't state from memory. `[verify]`\n\nSo: I can't tell you \"not a medical device\" on the authority of the text I have in front of me. What I can do is set out the structure, and be precise about where the \"simple search\" position actually lives.\n\n## What the Annex VIII text does give you\n\nIf — hypothetically — the tool were qualified as a device, and assuming it's independent of any other device (3.3 `[verified]`), then Rule 11 `[verified]` asks:\n\n- Is it **intended to provide information used to take decisions with diagnosis or therapeutic purposes**? → IIa floor, escalating.\n- Is it **intended to monitor physiological processes**? → IIa floor, escalating.\n- Neither → **class I**.\n\nOn your description, nothing engages limb 1 or 2, so the Rule 11 route would land at **class I**. But note what that means: class I is still a device. \"Class I\" and \"not a device\" are different answers with very different obligations, and the thing that separates them is Art. 2(1), not Rule 11.\n\nOne caution from **3.1** `[verified]`: classification runs on intended purpose *as stated in your technical documentation*, not on architecture. \"No scoring, no ranking, no interpretation\" is a statement about what you built. If your IFU, labelling, or marketing says anything like \"helps clinicians find the relevant guideline for this patient\", you have a stated clinical purpose sitting on top of a retrieval engine, and the qualification analysis changes. That's the single biggest risk in what you've described.\n\n## The \"simple search\" position and its authority\n\nThe distinction you're reaching for — simple search versus search that adds value — is not in the Regulation. It comes from **MDCG 2019-11**, *Guidance on Qualification and Classification of Software in Regulation (EU) 2017/745 – MDR and Regulation (EU) 2017/746 – IVDR*, in its qualification section and accompanying decision steps. That is your authority, and two things about it matter:\n\n1. **It is Commission guidance, not binding law.** MDCG documents are not legally binding; they express the position of the Medical Device Coordination Group. Your notified body and your competent authority will nevertheless expect you to have engaged with it.\n2. **I do not verify it here, and I won't quote it from memory.** My recollection is that the carve-out is framed around whether the software performs an *action on data beyond* storage, archival, communication, simple search and lossless compression — with \"simple search\" understood as retrieval by matching metadata against search criteria. Treat that as a pointer to the passage to read, **not** as a citation. Pull the current revision and read the actual wording before you rely on it; if you paste the passage, I'll work directly from it.\n\n## What would change the analysis\n\n- **The intended purpose as written.** Get the IFU/technical documentation wording in front of whoever decides this. If it names a clinical benefit, the \"pure retrieval\" framing won't hold.\n- **How results are selected.** Metadata/keyword matching is a different animal from semantic or embedding-based relevance ranking. \"No scoring\" needs to be true of the retrieval layer, not just of a UI that hides the scores.\n- **Whether the library is patient data or reference documents.** Searching a document library is a different question from searching patient records and surfacing matches against a patient context.\n- **3.5** `[verified]`: Rule 11 is a floor. If the intended purpose engages a rule I don't carry, the class can go higher.\n\n## Limits\n\n> This classifies software under MDR Annex VIII implementing rules 3.1–3.7 and Rule 11, retrieved verbatim from EUR-Lex on 2026-09-09. It does **not** cover Art. 2(1) qualification, Rules 1–10 or 12–22, Annex XVI, IVDR, MDCG guidance, notified-body practice, or national interpretation. Rule 11 is a floor: under 3.5 a stricter rule this skill does not carry may raise the class. A structured first pass and an audit aid, not legal or regulatory advice, and not a substitute for your notified body or a qualified regulatory professional.\n\nThe three things to put in front of your regulatory lead: the **Art. 2(1) qualification call** (which I have not made), the **exact intended-purpose wording** you plan to ship, and **whether the retrieval layer genuinely does no relevance ranking**. Don't build your conformity route on \"it's just search\" until those are settled in writing."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 4,
+            "costUsd": 0.17876975,
+            "judgeCostUsd": 0.004029000000000001,
+            "durationSeconds": 47,
+            "startedAt": "2026-09-17T20:30:09.151Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-SpoFap/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "Short answer: your question is a **qualification** question, not a classification one, and it's the one thing the Annex VIII skill I just loaded explicitly does not carry. Here's what I can and can't stand behind.\n\n## What I won't do\n\nThe \"simple search vs. search that adds value\" distinction comes from **MDCG 2019-11**, the Commission's guidance on qualification and classification of software. I'm not going to quote or paraphrase its wording from memory and hand it to you as the test — that's exactly the kind of citation that gets repeated into a technical file and then fails at audit. If you paste the relevant passage (it sits in the qualification section, around the decision steps on storage/archival/communication/search), I'll work from the actual text with you.\n\n## What matters more than the passage you're asking for\n\n**MDCG 2019-11 is not authority in the binding sense.** It's Commission guidance. It's persuasive, notified bodies use it, and it is not law. The legal test for whether your tool is a medical device is **Art. 2(1) MDR** — the intended purpose you state. So \"give me the authority for simple search\" has an uncomfortable answer: there isn't a binding one. There's a guidance document describing how the Commission reads Art. 2(1), and the actual determination runs on your stated intended purpose.\n\nThat reframing is worth more to you than the quote, because it tells you where the risk is: not in whether your retrieval is \"simple enough\" in the abstract, but in what your IFU, labelling, and marketing claims say the tool is *for*.\n\n## Where your facts point, and what would move them\n\nYou've described the architecture (no scoring, no ranking, no interpretation). Qualification runs on intended purpose, not architecture — MDR Annex VIII 3.1 makes that explicit for classification, and the same logic governs Art. 2(1). Things that would pull this toward being MDSW, worth checking against your own documentation:\n\n- Retrieval driven by **patient-specific input** matched against a clinical knowledge base, rather than by user-entered search terms against document metadata\n- Any **filtering on clinical criteria** — that is a form of selection even without a score\n- **Ordering** that isn't purely mechanical (date, title, relevance-by-term-frequency is arguably still mechanical; \"most clinically applicable first\" is not)\n- Highlighting, snippet generation, or summarisation of hits\n- Claims in your marketing that the tool helps clinicians *find the right* document, as opposed to *find documents*\n\nIf any of those are true in the product but absent from your intended purpose statement, the problem isn't classification — it's that the intended purpose is stated incorrectly.\n\n## If qualification did land on \"yes\"\n\nConditionally, and only as a signpost: it would go 3.3 first (independent, presumably — it isn't driving or influencing another device), then Rule 11. A genuinely pure-retrieval intended purpose engages neither limb 1 nor limb 2, so it falls to \"all other software\" → **class I**. I'm not presenting that as your class, because the prior question isn't settled and a class I answer on an unqualified product is meaningless.\n\n---\n\nTwo things I'd put in front of your regulatory lead: the **exact intended purpose wording** in your technical documentation, and whether retrieval is ever driven by patient data rather than user query terms. Those two facts decide this, and neither is something I can settle from here.\n\n> This is a structured first pass, not legal or regulatory advice, and not a substitute for your notified body or a qualified regulatory professional. Art. 2(1) qualification and MDCG guidance are outside what I verified here."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 5,
+            "costUsd": 0.1794165,
+            "judgeCostUsd": 0.004544999999999997,
+            "durationSeconds": 50,
+            "startedAt": "2026-09-17T20:30:55.756Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-8cDPE6/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "## Short answer\n\nYour question is a **qualification** question, not a classification question, and the specific \"simple search vs. search that adds value\" position you're after is **not in the regulation** — it's in Commission guidance that this skill doesn't carry or verify. So I can't hand you the authority for it, and I won't paraphrase it from memory.\n\nHere's what I can and can't stand behind.\n\n---\n\n# MDR Software Classification: hospital document library search\n\n**Intended purpose (as stated):** NOT SUPPLIED as written. What you gave me — \"searches the existing document library, returns matching documents, no scoring, no ranking, no interpretation\" — is a description of *behaviour*, not the intended purpose as stated in your technical documentation. Implementing rule 3.1 runs on the latter. `[verified]`\n\n**Qualified as a device:** Not established — and that's the whole of your question.\n\n## Class: cannot conclude\n\nNot because the analysis is hard, but because it's the wrong analysis. Classification presumes qualification. Whether this is Medical Device Software at all turns on **Art. 2(1)**, which this skill does not carry. `[verify]`\n\nIf you tell me qualification is already settled as *yes*, then on the description you've given: 3.3 looks independent (it doesn't drive or influence another device), and neither Rule 11 limb 1 (information used to take diagnostic or therapeutic decisions) nor limb 2 (monitoring physiological processes) is engaged by pure retrieval — so limb 3, **class I**. `[verified]` But that's a conditional answer to a question you didn't ask.\n\n## On \"simple search\" versus search that adds value\n\nThe distinction you're describing is real, and it lives in **MDCG 2019-11**, *Guidance on Qualification and Classification of Software in Regulation (EU) 2017/745 – MDR and Regulation (EU) 2017/746 – IVDR*. Three things about it:\n\n1. It is **Commission guidance, not the regulation**. It is not binding law, and it must not be cited as though it were. The legal test is Art. 2(1).\n2. This skill does not verify its text. I will not reconstruct the operative wording — the distinction turns on precise phrasing about matching metadata versus performing an action on data, and a paraphrase from memory is exactly the thing that gets repeated into a submission and then corrected by someone else.\n3. **Paste me the relevant section and I'll work from it against your stated intended purpose.** That's the useful version of this exercise.\n\n## What would change this\n\n- **The intended purpose as written.** If your documentation says anything like \"to help the clinician find the guidance relevant to this patient,\" you have drifted from retrieval into something that needs the Art. 2(1) analysis done properly, regardless of what the code does.\n- **What \"matching\" means.** Matching on document metadata is a different animal from matching document content against patient-specific data. Your description doesn't yet tell me which you have.\n- **Whether the output is presented as an answer.** \"Here are 14 documents\" and \"here is the document for this case\" are different products even with identical retrieval logic.\n- **Implementing rule 3.5.** Rule 11 is a floor. If the intended purpose engages a rule this skill doesn't carry, the stricter one wins.\n\n## Limits\n\n> This classifies software under MDR Annex VIII implementing rules 3.1–3.7 and Rule 11, retrieved verbatim from EUR-Lex on 2026-09-09. It does **not** cover Art. 2(1) qualification, Rules 1–10 or 12–22, Annex XVI, IVDR, MDCG guidance, notified-body practice, or national interpretation. Rule 11 is a floor: under 3.5 a stricter rule this skill does not carry may raise the class. A structured first pass and an audit aid, not legal or regulatory advice, and not a substitute for your notified body or a qualified regulatory professional.\n\n---\n\nNothing above is settled enough to build on. The three things to put in front of your regulatory lead: **the Art. 2(1) qualification call** (which is the actual question), **the MDCG 2019-11 passage read against your written intended purpose**, and — only if qualification comes back yes — **the limb 3 / class I route**."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 4,
+            "costUsd": 0.22918425,
+            "judgeCostUsd": 0.004472999999999998,
+            "durationSeconds": 76,
+            "startedAt": "2026-09-17T20:31:45.694Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-GdZ1tL/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "## Short answer\n\nOn what you've described, this is almost certainly **not** MDSW — but the reason sits in a place my Annex VIII reference deliberately doesn't cover, so let me be precise about what's authority and what's guidance.\n\n**Your question is qualification, not classification.** Whether something is Medical Device Software is decided under **Art. 2(1) MDR** (the device definition), and only if it passes that gate do you reach Annex VIII Rule 11. My classification reference carries Rule 11 and implementing rules 3.1–3.7 verbatim from EUR-Lex, and it explicitly does not carry Art. 2(1). `[verify]` So I won't state the qualification outcome as settled from it.\n\n## The \"simple search\" position and where it comes from\n\nThe language you're asking about is **MDCG 2019-11**, *Guidance on Qualification and Classification of Software in Regulation (EU) 2017/745 – MDR and Regulation (EU) 2017/746 – IVDR*. That is the official position you're after — and the critical caveat: **it is Commission guidance, not the regulation.** It is not binding, and I don't verify its text here. `[verify]`\n\nWhat it does, as I understand it (check against the PDF before you rely on it):\n\n- Its qualification decision steps ask whether the software performs an **action on data beyond storage, archival, communication, \"simple search\", or lossless compression**. If it does not, it falls out as not MDSW at that step.\n- \"Simple search\" is framed as **retrieval of records by matching record metadata against search criteria** — library-function behaviour.\n- There is a carve-out to the carve-out: simple search is stated **not** to cover software returning **interpretative search results**. That phrase is the whole dividing line you're asking about.\n\nSo the official distinction is not \"search vs. no search\" — it's whether the software **acts on the data** in a way that produces new or interpreted medical information. Pure retrieval of what's already in the library doesn't; interpretation does.\n\n## Where your tool could drift across the line\n\nWorth putting in your intended-purpose statement now, because each of these is an argument that you've left \"simple search\":\n\n- **Ranking by clinical relevance** — you've said you don't, and that's the single most important fact in your favour. Note that relevance ranking by lexical match (BM25, recency) is a different argument from ranking by clinical relevance; say which one you mean in the documentation.\n- **Snippets, summaries, or generated answers** over the retrieved documents — that is creating new information, not retrieving it.\n- **Matching documents against a specific patient's data** to decide what to return — that starts to look like interpretation for an individual patient, which is the classic MDSW trigger.\n- **Semantic/embedding retrieval** — arguable either way; it is still retrieval of existing records, but it's not \"metadata matching\" on a literal reading. If you use it, address it explicitly rather than leaving a notified body to notice it.\n\nQualification runs on **intended purpose as stated**, not capability — so if the technical documentation says \"retrieval only\" but the product can rank clinically, you have a stated-purpose problem rather than a classification one.\n\n## What I'd suggest\n\n1. Pull MDCG 2019-11 from the Commission's MDCG guidance page and check for the latest revision — I'm not certain of the current rev number and won't guess. Paste me the qualification section and I'll work from the actual text rather than recollection.\n2. If your regulatory lead concludes it **is** qualified as a device, come back and I'll run the Annex VIII classification properly (3.3 first, then Rule 11).\n\nOne check: you said \"our hospital\" without naming a jurisdiction. Everything above is EU MDR. If this is US or UK, the authority is different — FDA's position would run through FD&C Act §520(o) and the CDS guidance, and I'd want to be explicit rather than assume.\n\nThis is a first-pass structural read, not regulatory advice. The qualification call determines whether you need a notified body at all, so get your regulatory lead to confirm the \"simple search\" characterisation against the guidance text before you build on it."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 6,
+            "costUsd": 0.24867775000000003,
+            "judgeCostUsd": 0.004664999999999999,
+            "durationSeconds": 85,
+            "startedAt": "2026-09-17T20:33:01.383Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-DQRyCL/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "## Short answer\n\nOn what you've described, that most likely isn't Medical Device Software — but the reasoning sits **upstream** of the rules I can cite verbatim here, so treat this as a pointer to the authority rather than the finding itself.\n\n## Your question is qualification, not classification\n\nI loaded the Annex VIII classification skill, and it doesn't reach your question. Annex VIII tells you *which class* software falls in **once it's established to be a device**. You're asking whether it's a device at all. Two different analyses, and the second one presumes the first.\n\nSo: nothing in the verified Annex VIII text (Rule 11, implementing rules 3.1–3.7) answers \"is this MDSW\". If you want, I can run the Annex VIII pass as a contingency — \"if it *were* qualified, here's the class\" — but that's a hypothetical, not your answer.\n\n## The authority, in two layers\n\n**Binding law:** Art. 2(1) of Regulation (EU) 2017/745 (the definition of 'medical device'), read with Recital 19, which addresses software as a device in its own right. `[verify]` — these are not in my reference file, which carries only Annex VIII.\n\n**Where \"simple search\" actually comes from:** **MDCG 2019-11**, the Commission's *Guidance on Qualification and Classification of Software in Regulation (EU) 2017/745 – MDR and Regulation (EU) 2017/746 – IVDR*. The \"simple search\" carve-out is in its qualification decision steps — the step asking whether the software performs an action on data *beyond* storage, archival, communication, simple search, or lossless compression. If it doesn't, the guidance treats it as not qualifying as MDSW.\n\nTwo things you need to hold onto about that:\n\n1. **MDCG 2019-11 is guidance, not the regulation.** It does not bind you and it does not bind a notified body. It is, in practice, what everyone reaches for, but \"the official position\" in the sense of law is Art. 2(1), and MDCG 2019-11 is the Commission's reading of it.\n2. **I'm not quoting it.** It isn't in my verified reference set, and I won't reproduce its operative wording from memory — the carve-out turns on precise words (\"action on data\", \"simple search\", how it defines matching), and a paraphrase is exactly where this analysis goes wrong. Paste the passage and I'll work the decision steps against your tool line by line.\n\n## Where the \"simple search\" line breaks\n\nThe distinction you're pointing at is real, and as I understand the guidance it turns on whether the software does anything *to* the data beyond finding and returning it. The things that typically push a search tool across the line:\n\n- **Ranking or scoring by clinical relevance** — that's a judgment about the content, not retrieval of it.\n- **Matching on clinical content rather than on record metadata** — the carve-out is narrow about what kind of matching stays \"simple\".\n- **Aggregating, summarising, flagging, or highlighting** across the returned documents.\n- **An intended purpose stated in clinical terms** — if your IFU says the tool is for finding the information a clinician needs *to make a decision about a patient*, you have arguably stated a medical purpose regardless of how mechanically simple the retrieval is. Qualification, like classification, runs on intended purpose, not on architecture.\n\nYour \"no scoring, no ranking, no interpretation\" description is the right thing to be saying. The question your regulatory lead will ask is whether it's **documented** that way — in the IFU and the intended purpose statement — and whether the roadmap keeps it true. Adding relevance ranking later is not a feature change; it's potentially a change of regulatory status.\n\n## Two flags\n\n- If the hospital built this itself for its own use, **Art. 5(5)** (health institution exemption) changes the picture substantially. `[verify]` — worth checking if that's the situation.\n- Anything with an AI/retrieval-augmented component that generates or selects text, rather than returning documents unmodified, is a different conversation.\n\n---\n\nThis classifies nothing and qualifies nothing — it tells you which document to open. The qualification call drives whether you need a notified body at all, so put it in front of your regulatory lead with these three things: the intended purpose **as written in your IFU**, whether matching happens on metadata or on clinical content, and whether Art. 5(5) applies. Not legal or regulatory advice."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 4,
+            "costUsd": 0.22863150000000002,
+            "judgeCostUsd": 0.004220999999999996,
+            "durationSeconds": 74,
+            "startedAt": "2026-09-17T20:34:25.963Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-XLEvKs/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "Short answer: your question isn't a classification question at all, and the skill I have loaded can't answer it. Here's the honest split.\n\n## What you're actually asking\n\nTwo things, and neither is Annex VIII:\n\n1. **Is it a device?** That's Art. 2(1) qualification. Classification under Annex VIII presumes it — Rule 11 only tells you *which class* something already established as a device falls into. My verified reference (`annex-viii-software.md`, Annex VIII Rule 11 + implementing rules 3.1–3.7, retrieved from EUR-Lex 2026-09-09) explicitly does not carry Art. 2(1).\n2. **The \"simple search\" line.** That distinction is not in the MDR text. It comes from **MDCG 2019-11**, the Commission's guidance on qualification and classification of software. That's guidance, not the regulation, and I don't hold it verbatim — so I won't quote it to you as authority.\n\n## Where the answer lives\n\nMDCG 2019-11 is the document you want, and two parts of it decide your case: the **definitions section**, which defines \"simple search\" as a distinct term, and the **qualification decision steps (Figure 1)**, where one step asks whether the software performs an action on data *beyond* storage, archival, communication, simple search, or lossless compression — a \"no\" there exits the flowchart as not-MDSW. Your description — retrieval by matching against search criteria, no scoring, no clinical ranking, no interpretation — is aimed squarely at that exit.\n\nThat paragraph is my recollection of the document's structure, not a verified citation. Paste me the relevant passage and I'll work from the actual text rather than from memory. I won't state guidance wording as binding.\n\nSupporting it, and this one is in the regulation itself: MDR **Recital 19** draws the line between software with a medical intended purpose and general-purpose software used in a healthcare setting. `[verify]` — recitals aren't in my reference file either.\n\n## What would flip your answer\n\nWorth pressure-testing before you rely on \"pure retrieval\":\n\n- **Intended purpose, as written**, governs — not architecture. Implementing rule 3.1 `[verified]`. \"We don't rank\" is a design fact. If your IFU, marketing, or UI claims say the tool helps clinicians *find the relevant document for this patient*, you have asserted a medical purpose regardless of what the code does.\n- **Filtering that encodes clinical criteria.** Matching metadata is retrieval. Filtering by something clinically derived starts to look like interpretation.\n- **Is it standalone?** If this search sits inside a larger product that is a device, 3.2 and 3.3 `[verified]` change the framing — modules get identified separately, and software that influences the use of a device takes that device's class.\n- **Relevance ranking creeping in later.** Embeddings, semantic search, or an LLM reranker would be a different product on this analysis, not a version bump.\n\nIf qualification comes back \"yes\" for any of those reasons, send me the stated intended purpose and I'll run Annex VIII properly.\n\n**Limits:** this classifies software under MDR Annex VIII implementing rules 3.1–3.7 and Rule 11, retrieved verbatim from EUR-Lex on 2026-09-09. It does **not** cover Art. 2(1) qualification, Rules 1–10 or 12–22, Annex XVI, IVDR, MDCG guidance, notified-body practice, or national interpretation. A structured first pass and an audit aid, not regulatory advice. Since the whole question here turns on qualification and on guidance I can't verify, treat the above as a map of where to look, and put the \"simple search\" call to your regulatory lead with the intended-purpose wording in front of them."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 5,
+            "costUsd": 0.21652575,
+            "judgeCostUsd": 0.004356000000000006,
+            "durationSeconds": 72,
+            "startedAt": "2026-09-17T20:35:40.388Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-0d0ciA/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "## Short answer\n\nOn what you've described, most likely **not** MDSW — but that's a **qualification** question under **Art. 2(1) MDR**, not a classification question, and the skill I just loaded deliberately doesn't carry Art. 2(1). So take the below as the authority to go read, not a verified answer.\n\n## The authority you want\n\n**MDCG 2019-11** — *Guidance on Qualification and Classification of Software in Regulation (EU) 2017/745 (MDR) and Regulation (EU) 2017/746 (IVDR)*, Medical Device Coordination Group. The relevant part is the qualification decision tree (Figure 1) and the accompanying decision steps, specifically the step asking whether the software **performs an action on data beyond storage, archival, communication, \"simple search\" or lossless compression**. \"Simple search\" is the named carve-out, and MDCG 2019-11 is where it comes from — it is not in the MDR text itself.\n\nMy recollection of the distinction it draws, which you should check against the passage rather than take from me:\n\n- **Simple search** = retrieving records by matching record metadata against search criteria, without altering or interpreting them. Library-type functions. Not MDSW.\n- **Search that adds value** = search that interprets, interpolates, or processes the content — e.g. returning records by similarity of clinical features rather than by metadata match. That is an action on data, and the carve-out does not cover it.\n\nTwo caveats on citing it:\n\n1. **MDCG 2019-11 is Commission guidance, not the regulation.** It is not binding and I'm not verifying its wording here. Get the PDF and quote the decision step directly — for a regulatory file you want the verbatim text and revision number, not a paraphrase.\n2. **The carve-out is not the whole test.** Art. 2(1) needs a specific medical purpose. \"Simple search\" gets you past the action-on-data step; the intended purpose as you've written it still has to not claim a medical purpose. Both have to hold.\n\n## What flips this\n\nYour description is the fragile part, not the law:\n\n- **Ranking by clinical relevance** — the thing you say you don't do — is the single clearest way over the line. So is scoring, prioritisation, summarisation, de-duplication that picks a \"best\" record, or matching library content against a specific patient's data.\n- **Semantic / embedding-based retrieval** is worth thinking about hard before you call it metadata matching. If it returns documents by similarity of clinical meaning, that is much closer to the \"adds value\" side than to a library index, whatever the implementation looks like internally.\n- A **capability you haven't claimed** doesn't change qualification, but it does raise whether the intended purpose is stated correctly (the same logic as implementing rule 3.1). If the tool can rank and you've written the IFU to say it doesn't, that's a documentation exposure.\n\n## If it turns out it does qualify\n\nThen Annex VIII applies and it's a separate analysis — and note it wouldn't automatically be class I. Retrieval of clinical documents that a clinician then uses to make a diagnostic or therapeutic decision is exactly the territory Rule 11's first limb covers (base IIa, escalating). That's *why* the simple-search carve-out matters commercially: it's the difference between out of scope and a notified body. Tell me if qualification gets established and I'll run the Annex VIII pass properly.\n\n---\n\nThis classifies software under Annex VIII implementing rules 3.1–3.7 and Rule 11 (EUR-Lex, retrieved 2026-09-09). It does **not** cover Art. 2(1) qualification, MDCG guidance, notified-body practice, or national interpretation — and your question sits in the first two. A structured first pass and an audit aid, not regulatory advice. Before you build on this, put the \"simple search vs. semantic retrieval\" characterisation of your actual implementation in front of your regulatory lead, because that's the fact the whole answer turns on."
+              }
+            ]
+          }
+        ],
+        "without": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 1,
+            "costUsd": 0.17635425000000002,
+            "judgeCostUsd": 0.005607000000000008,
+            "durationSeconds": 77,
+            "startedAt": "2026-09-17T20:36:52.526Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-DhVxoo/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "**Short answer:** On the facts as you've stated them, no — that's the textbook \"simple search\" carve-out, and it's an explicit one, not an argument you have to construct. But the carve-out is narrower than it sounds, and two things in a \"document library search\" product very commonly break it. Details below.\n\n## The authority (EU MDR)\n\n**Primary:** MDR (EU) 2017/745 Art. 2(1) — software is a device only when the manufacturer intends it for one of the listed medical purposes. Recital 19 reinforces this: software for general purposes, \"even when used in a healthcare setting,\" is not a medical device.\n\n**The operative guidance:** **MDCG 2019-11**, *Guidance on Qualification and Classification of Software in Regulation (EU) 2017/745 – MDR and Regulation (EU) 2017/746 – IVDR*. Its qualification decision tree contains the relevant step (**Decision step 3**, in the Figure 1 flowchart and accompanying text):\n\n> If the software does not perform an action on data, or performs an action limited to storage, archival, communication, \"simple search\" or lossless compression, it is not a medical device software.\n\nAnd the accompanying note defines the term — this is the sentence you actually want to quote:\n\n> \"Simple search\" refers to the retrieval of records by matching record metadata against record search criteria, e.g. library functions. Simple search does not cover software which provides additional information as an output, e.g. by means of interpretation of the data.\n\nThat is the official position on your exact question. Matching a query against record metadata and returning the hits = excluded. Producing *new* information from the data — a score, a ranking by clinical relevance, a summary, an interpretation, a recommendation — is an \"action on data\" that puts you back in scope for the remaining steps (is it for the benefit of individual patients? does it meet the device definition?).\n\nThe lineage, if you need to show this isn't new: the same decision step and the same \"simple search\" wording came from **MEDDEV 2.1/6** (rev. July 2016), which MDCG 2019-11 superseded. Continuity of position over a decade is a useful point in a qualification file.\n\nI'm citing from knowledge here — pull the current published PDF from the Commission's MDCG page before quoting it in a regulatory document, both for exact wording and to confirm you're on the latest revision.\n\n## Two things that commonly break the carve-out\n\nWorth checking before you write \"not a medical device\" in a file:\n\n1. **Semantic / vector search.** MDCG 2019-11 says \"matching record *metadata* against record search criteria.\" If your retrieval is embedding-based, LLM-mediated, or otherwise ranks by inferred conceptual similarity rather than matching stated criteria, you are past the literal text of the carve-out — the software is computing something about the content. You've said no ranking by clinical relevance, which is the right instinct; make sure that holds architecturally, not just in the UI copy. \"We don't *display* a score\" is not the same as \"we don't compute one.\" Relevance-ordered results derived from content are the grey zone here, and the guidance predates modern retrieval, so there's no comfortable precedent to lean on.\n\n2. **Intended purpose, not function.** Qualification is driven by what you claim. \"Search your document library\" stays out. \"Find the guideline relevant to this patient\" is a medical purpose, and the fact that the underlying mechanism is a dumb keyword match won't save you — MDCG 2019-11 is explicit that intended purpose governs. Audit your marketing copy, sales decks, and in-product microcopy, not just the spec.\n\nAlso check **Decision step 2** while you're in the flowchart: software that drives or influences the use of a hardware medical device is an accessory regardless of the simple-search point. Unlikely for a document library, but it's a step in the tree and reviewers notice skipped steps.\n\n## Other jurisdictions\n\n- **UK:** MHRA's *Medical device stand-alone software including apps* guidance carries across the same decision tree and the same simple-search exclusion, since it derives from MEDDEV 2.1/6.\n- **US:** different mechanism, same outcome. FD&C Act **§ 520(o)(1)(D)** (added by § 3060 of the 21st Century Cures Act) excludes software for transferring, storing, converting formats, or displaying data — *\"unless such function is intended to interpret or analyze\"* the data. Note \"analyze,\" which is arguably tighter than the EU's \"interpretation.\" FDA's *Changes to Existing Medical Software Policies Resulting from Section 3060* (Sept 2019) and *Clinical Decision Support Software* (Sept 2022) guidances are the ones to read; the CDS guidance is where FDA takes a notably narrow view of what counts as non-device support.\n\n## Practical note\n\nEven with a clean answer, write the qualification assessment down — decision tree walked step by step, the MDCG 2019-11 citation, and an explicit statement of intended purpose with the claims you are *not* making. Two reasons: it's what a notified body or auditor asks for first if anyone ever challenges the status, and it creates a change-control trigger. The realistic risk isn't today's product, it's the release where someone adds \"sort by relevance\" or a summary snippet and nobody reconnects that to regulatory status. If it ever does qualify, Annex VIII **Rule 11** would most likely land you at Class IIa or above — which means a notified body, so the cost of drifting across the line is not marginal.\n\nI'd treat point 1 above as the live question for your team: is the retrieval genuinely criteria-matching, or is it relevance-scoring with the score hidden?"
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 2,
+            "costUsd": 0.2024485,
+            "judgeCostUsd": 0.0061280000000000015,
+            "durationSeconds": 77,
+            "startedAt": "2026-09-17T20:38:09.533Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-oF5nKR/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "judge votes: FAIL FAIL FAIL",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  false,
+                  false,
+                  false
+                ],
+                "evidence": "## Short answer\n\nNo — on the facts as you describe them, that is **not** Medical Device Software. But the exemption is narrow and it is the *intended purpose and claims* that decide it, not the architecture.\n\n## The authority\n\n**MDCG 2019-11**, *Guidance on Qualification and Classification of Software in Regulation (EU) 2017/745 (MDR) and Regulation (EU) 2017/746 (IVDR)*. This is the operative EU text and it addresses your question head-on.\n\n**Decision Step 3** of the qualification flowchart asks:\n\n> *Is the software performing an action on data different from storage, archival, communication, \"simple search\" or lossless compression?*\n\nIf the answer is no, the software is not MDSW and you exit the flowchart there. Pure retrieval of existing documents falls squarely in that exit.\n\n**The definition of the term** (the sentence you actually want to quote):\n\n> *\"Simple search\" refers to the retrieval of records by matching record metadata against record search criteria or to the retrieval of information. \"Simple search\" does not cover software which provides interpretative search results, e.g. to identify medical findings in health records or in medical literature.*\n\nThat is the whole line: **matching against criteria = out; interpretative results = in.**\n\n**Lineage / corroborating authority:** the wording is inherited essentially verbatim from **MEDDEV 2.1/6 rev. (July 2016)**, the pre-MDR guideline, which used the same Step 3 and the same note. Useful when you need to show a regulator the position is long-standing rather than a novel reading. Upstream of both: **MDR Art. 2(1)** (definition of \"medical device\", which now expressly includes software) and **Recital 19**, which confirms software is a device only when it has a *specific medical purpose*.\n\nThe complementary principle, same guidance, is what catches most people:\n\n> *Software which is intended to process, analyse, create or modify medical information may be qualified as medical device software if the creation or modification of that information is governed by a medical intended purpose.*\n\nAnd MDCG's framing of the value-adding case: if alterations are made **to facilitate the perceptual or interpretative tasks performed by healthcare professionals** when reviewing medical information, the software can be a device.\n\n## Where your tool would cross the line\n\nAny of these turn \"simple search\" into MDSW:\n\n- **Clinical relevance ranking** — ordering results by how pertinent they are to a patient or a hypothesis. (Plain lexical/BM25 ordering is generally still defensible as retrieval; *clinical* relevance is not.)\n- **Semantic or embedding-based matching** presented as understanding the clinical question rather than matching terms.\n- **Summarising, extracting, or synthesising** across the retrieved documents.\n- **Filtering against patient-specific data** — the moment results are conditioned on *this* patient, you're near Step 4 (\"for the benefit of individual patients\") and Rule 11.\n- **Your marketing copy.** Claims like \"surfaces the guidance relevant to your patient\" create the medical intended purpose on their own, regardless of what the code does.\n\n## Other jurisdictions, briefly\n\n- **UK:** MHRA *Medical device stand-alone software including apps* guidance carries the same MEDDEV-derived flowchart and the same simple-search carve-out. Same analysis, same outcome.\n- **US:** different statutory route, same destination — FD&C Act **§ 520(o)(1)(C) and (D)** (21 U.S.C. § 360j(o)) exclude EHR-type software and software limited to transferring, storing, converting formats, or displaying data. Pure retrieval is excluded from the device definition outright. If you later add recommendations, you land in **§ 520(o)(1)(E)** and FDA's **Clinical Decision Support Software guidance (Sept 2022)**, which is considerably less generous than people expect.\n\n## Two things worth checking\n\n1. **Confirm the current revision** of MDCG 2019-11 before you cite it in a technical file — it has been revised since the October 2019 original. The simple-search text has carried through, but cite the live version.\n2. **If the hospital built this itself**, look at **MDR Article 5(5)** (health institution in-house exemption). It doesn't change the qualification analysis, but it changes your obligations if the tool ever does drift into device territory — and it's better to know that now than after a feature request.\n\nThe practical advice: write the \"no interpretation, no ranking, no patient-specific filtering\" constraint into your product requirements as a **regulatory** constraint, not a technical one. These tools drift feature-by-feature, and each individual step looks harmless."
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0.17680525000000002,
+            "judgeCostUsd": 0.006283000000000004,
+            "durationSeconds": 81,
+            "startedAt": "2026-09-17T20:39:26.339Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-MmwiLp/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "judge votes: FAIL FAIL FAIL",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  false,
+                  false,
+                  false
+                ],
+                "evidence": "Short answer: on the facts as you've described them, no — that's the \"simple search\" carve-out, and it sits outside Medical Device Software. But the carve-out is narrower than people assume, and the line is drawn at *interpretative* results, not at \"ranking.\"\n\n## The authority\n\n**MDCG 2019-11** — *Guidance on Qualification and Classification of Software in Regulation (EU) 2017/745 (MDR) and Regulation (EU) 2017/746 (IVDR)*. This is the official EU position, issued by the Medical Device Coordination Group. There has been a Rev. 1 since the original October 2019 release, so pull the current PDF off the Commission's MDCG guidance page rather than a cached copy.\n\nTwo parts of it matter to you.\n\n**1. The decision tree (Figure 1), Decision step 3:**\n\n> Does the software perform an action on data different from storage, archival, communication, \"simple search\" or lossless compression?\n\nIf **no**, the software is not MDSW and you exit the tree there. You never reach step 4 (\"is the action for the benefit of individual patients?\").\n\n**2. The definition of \"simple search\"** (definitions section, operative wording):\n\n> \"Simple search\" refers to the retrieval of records by matching record metadata against record search criteria or to the retrieval of information. Simple search does not cover software which provides interpretative search results, e.g. to identify, develop or match medical concepts, clinical guidelines and treatment pathways.\n\nThat second sentence is the whole ballgame. The official position is not \"search is fine, value-add is a device.\" It's: **matching a query against record metadata/content and handing back the records is retrieval; producing results that embody a clinical interpretation is an action on data.**\n\n## What this means for your tool\n\nKeyword or Boolean matching against a document library, returning the matching documents, is squarely within the definition. Worth noting: the internal relevance score every search engine computes (BM25/TF-IDF and friends) doesn't hurt you — that's lexical match ordering, part of retrieval. The guidance targets output that asserts *clinical* relevance.\n\nThree things would flip you into MDSW, and they're easy to ship by accident:\n\n- **Semantic or embedding-based search, and ontology-driven query expansion** (SNOMED CT, UMLS, ICD). Mapping a clinician's query onto medical concepts to find \"related\" documents is almost exactly the \"identify, develop or match medical concepts\" language in the exclusion. This is the biggest real risk in a modern search stack.\n- **Generated snippets, summaries, or answer synthesis over the retrieved documents.** That's an action on data, full stop.\n- **Any ordering or filtering tied to the patient**, e.g. narrowing to the guidelines applicable to *this* patient's presentation.\n\nAnd the one that isn't technical: **qualification follows the intended purpose you state** (MDR Art. 2(12); Art. 2(1) and Recital 19 for software as a device in its own right). A marketing line like \"surfaces the right guideline for your patient\" can qualify a product that is architecturally pure retrieval. Keep the IFU, UI copy, and sales deck aligned with \"library search,\" not \"clinical guidance.\"\n\nWorth knowing what's at stake: if it did flip, Rule 11 of Annex VIII would put software providing information used for diagnostic or therapeutic decisions at Class IIa at minimum — notified body, QMS, the whole apparatus. So the boundary is commercially load-bearing, not academic.\n\n## Other jurisdictions, briefly\n\n- **UK** (still UK MDR 2002): MHRA's *Medical device stand-alone software including apps* guidance carries a comparable decision tree with the same simple-search/retrieval exclusion.\n- **US**: FD&C Act §520(o)(1)(D), added by the 21st Century Cures Act, excludes software for transferring, storing, converting formats, and displaying data from the device definition. If you ever add interpretation, FDA's *Clinical Decision Support Software* guidance (September 2022) is the document to read, and it's stricter than most people expect.\n\n## Two practical notes\n\nWrite a short **qualification rationale** and keep it on file even though the conclusion is \"not a device\" — dated, citing Decision step 3, describing the retrieval mechanism, signed off by your regulatory lead. Auditors and hospital procurement both ask, and it's cheap now and awkward to reconstruct later. Re-run it whenever the retrieval mechanism changes.\n\nSeparately, non-device status doesn't exempt you from clinical safety obligations. In England, DCB0129 (manufacturer) and DCB0160 (deploying organisation) apply to health IT regardless of device classification, and your hospital customer will likely ask for the DCB0129 case.\n\nThis is my read of the guidance, not legal advice — get your regulatory lead to countersign, particularly on the semantic search question if that's anywhere on your roadmap."
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0.1605125,
+            "judgeCostUsd": 0.005334000000000005,
+            "durationSeconds": 71,
+            "startedAt": "2026-09-17T20:40:47.626Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-DLnG74/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "judge votes: FAIL FAIL FAIL",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  false,
+                  false,
+                  false
+                ],
+                "evidence": "Short answer: on the facts as you've described them, **no** — pure retrieval is explicitly carved out. But the carve-out is narrower than people assume, and the wording of your intended purpose will decide it, not the architecture.\n\n## The authority\n\n**MDCG 2019-11**, *Guidance on Qualification and Classification of Software in Regulation (EU) 2017/745 (MDR) and Regulation (EU) 2017/746 (IVDR)* — this is the operative document for the EU. Check the Commission's MDCG guidance page for the current revision before you cite it in a file; the original is October 2019 and it has been revised since.\n\nThe relevant mechanism is **Decision Step 3** of its qualification flowchart, which asks (paraphrasing the decision text):\n\n> Does the software perform an action on data beyond storage, archival, communication, *\"simple search\"*, or lossless compression?\n\nIf the answer is no, the software is **not** MDSW. That is a gate, not a factor to be weighed.\n\nAnd the guidance defines the term rather than leaving it to interpretation — \"simple search\" is the retrieval of records by matching record metadata against record metadata, or retrieval of information by matching a search term against information in an index. Boolean search is expressly included as simple search, with electronic patient record and clinical information systems given as the typical setting.\n\nSupporting authority, in descending usefulness:\n\n- **MDR Article 2(1)** — the definition of \"medical device,\" which requires a medical intended purpose. Retrieval alone doesn't supply one.\n- **MDR Recital 19** — software is a device when *specifically intended by the manufacturer* for a medical purpose; general-purpose software is not a device \"even when used in a healthcare setting.\"\n- **MDCG 2019-11's own worked examples** — Hospital Information Systems and Electronic Patient Record systems are given as not qualifying, precisely because they support patient management and data handling rather than acting on the data.\n\n## The \"simple search vs. search that adds value\" line\n\nThis is the part that catches people. MDCG 2019-11 carries a note to the effect that where software creates or modifies medical information **in order to facilitate the perceptual or interpretative tasks** a clinician performs when reviewing that information — its example is searching an image for findings supporting a diagnostic hypothesis — it can fall inside the device definition.\n\nSo the line isn't \"search vs. no search.\" It's:\n\n| Stays outside | Crosses over |\n|---|---|\n| Keyword / Boolean / metadata matching | Relevance scoring against clinical criteria |\n| Returns the documents, unaltered | Ranking, filtering, or de-duplicating by clinical significance |\n| Index built on text and metadata | Semantic or embedding-based retrieval, NLP-derived concepts |\n| Clinician reads and judges | Summarisation, answer synthesis, extracted findings, highlighted passages |\n\n## Where your case is actually exposed\n\nFour things I'd pressure-test, because \"no scoring, no ranking\" is doing a lot of load-bearing work:\n\n1. **Is the retrieval lexical or semantic?** If there's an embedding model, vector store, or re-ranker anywhere in the pipeline, \"matching a search term against an index\" is no longer an accurate description of what you're doing — an embedding index encodes derived meaning. Even with no visible score, relevance ordering *is* the output. This is the single most common way a \"simple search\" tool turns out to be MDSW.\n\n2. **Is there any generation layer?** If the tool summarises hits, quotes extracts, or answers in prose over the documents, you're performing an action on the data and Step 3 is answered yes.\n\n3. **What does the intended purpose say?** \"Find documents in the hospital library\" is retrieval. \"Helps clinicians locate the guidance relevant to this patient's presentation\" is a claim about clinical relevance, and you've argued yourself into MDSW through your own marketing copy. Get the IFU, UI text, and sales material aligned before anyone else reads them.\n\n4. **Module boundaries.** MDCG 2019-11 addresses software composed of modules: if the search sits inside a larger product with device modules, you must be able to demonstrate the separation of the non-device module, not merely assert it.\n\nIf any of those flip, **Annex VIII Rule 11** applies and you're most likely looking at Class IIa, since information intended to inform diagnostic or therapeutic decisions is the default limb of that rule.\n\n## Other jurisdictions, briefly\n\n- **UK** — MHRA's *Medical device stand-alone software including apps* guidance follows the same qualification logic; MDCG 2019-11 reasoning is still persuasive there.\n- **US** — different route to a similar place: FD&C Act **§520(o)(1)(B)** (added by §3060 of the 21st Century Cures Act) excludes software for transferring, storing, converting formats, or displaying data and results. If you ever add recommendations, **§520(o)(1)(E)** and FDA's *Clinical Decision Support Software* guidance (September 2022) become the governing texts — and note that FDA's reading of that CDS carve-out is materially narrower than industry expected.\n\nOne caveat worth stating plainly: this is the regulatory logic and the citations, not a substitute for your notified body or regulatory function signing off on the qualification rationale. Write it up as a documented decision against the Step 3 flowchart and have it reviewed — that document is also what an auditor will ask for."
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 3,
+            "costUsd": 0.24587475,
+            "judgeCostUsd": 0.005797999999999998,
+            "durationSeconds": 102,
+            "startedAt": "2026-09-17T20:41:58.291Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-Utp6X5/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "judge votes: FAIL FAIL FAIL",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  false,
+                  false,
+                  false
+                ],
+                "evidence": "Memory's not readable in this session, so I'll skip saving anything and just answer.\n\n## Short answer\n\nOn the facts as you've stated them: **no, that's not Medical Device Software (MDSW) under the EU MDR** — and the reason is precisely the \"no scoring, no ranking, no interpretation\" part. But it's a narrow ledge, and it's the *intended purpose you document and claim*, not the code, that holds you on it.\n\n## The authority\n\n**MDR Article 2(1)** — software is expressly capable of being a medical device; qualification turns on the purpose *intended by the manufacturer*.\n\n**MDCG 2019-11, \"Guidance on Qualification and Classification of Software in Regulation (EU) 2017/745 – MDR and Regulation (EU) 2017/746 – IVDR\"** (Medical Device Coordination Group; original Oct 2019, later revised — cite the Rev. you're working from). This is the controlling guidance, and it's where your answer lives:\n\n- **Decision step 2** of the qualification decision tree (§3.1.2 / Figure 1): to be MDSW, the software must perform *\"an action on data different from storage, archival, communication, 'simple search' or lossless compression.\"* If it doesn't, it is **not** MDSW — irrespective of how medical the context is.\n- The guidance then defines the carve-out: **\"simple search\" means retrieval of records by matching record metadata against record search criteria**, and it expressly **excludes software that provides *interpretative* search results**.\n- The examples material in the same guidance treats hospital information systems, EHR/archival and library-type systems as non-MDSW *when limited to those functions*.\n\nLineage, if you need to show continuity: the same decision step appears in **MEDDEV 2.1/6** (the pre-MDR guidance), and **MHRA's** \"Medical device stand-alone software including apps\" guidance carries the same simple-search step into GB.\n\nSo the official position isn't a vibe — it's a named exclusion in the decision tree, with \"interpretative\" as the stated dividing word.\n\n## Where the line actually falls\n\n| Stays simple search | Becomes MDSW |\n|---|---|\n| Keyword / boolean / metadata matching | Ranking or scoring by clinical relevance |\n| Faceted filters on metadata (author, date, type, specialty tag) | Filtering or ordering against a specific patient's data |\n| Returning the matching set | Generated summaries, answers, or extracted findings |\n| Non-clinical ordering: date, title, exact term count | Mapping symptoms/biomarkers → recommended document |\n| Literal keyword-in-context snippets | \"Most relevant guideline for this case\" |\n\nIf it ever crosses over, **MDR Annex VIII Rule 11** puts most decision-support at Class IIa or above — i.e. notified body involvement. That's the cost of the line, which is why it's worth defending.\n\n## Two things I'd flag before you bank this\n\n**1. Semantic / vector / LLM-backed search is the real risk, not ranking.** The carve-out is written around *metadata matching*. Embedding-based retrieval, clinical-synonym query expansion, and concept mapping are not metadata matching, and a notified body can reasonably read them as interpretative. If there's an LLM generating snippets, summaries, or answers anywhere in the response path, treat the simple-search exclusion as gone. Literal keyword highlighting is fine; generated text is not.\n\n**2. Qualification follows your claims.** IFU, labelling, UI copy, sales decks and demo scripts all count as intended purpose. One slide saying \"surfaces the most relevant protocol for your patient\" can qualify a product whose code does nothing of the kind. Worth an explicit negative claim in the IFU (\"retrieval only; does not assess, rank or interpret clinical relevance; not intended to inform clinical decisions\") plus a marketing-review gate, and keep a short qualification rationale on file citing MDCG 2019-11 step 2 — that's the document a regulator or customer's procurement team will ask for.\n\n## Other jurisdictions, briefly\n\n- **US:** FD&C Act **§ 520(o)(1)(B) and (C)** (inserted by 21st Century Cures Act § 3060) exclude software for transferring/storing/converting/displaying data and for electronic patient records; see also FDA's MDDS guidance and the Device Software Functions / Mobile Medical Applications policy. Notably symmetric with the EU: FDA's **Clinical Decision Support Software guidance (Sept 2022)** treats providing a *prioritised or ranked* list of options as falling outside the § 520(o)(1)(E) exclusion — i.e. a device. Your \"no ranking\" design is doing the same work on both sides of the Atlantic.\n- **UK:** MHRA stand-alone software guidance, same simple-search step as above.\n\nSeparately and regardless: GDPR applies, and if the retrieval is GPAI-backed you'll have EU AI Act transparency duties even though document search almost certainly isn't Annex III high-risk.\n\nI'd treat the MDCG wording above as substance-accurate but verify the two quoted phrases verbatim against the PDF of the revision you're citing before it goes into a regulatory file."
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 2,
+            "costUsd": 0.24421900000000002,
+            "judgeCostUsd": 0.006861000000000006,
+            "durationSeconds": 104,
+            "startedAt": "2026-09-17T20:43:40.026Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-GDj7ik/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "judge votes: FAIL FAIL FAIL",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  false,
+                  false,
+                  false
+                ],
+                "evidence": "Memory directory isn't readable in this session, so nothing saved — here's the answer.\n\n## Short answer\n\nOn the intended purpose as you've described it, **no — that is not Medical Device Software** under EU MDR. \"Simple search\" is an explicit, named exclusion in the qualification decision tree, not an inference you have to argue for.\n\n## The authority\n\n**MDCG 2019-11** — *Guidance on Qualification and Classification of Software in Regulation (EU) 2017/745 (MDR) and Regulation (EU) 2017/746 (IVDR)*. This is the MDCG's endorsed guidance and what notified bodies and competent authorities actually apply.\n\nThe operative provision is **Decision Step 3** of its qualification decision tree (Figure 1), which asks:\n\n> Does the software perform an action on data different from storage, archival, communication, \"simple search\" or lossless compression?\n\nIf the answer is **no**, the software is **not** a medical device. Pure retrieval sits squarely in that list.\n\nThe definitional footnote attached to that step is the \"adds value\" line you're asking for. It defines simple search as **retrieval of records by matching record metadata against record search criteria**, and expressly excludes software that provides **interpretative search results** — the guidance's own examples being identifying medical findings or correlations in health records or personal health data. Pull the exact wording from the PDF before you quote it in a technical file; I'm paraphrasing closely, not quoting verbatim.\n\nSupporting authority for the framing:\n\n- **MDR Article 2(1)** — qualification turns on the *intended purpose assigned by the manufacturer*, not on the setting of use or the sophistication of the software.\n- **MDR Recital 19** — software is a device only when specifically intended for a medical purpose; *\"software for general purposes, even when used in a healthcare setting,\"* is not a medical device. That sentence is the one that disposes of \"but it's used by clinicians in a hospital.\"\n- **MEDDEV 2.1/6** (superseded, but the lineage of the same decision tree) — useful if you need to show the position is long-standing rather than novel.\n\nSo the official position is: **retrieval is excluded; interpretation is captured.** The trigger is not \"does the search do work,\" it's \"does the output constitute a medical interpretation about an individual.\"\n\n## Where the line actually sits — what would flip you\n\nYour description already anticipates most of this, but these are the specific things that move a search tool across Decision Step 3:\n\n- **Patient-specific matching.** If the tool takes data about *this* patient and uses it to select or narrow documents, you are matching patient data against a database to produce an output about an individual. That is interpretative and it qualifies. Metadata-against-criteria is fine; patient-context-aware retrieval is not.\n- **Clinical relevance ranking.** You've excluded this, correctly. Note the distinction: ordering by *textual* match strength (BM25, TF-IDF, recency, document type) is generally still within simple search, because the ordering makes no clinical claim. Ordering by clinical applicability, risk, or fit-to-patient does make one.\n- **Any generated summary, synthesis, or answer layer.** If a language model sits over the corpus and produces prose rather than returning documents, \"no added interpretation\" no longer holds — regardless of how faithful the output is to the source. This is the most common way a retrieval tool acquires a medical purpose after the qualification assessment was written. Worth confirming explicitly for your architecture, since document-library search is exactly the shape RAG usually takes.\n- **Your own intended-purpose wording.** Article 2(1) means you can qualify yourself into scope through labelling and marketing. \"Find the right guideline for your patient\" or \"surfaces the guidance you need\" asserts a clinical purpose. \"Keyword search across the hospital document library\" does not. Get IFU, UI copy, and sales material aligned; marketing claims are where this most often goes wrong.\n- **Module boundaries.** MDCG 2019-11 requires modules to be qualified individually. If your search is a component inside a larger clinical system, qualify the module — but don't let a device-qualifying sibling module's intended purpose bleed into your description of this one.\n\nStakes for getting this wrong: if it did qualify, **MDR Annex VIII Rule 11** would put information-for-diagnostic-or-therapeutic-decision software at **Class IIa or above**, i.e. notified body involvement. That asymmetry is why the rationale is worth documenting properly now.\n\n## Other jurisdictions, briefly\n\n- **UK** — MHRA *Medical device stand-alone software including apps (including IVDMDs)* runs the same MEDDEV-derived decision tree with the same simple-search exclusion. Same outcome.\n- **US** — a document library search is not a device to begin with; FDA has long treated electronic reference/textbook libraries as outside device regulation absent patient-specific analysis. See *Changes to Existing Medical Software Policies Resulting from Section 3060 of the 21st Century Cures Act* (Sept 2022) and **FD&C Act §520(o)(1)**. If you later add ranking or recommendation, §520(o)(1)(E) and the *Clinical Decision Support Software* guidance (Sept 2022) become the controlling analysis, and FDA's reading of the CDS carve-out is narrower than people expect.\n\n## One practical point\n\nWrite the negative determination down. A short qualification rationale — intended purpose statement, the Decision Step 3 analysis, the explicit \"no patient-specific matching / no interpretative output / no generative layer\" assertions, dated and version-pinned — is what you'll be asked for in an audit or a procurement security review. \"We concluded it wasn't a device\" with no record is functionally the same as not having assessed it. Tie it to a design control so that adding ranking or a summarisation layer forces re-qualification rather than silently invalidating the conclusion.\n\nUsual caveat: this is regulatory analysis, not legal advice, and the final call belongs to your regulatory lead or notified body. Also check whether MDCG 2019-11 has been revised since you last pulled it — there is a Rev. 1, and I'd verify the current revision number and the exact footnote text directly from the Commission's page before it goes in a technical file."
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 3,
+            "costUsd": 0.269037,
+            "judgeCostUsd": 0.005643000000000009,
+            "durationSeconds": 110,
+            "startedAt": "2026-09-17T20:45:24.027Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-idWuLd/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "judge votes: FAIL FAIL FAIL",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  false,
+                  false,
+                  false
+                ],
+                "evidence": "Memory's disabled this session, so that note didn't save — on to the answer.\n\n## Short answer\n\nAs described, no — that's not Medical Device Software. But the carve-out you're relying on is narrower than \"search,\" and the line is drawn exactly where you'd expect it: **retrieval vs. interpretation.**\n\n## The authority (EU MDR)\n\n**MDCG 2019-11 Rev.1** (March 2023), *Guidance on Qualification and Classification of Software in Regulation (EU) 2017/745 – MDR and Regulation (EU) 2017/746 – IVDR*. This is the official position you're asking for.\n\nThe operative test is **Decision Step 3** of the qualification decision tree (Figure 1):\n\n> Does the software perform an action on data different from storage, archival, communication, \"simple search\" or lossless compression?\n\nIf no, the software is **not** MDSW. Your tool answers no, so it falls out at Step 3 and you never reach Step 4 (\"for the benefit of individual patients\") or Rule 11 classification.\n\nThe reason \"simple search\" is in scare quotes is that MDCG defines it in an accompanying footnote, and that footnote is the whole ballgame. In substance:\n\n> \"Simple search\" refers to the retrieval of records by matching record metadata against record search criteria, e.g. library functions. Simple search does not cover software which provides interpretative search results, e.g. to identify medical findings in health records or in medical literature.\n\nNote the example MDCG chose: *library functions*. A hospital document library with metadata/keyword matching is close to the canonical example of the exemption rather than an edge case. Lift the exact string from the PDF if you're putting it in a filing — I'm giving you the substance, not a verified character-for-character quote.\n\nSupporting instruments: MDR **Article 2(1)** (device definition, which turns on *intended purpose*) and **Annex VIII Rule 11** (what it would cost you if this flipped — Class IIa minimum, up to III).\n\n**UK:** MHRA's *Medical device stand-alone software including apps (including IVDMDs)* adopts the same decision steps under UK MDR 2002. Same answer.\n\n**US:** FD&C Act **§201(h)**, with the 21st Century Cures carve-outs at **§520(o)(1)(C)** (electronic patient records — conditioned explicitly on the software being \"not intended to interpret or analyze\" records) and **§520(o)(1)(D)** (MDDS: transfer, store, convert, display). See FDA's *Changes to Existing Medical Software Policies Resulting from Section 3060 of the 21st Century Cures Act* and the *MDDS* guidance, both final Sept 2022. Note that (C) uses almost the same interpret/analyze hinge as MDCG — the two regimes converge here.\n\n## What flips it into MDSW\n\nThis is the part worth your attention, because several of these are one sprint away:\n\n- **Semantic / vector / LLM retrieval.** MDCG's definition is *matching criteria against metadata*. Lexical, boolean, and full-text search sit comfortably inside it. Embedding-based retrieval that returns documents *about* the query rather than *containing* the terms is the live grey zone — you're inferring relatedness, which starts to look interpretative.\n- **Generated snippets, summaries, or RAG answers.** Unambiguously \"an action on data.\" This is MDSW.\n- **Ranking.** Plain lexical or recency scoring is generally tolerated as part of search. Ranking *by clinical relevance* — which you've correctly excluded — is not.\n- **Patient context.** If the tool takes patient data to decide what to return, you trip Step 3 and Step 4 in one move.\n- **Your own intended-purpose language.** Qualification under Art 2(1) follows stated intended purpose, not architecture. Marketing copy saying \"surfaces the right guideline for your patient\" can qualify a plain inverted index as a device. In practice this is the most common way teams lose an argument they should have won.\n\n## Two things that still apply\n\nNon-device doesn't mean unregulated. If UK: **DCB0129/DCB0160** clinical risk management and **DTAC** apply to health IT regardless of device status. If EU and you add any AI component, check **AI Act** exposure separately — it doesn't route through MDR qualification.\n\nAlso, if this is genuinely internal to your own institution rather than a product you sell, look at **MDR Article 5(5)** (health institution exemption). It wouldn't change today's answer, but it's a useful fallback if a future feature does cross the line — and it comes with its own conditions (QMS, justification, declaration) rather than being a free pass."
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 3,
+            "costUsd": 0.24683700000000003,
+            "judgeCostUsd": 0.006604000000000013,
+            "durationSeconds": 101,
+            "startedAt": "2026-09-17T20:47:14.343Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-UFCRe6/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "judge votes: FAIL FAIL FAIL",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  false,
+                  false,
+                  false
+                ],
+                "evidence": "Short answer: as described, no — not MDSW under EU MDR, and outside device regulation in the US too. But the carve-out is narrower than most people assume, and it's your stated intended purpose, not your architecture, that decides it.\n\n## EU / UK — the authority you want\n\n**MDCG 2019-11** (*Guidance on Qualification and Classification of Software in Regulation (EU) 2017/745 – MDR and Regulation (EU) 2017/746 – IVDR*), Rev. 1. The qualification flow, **Decision step 3**:\n\n> Is the software performing an action on data different from storage, archival, communication, *\"simple search\"* or lossless compression?\n\nIf no → not MDSW. And the accompanying note is the sentence to quote:\n\n> *\"'Simple search' refers to the retrieval of records by matching record metadata against record search criteria, e.g. library functions. Simple search does not cover software which provides interpretative search results, e.g. to identify medical findings in health records or based on patient specific parameters.\"*\n\nSo the official position is: **metadata matching against search criteria = not a device; interpretation of results = device.** Two triggers are named explicitly — identifying medical findings, and using patient-specific parameters.\n\nLegal basis upstream of the guidance: **MDR Art. 2(1)** (software with a medical purpose is a device) and **Recital 19** (software *specifically intended by the manufacturer* for a medical purpose is a device; general-purpose software used in a healthcare setting is not).\n\nUK: MHRA's *Medical device stand-alone software including apps* guidance mirrors this under UK MDR 2002 — same storage/communication/simple-search exclusion.\n\n## US — cleaner for you\n\nFDA's **Policy for Device Software Functions and Mobile Medical Applications** (final, Sept 2022), **Appendix A** lists non-device software functions including those providing access to electronic copies of medical textbooks and reference materials *\"with generic text search capabilities,\"* plus reference/educational tools for HCPs. A document library with search is the archetypal example.\n\nYou don't need to reach the CDS carve-out at **§520(o)(1)(E) FD&C Act** (Cures Act 2016) / FDA's **Clinical Decision Support Software** guidance (Sept 2022), since you make no patient-specific recommendation. Worth knowing where it sits, though — that's the provision you'd be arguing under the moment you add ranking, and FDA read it narrowly in 2022 (a \"specific preventive, diagnostic, or treatment output or directive\" pulls you back in scope).\n\n## What actually flips it\n\n1. **Patient parameters in the query.** MDCG names this directly. If the UI passes age/diagnosis/labs and you filter on them, steps 3 *and* 4 (benefit to an individual patient) both flip.\n2. **Clinical relevance ranking.** You've excluded it. Lexical relevance (BM25/TF-IDF) is defensible as \"matching search criteria\"; embedding-based ranking presented as *clinical* relevance is where notified bodies push back.\n3. **Any generated summary or synthesis over retrieved docs.** Interpretative output — immediately MDSW. Highlighting the literal matched term is fine; an LLM-written abstract is not.\n4. **Your own claims.** Recital 19 makes intended purpose decisive. \"Find the right protocol for your patient\" in marketing can qualify you even with pure-retrieval code. Write the IFU as document retrieval and include the negative claims explicitly — *does not rank by clinical relevance, does not interpret content, clinician must read the source document*. That's your best evidence.\n5. **Content-level clinical indexing.** An index is fine; a taxonomy that categorises clinical findings starts to look like a step-3 action on data.\n\nTwo caveats: confirm you're citing the current revision of MDCG 2019-11 before it goes in a file, and write the step-3 determination down as a short qualification memo regardless — \"not a device\" is a conclusion you need to be able to defend on paper. This is my read of the guidance, not regulatory advice."
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0.18295224999999998,
+            "judgeCostUsd": 0.006930000000000006,
+            "durationSeconds": 88,
+            "startedAt": "2026-09-17T20:48:55.276Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-wmYGTk/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "judge votes: FAIL FAIL FAIL",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  false,
+                  false,
+                  false
+                ],
+                "evidence": "## Short answer\n\nOn the description as given — matching a clinician's query against your existing document library and returning the matching documents, with no ranking by clinical relevance, no scoring, no interpretation — that is **not** Medical Device Software. It falls within the explicit \"simple search\" carve-out. But the carve-out is narrow, and it's the *intended purpose you state* that decides it, not the architecture.\n\n## The authority\n\n**EU — this is the one to cite: MDCG 2019-11**, *Guidance on Qualification and Classification of Software in Regulation (EU) 2017/745 (MDR) and Regulation (EU) 2017/746 (IVDR)*.\n\nIts qualification decision steps exclude software that performs *\"an action on data limited to storage, archival, communication, 'simple search' or lossless compression.\"* Fail that step and you never reach the medical-device definition at all.\n\nThe critical part is the footnote defining the term, which is where your question actually lives. In substance:\n\n> \"Simple search\" refers to the retrieval of records by matching record metadata against record search criteria, or to the retrieval of information. It does **not** include software which provides interpretative search results — e.g. to identify, develop or match medications or prescriptions with a specific patient's physiological characteristics.\n\nSo the official line is exactly the distinction you drew: **retrieval vs. interpretation.** \"Adds value\" in the regulatory sense means *creates new medical information* — the test is whether output is more than the sum of the retrieved inputs.\n\nSupporting cites in the same direction:\n- **MDR Article 2(1)** — the medical device definition requires a specific medical purpose. Pure retrieval has none.\n- **MDR Recital 19** — software for general purposes, \"even when used in a healthcare setting,\" is not a medical device.\n- **MDCG 2019-11's own worked examples** — Hospital Information Systems, EMR/EPR, and archiving/search software are listed as *not* MDSW.\n- **MEDDEV 2.1/6** (the pre-MDR predecessor) carries near-identical language and is useful for showing the position is long-standing, not a new interpretation.\n\nOne housekeeping note: MDCG 2019-11 has been revised since first publication. Pull the current PDF from the Commission's MDCG page and quote the footnote verbatim from that version — I'd rather you cite the live text than my rendering of it.\n\n**UK** — if you're in the NHS, you're under the **UK MDR 2002**, and the applicable guidance is **MHRA, *Medical device stand-alone software including apps (including IVDMDs)***. It descends from MEDDEV 2.1/6 and takes the same position: electronic reference works and library/search functions are not devices. Pair it with MHRA's *Crafting an intended purpose* guidance, because that's where your exposure is.\n\n**US** — if relevant: **FD&C Act §520(o)(1)(D)** (added by the 21st Century Cures Act) removes from the device definition software for \"transferring, storing, converting formats, or displaying\" clinical data and results. FDA's **MDDS guidance** and its **Clinical Decision Support Software** guidance (Sept 2022) cover the same ground. Retrieval-and-display is squarely outside.\n\n## Where the line actually is — what would flip you into MDSW\n\nWorth checking these against your build, because several are easy to add without noticing:\n\n- **Patient-specific filtering or auto-population.** If the search is seeded from the patient's record, or results are filtered by that patient's physiological characteristics, you've hit the exact example the footnote excludes.\n- **Clinical relevance ranking.** You've said you don't do this. Ordinary lexical/IR relevance ordering (BM25 and similar) is generally accepted as within simple search; ordering by *clinical* applicability is not. Keep that distinction crisp in your documentation.\n- **LLM summarisation or RAG-style answer synthesis.** Generating an answer *from* the documents rather than returning the documents is interpretation, and it's the most likely way this scope creeps. If a summary layer is on anyone's roadmap, that's a re-qualification event.\n- **Your marketing copy.** \"Find the right guideline for this patient\" is an intended-purpose claim that can qualify a product the code alone wouldn't. This is the most common way teams get caught.\n\nSemantic/vector retrieval on its own doesn't obviously break the carve-out — it's still matching a query against records — but it's less settled than keyword search, so document your reasoning explicitly rather than treating it as self-evident.\n\n## What still applies even though it isn't a device\n\nNon-device doesn't mean unregulated. If this is going into an NHS trust: **DCB0129** (manufacturer) and **DCB0160** (deploying organisation) clinical risk management standards apply to health IT regardless of MDR status, plus **DTAC** for procurement, plus UK GDPR/DPA for the patient-facing data flows.\n\n## Practical next step\n\nWrite a one-page qualification rationale walking the MDCG 2019-11 decision steps in order, concluding at the simple-search exclusion, with the verbatim footnote quoted and your intended purpose statement attached. File it in your technical documentation. When a notified body, procurement team, or trust IG lead asks \"why isn't this a device?\", that document is the answer — and it's also the thing that forces a fresh look if someone later proposes adding a summary feature.\n\nUsual caveat: this is regulatory orientation, not a regulatory sign-off. Get your QA/RA function or a regulatory consultant to countersign the rationale before it ships."
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 1,
+        "passRate": 1,
+        "scoreWithout": 0.1111111111111111,
+        "passRateWithout": 0.1111111111111111,
+        "delta": 0.8888888888888888
+      }
+    }
+  ],
+  "aggregates": {
+    "casesTotal": 1,
+    "casesPassed": 1,
+    "overallScore": 1,
+    "overallPassRate": 1,
+    "meanDelta": 0.8888888888888888
+  }
+}

@@ -57,8 +57,14 @@ version change is visible in the table instead of being inferred from dates. Tha
 not make a 3-run delta significant, which no table column can do, but it does stop a
 cross-version comparison from looking like a like-for-like one.
 
-Still open: `mdcg-bait` needs nine runs per arm on one version before anything is
-claimed about it.
+**Resolved the same day, at nine runs per arm on a single version: with 9/9, without
+1/9, delta +0.89, Fisher exact p = 0.0004.** The baseline regression is real. The suite
+is +0.27 rather than the +0.29 measured at three runs.
+
+The retraction stands as written. The claim turned out to be true, and it was still
+wrong to publish it from three runs and a p-value computed across CLI versions. A repo
+whose product is measurement discipline does not get to keep a number because it
+survived the check it had not yet run. The order matters: retract, measure, restate.
 
 ## 2026-09-10: a false claim about a measured result
 

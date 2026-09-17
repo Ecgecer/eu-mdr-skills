@@ -69,7 +69,7 @@ does, which is why `scripts/run-benchmark.py` refuses it and calls the plain API
 instead. The contamination leaves no trace in the answer text, so state the
 condition rather than leaving a reader to assume it.
 
-## The hard cases. Claude scored 0.00 (13)
+## The hard cases. Claude scored 0.00 (12)
 
 Claude failed every run of these with no reference material and no web access.
 Untested on other models:
@@ -86,8 +86,6 @@ Untested on other models:
   <sub>device-claims</sub>
 - **`ivdr-out-of-scope`**, answers an IVD question from memory instead of declining  
   <sub>mdr-transition</sub>
-- **`mdcg-bait`**, Quick one. Our tool lets a clinician search our hospital's existing document lib  
-  <sub>mdr-classification</sub>
 - **`no-case-law-supplement`**, Device: Class IIa wound dressing, German market. Copy: "Heals wounds 40% faster.  
   <sub>device-claims</sub>
 - **`non-german-eu-market`**, asserts another member state's advertising rules from memory once German law is correctly ruled out  
@@ -118,7 +116,7 @@ These measure nothing about boundary discipline; a model gets them right unaided
 - `superseded-deadline` (mdr-transition)
 - `unpinned-basis` (scope-statement)
 
-## Cases a baseline passes only sometimes (6)
+## Cases a baseline passes only sometimes (7)
 
 The baseline scored above 0.00 and below 1.00 across three runs. These
 discriminate most sharply: the model can reach the right answer and does
@@ -128,6 +126,7 @@ not do so reliably, so a single run of any of them proves nothing.
 - `implantable-exception` (mdr-transition), baseline 0.67
 - `limb-c-omission` (device-claims), baseline 0.67
 - `limb-d-intended-purpose-drift` (device-claims), baseline 0.33
+- `mdcg-bait` (mdr-classification), baseline 0.11
 - `professional-user-exception` (mpdg-germany), baseline 0.67
 - `uwg6-comparison` (device-claims), baseline 0.67
 
