@@ -434,10 +434,15 @@ for _f in sorted(_files):
     for _i, _line in enumerate(_f.read_text().splitlines(), 1):
         for _m in re.finditer(r"claude plugin eval(\S*)(.*)$", _line):
             _rel = _f.relative_to(ROOT)
-            if _m.group(1):
+            # Only a path-ish character glued to `eval` is the bug. A closing backtick or
+            # quote just ends a code span or a sentence, and flagging those made this
+            # guard fire on METHOD.md's own prose about the command.
+            if _m.group(1) and _m.group(1)[0] in "./":
                 _bad_invocations.append(
                     f"{_rel}:{_i}: `eval{_m.group(1)}` -- the space before the path is gone")
                 continue
+            if _m.group(1):
+                continue                       # `eval` closing a code span: prose, not a call
             for _tok in _m.group(2).split():
                 _t = _tok.strip("`'\"),.")
                 if _t.startswith((".", "/")):

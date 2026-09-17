@@ -97,6 +97,23 @@ Weight the suite the way the value actually distributes:
 here measure no benefit, that fact is in every eval README, and it is the strongest
 evidence that the other half is real.
 
+**Check that your baseline is actually unassisted.** "Without the skill" is a claim about
+an environment, not just a flag, and it is worth verifying rather than trusting. This
+machine had thirteen German legal plugins installed alongside these, including one for
+Wettbewerbsrecht, which is the same UWG that `device-claims` tests. Had any of them
+loaded into the baseline arm, every delta here would be understated by an unknown amount
+and nothing in the output would have said so.
+
+They do not. `claude plugin eval` gives each run a fresh HOME and config directory: the
+child's `settings.json` carries only `DISABLE_AUTOUPDATER`, with no `enabledPlugins` key,
+and its `.claude.json` records exactly one plugin, the one under test, injected inline.
+Enabling or disabling anything in the operator's own config cannot reach a run. That also
+makes runs taken weeks apart comparable, which matters here because the numbers in this
+repo were measured across several sittings.
+
+Verify it on your own setup by reading the kept sandbox from a failed run rather than
+assuming, since the guarantee is a property of the harness version you have.
+
 ## 5. Make the central claim executable
 
 "Verbatim from the official source, retrieved on this date" is an assertion. Ship the
