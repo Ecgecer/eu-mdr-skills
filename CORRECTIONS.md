@@ -45,10 +45,16 @@ Section 23 content on top.
 The reason is structural, not a matter of wording. In all three with-skill runs the
 response carries none of the skill's refusal phrasing, and the with and without arms
 are indistinguishable on every marker checked. The skill is not governing the answer
-at all. A skill scoped to a jurisdiction stops being consulted at the moment its
-subject is ruled out of scope, which is precisely the moment its discipline is needed:
-the model decides Germany is not in play, concludes the skill does not apply, and
-answers as if it were not loaded.
+at all.
+
+I first wrote that up as a general property of jurisdiction-scoped skills. That was
+too broad, and the repo already held the counter-example. `device-claims` has its own
+out-of-jurisdiction case, `non-german-eu-market`, and scores 1.00 with the skill
+against 0.00 without: it governs the out-of-scope answer correctly. The difference is
+what survives ruling the jurisdiction out. `device-claims` still holds MDR Art. 7,
+which applies EU-wide, so it stays relevant to a French market question.
+`mpdg-germany` is purely additive to MDR, so outside Germany it has nothing left to
+say and stops being consulted. The failure needs both conditions, not just the first.
 
 No edit inside the skill body can fix that, because the body is not being read. The
 fix would have to reach the part the model consults before deciding relevance.

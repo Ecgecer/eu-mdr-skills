@@ -177,3 +177,20 @@ Never state a BfArM position, a notified-body view, or how a German court would 
 > here is German and says nothing about France, Italy or elsewhere. A first-pass aid for
 > spotting German-specific duties, not legal advice, and not a substitute for a
 > regulatory professional or a Fachanwalt für Medizinrecht.
+
+**Measured weakness, stated because a user should not discover it themselves.** Ask
+about a market other than Germany and the answer stops being governed by this skill.
+Measured 2026-09-17 and again 2026-09-18: on a Spain and Portugal language question,
+three runs out of three named MDR Art. 10(11) as the governing rule with no tag and no
+flag, and carried none of the refusal phrasing above. The answers were indistinguishable
+from the same model with no skill loaded.
+
+The reason is that this skill is purely additive to MDR. Once Germany is ruled out it
+has nothing left to contribute, and stops being consulted at the moment its own
+discipline would matter most. `device-claims` does not behave this way because it still
+holds MDR Art. 7, which applies EU-wide, so it remains relevant after the German
+question closes.
+
+So treat a non-German answer from this skill as unguarded. It is the one place where
+the refusal discipline described above is not in force, and wording changes inside this
+file have been tried and do not fix it.

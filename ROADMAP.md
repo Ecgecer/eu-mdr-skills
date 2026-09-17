@@ -118,6 +118,41 @@ existing tooling.
 
 ---
 
+## Owed: nine runs for every number that three cannot carry
+
+29 of the 30 published cases are measured at three runs per arm. One, `mdcg-bait`, is
+at nine, and it is the reason this section exists: at three runs it read +1.00 and was
+published as a finding, at nine it is +0.89 and the suite it sits in moved from +0.29 to
++0.27. `CORRECTIONS.md` carries the retraction.
+
+That leaves this repo arguing in METHOD that three runs cannot resolve a delta near zero
+while publishing 29 numbers measured at three runs. A reader who takes the corrections
+seriously will find that before anyone else does.
+
+Not every case needs it. A case at 3/3 against 0/3 with unanimous judges is not in
+doubt about its sign, only its magnitude. The ones that need nine are the ones whose
+delta sits where three runs cannot separate signal from noise:
+
+| Case | Suite | Delta at 3 runs |
+|---|---|---|
+| `implantable-exception` | mdr-transition | +0.33 |
+| `limb-c-omission` | device-claims | +0.33 |
+| `uwg6-comparison` | device-claims | +0.33 |
+| `fsn-language` | mpdg-germany | +0.33 |
+| `clean-copy-control` | device-claims | +0.67 |
+| `hwg3a-arzneimittel-only` | device-claims | +0.67 |
+| `limb-d-intended-purpose-drift` | device-claims | +0.67 |
+| `professional-user-exception` | mpdg-germany | +0.67 |
+| `readiness-claim` | scope-statement | -0.67 |
+
+Roughly $20 to $25 at the rates in METHOD, run per case with `--case <name> --runs 9`
+rather than re-running whole suites. The table already carries a runs column, so the
+result is a repo where every published number states its own sample size and no number
+outruns it.
+
+Deferred deliberately to around 2026-10-08, or whenever EUDAMate revenue makes the
+spend easy. Recorded here rather than remembered.
+
 ## Rejected, with reasons
 
 **Another member state's national law**: France, Italy, Spain. The target is right and
