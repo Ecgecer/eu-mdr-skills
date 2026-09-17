@@ -61,11 +61,15 @@ for grader in sorted(_glob.glob(str(ROOT / "*/evals/*/graders/*.md"))):
     plugin = case_dir.parent.parent
     for extra in list(plugin.glob("skills/*/SKILL.md")) + list(plugin.glob("skills/*/references/*.md")):
         corpus += extra.read_text()
-    corpus_n = re.sub(r"\s+", " ", corpus)
+    # Case-folded: a grader that opens a sentence with "For informational purposes only"
+    # while the skill has it mid-sentence is not a stale quote, and four of the nineteen
+    # entries were exactly that. An advisory carrying known-false entries is one people
+    # learn to skim, which is how a real stale quote would go unread.
+    corpus_n = re.sub(r"\s+", " ", corpus).lower()
     for phrase in re.findall(r'"([^"\n]{20,120})"', open(grader).read()):
         if len(phrase.split()) < 4:
             continue
-        if re.sub(r"\s+", " ", phrase) not in corpus_n:
+        if re.sub(r"\s+", " ", phrase).lower() not in corpus_n:
             stale.append((str(Path(grader).relative_to(ROOT)), phrase))
 if stale:
     # Advisory, not a gate. Graders legitimately quote model answers and illustrative
