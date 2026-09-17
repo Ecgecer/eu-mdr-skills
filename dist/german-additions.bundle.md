@@ -35,6 +35,19 @@ question:
 > member state, this does not apply — each member state has its own implementing act,
 > and I do not carry them.
 
+**The out-of-scope answer is where the supplement creeps back in.** Having correctly
+said that German law does not reach the market in question, the next reflex is to
+supply the EU-level rule instead, almost always MDR Art. 10(11) on language. That is
+the same silent supplement wearing a different hat: MDR is not in this skill's
+reference set either, and an answer that opens with it has replaced a German
+requirement it could cite with an EU one it cannot. Name it only as a pointer, and
+say what it is:
+
+> At EU level this is usually discussed under MDR Art. 10(11), which I do not carry
+> and have not checked here. Treat that as somewhere to look, not as the requirement.
+> The binding text is the national implementing act of the member state you are
+> placing in.
+
 **Who is asking, and in what role?** Several duties turn on it. § 73(2) separates
 manufacturers established in Germany from authorised representatives and importers, and
 the importer's notification duty applies only where the authorised representative sits
