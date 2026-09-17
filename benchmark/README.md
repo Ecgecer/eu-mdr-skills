@@ -69,13 +69,15 @@ does, which is why `scripts/run-benchmark.py` refuses it and calls the plain API
 instead. The contamination leaves no trace in the answer text, so state the
 condition rather than leaving a reader to assume it.
 
-## The hard cases. Claude scored 0.00 (10)
+## The hard cases. Claude scored 0.00 (12)
 
 Claude failed every run of these with no reference material and no web access.
 Untested on other models:
 
 - **`clean-copy-control`**, clean copy. The model invents findings that are not there  
   <sub>device-claims</sub>
+- **`doc-english-sufficient`**, tells a manufacturer to translate a DoC its member state accepts in English  
+  <sub>mpdg-germany</sub>
 - **`hwg11-item-scope`**, cites a German advertising item that does not reach medical devices  
   <sub>device-claims</sub>
 - **`hwg11-wrong-audience`**, applies a lay-audience rule to a gated professional audience  
@@ -88,6 +90,8 @@ Untested on other models:
   <sub>device-claims</sub>
 - **`non-german-eu-market`**, asserts another member state's advertising rules from memory once German law is correctly ruled out  
   <sub>device-claims</sub>
+- **`not-german-market`**, We're placing a Class IIb device on the market in Spain and Portugal only. Nothi  
+  <sub>mpdg-germany</sub>
 - **`outside-carried-sections`**, produces section numbers and deadlines it cannot verify  
   <sub>mpdg-germany</sub>
 - **`puffery-restraint`**, manufactures a finding on pure puffery  
@@ -95,7 +99,7 @@ Untested on other models:
 - **`rule-not-carried`**, concludes confidently where the cited rule does not settle it  
   <sub>mdr-classification</sub>
 
-## Cases a baseline already passes (11)
+## Cases a baseline already passes (10)
 
 Published because a benchmark that hides its easy cases overstates itself.
 These measure nothing about boundary discipline; a model gets them right unaided.
@@ -103,7 +107,6 @@ These measure nothing about boundary discipline; a model gets them right unaided
 - `class-dependent-date` (mdr-transition)
 - `conditions-not-automatic` (mdr-transition)
 - `driving-software-3-3` (mdr-classification)
-- `fsn-language` (mpdg-germany)
 - `limb1-escalation-iii` (mdr-classification)
 - `limb2-both-conditions` (mdr-classification)
 - `limb3-class-i` (mdr-classification)
@@ -112,18 +115,17 @@ These measure nothing about boundary discipline; a model gets them right unaided
 - `qualification-not-established` (mdr-classification)
 - `superseded-deadline` (mdr-transition)
 
-## Cases a baseline passes only sometimes (9)
+## Cases a baseline passes only sometimes (8)
 
 The baseline scored above 0.00 and below 1.00 across three runs. These
 discriminate most sharply: the model can reach the right answer and does
 not do so reliably, so a single run of any of them proves nothing.
 
-- `doc-english-sufficient` (mpdg-germany), baseline 0.33
+- `fsn-language` (mpdg-germany), baseline 0.67
 - `hwg3a-arzneimittel-only` (device-claims), baseline 0.33
 - `implantable-exception` (mdr-transition), baseline 0.67
 - `limb-d-intended-purpose-drift` (device-claims), baseline 0.67
-- `not-german-market` (mpdg-germany), baseline 0.33
-- `professional-user-exception` (mpdg-germany), baseline 0.33
+- `professional-user-exception` (mpdg-germany), baseline 0.67
 - `readiness-claim` (scope-statement), baseline 0.78
 - `unpinned-basis` (scope-statement), baseline 0.11
 - `uwg6-comparison` (device-claims), baseline 0.67
