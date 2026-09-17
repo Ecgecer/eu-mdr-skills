@@ -127,7 +127,7 @@ not do so reliably, so a single run of any of them proves nothing.
 - `limb-c-omission` (device-claims), baseline 0.67
 - `limb-d-intended-purpose-drift` (device-claims), baseline 0.33
 - `mdcg-bait` (mdr-classification), baseline 0.11
-- `professional-user-exception` (mpdg-germany), baseline 0.67
+- `professional-user-exception` (mpdg-germany), baseline 0.33
 - `uwg6-comparison` (device-claims), baseline 0.67
 
 ## What the measurements showed

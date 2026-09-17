@@ -31,6 +31,34 @@ by reading transcripts, not by reading scores.
 
 ---
 
+## 2026-09-18: a skill fix that did not work, kept visible
+
+`not-german-market` scored 0.00 in both arms because every response named MDR Art.
+10(11) as the governing rule without flagging it as uncarried. I added guidance to
+Step 0 covering exactly that move, had it reviewed, fixed two real defects the review
+found, and re-measured at $5.22.
+
+It changed nothing. The case is still 0.00 in both arms, and all three with-skill runs
+still cite Art. 10(11) with no flag and no `[verify]`, one of them now adding Annex I
+Section 23 content on top.
+
+The reason is structural, not a matter of wording. In all three with-skill runs the
+response carries none of the skill's refusal phrasing, and the with and without arms
+are indistinguishable on every marker checked. The skill is not governing the answer
+at all. A skill scoped to a jurisdiction stops being consulted at the moment its
+subject is ruled out of scope, which is precisely the moment its discipline is needed:
+the model decides Germany is not in play, concludes the skill does not apply, and
+answers as if it were not loaded.
+
+No edit inside the skill body can fix that, because the body is not being read. The
+fix would have to reach the part the model consults before deciding relevance.
+
+The guidance is still in the skill. It is measured, caused no regression, and the two
+review findings it now satisfies were real. But it did not do the thing it was added
+for, and that is recorded here rather than left to look like a fix that worked.
+
+Open, with a diagnosis rather than a theory.
+
 ## 2026-09-17: a baseline collapse asserted from a single run
 
 `mdr-classification` re-measured at +0.29, against +0.14 published on 2026-09-11. The
