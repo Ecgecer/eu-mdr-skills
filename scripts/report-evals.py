@@ -378,7 +378,7 @@ def load(plugin):
         VERSIONS.setdefault(plugin, set()).add(d.get("claudeVersion") or "unknown")
         for c in d.get("cases", []):
             arms = c.get("arms", {})
-            rec = {"ts": ts, "arms": {}}
+            rec = {"ts": ts, "ver": d.get("claudeVersion") or "unknown", "arms": {}}
             for a in ("with", "without"):
                 rs = arms.get(a, [])
                 ok = [r for r in rs if not r.get("error")]
@@ -432,8 +432,8 @@ def table(plugin):
     if not runs:
         return f"_No stored eval runs for `{plugin}`._\n"
     out = stale_banner(plugin) + [
-           "| Case | with | without | delta | runs | measured |",
-           "|---|---|---|---|---|---|"]
+           "| Case | with | without | delta | runs | measured | CLI |",
+           "|---|---|---|---|---|---|---|"]
     extra = []
     for name in sorted(runs):
         cur = current(runs[name])
@@ -443,10 +443,12 @@ def table(plugin):
         if cur["arms"]["with"]["errored"] or cur["arms"]["without"]["errored"]:
             note = " ⚠"
         out.append(f"| `{name}` | {fmt(w)} | {fmt(wo)} | **{delta}** | "
-                   f"{cur['arms']['with']['n']}×2 | {cur['ts'][:10]}{note} |")
+                   f"{cur['arms']['with']['n']}×2 | {cur['ts'][:10]}{note} | "
+                   f"{cur.get('ver','unknown')} |")
         if len(runs[name]) > 1:
             others = "; ".join(
-                f"{r['ts'][:10]} {fmt(r['arms']['with']['score'])}/{fmt(r['arms']['without']['score'])}"
+                f"{r['ts'][:10]} ({r.get('ver','unknown')}) "
+                f"{fmt(r['arms']['with']['score'])}/{fmt(r['arms']['without']['score'])}"
                 + (f" ({r['arms']['with']['errored'] + r['arms']['without']['errored']} errored)"
                    if (r['arms']['with']['errored'] or r['arms']['without']['errored']) else "")
                 for r in runs[name] if r is not cur)
@@ -468,7 +470,11 @@ def table(plugin):
     # models are indistinguishable once written. Say so rather than let a reader assume
     # the table knows.
     vs = ", ".join(sorted(VERSIONS.get(plugin, {"unknown"})))
-    out += ["", f"<sub>Claude Code {vs}. The harness records the CLI version, not the "
+    out += ["", f"<sub>Claude Code {vs}. A row measured on one CLI version and an earlier "
+                "run on another are not directly comparable: between 2.1.268 and 2.1.274 one "
+                "baseline here went from 1/9 to 3/3 and another from 9/9 to 0/3, with no "
+                "change in this repo. The CLI column is per row so a cross-version reading "
+                "is visible rather than inferred. The harness records the CLI version, not the "
                 "model; these runs used the CLI default. A run pinned to another model "
                 "with `--model` belongs in `evals/model-probes/`, which this table does "
                 "not read. Each row is that case's most recent run with a scorable arm, "

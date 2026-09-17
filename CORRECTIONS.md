@@ -31,6 +31,35 @@ by reading transcripts, not by reading scores.
 
 ---
 
+## 2026-09-17: a baseline collapse asserted from a single run
+
+`mdr-classification` re-measured at +0.29, against +0.14 published on 2026-09-11. The
+whole of that rise came from one case, `mdcg-bait`, whose baseline arm went from 3/3 to
+0/3. I reported that as an established regression in the base model and quoted Fisher
+p = 0.0045 for it.
+
+The p-value was computed against runs on **earlier CLI versions**, so it answers "did
+anything change across these four runs", not "is 2.1.274's baseline worse". Against the
+run it actually superseded it is 3/3 against 0/3 on n=3 per arm, which is p = 0.1 and
+does not clear this repo's own stated bar. The repo had already written that bar down:
+a delta within about a third of a point of zero needs nine runs before the sign is
+believed. +0.29 is inside that band and I published it as a finding anyway.
+
+Caught by a reader, not by a check, and it had not been pushed.
+
+What is unaffected: `rule-not-carried` at +1.00 pools to 12/12 with the skill against
+0/12 without, over four runs and three CLI versions. That case was +1.00 in the previous
+table too and is not what moved.
+
+What stops the invisible half of it now: the generated tables carry the CLI version per
+row, and the earlier-runs line under each table carries it too. A reading that spans a
+version change is visible in the table instead of being inferred from dates. That does
+not make a 3-run delta significant, which no table column can do, but it does stop a
+cross-version comparison from looking like a like-for-like one.
+
+Still open: `mdcg-bait` needs nine runs per arm on one version before anything is
+claimed about it.
+
 ## 2026-09-10: a false claim about a measured result
 
 **Published:** `mdr-classification/evals/README.md` said the baseline "escalated home

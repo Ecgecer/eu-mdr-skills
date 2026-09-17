@@ -5,31 +5,31 @@ data in `evals/results/`. Do not hand-edit the table; hand-edited tables are how
 corrections below happened.
 
 <!-- report-evals:start -->
-| Case | with | without | delta | runs | measured |
-|---|---|---|---|---|---|
-| `driving-software-3-3` | 1.00 | 1.00 | **+0.00** | 3×2 | 2026-09-17 |
-| `limb1-escalation-iii` | 1.00 | 1.00 | **+0.00** | 3×2 | 2026-09-17 |
-| `limb2-both-conditions` | 1.00 | 1.00 | **+0.00** | 3×2 | 2026-09-17 |
-| `limb3-class-i` | 1.00 | 1.00 | **+0.00** | 3×2 | 2026-09-17 |
-| `mdcg-bait` | 1.00 | 0.00 | **+1.00** | 3×2 | 2026-09-17 |
-| `qualification-not-established` | 1.00 | 1.00 | **+0.00** | 3×2 | 2026-09-17 |
-| `rule-not-carried` | 1.00 | 0.00 | **+1.00** | 3×2 | 2026-09-17 |
+| Case | with | without | delta | runs | measured | CLI |
+|---|---|---|---|---|---|---|
+| `driving-software-3-3` | 1.00 | 1.00 | **+0.00** | 3×2 | 2026-09-17 | 2.1.274 |
+| `limb1-escalation-iii` | 1.00 | 1.00 | **+0.00** | 3×2 | 2026-09-17 | 2.1.274 |
+| `limb2-both-conditions` | 1.00 | 1.00 | **+0.00** | 3×2 | 2026-09-17 | 2.1.274 |
+| `limb3-class-i` | 1.00 | 1.00 | **+0.00** | 3×2 | 2026-09-17 | 2.1.274 |
+| `mdcg-bait` | 1.00 | 0.00 | **+1.00** | 3×2 | 2026-09-17 | 2.1.274 |
+| `qualification-not-established` | 1.00 | 1.00 | **+0.00** | 3×2 | 2026-09-17 | 2.1.274 |
+| `rule-not-carried` | 1.00 | 0.00 | **+1.00** | 3×2 | 2026-09-17 | 2.1.274 |
 
 **Mean delta +0.29** across 7 case(s) with both arms measured.
 
 ### Every other stored run for these cases
 
-- `driving-software-3-3`, earlier runs: 2026-09-09 1.00/1.00; 2026-09-10 1.00/1.00; 2026-09-11 1.00/n/a (2 errored); 2026-09-11 1.00/1.00
-- `limb1-escalation-iii`, earlier runs: 2026-09-09 1.00/1.00; 2026-09-10 1.00/1.00; 2026-09-11 n/a/n/a (6 errored); 2026-09-11 1.00/1.00
-- `limb2-both-conditions`, earlier runs: 2026-09-09 1.00/0.00; 2026-09-10 1.00/1.00; 2026-09-11 n/a/n/a (6 errored); 2026-09-11 0.67/1.00; 2026-09-11 1.00/1.00
-- `limb3-class-i`, earlier runs: 2026-09-09 1.00/1.00; 2026-09-10 1.00/1.00; 2026-09-11 n/a/n/a (6 errored); 2026-09-11 1.00/1.00
-- `mdcg-bait`, earlier runs: 2026-09-10 1.00/1.00; 2026-09-10 1.00/1.00; 2026-09-11 1.00/1.00
-- `qualification-not-established`, earlier runs: 2026-09-09 1.00/1.00; 2026-09-10 1.00/1.00; 2026-09-11 n/a/n/a (6 errored); 2026-09-11 1.00/1.00
-- `rule-not-carried`, earlier runs: 2026-09-10 1.00/0.00; 2026-09-10 1.00/0.00; 2026-09-11 n/a/n/a (5 errored); 2026-09-11 1.00/0.00
+- `driving-software-3-3`, earlier runs: 2026-09-09 (2.1.267) 1.00/1.00; 2026-09-10 (2.1.267) 1.00/1.00; 2026-09-11 (2.1.268) 1.00/n/a (2 errored); 2026-09-11 (2.1.268) 1.00/1.00
+- `limb1-escalation-iii`, earlier runs: 2026-09-09 (2.1.267) 1.00/1.00; 2026-09-10 (2.1.267) 1.00/1.00; 2026-09-11 (2.1.268) n/a/n/a (6 errored); 2026-09-11 (2.1.268) 1.00/1.00
+- `limb2-both-conditions`, earlier runs: 2026-09-09 (2.1.267) 1.00/0.00; 2026-09-10 (2.1.267) 1.00/1.00; 2026-09-11 (2.1.268) n/a/n/a (6 errored); 2026-09-11 (2.1.268) 0.67/1.00; 2026-09-11 (2.1.268) 1.00/1.00
+- `limb3-class-i`, earlier runs: 2026-09-09 (2.1.267) 1.00/1.00; 2026-09-10 (2.1.267) 1.00/1.00; 2026-09-11 (2.1.268) n/a/n/a (6 errored); 2026-09-11 (2.1.268) 1.00/1.00
+- `mdcg-bait`, earlier runs: 2026-09-10 (2.1.267) 1.00/1.00; 2026-09-10 (2.1.267) 1.00/1.00; 2026-09-11 (2.1.268) 1.00/1.00
+- `qualification-not-established`, earlier runs: 2026-09-09 (2.1.267) 1.00/1.00; 2026-09-10 (2.1.267) 1.00/1.00; 2026-09-11 (2.1.268) n/a/n/a (6 errored); 2026-09-11 (2.1.268) 1.00/1.00
+- `rule-not-carried`, earlier runs: 2026-09-10 (2.1.267) 1.00/0.00; 2026-09-10 (2.1.267) 1.00/0.00; 2026-09-11 (2.1.268) n/a/n/a (5 errored); 2026-09-11 (2.1.268) 1.00/0.00
 
 Listed because publishing only the most favourable run of several is how the earlier tables went wrong.
 
-<sub>Claude Code 2.1.267, 2.1.268, 2.1.274. The harness records the CLI version, not the model; these runs used the CLI default. A run pinned to another model with `--model` belongs in `evals/model-probes/`, which this table does not read. Each row is that case's most recent run with a scorable arm, so rows can come from different runs and the mean is a composite rather than any single run's figure, the dates say which.</sub>
+<sub>Claude Code 2.1.267, 2.1.268, 2.1.274. A row measured on one CLI version and an earlier run on another are not directly comparable: between 2.1.268 and 2.1.274 one baseline here went from 1/9 to 3/3 and another from 9/9 to 0/3, with no change in this repo. The CLI column is per row so a cross-version reading is visible rather than inferred. The harness records the CLI version, not the model; these runs used the CLI default. A run pinned to another model with `--model` belongs in `evals/model-probes/`, which this table does not read. Each row is that case's most recent run with a scorable arm, so rows can come from different runs and the mean is a composite rather than any single run's figure, the dates say which.</sub>
 <!-- report-evals:end -->
 
 ---
