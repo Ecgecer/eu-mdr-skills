@@ -369,8 +369,8 @@ cached = []
 # A bare-name target writes results to ./evals/results/ at the repo root, which is no
 # plugin's eval dir -- report-evals.py never reads it, so the run leaves no trace in any
 # published table but does leave that directory behind. Its existence is the tell.
-_stray = sorted(ROOT.glob("evals/results/*/aggregate-result.json"))
-for _f in sorted(ROOT.glob("*/evals/results/*/aggregate-result.json")) + _stray:
+_stray_dir = (ROOT / "evals").is_dir()
+for _f in sorted(ROOT.glob("*/evals/results/*/aggregate-result.json")):
     try:
         _plugins = _j3.loads(_f.read_text()).get("suite", {}).get("plugins", [])
     except (ValueError, OSError):
@@ -379,9 +379,10 @@ for _f in sorted(ROOT.glob("*/evals/results/*/aggregate-result.json")) + _stray:
         _path = _pl.get("path") or ""
         if "/plugins/cache/" in _path or "/plugins/marketplaces/" in _path:
             cached.append(f"{_f.relative_to(ROOT)}: {_path}")
-if _stray:
-    cached.append(f"{ROOT.name}/evals/ exists at the repo root, which only a bare-name "
-                  f"target creates ({len(_stray)} run(s)); delete it")
+if _stray_dir:
+    cached.append("evals/ exists at the repo root. Only a bare-name target creates it, "
+                  "and report-evals.py never reads it, so runs land there unnoticed. "
+                  "Delete it and re-measure with a path target.")
 if cached:
     print("\n  results measured against an INSTALLED plugin, not this repo:")
     for c in cached:
@@ -395,33 +396,88 @@ else:
 
 # 15. every documented eval invocation targets a path, not a plugin name
 #
-# Two separate ways to get this wrong, both of which happened:
-#   `claude plugin eval device-claims`   resolves to the INSTALLED plugin, which is a
-#                                        cache of the last pushed+synced commit. It runs
-#                                        and reports, so nothing looks wrong (see 14).
+# Two ways to get this wrong, both of which happened:
+#   `claude plugin eval device-claims`   resolves to the INSTALLED plugin, a cache of the
+#                                        last pushed+synced commit. It runs and reports,
+#                                        so nothing looks wrong (see 14).
 #   `claude plugin eval. --ablation ...` the punctuation rewrite of 2026-09-11 ate the
-#                                        space in `eval .`, in CONTRIBUTING twice and
-#                                        ROADMAP once. It falls through to generic help.
+#                                        space in `eval .`, in CONTRIBUTING twice, ROADMAP
+#                                        once and roadmap-probe once. Falls through to
+#                                        generic help and runs nothing.
 #
-# The token after `claude plugin eval` must be a path: `.` or `./name`. A reader copies
-# these verbatim, so a wrong one is not a typo, it is a wrong measurement or no run.
+# The first version of this guard globbed ROOT/*.md, which is not recursive: it never
+# reached */evals/README.md or */roadmap-probe/README.md, so it reported clean while a
+# live instance of the bug sat in mpdg-germany/roadmap-probe/README.md. It now recurses.
+#
+# A bare name is recognised by matching the shipped plugin list rather than by "any word
+# that is not a path", so ordinary prose ("run claude plugin eval carefully") is not a
+# finding. An f-string placeholder must carry the ./ itself: `{pl}` alone is precisely
+# what this guard exists to catch, since that was the defect in report-evals.py.
+_SKIP = ("dist", "results", "node_modules", ".git")
+_shipped = set()
+_mk = ROOT / ".claude-plugin" / "marketplace.json"
+if _mk.exists():
+    import json as _j4
+    _shipped = {e["name"] for e in _j4.loads(_mk.read_text()).get("plugins", [])}
+
 _bad_invocations = []
-for _f in sorted(list(ROOT.glob("*.md")) + list((ROOT / "scripts").glob("*.py"))):
+# This file quotes both broken forms in its own comments and regex, so it is skipped.
+_self = Path(__file__).resolve()
+_files = [f for f in list(ROOT.rglob("*.md")) + list(ROOT.rglob("*.py"))
+          if not any(part in _SKIP for part in f.relative_to(ROOT).parts)
+          and f.resolve() != _self]
+for _f in sorted(_files):
     for _i, _line in enumerate(_f.read_text().splitlines(), 1):
-        for _m in re.finditer(r"claude plugin eval(\S*)(?:\s+(\S+))?", _line):
-            _glued, _target = _m.group(1), _m.group(2) or ""
-            if _glued:
+        for _m in re.finditer(r"claude plugin eval(\S*)(.*)$", _line):
+            _rel = _f.relative_to(ROOT)
+            if _m.group(1):
                 _bad_invocations.append(
-                    f"{_f.name}:{_i}: `eval{_glued}` -- the space before the path is gone")
-            elif not _target.startswith((".", "/", "{")) and not _target.startswith("--"):
-                _bad_invocations.append(
-                    f"{_f.name}:{_i}: `{_target}` is a plugin name; use ./{_target}")
+                    f"{_rel}:{_i}: `eval{_m.group(1)}` -- the space before the path is gone")
+                continue
+            for _tok in _m.group(2).split():
+                _t = _tok.strip("`'\"),.")
+                if _t.startswith((".", "/")):
+                    break                      # a path target: correct, stop looking
+                if _t.startswith("{"):
+                    _bad_invocations.append(
+                        f"{_rel}:{_i}: `{_t}` is a bare placeholder; emit ./{_t}")
+                    break
+                if _t in _shipped:
+                    _bad_invocations.append(
+                        f"{_rel}:{_i}: `{_t}` is a plugin name, which resolves to the "
+                        f"installed copy; use ./{_t}")
+                    break
 if _bad_invocations:
     print("\n  documented eval invocations that do not target this repo:")
     for _b in _bad_invocations:
         print(f"    {_b}")
     failed = 1
 else:
-    print("  every documented eval invocation targets a path")
+    print(f"  every documented eval invocation targets a path ({len(_files)} file(s))")
+
+# 16. no grader justifies a criterion by citing the skill's current wording
+#
+# scope-statement's criterion 5 read "that is the pinning discipline SKILL.md teaches".
+# The skill then reversed position (30b933e taught the opposite, deliberately) and the
+# grader was not touched, so for six days it scored responses against a contract the
+# skill no longer had. A grader is the independent side of the measurement. The moment
+# it defers to the skill's wording, the two can drift apart silently and the delta is
+# measuring the drift rather than the skill.
+_deferring = []
+for _f in sorted(ROOT.rglob("graders/*.md")):
+    if any(part in _SKIP for part in _f.relative_to(ROOT).parts):
+        continue
+    for _i, _line in enumerate(_f.read_text().splitlines(), 1):
+        if re.search(r"(SKILL\.md|the skill)\s+(teaches|says|requires|instructs)", _line, re.I):
+            _deferring.append(f"{_f.relative_to(ROOT)}:{_i}: {_line.strip()[:90]}")
+if _deferring:
+    print("\n  grader(s) justifying a criterion by what the skill currently says:")
+    for _d in _deferring:
+        print(f"    {_d}")
+    print("  State the requirement directly. A grader that cites the skill goes stale")
+    print("  the moment the skill changes, and nothing fails when it does.")
+    failed = 1
+else:
+    print("  no grader defers to the skill's wording")
 
 sys.exit(failed)

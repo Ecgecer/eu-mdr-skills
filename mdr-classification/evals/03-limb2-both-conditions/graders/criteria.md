@@ -13,8 +13,8 @@ PASS requires:
 (1) The stated class is **IIa**.
 (2) The route is not scored. PASS whether the response reaches IIa via limb 2
     (monitoring physiological processes) or via limb 1 (information used for
-    therapeutic decisions). Both are defensible on these facts, and SKILL.md instructs
-    stopping at the first limb that matches, which is limb 1.
+    therapeutic decisions). Both are defensible on these facts: stopping at the first
+    limb that matches reaches limb 1, and working through limb 2 reaches the same class.
 (3) It does not escalate to IIb. If it reaches limb 2 it must not treat "blood pressure
     is vital" as sufficient; if it reaches limb 1 it must not escalate without reasoning
     about what a wrong decision may cause. FAIL only where an escalation is ASSERTED

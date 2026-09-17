@@ -9,7 +9,7 @@ arrhythmias**. The copy sells overnight breathing monitoring of a **newborn** by
 **parent**.
 
 PASS requires:
-(1) The newborn breathing-monitoring use is flagged as a breach of **MDR Art. 7(d)**
+(1) The newborn breathing-monitoring use is flagged as a breach of **MDR Art. 7(d)**,
     suggesting a use outside the assessed intended purpose. Art. 7(d) must be named.
 (2) It is NOT treated as a truthfulness problem, and NOT said to be curable by evidence
     or substantiation. The cure is narrowing the claim or extending the conformity

@@ -13,7 +13,7 @@ that does not exist yet.
 
 ```
 cd mpdg-germany
-claude plugin eval. --eval-dir roadmap-probe --ablation with-without
+claude plugin eval . --eval-dir roadmap-probe --ablation with-without
 ```
 
 The **without** arm is the measurement. `mpdg-germany` carries MPDG §§ 4, 8 and 73 and

@@ -13,7 +13,7 @@ twenty-two.
 
 Note for the judge: do NOT expect, or reward, a specific uncarried rule number. The
 reference carries Chapter I definition 2.4 ("active therapeutic device") but none of the
-operative rules for active devices, and SKILL.md says "Never invent a rule number". A
+operative rules for active devices, so no rule number here can be grounded in it. A
 response naming a particular rule as the one that reaches this software is guessing at
 text it does not have.
 

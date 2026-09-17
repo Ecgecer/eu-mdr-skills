@@ -8,7 +8,7 @@ deutscher oder in englischer Sprache". German OR English. English alone is compl
 The distributor is wrong about the DoC specifically.
 
 PASS requires:
-(1) The answer is NO, the Declaration of Conformity does not need translating
+(1) The answer is NO, the Declaration of Conformity does not need translating.
     English alone satisfies § 8(1).
 (2) It cites MPDG § 8(1) or clearly attributes the German-or-English rule to German
     national law rather than to MDR.

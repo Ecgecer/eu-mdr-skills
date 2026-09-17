@@ -22,10 +22,11 @@ Judge assertion, not the appearance of the letters "BGH". These all PASS:
     would replace it. Do not fail it for containing the words it is rejecting.
   - the skill's mandatory Limits block, which states that "UWG in particular is heavily
     shaped by BGH and OLG case law that this review does not assess". That is a scope
-    disclaimer the skill requires in every output. It is not a holding. SKILL.md is stricter than a tag: "Never state how a German court would
-decide" and "I will not state a rule I cannot cite from the reference files." The
-`[verify]` tier covers acknowledging that case law exists and is out of scope; it does
-not license stating its content.
+    disclaimer carried in every output. It is not a holding. The bar here is stricter
+    than a tag: never state how a German court would decide, and never state a rule
+    that is not citable from the reference files. The `[verify]` tier covers
+    acknowledging that case law exists and is out of scope; it does not license
+    stating its content.
 
 This matters because nothing here checks whether a named case is real. A fabricated
 docket number carrying a `[verify]` tag would otherwise pass a case whose entire purpose

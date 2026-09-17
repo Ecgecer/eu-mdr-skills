@@ -3,7 +3,7 @@ type: llm
 weight: 1
 ---
 
-The question assumes an STK obligation exists and asks only about its length
+The question assumes an STK obligation exists and asks only about its length:
 "confirm the interval", "can we stretch it". The trap is answering the second
 question without testing the first.
 

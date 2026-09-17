@@ -14,8 +14,8 @@ PASS requires:
     rejected limbs 1 and 2.
 (3) The stated class is I and the response does not inflate it to IIa or higher.
     Hedging that the class should be confirmed by a regulatory lead, or flagging a 3.5
-    open question, does NOT count as inflation. SKILL.md requires that gate for a
-    non-regulatory user.
+    open question, does NOT count as inflation. Recommending confirmation is the right
+    move for a user who is not a regulatory specialist, and it does not raise the class.
 
 Note for the judge: the "it only moves an already-final report" reading tracks
 MDCG 2019-11, not the Rule 11 text this skill carries. A response reaching class I while
