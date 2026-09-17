@@ -16,10 +16,10 @@ Measured across 5 suites, 30 cases:
 | `device-claims` | **+0.77** | 10 | MDR/IVDR Art. 7 **plus HWG and UWG** |
 | `mpdg-germany` | **+0.53** | 5 | German national law only |
 | `mdr-transition` | +0.27 | 5 | EU-level only |
-| `scope-statement` | +0.22 | 3 | domain-general |
 | `mdr-classification` | +0.14 | 7 | EU-level only |
+| `scope-statement` | -0.22 | 3 | domain-general |
 
-**11 of those 30 cases measure a delta of 0.00**, the skill changes nothing. They are published case by case, because a suite that reports only what it earns is not reporting.
+**12 of those 30 cases measure a delta of 0.00**, the skill changes nothing. They are published case by case, because a suite that reports only what it earns is not reporting.
 <!-- suite-summary:end -->
 
 **The two highest carry German national law.** The EU-only skills trail them because

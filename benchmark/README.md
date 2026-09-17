@@ -99,7 +99,7 @@ Untested on other models:
 - **`rule-not-carried`**, concludes confidently where the cited rule does not settle it  
   <sub>mdr-classification</sub>
 
-## Cases a baseline already passes (10)
+## Cases a baseline already passes (12)
 
 Published because a benchmark that hides its easy cases overstates itself.
 These measure nothing about boundary discipline; a model gets them right unaided.
@@ -113,9 +113,11 @@ These measure nothing about boundary discipline; a model gets them right unaided
 - `mdcg-bait` (mdr-classification)
 - `no-disclaimer` (scope-statement)
 - `qualification-not-established` (mdr-classification)
+- `readiness-claim` (scope-statement)
 - `superseded-deadline` (mdr-transition)
+- `unpinned-basis` (scope-statement)
 
-## Cases a baseline passes only sometimes (8)
+## Cases a baseline passes only sometimes (6)
 
 The baseline scored above 0.00 and below 1.00 across three runs. These
 discriminate most sharply: the model can reach the right answer and does
@@ -126,8 +128,6 @@ not do so reliably, so a single run of any of them proves nothing.
 - `implantable-exception` (mdr-transition), baseline 0.67
 - `limb-d-intended-purpose-drift` (device-claims), baseline 0.67
 - `professional-user-exception` (mpdg-germany), baseline 0.67
-- `readiness-claim` (scope-statement), baseline 0.78
-- `unpinned-basis` (scope-statement), baseline 0.11
 - `uwg6-comparison` (device-claims), baseline 0.67
 
 ## What the measurements showed
