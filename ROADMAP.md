@@ -118,47 +118,46 @@ existing tooling.
 
 ---
 
-## Owed: nine runs for every number that three cannot carry
+## Paid: nine runs for every number three could not carry
 
-29 of the 30 published cases are measured at three runs per arm. One, `mdcg-bait`, is
-at nine, and it is the reason this section exists: at three runs it read +1.00 and was
-published as a finding, at nine it is +0.89 and the suite it sits in moved from +0.29 to
-+0.27. `CORRECTIONS.md` carries the retraction.
+Done 2026-09-18, $40.46, all on one pinned CLI version. Ten cases are now at nine runs
+per arm and the remaining twenty sit at three, every one of them with a delta of exactly
+0.00 or 1.00. **No published number is now ambiguous at its own sample size.**
 
-That leaves this repo arguing in METHOD that three runs cannot resolve a delta near zero
-while publishing 29 numbers measured at three runs. A reader who takes the corrections
-seriously will find that before anyone else does.
+  implantable-exception          +0.33 ->  0.00     9/9 vs 9/9
+  readiness-claim                -0.67 ->  0.00     8/9 vs 8/9
+  fsn-language                   +0.33 -> +0.11     9/9 vs 8/9
+  limb-d-intended-purpose-drift  +0.67 -> +0.56     8/9 vs 3/9
+  limb-c-omission                +0.33 -> +0.56     9/9 vs 4/9
+  uwg6-comparison                +0.33 -> +0.56     9/9 vs 4/9
+  clean-copy-control             +0.67 -> +0.78     7/9 vs 0/9
+  hwg3a-arzneimittel-only        +0.67 -> +1.00     9/9 vs 0/9
+  professional-user-exception    +0.67 -> +1.00     9/9 vs 0/9
+  mdcg-bait                      +1.00 -> +0.89     9/9 vs 1/9
 
-Not every case needs it. A case at 3/3 against 0/3 with unanimous judges is not in
-doubt about its sign, only its magnitude. The ones that need nine are the ones whose
-delta sits where three runs cannot separate signal from noise:
+Four down, six up. Three-run figures were not systematically inflated, they were simply
+noise. `limb-c-omission` is the clearest case: its baseline across seven earlier runs
+read 3/3, 3/3, 2/3, 1/3, 0/3, 2/3, and at nine runs it is 4/9. The true rate is near 44%,
+so any three-run sample could land anywhere, and historically it landed at both extremes.
 
-| Case | Suite | Delta at 3 runs |
-|---|---|---|
-| `implantable-exception` | mdr-transition | +0.33 |
-| `limb-c-omission` | device-claims | +0.33 |
-| `uwg6-comparison` | device-claims | +0.33 |
-| `fsn-language` | mpdg-germany | +0.33 |
-| `clean-copy-control` | device-claims | +0.67 |
-| `hwg3a-arzneimittel-only` | device-claims | +0.67 |
-| `limb-d-intended-purpose-drift` | device-claims | +0.67 |
-| `professional-user-exception` | mpdg-germany | +0.67 |
-| `readiness-claim` | scope-statement | -0.67 |
+## What is still owed, and it is not more runs
 
-**$31.58**, computed from each case's own recorded cost per run rather than estimated,
-and run per case with `--case <name> --runs 9` rather than re-running whole suites.
-`mdcg-bait` cost $3.87 for its 18 runs, which is the sanity check on that arithmetic.
-A first estimate of $20 to $25 was published here and was simply too low.
+**`readiness-claim` is unmeasurable, not zero.** At nine runs it read -0.33 on CLI 2.1.276
+and 0.00 on 2.1.277, two consecutive point releases, identical skill text and grader. The
+variance between releases exceeds the effect. Buying more runs would buy precision about
+a target that moves faster than the samples accumulate. It is published as 0.00 because
+that is what the current version measures, and this paragraph is the caveat.
 
-A cheaper subset buys most of the credibility: the four cases at ±0.33, where three
-runs are weakest, plus `readiness-claim`, whose negative sign is the number a reader is
-most likely to challenge. That is `implantable-exception`, `limb-c-omission`,
-`uwg6-comparison`, `fsn-language` and `readiness-claim`, **$15.19** together. The table already carries a runs column, so the
-result is a repo where every published number states its own sample size and no number
-outruns it.
+**Every number here describes CLI 2.1.277 and nothing else.** Three versions passed
+through this repo in 24 hours and each one moved results: a baseline went 1/9 to 3/3 on
+one case, 9/9 to 1/9 on another, 0/3 to 8/9 on a third. The tables carry a CLI column per
+row so this is visible rather than inferred, but no amount of sampling makes a number
+survive the next release. Re-measure when the answer matters, not when the table looks old.
 
-Deferred deliberately to around 2026-10-08, or whenever EUDAMate revenue makes the
-spend easy. Recorded here rather than remembered.
+**`mpdg-germany` has a known blind spot**, disclosed in its own Limits block: ask it about
+a non-German market and the answer is not governed by the skill at all. Measured three
+times across three CLI versions, before and after an attempted fix. Any real fix has to
+reach what the model reads before deciding relevance, which is not the skill body.
 
 ## Rejected, with reasons
 
