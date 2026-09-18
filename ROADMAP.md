@@ -120,9 +120,11 @@ existing tooling.
 
 ## Paid: nine runs for every number three could not carry
 
-Done 2026-09-18, $40.46, all on one pinned CLI version. Ten cases are now at nine runs
-per arm and the remaining twenty sit at three, every one of them with a delta of exactly
-0.00 or 1.00. **No published number is now ambiguous at its own sample size.**
+Done 2026-09-18, $40.46, all on one pinned CLI version.
+
+<!-- run-counts:start -->
+10 case(s) are measured at nine runs per arm and 20 at three. **Every one of those has a delta of exactly 0.00 or 1.00, so none is ambiguous at its own sample size.**
+<!-- run-counts:end -->
 
   implantable-exception          +0.33 ->  0.00     9/9 vs 9/9
   readiness-claim                -0.67 ->  0.00     8/9 vs 8/9

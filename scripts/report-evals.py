@@ -294,6 +294,46 @@ def splice_summary():
         _, tail = rest.split(E, 1)
         yield f, f"{head}{S}\n{body}\n{E}{tail}"
 
+def run_counts():
+    """One sentence stating how many cases sit at which sample size, from the data.
+
+    This existed as hand-typed prose in ROADMAP for about an hour before going stale:
+    it claimed 29 of 30 cases were at three runs immediately after nine of them were
+    re-measured. Every other count in this repo is spliced for exactly that reason.
+    """
+    nine = three = amb = 0
+    for pl in plugins():
+        for name, runs in load(pl).items():
+            c = current(runs)
+            w, o = c["arms"]["with"], c["arms"]["without"]
+            if w["score"] is None or o["score"] is None:
+                continue
+            if w["n"] >= 9:
+                nine += 1
+            else:
+                three += 1
+                d = abs(w["score"] - o["score"])
+                if d > 0.01 and abs(d - 1.0) > 0.01:
+                    amb += 1
+    tail = (f"**{amb} of them still sits where three runs cannot separate signal from "
+            f"noise.**" if amb else
+            "**Every one of those has a delta of exactly 0.00 or 1.00, so none is "
+            "ambiguous at its own sample size.**")
+    return (f"{nine} case(s) are measured at nine runs per arm and {three} at three. "
+            f"{tail}")
+
+def splice_counts():
+    S, E = "<!-- run-counts:start -->", "<!-- run-counts:end -->"
+    f = ROOT / "ROADMAP.md"
+    if not f.exists():
+        return f, None
+    txt = f.read_text()
+    if S not in txt or E not in txt:
+        return f, None
+    head, rest = txt.split(S, 1)
+    _, tail = rest.split(E, 1)
+    return f, f"{head}{S}\n{run_counts()}\n{E}{tail}"
+
 def do_write():
     for pl in plugins():
         new = splice(pl)
@@ -313,6 +353,9 @@ def do_write():
     pf, pnew = splice_probes()
     if pnew is not None and pf.read_text() != pnew:
         pf.write_text(pnew); print("  MODELS.md: probe table rewritten")
+    nf, nnew = splice_counts()
+    if nnew is not None and nf.read_text() != nnew:
+        nf.write_text(nnew); print("  ROADMAP.md: run counts rewritten")
     return 0
 
 def do_check_tables():
@@ -341,6 +384,13 @@ def do_check_tables():
         print("  METHOD.md: eval cost does not match the stored runs."); bad = 1
     else:
         print("  METHOD.md: eval cost matches the stored runs")
+    nf, nnew = splice_counts()
+    if nnew is None:
+        print("  ROADMAP.md: no run-counts markers"); bad = 1
+    elif nf.read_text() != nnew:
+        print("  ROADMAP.md: run counts do not match the stored runs."); bad = 1
+    else:
+        print("  ROADMAP.md: run counts match the stored runs")
     for rf, rnew in splice_summary():
         if rnew is None:
             print(f"  {rf.name}: no suite-summary markers"); bad = 1
