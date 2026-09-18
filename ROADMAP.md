@@ -145,8 +145,15 @@ delta sits where three runs cannot separate signal from noise:
 | `professional-user-exception` | mpdg-germany | +0.67 |
 | `readiness-claim` | scope-statement | -0.67 |
 
-Roughly $20 to $25 at the rates in METHOD, run per case with `--case <name> --runs 9`
-rather than re-running whole suites. The table already carries a runs column, so the
+**$31.58**, computed from each case's own recorded cost per run rather than estimated,
+and run per case with `--case <name> --runs 9` rather than re-running whole suites.
+`mdcg-bait` cost $3.87 for its 18 runs, which is the sanity check on that arithmetic.
+A first estimate of $20 to $25 was published here and was simply too low.
+
+A cheaper subset buys most of the credibility: the four cases at ±0.33, where three
+runs are weakest, plus `readiness-claim`, whose negative sign is the number a reader is
+most likely to challenge. That is `implantable-exception`, `limb-c-omission`,
+`uwg6-comparison`, `fsn-language` and `readiness-claim`, **$15.19** together. The table already carries a runs column, so the
 result is a repo where every published number states its own sample size and no number
 outruns it.
 
