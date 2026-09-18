@@ -69,7 +69,7 @@ does, which is why `scripts/run-benchmark.py` refuses it and calls the plain API
 instead. The contamination leaves no trace in the answer text, so state the
 condition rather than leaving a reader to assume it.
 
-## The hard cases. Claude scored 0.00 (12)
+## The hard cases. Claude scored 0.00 (13)
 
 Claude failed every run of these with no reference material and no web access.
 Untested on other models:
@@ -94,6 +94,8 @@ Untested on other models:
   <sub>mpdg-germany</sub>
 - **`outside-carried-sections`**, produces section numbers and deadlines it cannot verify  
   <sub>mpdg-germany</sub>
+- **`professional-user-exception`**, Our device is a benchtop analyser sold only to hospital laboratories in Germany,  
+  <sub>mpdg-germany</sub>
 - **`puffery-restraint`**, manufactures a finding on pure puffery  
   <sub>device-claims</sub>
 - **`rule-not-carried`**, concludes confidently where the cited rule does not settle it  
@@ -107,28 +109,27 @@ These measure nothing about boundary discipline; a model gets them right unaided
 - `class-dependent-date` (mdr-transition)
 - `conditions-not-automatic` (mdr-transition)
 - `driving-software-3-3` (mdr-classification)
+- `implantable-exception` (mdr-transition)
 - `limb1-escalation-iii` (mdr-classification)
 - `limb2-both-conditions` (mdr-classification)
 - `limb3-class-i` (mdr-classification)
 - `no-disclaimer` (scope-statement)
 - `qualification-not-established` (mdr-classification)
-- `readiness-claim` (scope-statement)
 - `superseded-deadline` (mdr-transition)
 - `unpinned-basis` (scope-statement)
 
-## Cases a baseline passes only sometimes (7)
+## Cases a baseline passes only sometimes (6)
 
 The baseline scored above 0.00 and below 1.00 across three runs. These
 discriminate most sharply: the model can reach the right answer and does
 not do so reliably, so a single run of any of them proves nothing.
 
-- `fsn-language` (mpdg-germany), baseline 0.67
-- `implantable-exception` (mdr-transition), baseline 0.67
-- `limb-c-omission` (device-claims), baseline 0.67
+- `fsn-language` (mpdg-germany), baseline 0.89
+- `limb-c-omission` (device-claims), baseline 0.44
 - `limb-d-intended-purpose-drift` (device-claims), baseline 0.33
 - `mdcg-bait` (mdr-classification), baseline 0.11
-- `professional-user-exception` (mpdg-germany), baseline 0.33
-- `uwg6-comparison` (device-claims), baseline 0.67
+- `readiness-claim` (scope-statement), baseline 0.89
+- `uwg6-comparison` (device-claims), baseline 0.44
 
 ## What the measurements showed
 

@@ -1,0 +1,569 @@
+{
+  "schemaVersion": 1,
+  "claudeVersion": "2.1.277",
+  "startedAt": "2026-09-18T20:02:45.285Z",
+  "durationSeconds": 892,
+  "costUsd": 2.8479667500000003,
+  "partial": false,
+  "suite": {
+    "root": "/Users/egecangecer/projects/eu-mdr-skills/mpdg-germany",
+    "ablation": "with-without",
+    "caseFilter": "fsn-language",
+    "threshold": 1,
+    "concurrency": 1,
+    "plugins": [
+      {
+        "name": "mpdg-germany",
+        "version": "0.1.0",
+        "path": "/Users/egecangecer/projects/eu-mdr-skills/mpdg-germany"
+      }
+    ]
+  },
+  "cases": [
+    {
+      "name": "fsn-language",
+      "dir": "evals/05-fsn-language",
+      "source": "prose",
+      "promptMarkdown": "We're a US manufacturer with an EU authorised representative in Ireland. We're issuing\na field safety corrective action affecting devices in several EU countries including\nGermany. We've drafted the Field Safety Notice in English and are sending it out. Any\nproblem?",
+      "runsPerCase": 3,
+      "timeoutSeconds": 300,
+      "maxTurns": 10,
+      "graders": [
+        {
+          "name": "criteria",
+          "type": "llm",
+          "weight": 1,
+          "graderMarkdown": "MDR Art. 89(8) governs FSNs but does not impose German. MPDG § 73(1) does: where a\nmanufacturer takes an FSCA im Geltungsbereich dieses Gesetzes, the Field Safety Notice\nmust be written in German. A response working from MDR alone misses this entirely.\n\nPASS requires:\n(1) It flags that the FSN needs to be in German for the German market, citing MPDG\n    § 73(1) or clearly attributing it to German national law.\n(2) It does not claim the English FSN is fine everywhere.\n\nBonus, not required: noting § 73(2)'s completion-notification duty.\n\nNote for the judge: § 73(2) sentence 3 turns on the authorised representative sitting\noutside the Geltungsbereich. That is, outside Germany. Ireland is outside Germany, so\nthe condition IS satisfied. The prompt names no German-established importer, so the\nduty is moot on these facts. Do not penalise a response that omits the point; do not\nreward one that states the condition is unmet.\n\nFAIL if the answer is \"no problem\" or if it addresses only MDR Art. 89 without reaching\nthe German language requirement.",
+          "config": {
+            "criteria": "MDR Art. 89(8) governs FSNs but does not impose German. MPDG § 73(1) does: where a\nmanufacturer takes an FSCA im Geltungsbereich dieses Gesetzes, the Field Safety Notice\nmust be written in German. A response working from MDR alone misses this entirely.\n\nPASS requires:\n(1) It flags that the FSN needs to be in German for the German market, citing MPDG\n    § 73(1) or clearly attributing it to German national law.\n(2) It does not claim the English FSN is fine everywhere.\n\nBonus, not required: noting § 73(2)'s completion-notification duty.\n\nNote for the judge: § 73(2) sentence 3 turns on the authorised representative sitting\noutside the Geltungsbereich. That is, outside Germany. Ireland is outside Germany, so\nthe condition IS satisfied. The prompt names no German-established importer, so the\nduty is moot on these facts. Do not penalise a response that omits the point; do not\nreward one that states the condition is unmet.\n\nFAIL if the answer is \"no problem\" or if it addresses only MDR Art. 89 without reaching\nthe German language requirement.",
+            "focus": "last_message"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 4,
+            "costUsd": 0.14337600000000003,
+            "judgeCostUsd": 0.0036450000000000007,
+            "durationSeconds": 31,
+            "startedAt": "2026-09-18T20:02:45.294Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-tBxajY/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "## Field Safety Notice in English only, FSCA covering Germany\n\n**German market:** confirmed — the FSCA covers devices in Germany\n**Answer:** Yes, there's a problem. The FSN for the German part of this action must be written in German. English alone does not satisfy MPDG § 73(1).\n\n| Item | MDR requires | Germany adds | Basis |\n|---|---|---|---|\n| FSN language, FSCA taken in Germany | not carried here | FSN must be drafted **in German** (*in deutscher Sprache abzufassen*) | MPDG § 73(1) `[verified]` |\n| Who this attaches to | not carried here | The duty attaches to **manufacturers taking an FSCA im Geltungsbereich dieses Gesetzes** — i.e. to the action's location, not the manufacturer's seat. Being a US manufacturer with an Irish AR does not take you outside it | MPDG § 73(1) `[verified]` |\n| Documenting the FSCA + periodic effectiveness review | not carried here | Applies to manufacturers **established in Germany** — not you | MPDG § 73(2) s.1 `[verified]` |\n| Notifying **completion** of the FSCA to the competent authority *and* the federal higher authority | not carried here | Applies to manufacturers, authorised representatives and importers **established in Germany**. Your AR is in Ireland, so if you have a German-established importer, that importer's duty is triggered — sentence 3 makes it conditional precisely on the AR sitting outside Germany | MPDG § 73(2) ss.2–3 `[verified]` |\n\nOne reinforcing point: even where product information goes exclusively to professional users and the § 8(2) sentence 2 exception is available, **safety-related information must still be in German** or the user's language. There is no professional-user route around German for safety content. (MPDG § 8(2) `[verified]`)\n\n**What would change this:** only removing Germany from the FSCA's scope. Nothing about your US establishment, the Irish AR, or the recipients being hospitals/professional users changes § 73(1).\n\n**Practical read:** a single English FSN sent EU-wide does not work for Germany. You need a German-language version for the German recipients, and you should decide now who is tracking the completion notification — if a German importer is in the chain, that obligation is theirs and they may not know it.\n\n**On the other EU countries:** MPDG is German national law and says nothing about the rest of your affected markets. The binding text for each is that member state's own implementing act, and I do not carry any of them. There is EU-level provision on language in MDR itself `[verify]`, which I have not checked here — treat it as somewhere to look, not as the requirement. Do not assume \"English is fine everywhere else.\"\n\n## Limits\n\n> This covers MPDG §§ 4, 8 and 73 only, retrieved verbatim from gesetze-im-internet on 2026-09-10. It does **not** cover the rest of MPDG, MDR or IVDR themselves, MDCG guidance, BfArM practice, or any other member state's implementing law — an obligation here is German and says nothing about France, Italy or elsewhere. A first-pass aid for spotting German-specific duties, not legal advice, and not a substitute for a regulatory professional or a Fachanwalt für Medizinrecht."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 5,
+            "costUsd": 0.17722224999999997,
+            "judgeCostUsd": 0.004299000000000001,
+            "durationSeconds": 44,
+            "startedAt": "2026-09-18T20:03:15.988Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-cYr24o/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "## FSN in English only, FSCA covering Germany\n\n**German market:** confirmed (Germany named among affected countries)\n**Answer:** For the German part of this action, no — the Field Safety Notice must be written in German. MPDG § 73(1).\n\nThe duty attaches to **where the action is taken**, not where you sit. *\"Ergreifen Hersteller im Geltungsbereich dieses Gesetzes Sicherheitskorrekturmaßnahmen, sind die Sicherheitsanweisungen im Feld … in deutscher Sprache abzufassen.\"* Being a US manufacturer with an Irish authorised representative does not take you out of it — you are taking an FSCA in Germany, so the German-language FSN requirement applies to you directly.\n\n| Item | MDR requires | Germany adds | Basis |\n|---|---|---|---|\n| FSN language, German FSCA | not carried here (Art. 89(8) exists but I haven't checked its language provision) | FSN **must be drafted in German** | MPDG § 73(1) `[verified]` |\n| Document FSCA + periodically review effectiveness | not carried here | Applies to manufacturers **established in Germany** — not you | MPDG § 73(2) s.1 `[verified]` |\n| Notify **completion** of the FSCA to competent authority *and* federal higher authority | not carried here | Applies to manufacturers, authorised reps and importers **established in Germany** | MPDG § 73(2) s.2 `[verified]` |\n| Importer's completion-notification duty | not carried here | Triggered **only** where the AR sits outside Germany — your AR is in Ireland, so it **is** triggered for your German importer(s) | MPDG § 73(2) s.3 `[verified]` |\n\n### Two things worth acting on beyond the translation\n\n**Your German importers have a live duty you may not have told them about.** Because your authorised representative is in Ireland rather than Germany, § 73(2) sentence 3's condition is met: any importer established in Germany must notify completion of this FSCA to both the competent authority and the federal higher authority. Neither you (US) nor your AR (Ireland) carries the § 73(2) duties yourselves — which makes it easy for this to fall through the gap entirely. Flag it to them in writing as part of the rollout.\n\n**If the FSCA ships revised user information, § 8 bites separately.** Where the corrective action includes updated instructions for use, labelling, or similar material handed to users or patients in Germany, that is governed by MPDG § 8(2): German by default, and it is a condition of supply. The professional-user exception in § 8(2) sentence 2 allows English only if *all three* of — a justified case, information intended **exclusively** for professional users, and **safety-related information still provided in German** — hold. An FSCA's content is safety-related almost by definition, so that final clause will generally pull it back into German regardless.\n\n### What would change this\nOnly Germany dropping out of the affected-countries list. Nothing about your corporate structure, the AR's location, or the device class changes § 73(1).\n\n### The other EU countries — I can't answer that part\nMPDG is German national law and says nothing about the rest of your affected markets. Each member state has its own implementing act with its own FSN language rule, and I don't carry any of them. There is EU-level provision in MDR itself `[verify]` that I have not checked here — treat that as somewhere to look, not as the requirement. Do not assume the German answer generalises, and equally do not assume English is fine elsewhere just because I haven't flagged it. Get the national implementing act for each market, or ask your AR in Ireland to — that is squarely their function.\n\n### Limits\nThis covers MPDG §§ 4, 8 and 73 only, retrieved verbatim from gesetze-im-internet on 2026-09-10. It does **not** cover the rest of MPDG, MDR or IVDR themselves, MDCG guidance, BfArM practice, or any other member state's implementing law. First-pass aid for spotting German-specific duties, not legal advice, and not a substitute for a regulatory professional or a Fachanwalt für Medizinrecht."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 5,
+            "costUsd": 0.16870949999999998,
+            "judgeCostUsd": 0.0038850000000000013,
+            "durationSeconds": 37,
+            "startedAt": "2026-09-18T20:04:00.076Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-sWG3tY/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "## Field Safety Notice in English only, FSCA covering Germany\n\n**German market:** confirmed (Germany named among affected countries)\n**Answer:** For the German part of this action the FSN must be written in German — English-only is not compliant.\n\nMPDG § 73(1) `[verified]`: *\"Ergreifen Hersteller im Geltungsbereich dieses Gesetzes Sicherheitskorrekturmaßnahmen, sind die Sicherheitsanweisungen im Feld … in deutscher Sprache abzufassen.\"*\n\nThe trigger is **where the FSCA is taken**, not where you sit. Being a US manufacturer with an Irish authorised representative does not take you outside § 73(1) — you are taking a corrective action in the German market, so the German-language FSN duty attaches to you.\n\n| Item | MDR requires | Germany adds | Basis |\n|---|---|---|---|\n| FSN language (Germany) | not carried here | FSN must be drafted **in German** | MPDG § 73(1) `[verified]` |\n| Document FSCA + periodically review effectiveness | not carried here | Applies to manufacturers **established in Germany** — not you | MPDG § 73(2) s.1 `[verified]` |\n| Notify **completion** of the FSCA to the competent authority *and* the federal higher authority | not carried here | Applies to manufacturers, authorised representatives and importers **established in Germany** | MPDG § 73(2) s.2 `[verified]` |\n| Same, for importers | not carried here | Importers in Germany owe it **only where the AR sits outside Germany** — your AR is in Ireland, so this condition is met | MPDG § 73(2) s.3 `[verified]` |\n\nThat last row is the one most likely to be missed: because your authorised representative is in Ireland rather than Germany, any importer of yours **established in Germany** does carry the completion-notification duty. Worth telling them now rather than at the end of the action.\n\nOne adjacent point: if the FSCA involves revised or supplementary information going to users, § 8(2) `[verified]` is separate from § 73(1) and stricter than people expect — the professional-user exception permitting English is cumulative (justified case **and** exclusively professional users **and** safety-related information still provided in German). Safety-related content never gets the exception.\n\n**What would change this:** Dropping Germany from the scope of the FSCA. Nothing about your establishment in the US or your AR's location in Ireland changes the § 73(1) obligation.\n\n**The other member states — I can't answer that here.** Language requirements for the rest of the affected countries sit in each member state's own implementing act, and I don't carry any of them. I'd flag it as an open question rather than assume the German answer generalises, or that English is acceptable elsewhere by default. There is EU-level provision on language in MDR itself `[verify]`, which I have not checked — treat it as somewhere to look, not as the requirement.\n\n---\n\n## Limits\n\nThis covers MPDG §§ 4, 8 and 73 only, retrieved verbatim from gesetze-im-internet on 2026-09-10. It does **not** cover the rest of MPDG, MDR or IVDR themselves, MDCG guidance, BfArM practice, or any other member state's implementing law. A first-pass aid for spotting German-specific duties, not legal advice, and not a substitute for a regulatory professional or a Fachanwalt für Medizinrecht.\n\n*(Side note: I tried to save your company profile — US manufacturer, Irish AR — to memory for future regulatory questions, but read access to the memory directory was denied, so nothing was written.)*"
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 4,
+            "costUsd": 0.144871,
+            "judgeCostUsd": 0.0037230000000000023,
+            "durationSeconds": 30,
+            "startedAt": "2026-09-18T20:04:37.097Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-Jy0iTN/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "## FSN in English only, FSCA including Germany\n\n**German market:** confirmed — you've said the FSCA covers Germany\n**Answer:** For the German portion of the action, the Field Safety Notice must be written in German. English only is non-compliant there.\n\n| Item | MDR requires | Germany adds | Basis |\n|---|---|---|---|\n| FSN language | not carried here | FSN for an FSCA taken in Germany must be **in deutscher Sprache** | MPDG § 73(1) `[verified]` |\n| Who this attaches to | — | The **action**, not the manufacturer's seat — \"Ergreifen Hersteller im Geltungsbereich dieses Gesetzes Sicherheitskorrekturmaßnahmen\". Being a US manufacturer with an Irish AR does not take you out of it. | MPDG § 73(1) `[verified]` |\n| Documenting the FSCA + periodic effectiveness review | not carried here | Applies to manufacturers **established in Germany** — not you | MPDG § 73(2) s.1 `[verified]` |\n| Notifying **completion** of the FSCA to the competent authority *and* the federal higher authority | not carried here | Applies to manufacturers, authorised representatives and importers **established in Germany**. Your AR is in Ireland, so not caught as AR — **but** for importers the duty applies precisely when the AR sits outside Germany, which is your case. | MPDG § 73(2) s.2–3 `[verified]` |\n\nTwo things worth acting on:\n\n1. **Translate the FSN into German before it goes out in Germany.** There is no professional-user carve-out in § 73(1) — that exception lives in § 8(2) and governs user/patient information, not field safety notices. And even there, safety-related information has to be in German regardless. So \"our users are clinicians who read English\" does not rescue this.\n\n2. **Tell your German importer(s) about their completion-notification duty.** Because your authorised representative is in Ireland rather than Germany, § 73(2) sentence 3 switches *on* for any importer established in Germany: they must notify completion of the FSCA to both the competent authority and the federal higher authority. That is a duty sitting on them that they may not know they have, triggered by a fact about you.\n\n**What would change this:** Germany dropping out of the FSCA scope. Nothing about your corporate location or your AR's location changes the § 73(1) obligation.\n\n**The other EU countries:** I can't answer for them. Each member state has its own implementing act and I don't carry any of them, so I won't tell you whether English suffices in, say, France or Poland. There is EU-level provision on vigilance and FSNs in MDR itself `[verify]`, which I have not checked here — a place to look, not the requirement. Assume per-country translation until someone checks each national act.\n\n## Limits\n\nThis covers MPDG §§ 4, 8 and 73 only, retrieved verbatim from gesetze-im-internet on 2026-09-10. It does **not** cover the rest of MPDG, MDR or IVDR themselves, MDCG guidance, BfArM practice, or any other member state's implementing law — an obligation here is German and says nothing about France, Italy or elsewhere. A first-pass aid for spotting German-specific duties, not legal advice, and not a substitute for a regulatory professional or a Fachanwalt für Medizinrecht."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 5,
+            "costUsd": 0.16226925,
+            "judgeCostUsd": 0.003638999999999998,
+            "durationSeconds": 36,
+            "startedAt": "2026-09-18T20:05:07.026Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-BMqRGN/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "Yes — there's a problem with the German leg of it.\n\n## English-language FSN for an FSCA affecting Germany\n\n**German market:** confirmed (devices in Germany affected)\n**Answer:** The Field Safety Notice going to Germany must be written in German. MPDG § 73(1) attaches to the action, not to where you sit — being a US manufacturer with an Irish authorised representative does not exempt you.\n\n| Item | MDR requires | Germany adds | Basis |\n|---|---|---|---|\n| Language of the FSN | not carried here | FSN for an FSCA taken in Germany must be **in German** (*in deutscher Sprache abzufassen*) | MPDG § 73(1) `[verified]` |\n| Documenting the FSCA + periodic effectiveness review | not carried here | Duty applies to manufacturers **established in Germany** — not you (US) | MPDG § 73(2) s.1 `[verified]` |\n| Notifying **completion** of the FSCA | not carried here | Manufacturers, authorised reps and importers **established in Germany** must notify both the competent authority and the federal higher authority | MPDG § 73(2) s.2 `[verified]` |\n| Same, for importers | not carried here | Importer's completion duty bites **only where the AR sits outside Germany** — your AR is in Ireland, so it **does** bite for any German importer | MPDG § 73(2) s.3 `[verified]` |\n\nTwo things worth acting on beyond the translation:\n\n1. **§ 73(1) has no professional-user exception.** The English-for-professionals carve-out in § 8(2) is a different provision and does not reach the FSN. Even if the notice goes only to clinicians, German is required. (Separately, under § 8(2) safety-related information is required in German in any case.)\n2. **Your Irish AR placement triggers the German importer's completion duty.** Because your authorised representative is outside Germany, any importer established in Germany must notify completion of the FSCA to the competent authority *and* the federal higher authority. That's their obligation, not yours, but it's one you'd want to flag to them rather than have them miss.\n\n**What would change this:** if no affected devices were made available in Germany, MPDG wouldn't apply at all. Moving the AR into Germany would shift the completion-notification duty off the importer and onto the AR.\n\n**On the other EU countries:** I can't help you there. MPDG is German national law. Each member state has its own implementing act with its own language rules, and I don't carry them — so treat \"German FSN required\" as saying nothing about the other markets in your action. The binding text for each is that state's implementing act. There is EU-level provision in MDR itself `[verify]` that I have not checked; that's somewhere to look, not the requirement.\n\n## Limits\n\nThis covers MPDG §§ 4, 8 and 73 only, retrieved verbatim from gesetze-im-internet on 2026-09-10. It does **not** cover the rest of MPDG, MDR or IVDR themselves, MDCG guidance, BfArM practice, or any other member state's implementing law. A first-pass aid for spotting German-specific duties, not legal advice, and not a substitute for a regulatory professional or a Fachanwalt für Medizinrecht."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 4,
+            "costUsd": 0.14272775,
+            "judgeCostUsd": 0.0038760000000000044,
+            "durationSeconds": 28,
+            "startedAt": "2026-09-18T20:05:42.879Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-VqNep2/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "## FSN in English for an FSCA covering Germany\n\n**German market:** confirmed (Germany named among affected countries)\n**Answer:** No — the Field Safety Notice for the German part of this action must be written in German. § 73(1) MPDG. English-only is non-compliant.\n\nThe key point is that this duty attaches to **where the action is taken, not where you sit**. § 73(1) reads \"Ergreifen Hersteller *im Geltungsbereich dieses Gesetzes* Sicherheitskorrekturmaßnahmen...\" — being a US manufacturer with an Irish authorised representative does not take you outside it. You are taking an FSCA in Germany, so the German-language FSN duty applies to you.\n\n| Item | MDR requires | Germany adds | Basis |\n|---|---|---|---|\n| FSN language (Germany) | not carried here | FSN must be **abgefasst in deutscher Sprache** | MPDG § 73(1) `[verified]` |\n| Document FSCA + periodically review effectiveness | not carried here | Applies to manufacturers **established in Germany** — not you | MPDG § 73(2) s.1 `[verified]` |\n| Notify **completion** of the FSCA to competent authority + federal higher authority | not carried here | Applies to manufacturers, authorised reps and importers **established in Germany** | MPDG § 73(2) s.2 `[verified]` |\n| Importer's completion-notification duty | not carried here | Bites **only if the authorised rep sits outside Germany** — yours is in Ireland, so it does | MPDG § 73(2) s.3 `[verified]` |\n\nTwo consequences worth acting on now:\n\n1. **Translate the FSN into German before distribution in Germany.** Not a courtesy translation alongside the English — § 73(1) requires the notice itself to be drafted in German.\n2. **Your German importer(s) now carry the completion-notification duty.** Because your authorised representative is in Ireland, not Germany, sentence 3's condition is met and any importer established in Germany must notify completion of the FSCA to both the competent authority and the federal higher authority. Your Irish AR does not carry that duty (it is not established in Germany), and neither do you. If you assumed the Irish AR would handle the German close-out, that assumption does not hold under § 73(2) — tell the German importers.\n\n**What would change this:** only Germany dropping out of the affected-country list. Nothing about your US establishment or Irish AR changes the § 73(1) answer.\n\n**On the other EU countries:** this skill is the German delta only, so I can't tell you what Ireland, France, Italy or the rest require for FSN language. The binding text in each is that member state's national implementing act, and I don't carry any of them. Don't read \"Germany requires German\" as implying the others accept English — several are likely to have their own language rules, and you should check each affected market's implementing law rather than assume. There is EU-level provision touching language in MDR itself `[verify]`, which I have not checked and which does not displace the national acts.\n\n## Limits\n\n> This covers MPDG §§ 4, 8 and 73 only, retrieved verbatim from gesetze-im-internet on 2026-09-10. It does **not** cover the rest of MPDG, MDR or IVDR themselves, MDCG guidance, BfArM practice, or any other member state's implementing law — an obligation here is German and says nothing about France, Italy or elsewhere. A first-pass aid for spotting German-specific duties, not legal advice, and not a substitute for a regulatory professional or a Fachanwalt für Medizinrecht."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 4,
+            "costUsd": 0.14333699999999996,
+            "judgeCostUsd": 0.0037319999999999957,
+            "durationSeconds": 28,
+            "startedAt": "2026-09-18T20:06:11.174Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-iboyHY/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "## English-only FSN for an FSCA reaching Germany\n\n**German market:** in play (Germany named among affected countries)\n**Answer:** Yes, there's a problem — the Field Safety Notice for the German part of this action must be written in German. MPDG § 73(1).\n\nThe duty attaches to **where the corrective action is taken**, not to where you or your authorised representative sit. Being a US manufacturer with an Irish AR does not move you out of it: if you are taking an FSCA *im Geltungsbereich dieses Gesetzes*, the FSN under MDR Art. 89(8) must be *in deutscher Sprache abgefasst*.\n\n| Item | MDR requires | Germany adds | Basis |\n|---|---|---|---|\n| FSN language, German market | not carried here | FSN must be drafted in German | MPDG § 73(1) `[verified]` |\n| Documenting FSCA + periodic effectiveness review | not carried here | Duty on manufacturers **established in Germany** — you are not | MPDG § 73(2) s.1 `[verified]` |\n| Notifying **completion** of the FSCA | not carried here | Owed to the competent authority **and** the federal higher authority by manufacturers, ARs and importers established in Germany | MPDG § 73(2) s.2 `[verified]` |\n| Importer's completion notification | not carried here | Applies **only where the AR sits outside Germany** — yours is in Ireland, so your German importer is caught | MPDG § 73(2) s.3 `[verified]` |\n\nTwo practical consequences beyond the translation:\n\n1. **Your German importer has a live duty.** Because your authorised representative is in Ireland, § 73(2) sentence 3's condition is met, so an importer established in Germany must notify completion of this FSCA to both the competent authority and the federal higher authority. Worth telling them now rather than at closeout.\n2. **The § 8(2) professional-user exception does not rescue you here.** Even where information is exclusively for professional users, § 8(2) sentence 2 requires safety-related information in German or the user's language — and § 73(1) states the FSN rule outright with no exception attached. An FSN aimed only at hospitals or clinicians is still a German-language document.\n\n**What would change this:** only Germany dropping out of the affected-market list. Nothing about your establishment, your AR's location, or the professional-user status of the recipients changes the § 73(1) answer.\n\n**On the other affected countries:** I can't answer for them. Each member state has its own implementing act and I don't carry any of them, so treat Germany as answered and the rest as open — several have their own language rules for FSNs, and English-only may fail there too. There is EU-level provision on language in MDR itself `[verify]`, which I have not checked; that's somewhere to look, not the requirement.\n\n## Limits\n\nThis covers MPDG §§ 4, 8 and 73 only, retrieved verbatim from gesetze-im-internet on 2026-09-10. It does **not** cover the rest of MPDG, MDR or IVDR themselves, MDCG guidance, BfArM practice, or any other member state's implementing law — an obligation here is German and says nothing about France, Italy or elsewhere. A first-pass aid for spotting German-specific duties, not legal advice, and not a substitute for a regulatory professional or a Fachanwalt für Medizinrecht."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 4,
+            "costUsd": 0.15310225,
+            "judgeCostUsd": 0.004034999999999997,
+            "durationSeconds": 35,
+            "startedAt": "2026-09-18T20:06:38.980Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-zuB4I0/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "## English-only FSN for an FSCA that includes Germany\n\n**German market:** confirmed (devices affected in Germany)\n**Answer:** No — the Field Safety Notice for the German part of this action has to be written in German. § 73(1) MPDG attaches to the *action*, not to where you sit, so your US establishment and Irish authorised representative don't take you out of it.\n\n| Item | MDR requires | Germany adds | Basis |\n|---|---|---|---|\n| FSN language, FSCA taken in Germany | not carried here | FSN must be drafted **in German** (*in deutscher Sprache abzufassen*) | MPDG § 73(1) `[verified]` |\n| Document FSCA + periodically review effectiveness | not carried here | Duty applies to **manufacturers established in Germany** — you are not, so this one does not attach to you via MPDG | MPDG § 73(2) s.1 `[verified]` |\n| Notify **completion** of the FSCA to the competent authority *and* the federal higher authority | not carried here | Applies to manufacturers, authorised representatives and importers **established in Germany**. US manufacturer + Irish AR → neither is caught by sentence 2 | MPDG § 73(2) s.2 `[verified]` |\n| Same, via your German importer | not carried here | An importer established in Germany must notify completion **only where the authorised representative sits outside Germany** — Ireland is outside, so the duty is live for them | MPDG § 73(2) s.3 `[verified]` |\n| Safety-related information reaching users | not carried here | Must be **in German**; the professional-user exception in § 8(2) s.2 expressly does not reach safety-related information | MPDG § 8(2) `[verified]` |\n\nThree practical consequences:\n\n1. **Translate the FSN into German for German recipients.** This is not satisfied by an English FSN plus a German cover letter — § 73(1) says the Sicherheitsanweisung im Feld itself is to be drafted in German.\n2. **Tell your German importer(s) about the completion duty.** Because your AR is in Ireland rather than Germany, the § 73(2) sentence 3 condition is met and the completion notification lands on them. They will need to know when you close the action out, and you're the only one who can tell them.\n3. **If the FSCA ships revised IFU, labelling or safety instructions**, the safety-related content goes to German users in German even if the device is exclusively for professional users — that carve-out is the one part of § 8(2) the English exception does not reach.\n\n**What would change this:** Germany dropping out of the affected-device population entirely. Nothing about the US/Ireland structure changes the § 73(1) obligation.\n\n**On the other EU countries:** I can't answer for them. The binding language rule for each is that member state's own implementing act, and I don't carry any of them. There is EU-level provision on FSN handling in MDR Art. 89 `[verify]`, which I have not checked here — treat it as somewhere to look, not as the requirement. Assume by default that several of the others also demand a national-language FSN and get that verified per country before the mailing goes out; it is cheaper to commission all the translations at once than to reissue.\n\n## Limits\n\nThis covers MPDG §§ 4, 8 and 73 only, retrieved verbatim from gesetze-im-internet on 2026-09-10. It does **not** cover the rest of MPDG, MDR or IVDR themselves, MDCG guidance, BfArM practice, or any other member state's implementing law — an obligation here is German and says nothing about France, Italy or elsewhere. A first-pass aid for spotting German-specific duties, not legal advice, and not a substitute for a regulatory professional or a Fachanwalt für Medizinrecht."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 4,
+            "costUsd": 0.13800975000000001,
+            "judgeCostUsd": 0.003501000000000004,
+            "durationSeconds": 35,
+            "startedAt": "2026-09-18T20:07:14.134Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-inN3iN/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "## FSN in English only, FSCA covering Germany\n\n**German market:** confirmed — the FSCA affects devices in Germany.\n**Answer:** No. The Field Safety Notice must be drafted **in German** for the German part of the action — MPDG § 73(1). English only is non-compliant there.\n\n| Item | MDR requires | Germany adds | Basis |\n|---|---|---|---|\n| FSN language | not carried here | FSN for an FSCA taken in Germany must be written **in German** | MPDG § 73(1) `[verified]` |\n| Who the duty attaches to | not carried here | Attaches to the **action**, not your establishment — \"Ergreifen Hersteller im Geltungsbereich dieses Gesetzes Sicherheitskorrekturmaßnahmen\". Being a US manufacturer with an Irish AR does not take you out of it | MPDG § 73(1) `[verified]` |\n| Documenting FSCA + periodic effectiveness review | not carried here | Applies only to manufacturers **established in Germany** — not you | MPDG § 73(2) s.1 `[verified]` |\n| Notifying **completion** of the FSCA to the competent authority *and* the federal higher authority | not carried here | Applies to manufacturers, authorised representatives and importers **established in Germany**. Your AR is in Ireland, so it does not reach them — but for an **importer established in Germany** the duty is live precisely *because* your AR sits outside Germany | MPDG § 73(2) s.2–3 `[verified]` |\n\nTwo things to action:\n\n1. **Translate the FSN into German** before it goes to German recipients. Note this is not the § 8(2) professional-user situation — § 73(1) is unconditional and has no professional-user exception, so \"it's only going to hospitals and clinicians\" does not help you here.\n2. **Check whether you have a German-established importer.** If you do, sentence 3 puts the completion notification on them, since your authorised representative is in Ireland. Worth telling them now rather than at closure.\n\n**What would change this:** only Germany dropping out of the FSCA's scope. Your US establishment and Irish AR do not.\n\n## On the other affected countries\n\nI can't answer for them. MPDG is German national law; each member state has its own implementing act and I don't carry any of them. There is EU-level provision on FSN language in MDR itself `[verify]` which I have not checked — treat that as somewhere to look, not as the requirement. Assume each market may impose its own language rule and check them individually; don't infer from the German answer.\n\n## Limits\n\nThis covers MPDG §§ 4, 8 and 73 only, retrieved verbatim from gesetze-im-internet on 2026-09-10. It does **not** cover the rest of MPDG, MDR or IVDR themselves, MDCG guidance, BfArM practice, or any other member state's implementing law. A first-pass aid for spotting German-specific duties, not legal advice, and not a substitute for a regulatory professional or a Fachanwalt für Medizinrecht."
+              }
+            ]
+          }
+        ],
+        "without": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 3,
+            "costUsd": 0.16756575,
+            "judgeCostUsd": 0.004133999999999992,
+            "durationSeconds": 68,
+            "startedAt": "2026-09-18T20:07:49.101Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-dt7haM/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "Memory directory isn't readable in this session, so I'll skip saving anything and just answer.\n\nShort answer: **yes, two problems — and the language one will get your FSN rejected in Germany.**\n\n## 1. English-only doesn't work\n\nMDR Article 89(8) is explicit: the field safety notice *\"shall be edited in an official Union language or languages determined by the Member State in which the field safety corrective action is taken.\"*\n\n- **Germany** → German. BfArM will require a German-language FSN, and they publish FSNs on their website in German.\n- **Ireland** → HPRA accepts English, so that one's fine.\n- **\"Several EU countries\"** → each one sets its own requirement. France (French), Italy (Italian), Spain (Spanish), Poland (Polish), etc. A few smaller markets tolerate English in practice, but you can't assume it — check per Member State.\n\nTwo related traps:\n- Article 89(8) also says the **content must be consistent across all Member States** unless the local situation justifies otherwise. So translations must be faithful, share the same FSN reference number and date, and not drift in meaning. Use a professional translator with medical device experience and have the translations reviewed.\n- Your **distributors/importers** in each country may need the local-language version to cascade to users — the obligation runs to the *users* of the device, not just to your direct customers.\n\n## 2. Have you submitted the draft to the competent authority first?\n\nYou said you've \"drafted the FSN and are sending it out.\" Article 89(8) requires that, **except in cases of urgency, the draft FSN content be submitted to the competent authority for comment before distribution**. Distributing first and notifying after is a common and expensive mistake.\n\nBecause you're acting in several Member States, Article 89(9) allows the CAs to designate a **coordinating competent authority**. With a US manufacturer and an Irish EU AR, **HPRA is the likely coordinator** — go to them first, let them coordinate with BfArM and the others, rather than filing five uncoordinated notifications. The FSCA report itself goes in on the standard FSCA report form alongside any MIR reporting.\n\n## Also worth checking before you send\n\n- **FSN content requirements** (Art. 89(8), and the MDCG FSN template that superseded the MEDDEV 2.12-1 rev 8 one): unambiguous device identification including **UDI-DI/basic UDI-DI**, manufacturer identification, a clear and non-minimising explanation of the reason, unambiguous description of the action required of the user, and a reply/acknowledgement form. No promotional content, no language that downplays or exaggerates risk.\n- **Your Irish AR's role.** Under Article 11 the AR has verification and cooperation duties and is the CAs' point of contact — they should be named in the FSN and looped in *now*, not after distribution. Confirm your mandate actually covers FSCA handling.\n- **Reporting channel.** Depending on where the Eudamed vigilance module rollout stands as of now, submission may be via Eudamed or still via national CA routes. Worth confirming the current status with HPRA — this shifted during 2025–2026 and I'd verify rather than assume.\n- **Territories outside the EU27.** If the affected devices also went to **Great Britain (MHRA), Northern Ireland, or Switzerland (CH-REP / Swissmedic)**, those are separate notifications with their own timelines and language rules.\n- **Effectiveness checks.** Plan how you'll measure FSCA effectiveness (response rates, devices recovered/corrected) — CAs will ask, and it feeds your PMS system.\n\n**Practical sequence:** hold distribution → get the draft to HPRA as coordinating CA → translate into the required languages once the CA comments are incorporated → distribute all language versions simultaneously with a common reference number. If there's a genuine urgent safety risk, you can distribute under the urgency exception, but document the justification and notify the CAs in parallel.\n\nI'm giving this as a regulatory-practice summary, not legal advice — for the per-country language matrix, your EU AR or a notified body/regulatory consultant should confirm each market."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 3,
+            "costUsd": 0.14061975,
+            "judgeCostUsd": 0.0036599999999999966,
+            "durationSeconds": 55,
+            "startedAt": "2026-09-18T20:08:57.548Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-A6L3Nj/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "Yes — there's a real problem. An English-only FSN is not compliant for Germany, and likely not for several of the other countries either.\n\n## The rule\n\nMDR Article 89(8) requires the field safety notice to be drafted in **an official Union language (or languages) determined by the Member State in which the field safety corrective action is taken** — not the language of your choice, and not the language of your authorised representative. This is separate from, and on top of, the Article 10(11)/Annex I 23.1(b) requirement that information supplied with the device be in a language accepted by each Member State.\n\nSo the FSN is a **per-country language obligation**. Having an Irish AR gets you English for Ireland and nothing more.\n\n## Germany specifically\n\nBfArM requires the FSN (Kundeninformation) in German. It's also submitted to BfArM and published on their website in German. An English-only notice to German users will be rejected and will very likely turn a routine FSCA into a compliance finding.\n\n## The other countries\n\nPractically, expect to need:\n- **Required local language:** Germany, France, Italy, Spain, Poland, Portugal, Hungary, Czechia, Romania, Greece, and most others.\n- **English often accepted for professional-use-only devices:** Ireland, Malta, and in practice the Nordics (SE, DK, FI) and NL — but this is national practice and sometimes limited to devices used exclusively by healthcare professionals. Confirm per country rather than assuming.\n- Countries with multiple official languages (BE: NL/FR/DE; FI: FI/SV) may require more than one version.\n\nIf the affected devices are lay-user / home-use at all, assume no English exemption anywhere.\n\n## What I'd do\n\n1. **Don't delay the safety action while translating.** Notify the relevant competent authorities now (FSCA is reportable under Art. 87(1)(b), immediately), and submit the draft FSN to the coordinating/relevant competent authority — several authorities expect to review the draft before distribution and may comment on content.\n2. **Translate in parallel**, and where a hospital or distributor needs immediate warning, an interim English communication plus the compliant local-language FSN to follow is defensible — document that reasoning in your CAPA/vigilance file.\n3. **Use the harmonised FSN template** and keep the FSN reference number identical across all language versions, so authorities can link them.\n4. **Have translations done by qualified medical/regulatory translators and verify them** — a translation error in a safety notice is its own hazard. Keep the translation verification records; that's an ISO 13485 / MDR QMS expectation.\n5. **Loop in your Irish AR properly.** Under Article 11(3) they must keep a copy of the FSN documentation and cooperate with authorities on preventive/corrective action. They're your point of contact for authorities, not a language shortcut.\n6. **Check your Eudamed obligations.** The vigilance module rollout has been staged under Regulation (EU) 2024/1860; confirm the current status of the vigilance/market-surveillance module as of now, since it determines whether you file centrally in Eudamed or through each national system. This one I'd verify directly rather than take from me.\n\nOne flag worth raising internally: if your procedures produced an English-only FSN for a multi-country FSCA, your vigilance SOP probably lacks a language-determination step. That's the kind of thing a notified body picks up on, and it's cheap to fix now while you're already in the file."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 3,
+            "costUsd": 0.14562624999999998,
+            "judgeCostUsd": 0.0038429999999999923,
+            "durationSeconds": 55,
+            "startedAt": "2026-09-18T20:09:52.430Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-nN7yi2/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "Yes — two problems, one of which is a hard legal blocker.\n\n## 1. English-only won't fly (MDR Art. 89(8))\n\nArticle 89(8) of Regulation (EU) 2017/745 says the FSN must be \"edited in an official Union language or languages as determined by the Member State in which the field safety corrective action is taken.\" That's per-country, not per-manufacturer.\n\n- **Germany:** German is required. BfArM will reject an English-only FSN, and German user/operator obligations under the MPDG/MPBetreibV assume a German-language notice.\n- **Ireland:** English is fine (HPRA).\n- **Everywhere else:** assume the local official language unless you've confirmed otherwise. France, Italy, Spain, Poland, Portugal, Czechia, Hungary, etc. all require their own. A handful of authorities (NL, SE, DK, FI, and Malta) will sometimes accept English for professional-use-only devices, but that's a case-by-case concession you have to confirm with each CA in writing — not a default.\n\nPractical consequence: you need a translation matrix keyed to the affected countries, with the English master as the source of truth, and translations done by someone competent in medical device terminology. Keep the MDCG 2023-3 FSN template structure identical across all language versions (same reference number, same date, same device identifiers) so authorities can cross-check them.\n\n## 2. Don't send it out yet\n\nThe FSCA and the draft FSN go to the competent authorities *before* dissemination, not after. Authorities expect the opportunity to review and comment on the draft FSN; sending it to customers first, then getting CA feedback, means re-issuing a corrected notice to the field — which is both a credibility problem and a documented deviation.\n\nBecause you're a non-EU manufacturer with your AR in Ireland, **HPRA is normally your coordinating competent authority** for a multi-country FSCA. Route through them, but you still notify each affected national authority (BfArM for Germany) — the coordinating role doesn't replace the individual notifications.\n\n## Other things worth checking before you release\n\n- **Each FSN needs a local contact** — name, phone, email that a German hospital can actually reach in German. A US phone number in a German FSN is a common finding.\n- **Your Irish AR must be named** in the notice, with its registered address and SRN. Art. 11(3) obliges the AR to cooperate with authorities on corrective actions, so they should be a reviewer of the FSN, not just cc'd.\n- **Eudamed / MIR:** log the FSCA and the associated incidents; the FSN itself gets uploaded.\n- **Acknowledgement and effectiveness tracking:** the FSN should carry a reply/acknowledgement form, and you need a documented plan for chasing non-responders and measuring effectiveness. Authorities will ask for the completion rate.\n- **Is your FSCA classification right?** If this is a recall, \"field safety corrective action\" in the notice title should say so plainly in each language — avoid softening language like \"customer advisory\" in translation.\n- **Scope beyond the EU:** if the device is also on the UK or Swiss market, MHRA and Swissmedic have separate notification routes and their own language expectations (UK: English; Switzerland: German/French/Italian per region).\n\n**Bottom line:** hold the distribution, get the draft to HPRA as coordinating authority plus the affected national CAs, and build the translated versions in parallel. An English-only FSN going to German users is a straightforward MDR Art. 89(8) non-compliance.\n\nI'm giving you the regulatory framework, not legal advice — have your EU regulatory counsel or the AR confirm the specific country language list for your affected markets before you press send."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 1,
+            "costUsd": 0.148863,
+            "judgeCostUsd": 0.003971999999999996,
+            "durationSeconds": 63,
+            "startedAt": "2026-09-18T20:10:47.762Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-SvwbMp/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "Yes — English-only is a problem, and there's a sequencing issue too.\n\n## The language requirement\n\nMDR Article 89(8) is explicit: the field safety notice \"shall be edited in an official Union language or languages determined by the Member State in which the field safety corrective action is taken.\" That's per-country, not per-manufacturer-convenience.\n\nFor **Germany**, that means German. BfArM expects the FSN in German, and publishes FSNs for the German market in German. There is no \"professional users read English\" carve-out you can rely on.\n\nThe other countries you're shipping to each have their own determination. Practically:\n\n- **Require the national language:** Germany, France, Italy, Spain, Poland, Portugal, Czechia, Hungary, Greece, and most others.\n- **Commonly accept English** (often only for professional-use devices, and often alongside a national-language version): Netherlands, Sweden, Denmark, Finland, sometimes Ireland/Malta by default. Confirm each one with the competent authority rather than assuming — several have narrowed this.\n\nSo the English draft works as your master document, but you need validated translations for each affected market before distribution.\n\n## The sequencing issue\n\n\"We've drafted it and are sending it out\" skips a step. Under Art. 89(8), unless the situation is genuinely urgent, you must submit the **draft** FSN to the competent authority for comment *before* dissemination. And Art. 87 requires the FSCA itself be reported to authorities immediately — in principle before the action is undertaken, not after.\n\nBecause multiple Member States are affected, a **coordinating competent authority** applies (Art. 89(9)). For a non-EU manufacturer, that's normally the authority in the Member State where your authorised representative is established — so **HPRA in Ireland** is your likely coordinating CA. Route the draft through them, and involve your AR formally: forwarding information and cooperating with authorities on vigilance is part of the AR's mandated duties under Art. 11.\n\n## Other things worth checking before you send\n\n- **Content consistency.** Art. 89(8) requires the FSN content be consistent across all Member States unless a country-specific difference is duly justified. Translations must be faithful — don't let a local affiliate soften the risk language in one market.\n- **Use the Commission/MDCG FSN template.** Authorities expect the standard structure, a unique FSN reference number, device identification (including UDI-DI/Basic UDI-DI), a clear description of the hazard and the action required, and a customer acknowledgement/reply form.\n- **Translation quality.** Use professional medical-device translation with a review step, not machine translation. In each country, the translated version is the one users act on — errors there are your liability, not the translator's.\n- **No liability-minimizing language.** Marketing reassurance or hedging in an FSN reliably draws authority objections and can force a re-issue.\n- **Scope beyond the EU.** If the same devices are in Great Britain, Northern Ireland, Switzerland, or Turkey, those have separate reporting routes (MHRA, Swissmedic, TITCK) and their own language expectations — Switzerland in particular wants the relevant national language.\n- **EUDAMED.** Vigilance reporting is transitioning into EUDAMED on a staged timetable; check the current mandatory-use status for the vigilance module, and keep using national reporting routes wherever it isn't yet mandatory.\n\nMy recommendation: pause distribution, get the draft to HPRA as coordinating CA today, and run translations in parallel so you're not adding avoidable delay to a safety action. If the hazard is urgent enough that delay itself is the bigger risk, the urgency exemption in Art. 89(8) lets you act first — but you should document that urgency justification contemporaneously and still notify authorities immediately.\n\nOne caveat: this is a regulatory-affairs summary, not legal advice. For an FSCA of any real scale, your notified body and EU regulatory counsel should see the FSN before it goes out."
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0.12994575,
+            "judgeCostUsd": 0.004360999999999997,
+            "durationSeconds": 59,
+            "startedAt": "2026-09-18T20:11:50.946Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-jq2ZgL/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "judge votes: FAIL FAIL FAIL",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  false,
+                  false,
+                  false
+                ],
+                "evidence": "Yes — two problems, one of which is a hard legal blocker.\n\n## 1. English-only won't fly (Germany especially)\n\nMDR Article 89(8) is explicit: the field safety notice \"shall be edited in an official Union language or languages determined by the Member State in which the field safety corrective action is being taken.\"\n\nSo the language is set per destination country, not by your drafting convenience and not by where your authorised representative sits:\n\n- **Germany** — German is required. BfArM will expect the FSN in German (national vigilance rules under the MPDG/MPAMIV), and they do reject or demand re-issue of English-only notices.\n- **France, Italy, Spain, Poland, Portugal, Czechia, Hungary, etc.** — local language required.\n- **Ireland and Malta** — English is fine.\n- **Netherlands, Denmark, Sweden, Finland** — often tolerate English for professional-use devices, but this is authority-by-authority practice, not a right. Confirm per country.\n- If any affected device is used by **lay users/patients**, assume local language is mandatory everywhere, no exceptions.\n\nPractical consequence: you need certified, technically reviewed translations of a *single* master FSN. Article 89(8) also requires the **content to be consistent across all Member States** unless a country-specific difference is genuinely justified — so translate one approved master; don't let local distributors write their own versions.\n\n## 2. Sequencing — did the draft go to the authorities first?\n\nAlso Article 89(8): except in cases of urgency, the **draft** FSN content must be submitted to the coordinating competent authority (or the relevant national authority) so they can comment, *before* you distribute it. And under Article 87, the FSCA must be reported to the competent authorities of every affected Member State without undue delay and **no later than before the action is undertaken**, again except in urgency.\n\n\"We've drafted it and are sending it out\" suggests distribution may be running ahead of that. If it hasn't gone out yet, pause distribution until the authority review window is handled or you've documented a genuine urgency justification.\n\n## Things worth checking while you're at it\n\n- **Coordinating competent authority**: as a US manufacturer with an Irish AR, your coordinating CA will most likely be **HPRA (Ireland)** — but Germany and the other affected states each still get the report and each still sets its own language requirement.\n- **AR involvement**: your Irish AR's name and contact details belong on the FSN, and under Article 11 the AR has to cooperate with the authorities on this. Make sure they're in the loop rather than finding out downstream.\n- **Use the official EU templates** (Commission/MDCG vigilance FSN and FSCA report forms) rather than a US-style recall letter — authorities check for the required fields, including the acknowledgement/reply form and the device identification with UDI-DIs.\n- **Reporting channel**: confirm whether you file via Eudamed's vigilance module or still through national channels — the mandatory-use timeline for that module has been phasing in, so verify current status with HPRA before you submit rather than assuming.\n- **Effectiveness check**: plan the follow-up now (response rates, reconciliation of affected units), since authorities will ask.\n- **Outside the EU**: if the same devices went to the UK or Switzerland, those are separate obligations (MHRA; Swissmedic plus your CH-REP), with their own notices.\n\nWant me to draft the master FSN against the MDCG template, plus a per-country language/authority matrix for the affected markets? If you tell me which countries are in scope and whether users are professional or lay, I can make that concrete."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 3,
+            "costUsd": 0.17362850000000002,
+            "judgeCostUsd": 0.0034140000000000004,
+            "durationSeconds": 67,
+            "startedAt": "2026-09-18T20:12:49.837Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-pL5oKD/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "Yes — two problems, one of them a hard blocker for Germany.\n\n## 1. English-only won't work\n\nUnder MDR (EU) 2017/745, the Field Safety Notice has to reach users in a language accepted by each Member State where the FSCA is taking place — it's treated the same way as safety information under Art. 10(11), and MDCG 2023-3 (vigilance Q&A) states it explicitly. Practical effect:\n\n- **Germany: German is mandatory.** BfArM will not accept an English-only FSN, and German national law (MPDG/MPAMIV) backs that up. Expect BfArM to require re-issue if you send English.\n- **Other Member States vary.** Several (NL, SE, DK, FI, and of course IE/MT) will accept English *for professional-use-only devices*. FR, IT, ES, PL and most others will not. If any affected device reaches **lay users or patients**, assume the national language is required everywhere, no exceptions.\n- Content must be **consistent across all Member States** (Art. 89(8)) — so translate one approved master, don't let local affiliates or distributors write their own.\n\n## 2. Check you haven't already dissemination-jumped the regulators\n\nArt. 89(8): except in genuine urgency, the **draft** FSN goes to the coordinating competent authority for comment *before* you send it to users. And the FSCA itself is reportable **in advance of** being undertaken. \"We've drafted it and are sending it out\" suggests this may not have happened — if not, pause distribution and file first.\n\nYour coordinating competent authority is most likely **HPRA (Ireland)**, since for a non-EU manufacturer the default under Art. 89(9) is the Member State of the authorised representative, absent agreement otherwise among the CAs. Confirm with HPRA rather than assuming — and note your Irish AR's mandate (Art. 11(3)) obliges it to cooperate with CAs on the FSCA, but **the reporting obligation remains yours as manufacturer**.\n\n## Checklist before you send\n\n- Use the harmonised EU FSN template; include device identification (UDI-DI/model/lot ranges), clear statement of the hazard without understating risk, and explicit required user actions.\n- Get translations done by someone competent in regulatory/medical terminology, and have the German version reviewed by your AR or a German-qualified reviewer before release.\n- Identify recipient lists per country (distributors, importers, hospitals/end users) and set an acknowledgement-tracking mechanism — CAs will ask for effectiveness-check evidence.\n- Expect CAs to publish the FSN; several post them publicly.\n- Confirm current Eudamed vigilance-module status for your submissions — the phase-in has been moving, so verify what's mandatory as of now rather than relying on last year's process.\n- Separately handle **UK/Northern Ireland, Switzerland, Turkey** if affected — they're outside this EU process and have their own notices and language rules.\n\nOne caveat: this is regulatory orientation, not legal advice — have your AR confirm the per-country language positions with each national CA, since those requirements shift."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 3,
+            "costUsd": 0.15750575000000003,
+            "judgeCostUsd": 0.003735000000000009,
+            "durationSeconds": 60,
+            "startedAt": "2026-09-18T20:13:56.534Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-y4FCRl/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "Yes — two problems, one of them likely to get you a call from BfArM.\n\n## 1. English-only won't fly in Germany\n\nMDR Article 89(8) is explicit: the Field Safety Notice **\"shall be edited in an official Union language or languages determined by the Member State in which the field safety corrective action is taken.\"** Language is a national competency, and each affected Member State sets its own rule.\n\n- **Germany: German is required.** BfArM expects the FSN addressed to German users in German. An English-only FSN to German hospitals/users is a non-compliance, and practically it also undermines the point of the notice — recipients have to understand the hazard and the required action.\n- Several others also require the national language (France, Italy, Spain, Poland, etc.). A handful accept English (Ireland, Malta, and in practice often the Nordics and the Netherlands) — but confirm per country rather than assuming.\n- **You must translate for every affected Member State that requires it**, and the translation obligation sits with you as manufacturer. Don't delegate it to distributors and treat it as discharged; you remain responsible for accuracy, and a distributor-improvised translation that softens the risk wording is a real failure mode.\n\nThe same article also says: unless justified by a specific national situation, **the content of the FSN must be consistent across all Member States.** So: one source FSN, faithfully translated — not country-specific rewrites with different risk characterisations.\n\n## 2. \"We're sending it out\" — have you pre-submitted the draft?\n\nArticle 89(8) also requires that, **except in cases of urgency, the draft FSN be submitted to the competent authority for comment before you distribute it.** If you're mid-send without having done that, stop and confirm your regulatory affairs team has cleared this step.\n\nBecause the FSCA spans several Member States, Article 89(9) applies: a **coordinating competent authority** is designated. Absent agreement otherwise, for a manufacturer with no registered place of business in the Union, that defaults to the authority of the Member State where your authorised representative is located — i.e. **Ireland's HPRA**. Route the draft accordingly, while still reporting to each affected national authority. Your Irish AR has an explicit MDR Article 11 duty to cooperate with authorities on preventive and corrective actions, so they should be actively driving this, not just cc'd.\n\n## Also worth checking\n\n- **Use the harmonised FSN template** (MDCG 2023-3 annex). Authorities will bounce notices that don't follow it. Include Basic UDI-DI/UDI-DI, affected lots/serials, clear risk description, required user action, and an acknowledgement return form.\n- **Wording:** no language that minimises the risk, no marketing/apologetic framing that obscures the action required.\n- **EUDAMED:** the vigilance and market surveillance module is not yet the mandatory channel — continue national FSCA reporting through each competent authority's route. Verify current status before you file, as the module rollout timeline has been moving.\n- **Non-EU markets that often get missed:** UK/MHRA (English, separate submission), Northern Ireland, Switzerland (Swissmedic, plus a CH-REP and the relevant national languages), and Turkey if you ship there.\n- **US side:** if the same devices are distributed domestically, 21 CFR 806 correction-and-removal reporting to FDA within 10 working days runs on its own clock, independent of the EU filings.\n\nThe short version: translate into German (and each other required national language), keep the content identical across countries, and make sure the draft went to the coordinating authority before distribution — not after."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 3,
+            "costUsd": 0.18088175,
+            "judgeCostUsd": 0.004461,
+            "durationSeconds": 72,
+            "startedAt": "2026-09-18T20:14:56.383Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-mNmNWs/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "Memory directory isn't readable in this session, so I'll skip saving anything and just answer.\n\nYes — there's a real problem, and it's the language.\n\n## The blocking issue: English-only won't fly\n\nMDR Article 89(8) requires the Field Safety Notice to be drafted **in an official Union language (or languages) determined by the Member State in which the FSCA is being carried out**. It is not a manufacturer's choice, and English is not a default.\n\nConcretely:\n- **Germany** — BfArM requires the FSN in **German**. Sending English-only to German customers means the FSN is non-compliant, and BfArM will very likely reject it and require re-issue. That's a second mailing to the same customers, which is bad for both the authority relationship and FSCA effectiveness.\n- **Ireland** (HPRA) and **Malta** — English is fine.\n- **Most others** require the national language: French, Italian, Spanish, Portuguese, Polish, Czech, Dutch (BE/NL), Greek, Hungarian, Romanian, etc. Belgium may want up to three versions (NL/FR/DE) depending on where the devices went; Finland typically Finnish and Swedish.\n- **Nordics + Netherlands** are the grey zone — several accept English for professional-use devices in practice, but that's authority-by-authority discretion, not a rule. Confirm in writing per country rather than assuming.\n\nSo you need a per-country language matrix for the exact Member States affected, then translations before distribution, not after.\n\n## Other things worth checking before this goes out\n\n**Notify competent authorities *before* distributing.** Under Article 87(1)(b) an FSCA must be reported immediately, before it's undertaken (the only exception being genuine urgency where you must act first). Authorities routinely comment on draft FSN wording, and you don't want to send one version to customers and a corrected version to BfArM.\n\n**Your coordinating competent authority is Ireland.** For a non-EU manufacturer, the coordinating CA is normally the authority of the Member State where the authorised representative is established — so HPRA. Multi-country FSCAs get coordinated through them, but you still report to each affected Member State's authority.\n\n**Translation quality matters legally.** Article 89(8) requires the FSN to identify the devices (including relevant UDIs), identify the manufacturer, and explain the reason for the action and the required user actions clearly and **without understating the risk**. A soft or hedged translation of the risk section is itself a compliance finding. Use qualified medical-device translators with a documented review step, and keep the technical content identical across versions — only contact details and national reporting routes should differ.\n\n**Use the standard structure.** Follow the MDCG FSN template/format that the authorities expect (per current MDCG vigilance guidance under MDR, successor to the MEDDEV 2.12-1 template). Deviating invites comment cycles. Also: no marketing or reassurance language, and no wording that discourages reporting.\n\n**Your Irish AR has active obligations here** (Article 11) — cooperating with authorities on corrective actions, forwarding information and requests, and being the named EU contact on the notice. Make sure the AR's name and address appear on every language version and that they've seen the draft.\n\n**Downstream and effectiveness.** Cascade to importers and distributors in each country with an obligation to forward to users, collect acknowledgements, and define your effectiveness-check criteria and escalation path for non-responders now — that's what authorities ask about later.\n\n**Eudamed.** FSN/vigilance upload obligations are being phased in under Regulation (EU) 2024/1860, with modules becoming mandatory after the Commission declares them functional. My information here may be out of date, so verify the current status of the vigilance module rather than relying on what I say — if it's live, the FSN goes there too.\n\n**Scope beyond the EU.** If the affected devices also went to the UK (MHRA), Northern Ireland, Switzerland (Swissmedic, plus a CH-REP), or Turkey, those are separate notifications with their own language and timing rules.\n\n## Practical recommendation\n\nPause the English-only mailing. Lock the English master FSN, notify HPRA and the other affected authorities with the draft, and start translations in parallel so the master and translations can go out together per country. If you've already mailed to Germany, tell BfArM proactively and commit to a German re-issue — self-reporting that is much better received than having them find it.\n\nOne caveat: I'm giving regulatory analysis, not legal advice, and language acceptance does shift. Have your EU regulatory counsel or the AR confirm the per-country matrix for the specific Member States in scope."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 3,
+            "costUsd": 0.2297055,
+            "judgeCostUsd": 0.004604999999999984,
+            "durationSeconds": 89,
+            "startedAt": "2026-09-18T20:16:07.890Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-eto2oz/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: FAIL PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  false,
+                  true,
+                  true
+                ],
+                "evidence": "Yes — two problems, and the second one is potentially bigger than the language issue.\n\n## 1. English-only won't fly\n\nThe MDR does not leave FSN language to the manufacturer's discretion. Each Member State determines the official Union language(s) in which information reaching users and patients must be provided (the same principle as Art. 10(11) for labelling/IFU), and the Commission/MDCG vigilance guidance applies this to field safety notices: the FSN goes out in the official language(s) of each Member State where the FSCA is being taken.\n\nGermany specifically requires German. The MPDG (Medizinprodukterecht-Durchführungsgesetz) imposes German-language requirements, and BfArM expects FSNs in German — it publishes received FSNs in its public database in German. An English-only notice to German users is non-compliant and BfArM will push back.\n\nPractical language map for the other likely countries:\n\n| Country | Requirement |\n|---|---|\n| Ireland | English fine |\n| Germany, Austria | German |\n| France | French (strictly enforced) |\n| Italy, Spain, Portugal, Poland, etc. | National language |\n| Belgium | Dutch + French (+ German for the German-speaking region) |\n| Finland | Finnish + Swedish |\n| Netherlands, Sweden, Denmark | National language is the rule; some tolerate English for **professional-use-only** devices — confirm per country, don't assume |\n| Malta, Cyprus | English generally accepted |\n\nTwo caveats on the \"English is OK for professional users\" argument: it's a national-labelling allowance that doesn't reliably extend to FSNs, and it collapses entirely if the device or the notice reaches patients or lay users — in which case the text also has to be comprehensible to a layperson, not just translated.\n\nTranslate the **reply/acknowledgement form** too, not just the notice body. That's the most commonly missed piece, and it directly affects your acknowledgement rate and therefore your ability to demonstrate FSCA effectiveness.\n\n## 2. Did you submit the draft to the competent authority before sending?\n\nUnder Art. 89(8), except in cases of urgency, the **draft** FSN must be submitted to the evaluating (or, for multi-country actions, the coordinating) competent authority to allow it to make comments — *before* distribution. \"We've drafted it and we're sending it out\" suggests this may have been skipped. If so, stop the distribution now and submit the draft. If you've genuinely invoked the urgency exception, document the justification contemporaneously — it will be scrutinised.\n\nAlso under Art. 89(8): the content must be **consistent across all Member States** unless a national difference is duly justified. So this is a translation exercise of one approved text, not an opportunity for country-specific messaging. Have translations done professionally and back-checked by someone with regulatory literacy — a mistranslated risk statement is worse than no translation, and Art. 89(8) requires the reasons and risks be stated clearly \"without understating the level of risk.\"\n\n## Rest of the checklist\n\n- **FSCA report** to the competent authorities of every affected Member State, immediately and in principle before undertaking the action (Art. 87(1)(b)).\n- **Coordinating competent authority**: for a multi-country FSCA, identify it and route through it. Given your Irish AR, HPRA is the likely coordinator, but it's determined by the authorities, not by you — ask rather than assume.\n- **Eudamed**: you must enter the FSN into Eudamed, where it becomes publicly accessible.\n- **Your Irish AR**: name them in the FSN as the EU contact and keep them in the loop throughout — their mandate should cover vigilance, they must cooperate with the authorities on FSCAs, and they carry joint liability for defective devices under Art. 11(5). As a US manufacturer you have no other EU-resident legal presence, so route authority correspondence through them.\n- **Notified body**: notify them if certified devices are affected.\n- **Distributor/importer cascade**: they have their own obligations to forward the notice and cooperate; give them the localised versions and track acknowledgements down to end-user level.\n- **Non-EU markets**, if affected: UK (MHRA, English) and Switzerland (Swissmedic, DE/FR/IT) are separate filings — an EU FSCA doesn't cover them.\n\nOne flag worth raising internally: per Art. 87, an FSCA you undertake in a third country (including the US) for a device also legally on the EU market triggers an EU report even if you weren't otherwise planning EU action — worth confirming your US recall and this FSCA are consistently scoped.\n\nI'd treat the CA pre-submission question as the immediate action item — if notices have already gone out in English without it, you'll want to get ahead of that with the coordinating authority rather than have them discover it."
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 1,
+        "passRate": 1,
+        "scoreWithout": 0.8888888888888888,
+        "passRateWithout": 0.8888888888888888,
+        "delta": 0.11111111111111116
+      }
+    }
+  ],
+  "aggregates": {
+    "casesTotal": 1,
+    "casesPassed": 1,
+    "overallScore": 1,
+    "overallPassRate": 1,
+    "meanDelta": 0.11111111111111116
+  }
+}

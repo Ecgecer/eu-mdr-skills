@@ -7,20 +7,20 @@ Do not hand-edit the table.
 | Case | with | without | delta | runs | measured | CLI |
 |---|---|---|---|---|---|---|
 | `no-disclaimer` | 1.00 | 1.00 | **+0.00** | 3×2 | 2026-09-17 | 2.1.274 |
-| `readiness-claim` | 0.33 | 1.00 | **-0.67** | 3×2 | 2026-09-17 | 2.1.274 |
+| `readiness-claim` | 0.89 | 0.89 | **+0.00** | 9×2 | 2026-09-18 | 2.1.277 |
 | `unpinned-basis` | 1.00 | 1.00 | **+0.00** | 3×2 | 2026-09-17 | 2.1.274 |
 
-**Mean delta -0.22** across 3 case(s) with both arms measured.
+**Mean delta +0.00** across 3 case(s) with both arms measured.
 
 ### Every other stored run for these cases
 
 - `no-disclaimer`, earlier runs: 2026-09-10 (2.1.267) n/a/n/a (6 errored); 2026-09-10 (2.1.267) 1.00/n/a (1 errored); 2026-09-10 (2.1.267) 0.33/1.00; 2026-09-11 (2.1.268) 1.00/1.00; 2026-09-11 (2.1.268) 0.67/1.00; 2026-09-11 (2.1.268) 1.00/1.00; 2026-09-11 (2.1.268) 1.00/1.00
-- `readiness-claim`, earlier runs: 2026-09-10 (2.1.267) 0.67/1.00; 2026-09-10 (2.1.267) n/a/n/a; 2026-09-10 (2.1.267) 1.00/1.00; 2026-09-10 (2.1.267) 1.00/0.67; 2026-09-11 (2.1.268) 1.00/0.67; 2026-09-11 (2.1.268) 1.00/0.67; 2026-09-11 (2.1.268) 0.33/1.00; 2026-09-11 (2.1.268) 0.56/0.78
+- `readiness-claim`, earlier runs: 2026-09-10 (2.1.267) 0.67/1.00; 2026-09-10 (2.1.267) n/a/n/a; 2026-09-10 (2.1.267) 1.00/1.00; 2026-09-10 (2.1.267) 1.00/0.67; 2026-09-11 (2.1.268) 1.00/0.67; 2026-09-11 (2.1.268) 1.00/0.67; 2026-09-11 (2.1.268) 0.33/1.00; 2026-09-11 (2.1.268) 0.56/0.78; 2026-09-17 (2.1.274) 0.33/1.00; 2026-09-18 (2.1.276) 0.56/0.89
 - `unpinned-basis`, earlier runs: 2026-09-10 (2.1.267) n/a/n/a (6 errored); 2026-09-10 (2.1.267) 1.00/0.33; 2026-09-10 (2.1.267) 1.00/0.33; 2026-09-11 (2.1.268) 1.00/0.00; 2026-09-11 (2.1.268) 1.00/0.00; 2026-09-11 (2.1.268) 1.00/0.67; 2026-09-11 (2.1.268) 1.00/0.11
 
 Listed because publishing only the most favourable run of several is how the earlier tables went wrong.
 
-<sub>Claude Code 2.1.267, 2.1.268, 2.1.274. A row measured on one CLI version and an earlier run on another are not directly comparable: between 2.1.268 and 2.1.274 one baseline here went from 1/9 to 3/3 and another from 9/9 to 0/3, with no change in this repo. The CLI column is per row so a cross-version reading is visible rather than inferred. The harness records the CLI version, not the model; these runs used the CLI default. A run pinned to another model with `--model` belongs in `evals/model-probes/`, which this table does not read. Each row is that case's most recent run with a scorable arm, so rows can come from different runs and the mean is a composite rather than any single run's figure, the dates say which.</sub>
+<sub>Claude Code 2.1.267, 2.1.268, 2.1.274, 2.1.276, 2.1.277. A row measured on one CLI version and an earlier run on another are not directly comparable: between 2.1.268 and 2.1.274 one baseline here went from 1/9 to 3/3 and another from 9/9 to 0/3, with no change in this repo. The CLI column is per row so a cross-version reading is visible rather than inferred. The harness records the CLI version, not the model; these runs used the CLI default. A run pinned to another model with `--model` belongs in `evals/model-probes/`, which this table does not read. Each row is that case's most recent run with a scorable arm, so rows can come from different runs and the mean is a composite rather than any single run's figure, the dates say which.</sub>
 <!-- report-evals:end -->
 
 ---

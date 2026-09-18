@@ -13,19 +13,19 @@ generated from the stored runs by `scripts/report-evals.py`; the raw runs are in
 plugin's `evals/model-probes/`, which the published tables never read.
 
 <!-- probe-table:start -->
-**`device-claims`**, 10 cases. Mean delta **+0.77** on the CLI default, **+0.43** on `haiku`.
+**`device-claims`**, 10 cases. Mean delta **+0.84** on the CLI default, **+0.43** on `haiku`.
 
 | Case | default baseline | default Δ | haiku baseline | haiku Δ |
 |---|---|---|---|---|
-| `hwg3a-arzneimittel-only` | 0.00 | +0.67 | 0.00 | +1.00 |
-| `clean-copy-control` | 0.00 | +0.67 | 0.00 | +0.67 |
+| `hwg3a-arzneimittel-only` | 0.00 | +1.00 | 0.00 | +1.00 |
 | `puffery-restraint` | 0.00 | +1.00 | 0.00 | +1.00 |
-| `uwg6-comparison` | 0.67 | +0.33 | 0.00 | +0.33 |
+| `clean-copy-control` | 0.00 | +0.78 | 0.00 | +0.67 |
+| `limb-d-intended-purpose-drift` | 0.33 | +0.56 | 0.00 | +0.33 |
+| `uwg6-comparison` | 0.44 | +0.56 | 0.00 | +0.33 |
 | `non-german-eu-market` | 0.00 | +1.00 | 0.00 | +0.67 |
-| `limb-d-intended-purpose-drift` | 0.33 | +0.67 | 0.00 | +0.33 |
 | `hwg11-item-scope` | 0.00 | +1.00 | 0.00 | +0.33 |
 | `hwg11-wrong-audience` | 0.00 | +1.00 | 0.00 | +0.33 |
-| `limb-c-omission` | 0.67 | +0.33 | 0.67 | -0.33 |
+| `limb-c-omission` | 0.44 | +0.56 | 0.67 | -0.33 |
 | `no-case-law-supplement` | 0.00 | +1.00 | 0.67 | +0.00 |
 
 **`mdr-classification`**, 7 cases. Mean delta **+0.27** on the CLI default, **+0.67** on `haiku`.
@@ -40,14 +40,14 @@ plugin's `evals/model-probes/`, which the published tables never read.
 | `rule-not-carried` | 0.00 | +1.00 | 0.00 | +1.00 |
 | `mdcg-bait` | 0.11 | +0.89 | 0.00 | +0.67 |
 
-**`mdr-transition`**, 5 cases. Mean delta **+0.27** on the CLI default, **+0.80** on `haiku`.
+**`mdr-transition`**, 5 cases. Mean delta **+0.20** on the CLI default, **+0.80** on `haiku`.
 
 | Case | default baseline | default Δ | haiku baseline | haiku Δ |
 |---|---|---|---|---|
 | `class-dependent-date` | 1.00 | +0.00 | 0.00 | +1.00 |
 | `conditions-not-automatic` | 1.00 | +0.00 | 0.00 | +1.00 |
+| `implantable-exception` | 1.00 | +0.00 | 0.00 | +1.00 |
 | `superseded-deadline` | 1.00 | +0.00 | 0.00 | +1.00 |
-| `implantable-exception` | 0.67 | +0.33 | 0.00 | +1.00 |
 | `ivdr-out-of-scope` | 0.00 | +1.00 | 0.00 | +0.00 |
 <!-- probe-table:end -->
 

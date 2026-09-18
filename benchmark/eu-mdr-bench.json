@@ -18,8 +18,8 @@
       "criteria_assume_skill_format": false,
       "measured": {
         "baseline_pass_rate": 0.3333333333333333,
-        "with_reference_pass_rate": 1.0,
-        "runs_per_arm": 3
+        "with_reference_pass_rate": 0.8888888888888888,
+        "runs_per_arm": 9
       }
     },
     {
@@ -68,9 +68,9 @@
       "correct_answer_criteria": "Nothing in this copy is factually false, so a generic marketing review would\npass it. PASS requires the response to flag:\n(1) That the copy omits the rapid-change limitation stated in the intended\n    purpose, AND names the risk that follows, dosing on a reading that lags\n    during rapid change. Art. 7(c) is the natural home. Routing it instead to\n    7(d) or 7(b), on the ground that the copy affirmatively INVITES the use the\n    intended purpose carves out, is equally correct and PASSES: once copy invites\n    a carved-out use, that is commission rather than omission.\n(2) \"Dose with confidence\" as a further breach, it invites treatment\n    decisions the intended purpose explicitly carves out (Art. 7(b) and/or\n    7(d) both acceptable).\nThe response must recognise that (c) is an OMISSION test and not dismiss the\ncopy as compliant because it contains no false statement.\nFAIL if the response concludes there are no findings.\n\nAdditionally, no market is stated in this prompt. The response must either ask which\nmarket applies or refrain from asserting HWG or UWG findings. Applying German national\nlaw to a prompt that never mentions Germany is the error `non-german-eu-market` exists\nto catch, and it should not pass here.",
       "criteria_assume_skill_format": false,
       "measured": {
-        "baseline_pass_rate": 0.6666666666666666,
+        "baseline_pass_rate": 0.4444444444444444,
         "with_reference_pass_rate": 1.0,
-        "runs_per_arm": 3
+        "runs_per_arm": 9
       }
     },
     {
@@ -85,9 +85,9 @@
       "correct_answer_criteria": "PASS requires ALL of:\n(1) The response recognises this IS comparative advertising under UWG § 6(1)\n    even though no competitor is named, \"the spreadsheet-and-email crowd\" and\n    \"what most teams use today\" make competitors erkennbar if the market can tell\n    who is meant.\n\n    Note for the judge: references/uwg.md uses a different phrase as its worked\n    example. Do not look for that phrase; judge whether the erkennbar test is\n    applied to THIS copy.\n(2) Nothing states or implies that comparative advertising is per se prohibited\n    in Germany. Judge only for the presence of that error.\n    Finding ALL THREE claims defective is CORRECT, all three are defective.\n    Do NOT require an explicit sentence affirming that compliant comparisons are\n    lawful; a correct analysis of three bad claims has no natural occasion to\n    say it, and its absence is not a failure.\n(3) It flags \"Half the rework of what most teams use today\" under § 6(2) no. 2 as\n    failing the \"nachprüfbar\" requirement, the reader cannot check it, and the\n    comparator is undefined.\n(4) \"The spreadsheet-and-email crowd still find their errors after submission\" is\n    EXAMINED and a reasoned conclusion reached. Several are acceptable:\n      - routed to § 6(2) no. 2 (not objective, not nachprüfbar);\n      - routed to § 6(2) no. 5 (Herabsetzung);\n      - concluding that no carried provision reaches it, on the ground that it\n        characterises *prospects* or a working method rather than an identifiable\n        competitor. That is a precise reading and PASSES;\n      - raised under `Also engaged:` conditional on whether a competitor is erkennbar.\n    FAIL only if the line is ignored entirely, or if a conclusion is asserted with no\n    reasoning.\n\nNote for the judge: do not require a particular provision. The skill carries nos. 1 and\n2 only, and a response that examines the line and explains why nothing carried reaches\nit is doing boundary discipline, which is the property under test.\nFAIL if comparative advertising is described as banned or per se unlawful.",
       "criteria_assume_skill_format": true,
       "measured": {
-        "baseline_pass_rate": 0.6666666666666666,
+        "baseline_pass_rate": 0.4444444444444444,
         "with_reference_pass_rate": 1.0,
-        "runs_per_arm": 3
+        "runs_per_arm": 9
       }
     },
     {
@@ -118,8 +118,8 @@
       "criteria_assume_skill_format": true,
       "measured": {
         "baseline_pass_rate": 0.0,
-        "with_reference_pass_rate": 0.6666666666666666,
-        "runs_per_arm": 3
+        "with_reference_pass_rate": 0.7777777777777778,
+        "runs_per_arm": 9
       }
     },
     {
@@ -153,8 +153,8 @@
       "criteria_assume_skill_format": true,
       "measured": {
         "baseline_pass_rate": 0.0,
-        "with_reference_pass_rate": 0.6666666666666666,
-        "runs_per_arm": 3
+        "with_reference_pass_rate": 1.0,
+        "runs_per_arm": 9
       }
     },
     {
@@ -340,9 +340,9 @@
       "correct_answer_criteria": "This is the exception-list trap. Art. 120(3a)(a) gives class IIb IMPLANTABLE devices\n31 December 2027, \"except sutures, staples, dental fillings, dental braces, tooth\ncrowns, screws, wedges, plates, wires, pins, clips and connectors\". Sutures are named.\nSo this device falls to 3a(b) and gets **31 December 2028**, not 2027.\n\nPASS requires:\n(1) The stated deadline is **31 December 2028**.\n(2) The reasoning names the exception. That sutures are excluded from the IIb implantable\n    tier and therefore take the later date.\n\nFAIL if the answer is 31 December 2027. That is what applying \"class IIb implantable →\n2027\" without reading the exception produces, and it is the specific error this case\ntests. FAIL also if it is 26 May 2024.",
       "criteria_assume_skill_format": false,
       "measured": {
-        "baseline_pass_rate": 0.6666666666666666,
+        "baseline_pass_rate": 1.0,
         "with_reference_pass_rate": 1.0,
-        "runs_per_arm": 3
+        "runs_per_arm": 9
       }
     },
     {
@@ -408,9 +408,9 @@
       "correct_answer_criteria": "MPDG § 8(2) sentence 2 permits English for information intended exclusively for\nprofessional users, but the exception is CUMULATIVE, three conditions, all required:\na justified case (begründeter Fall), exclusively professional users, AND\nsafety-related information still provided in German or the user's language.\n\nPASS requires:\n(1) It does NOT answer a flat yes. English-only for the whole IFU is not permitted,\n    because safety-related information must still be in German (or the user's language)\n    even under the exception.\n(2) It names the cumulative structure, at minimum, that the professional-user route\n    still requires safety information in German. Naming all three conditions is better\n    but not required.\n(3) It does NOT answer a flat no either. The exception is real, and a response that\n    says \"everything must be German, no exceptions\" misses § 8(2) sentence 2 and is a\n    FAIL for the opposite reason.\n\nThe correct shape is: mostly yes for the professional content, but not for the\nsafety-related parts, and only in a justified case.\n\n(4) The response must not treat \"all our users are lab professionals\" as itself\n    supplying the begründeter Fall. That collapses two of the three cumulative\n    conditions into one. A response that mentions safety information in German but\n    treats professional users as automatically justifying the exception has missed the\n    structure and is a FAIL.\n\nIgnore the competitor point; what a competitor does is not a legal basis, and the\nresponse need not address it.",
       "criteria_assume_skill_format": false,
       "measured": {
-        "baseline_pass_rate": 0.3333333333333333,
+        "baseline_pass_rate": 0.0,
         "with_reference_pass_rate": 1.0,
-        "runs_per_arm": 3
+        "runs_per_arm": 9
       }
     },
     {
@@ -459,9 +459,9 @@
       "correct_answer_criteria": "MDR Art. 89(8) governs FSNs but does not impose German. MPDG § 73(1) does: where a\nmanufacturer takes an FSCA im Geltungsbereich dieses Gesetzes, the Field Safety Notice\nmust be written in German. A response working from MDR alone misses this entirely.\n\nPASS requires:\n(1) It flags that the FSN needs to be in German for the German market, citing MPDG\n    § 73(1) or clearly attributing it to German national law.\n(2) It does not claim the English FSN is fine everywhere.\n\nBonus, not required: noting § 73(2)'s completion-notification duty.\n\nNote for the judge: § 73(2) sentence 3 turns on the authorised representative sitting\noutside the Geltungsbereich. That is, outside Germany. Ireland is outside Germany, so\nthe condition IS satisfied. The prompt names no German-established importer, so the\nduty is moot on these facts. Do not penalise a response that omits the point; do not\nreward one that states the condition is unmet.\n\nFAIL if the answer is \"no problem\" or if it addresses only MDR Art. 89 without reaching\nthe German language requirement.",
       "criteria_assume_skill_format": false,
       "measured": {
-        "baseline_pass_rate": 0.6666666666666666,
+        "baseline_pass_rate": 0.8888888888888888,
         "with_reference_pass_rate": 1.0,
-        "runs_per_arm": 3
+        "runs_per_arm": 9
       }
     },
     {
@@ -476,9 +476,9 @@
       "correct_answer_criteria": "PASS requires ALL of:\n(1) A block with the labelled lines, including a \"Not checked\" line and a \"does not\n    establish\" line (wording may vary; the two functions must both be present).\n(2) \"Not checked\" names specifics drawn from the prompt (clinical evidence, technical\n    documentation, labelling) AND names the thing a reader would most wrongly assume:\n    that field values are CORRECT or TRUE, when only presence and format were checked.\n    That distinction between \"filled and well-formed\" and \"right\" is the core of this\n    case. Missing it is a FAIL.\n(3) The negation is blunt and specific: it must deny that the result establishes\n    compliance, or that a submission will be accepted, or equivalent. Hedged phrasing\n    like \"may not cover all requirements\" does not satisfy this.\n(4) It notes the human-reviewed EMDN proposal is a proposal, or otherwise does not\n    present the EMDN code as validated.\n\n(5) `Against:` is either pinned to a named schema WITH a version and date, or is\n    visibly marked as lacking them. Two forms both satisfy this and neither is\n    preferred: a slot the reader or the rendering tool fills (`[version]`,\n    `{{schema_version}}`), and a prose statement of what is missing (\"version and\n    retrieval date not recorded\"). FAIL only if it invents a schema version or date\n    the user never supplied, or presents \"the current schema\" as a pinned basis.\n\nFAIL if the output is a generic disclaimer (\"for informational purposes only\",\n\"consult a qualified professional\", \"no warranty\") rather than a description of what\nthis specific check covered.",
       "criteria_assume_skill_format": false,
       "measured": {
-        "baseline_pass_rate": 1.0,
-        "with_reference_pass_rate": 0.3333333333333333,
-        "runs_per_arm": 3
+        "baseline_pass_rate": 0.8888888888888888,
+        "with_reference_pass_rate": 0.8888888888888888,
+        "runs_per_arm": 9
       }
     },
     {

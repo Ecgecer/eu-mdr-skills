@@ -1,0 +1,569 @@
+{
+  "schemaVersion": 1,
+  "claudeVersion": "2.1.276",
+  "startedAt": "2026-09-18T19:16:00.601Z",
+  "durationSeconds": 373,
+  "costUsd": 1.492273,
+  "partial": false,
+  "suite": {
+    "root": "/Users/egecangecer/projects/eu-mdr-skills/mpdg-germany",
+    "ablation": "with-without",
+    "caseFilter": "fsn-language",
+    "threshold": 1,
+    "concurrency": 1,
+    "plugins": [
+      {
+        "name": "mpdg-germany",
+        "version": "0.1.0",
+        "path": "/Users/egecangecer/projects/eu-mdr-skills/mpdg-germany"
+      }
+    ]
+  },
+  "cases": [
+    {
+      "name": "fsn-language",
+      "dir": "evals/05-fsn-language",
+      "source": "prose",
+      "promptMarkdown": "We're a US manufacturer with an EU authorised representative in Ireland. We're issuing\na field safety corrective action affecting devices in several EU countries including\nGermany. We've drafted the Field Safety Notice in English and are sending it out. Any\nproblem?",
+      "runsPerCase": 3,
+      "timeoutSeconds": 300,
+      "maxTurns": 10,
+      "graders": [
+        {
+          "name": "criteria",
+          "type": "llm",
+          "weight": 1,
+          "graderMarkdown": "MDR Art. 89(8) governs FSNs but does not impose German. MPDG § 73(1) does: where a\nmanufacturer takes an FSCA im Geltungsbereich dieses Gesetzes, the Field Safety Notice\nmust be written in German. A response working from MDR alone misses this entirely.\n\nPASS requires:\n(1) It flags that the FSN needs to be in German for the German market, citing MPDG\n    § 73(1) or clearly attributing it to German national law.\n(2) It does not claim the English FSN is fine everywhere.\n\nBonus, not required: noting § 73(2)'s completion-notification duty.\n\nNote for the judge: § 73(2) sentence 3 turns on the authorised representative sitting\noutside the Geltungsbereich. That is, outside Germany. Ireland is outside Germany, so\nthe condition IS satisfied. The prompt names no German-established importer, so the\nduty is moot on these facts. Do not penalise a response that omits the point; do not\nreward one that states the condition is unmet.\n\nFAIL if the answer is \"no problem\" or if it addresses only MDR Art. 89 without reaching\nthe German language requirement.",
+          "config": {
+            "criteria": "MDR Art. 89(8) governs FSNs but does not impose German. MPDG § 73(1) does: where a\nmanufacturer takes an FSCA im Geltungsbereich dieses Gesetzes, the Field Safety Notice\nmust be written in German. A response working from MDR alone misses this entirely.\n\nPASS requires:\n(1) It flags that the FSN needs to be in German for the German market, citing MPDG\n    § 73(1) or clearly attributing it to German national law.\n(2) It does not claim the English FSN is fine everywhere.\n\nBonus, not required: noting § 73(2)'s completion-notification duty.\n\nNote for the judge: § 73(2) sentence 3 turns on the authorised representative sitting\noutside the Geltungsbereich. That is, outside Germany. Ireland is outside Germany, so\nthe condition IS satisfied. The prompt names no German-established importer, so the\nduty is moot on these facts. Do not penalise a response that omits the point; do not\nreward one that states the condition is unmet.\n\nFAIL if the answer is \"no problem\" or if it addresses only MDR Art. 89 without reaching\nthe German language requirement.",
+            "focus": "last_message"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 4,
+            "costUsd": 0.1467445,
+            "judgeCostUsd": 0.0038790000000000005,
+            "durationSeconds": 37,
+            "startedAt": "2026-09-18T19:16:00.612Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-HtchlA/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "## Field Safety Notice in English, FSCA covering Germany\n\n**German market:** confirmed — the FSCA covers devices in Germany\n**Answer:** The FSN must be written in German for the German part of the action. English-only is non-compliant there.\n\n| Item | MDR requires | Germany adds | Basis |\n|---|---|---|---|\n| FSN language, FSCA taken in Germany | not carried here | Must be drafted **in German** (*in deutscher Sprache abzufassen*) | MPDG § 73(1) `[verified]` |\n| Who this attaches to | — | The **action**, not the manufacturer's seat — \"Ergreifen Hersteller im Geltungsbereich dieses Gesetzes Sicherheitskorrekturmaßnahmen\". Being a US manufacturer with an Irish AR does not take you outside it | MPDG § 73(1) `[verified]` |\n| Professional-users-only exception | — | **Does not reach this.** The English-language carve-out lives in § 8(2) for user/patient information and is conditional; § 73(1) carries no exception. An FSN aimed solely at hospitals still has to be German | MPDG §§ 73(1), 8(2) `[verified]` |\n| Document FSCA + periodically review effectiveness | not carried here | Applies to manufacturers **established in Germany** — not you | MPDG § 73(2) s.1 `[verified]` |\n| Notify **completion** of the FSCA to the competent authority *and* the federal higher authority | not carried here | Applies to manufacturers, authorised representatives and importers **established in Germany**. Your Irish AR is not caught. But for importers the duty applies precisely where the AR sits outside Germany — which is your case | MPDG § 73(2) ss.2–3 `[verified]` |\n\nTwo things worth acting on beyond the translation:\n\n1. **Your German importer probably has a completion-notification duty.** § 73(2) sentence 3 makes it conditional on the authorised representative being established outside Germany. Ireland is outside Germany, so the condition is met. Whoever imports into Germany for you should know this is theirs to discharge at the close of the action.\n2. **Don't read § 8(1) as a translation requirement for the DoC.** German *or* English is fine there. The German-language pressure in MPDG is asymmetric — it hits user/patient information, implant information and FSNs, not the Declaration of Conformity.\n\n**What would change this:** only the German market dropping out of the FSCA's scope. Nothing about your US establishment, your Irish AR, or an exclusively-professional user base changes the § 73(1) answer.\n\n**The other EU countries: open question, not answered here.** Germany's German-language FSN rule is national law and says nothing about the other member states in your action. Each has its own implementing act, and I don't carry them. There is EU-level provision bearing on this in MDR Art. 89 on FSNs `[verify]` — treat that as somewhere to look, not as the requirement. For each affected country, the binding text is that state's implementing act. Paste any provision and I'll work from it.\n\n## Limits\n\nThis covers MPDG §§ 4, 8 and 73 only, retrieved verbatim from gesetze-im-internet on 2026-09-10. It does **not** cover the rest of MPDG, MDR or IVDR themselves, MDCG guidance, BfArM practice, or any other member state's implementing law. A first-pass aid for spotting German-specific duties, not legal advice, and not a substitute for a regulatory professional or a Fachanwalt für Medizinrecht."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 4,
+            "costUsd": 0.14345950000000002,
+            "judgeCostUsd": 0.003942000000000001,
+            "durationSeconds": 32,
+            "startedAt": "2026-09-18T19:16:38.037Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-EdzugX/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "## English-only Field Safety Notice, FSCA covering Germany\n\n**German market:** confirmed — the FSCA affects devices in Germany.\n**Answer:** No. The Field Safety Notice must be drafted in German for the German part of this action. English alone does not satisfy MPDG § 8.\n\n| Item | MDR requires | Germany adds | Basis |\n|---|---|---|---|\n| FSN for an FSCA taken in Germany | Not carried here (MDR Art. 89(8) is referenced by the German text but I don't carry MDR) | Must be **written in German** (*in deutscher Sprache abzufassen*) | MPDG § 73(1) `[verified]` |\n| Who this attaches to | — | The **manufacturer taking the FSCA in Germany**, not the manufacturer's place of establishment. Being US-based with an Irish AR does not take you outside it | MPDG § 73(1) `[verified]` |\n| Documenting the FSCA + periodic effectiveness review | Not carried here | Applies to manufacturers **established in Germany** — you are not, so not caught by this one | MPDG § 73(2) s.1 `[verified]` |\n| Notifying **completion** of the FSCA | Not carried here | Manufacturers, authorised representatives and importers **established in Germany** must notify both the competent authority and the federal higher authority. Your AR is in Ireland, so sentence 3 turns on: **your German importers do carry this duty**, precisely because the AR sits outside Germany | MPDG § 73(2) ss.2–3 `[verified]` |\n\n**Two practical points**\n\n1. § 73(1) is about the language the FSN is *drafted in*, and it is unconditional. The professional-user exception that exists elsewhere in MPDG (§ 8(2) sentence 2, English permitted for information aimed exclusively at professional users) is in a different section and does not appear in § 73(1). Even if it did, that exception expressly requires safety-related information in German anyway — and an FSN is safety-related information by definition. So \"our users are all clinicians\" does not rescue an English FSN.\n2. The importer point is easy to miss. Because your authorised representative is in Ireland rather than Germany, the completion-notification duty under § 73(2) sentence 3 activates for any importer of yours established in Germany. They will need to know when you consider the action closed. Worth telling them now rather than discovering it at closure.\n\n**What would change this:** only Germany dropping out of the scope of the FSCA. Nothing about your US establishment, your Irish AR, or the professional status of your users changes the § 73(1) obligation.\n\n**On the other EU countries:** I can't answer for them. Each member state has its own implementing act and I don't carry any of them — so I have no basis to tell you whether English suffices in, say, France, Italy or Poland, and I'd be making it up if I did. There is EU-level provision on language in MDR itself `[verify]`, which I have not checked and which does not displace national rules in any case. Treat that as somewhere for your regulatory team to look, not as the answer. The safe assumption is that Germany is unlikely to be the only country on your list requiring a local-language FSN.\n\n## Limits\n\nThis covers MPDG §§ 4, 8 and 73 only, retrieved verbatim from gesetze-im-internet on 2026-09-10. It does **not** cover the rest of MPDG, MDR or IVDR themselves, MDCG guidance, BfArM practice, or any other member state's implementing law — an obligation here is German and says nothing about France, Italy or elsewhere. A first-pass aid for spotting German-specific duties, not legal advice, and not a substitute for a regulatory professional or a Fachanwalt für Medizinrecht."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 5,
+            "costUsd": 0.17947275000000001,
+            "judgeCostUsd": 0.003920999999999997,
+            "durationSeconds": 48,
+            "startedAt": "2026-09-18T19:17:09.717Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-v7g289/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "## English-only FSN into Germany\n\n**German market:** confirmed (Germany named among affected countries)\n**Answer:** No — the Field Safety Notice going to Germany has to be written in German. An English-only FSN does not satisfy MPDG § 73(1).\n\n| Item | MDR requires | Germany adds | Basis |\n|---|---|---|---|\n| FSN language for an FSCA in Germany | not carried here | FSN must be **written in German** (*in deutscher Sprache abzufassen*) | MPDG § 73(1) `[verified]` |\n| Documenting the FSCA + periodic effectiveness review | not carried here | Applies to **manufacturers established in Germany** — you are US-based, so this sentence does not reach you | MPDG § 73(2) s.1 `[verified]` |\n| Notifying **completion** of the FSCA to the competent authority *and* the federal higher authority | not carried here | Applies to manufacturers, authorised representatives and importers **established in Germany**. You (US) and your AR (Ireland) are not. But a **German-established importer** in your chain does have this duty precisely because your AR sits outside Germany | MPDG § 73(2) s.2–3 `[verified]` |\n\nThree things worth being explicit about:\n\n**The duty attaches to the action, not to where you sit.** § 73(1) reads *\"Ergreifen Hersteller im Geltungsbereich dieses Gesetzes Sicherheitskorrekturmaßnahmen…\"* — a manufacturer taking an FSCA within Germany. Being a US manufacturer with an Irish AR does not take you outside it.\n\n**There is no professional-user carve-out here.** MPDG's language rules elsewhere (§ 8(2)) do allow English for information aimed exclusively at professional users in justified cases — but that exception sits in § 8 and is about information supplied with the product, and even there it expressly does not extend to safety-related information. § 73(1) states the German-language requirement for FSNs flat, with no exception on its face. If your reasoning for English was \"it's only going to hospitals and clinicians,\" that reasoning does not carry over.\n\n**Your German importer may have a duty you're not tracking.** Because your authorised representative is in Ireland rather than Germany, the conditional in § 73(2) sentence 3 is satisfied — any importer established in Germany must notify completion of the FSCA to both the competent authority and the federal higher authority. Worth telling them, since they may not know the duty switched on.\n\n**What would change this:** Germany dropping out of the affected-country list. Nothing about your corporate structure does.\n\n**On the other member states:** I can't answer for them. The binding text is each state's own national implementing act, and I don't carry any of them — so I'd be guessing about France, Italy, Spain or wherever else you're shipping. There is EU-level provision on FSN language in MDR itself `[verify]`, which I have not checked and am not stating as the requirement. Treat both as places to look. Practically, most manufacturers running a multi-country FSCA localise per market by default; the German position above at least confirms that instinct is right for one of them.\n\n## Limits\n\nThis covers MPDG §§ 4, 8 and 73 only, retrieved verbatim from gesetze-im-internet on 2026-09-10. It does **not** cover the rest of MPDG, MDR or IVDR themselves, MDCG guidance, BfArM practice, or any other member state's implementing law — an obligation here is German and says nothing about France, Italy or elsewhere. A first-pass aid for spotting German-specific duties, not legal advice, and not a substitute for a regulatory professional or a Fachanwalt für Medizinrecht."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 5,
+            "costUsd": 0.1704145,
+            "judgeCostUsd": 0.003978000000000002,
+            "durationSeconds": 39,
+            "startedAt": "2026-09-18T19:17:57.791Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-wSCVwl/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "## Is an English-only Field Safety Notice acceptable for the German part of this FSCA?\n\n**German market:** confirmed — Germany is among the affected countries\n**Answer:** No. For the FSCA insofar as it is taken in Germany, the Field Safety Notice must be written in German.\n\n| Item | MDR requires | Germany adds | Basis |\n|---|---|---|---|\n| FSN language | not carried here (MDR Art. 89(8) is the FSN provision, but MDR itself is outside this reference set) | FSN **in deutscher Sprache** for FSCAs taken in Germany | MPDG § 73(1) `[verified]` |\n| Document FSCA + periodically review effectiveness | not carried here | Required — but only for manufacturers **established in Germany**. You are US-established, so this sentence does not reach you | MPDG § 73(2) s.1 `[verified]` |\n| Notify **completion** of the FSCA to competent authority + federal higher authority | not carried here | Applies to manufacturers, authorised representatives and importers **established in Germany**. Your manufacturer is US, your AR is Irish — so neither is caught | MPDG § 73(2) s.2 `[verified]` |\n| Same, for importers | not carried here | A **German-established importer** must notify completion **only where the AR sits outside Germany** — which is your case (Ireland). So if you have a German importer in the chain, that duty is live for them | MPDG § 73(2) s.3 `[verified]` |\n\nTwo things worth being explicit about:\n\n**§ 73(1) attaches to the action, not to where you sit.** Being US-established with an Irish AR does not take you outside it. The trigger is manufacturers taking safety corrective action *im Geltungsbereich dieses Gesetzes* — in Germany. It does so.\n\n**There is no professional-user exception in § 73(1).** If the thought is \"our device is for clinicians only, so English is fine\" — that carve-out lives in § 8(2) sentence 2 and is about information for users and patients. § 73(1) states the German-language requirement for FSNs flatly, with no conditions on its face. And even the § 8(2) exception requires safety-related information in German regardless, which is exactly what an FSN is.\n\n**What would change this:** Germany dropping out of the affected-country list. Nothing about your establishment, your AR's location, or the device's user population changes the § 73(1) answer.\n\n**Loose end you should chase:** who in your chain is German-established. That determines whether the completion-notification duty under § 73(2) sentence 3 lands on a German importer — and it is a duty you would want them aware of before the action closes, not after.\n\n**On the other affected countries:** I can't help you there. An obligation under MPDG is German and says nothing about the other member states in your FSCA. Each has its own implementing act with its own language rule, and I don't carry any of them. There is EU-level provision on language in MDR itself `[verify]` which I have not checked — treat that as somewhere to look, not as the requirement. Practically, assume per-country translation is needed until someone confirms otherwise for each market; the German requirement is evidence that national language rules bite, not that Germany is the only one.\n\n## Limits\n\nThis covers MPDG §§ 4, 8 and 73 only, retrieved verbatim from gesetze-im-internet on 2026-09-10. It does **not** cover the rest of MPDG, MDR or IVDR themselves, MDCG guidance, BfArM practice, or any other member state's implementing law. A first-pass aid for spotting German-specific duties, not legal advice, and not a substitute for a regulatory professional or a Fachanwalt für Medizinrecht."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 4,
+            "costUsd": 0.16030975,
+            "judgeCostUsd": 0.0045600000000000016,
+            "durationSeconds": 38,
+            "startedAt": "2026-09-18T19:18:37.166Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-fERm1D/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "## English-only Field Safety Notice for an FSCA covering Germany\n\n**German market:** confirmed (Germany named among affected countries)\n**Answer:** For the German part of the action the FSN must be written in German — English only is non-compliant.\n\n### The language point\n\nMPDG § 73(1) `[verified]`:\n\n> Ergreifen Hersteller im Geltungsbereich dieses Gesetzes Sicherheitskorrekturmaßnahmen, sind die Sicherheitsanweisungen im Feld … **in deutscher Sprache abzufassen**.\n\nTwo things about how this bites you specifically:\n\n- It attaches to **where the action is taken**, not where you sit. Being a US manufacturer with an Irish authorised representative changes nothing — you are taking an FSCA *im Geltungsbereich dieses Gesetzes*, so the German-language duty applies to you directly.\n- It is not the same rule as the Declaration of Conformity rule. § 8(1) `[verified]` genuinely allows German **or English** for the DoC, which sometimes leads teams to assume English is broadly acceptable in Germany. For the FSN it is not.\n\n### The duty you may have missed entirely\n\n| Item | MDR requires | Germany adds | Basis |\n|---|---|---|---|\n| FSN language | not carried here | German, for FSCAs taken in Germany | MPDG § 73(1) `[verified]` |\n| Document FSCA + periodically review effectiveness | not carried here | Applies to manufacturers **established in Germany** — so not to you under this provision | MPDG § 73(2) s.1 `[verified]` |\n| Notify **completion** of the FSCA to the competent authority *and* the federal higher authority | not carried here | Applies to manufacturers, authorised representatives and importers **established in Germany** | MPDG § 73(2) s.2 `[verified]` |\n| Same, for importers | not carried here | Importers in Germany owe it **only where the authorised representative sits outside Germany** | MPDG § 73(2) s.3 `[verified]` |\n\nYour Irish authorised representative is outside Germany, which is precisely the condition that switches on sentence 3: **your German importer(s) carry the completion-notification duty.** Worth telling them now rather than after the action closes — neither you nor the Irish AR is caught by sentence 2 on the face of the text, so if nobody briefs the importer the notification may simply not happen.\n\n### Also check, if the action involves revised user materials\n\nIf the corrective action includes updated IFU, labelling or other information for users, § 8(2) `[verified]` is separate and stricter than you might assume: German is the default and a *condition of supply*. The professional-user exception in sentence 2 is cumulative — justified case **and** exclusively professional users **and** safety-related information still in German. Since an FSCA is by definition safety-related, that final clause will generally bring you back to German regardless.\n\n**What would change this:** Germany dropping out of the affected-country list. Nothing about your corporate structure or the AR's location relaxes § 73(1).\n\n### The other EU countries — an open question, not an answer\n\nMPDG is German national law and says nothing about the other affected member states. Each has its own implementing act, and I don't carry any of them. I'm not going to name an EU-level article as the governing rule from memory. There is EU-level provision on FSN language in MDR itself `[verify]`, which I have not checked — treat that as somewhere to look, not as the requirement. The binding text for each country is its own national implementing act. If you paste a provision, I'll work from it.\n\n## Limits\n\nThis covers MPDG §§ 4, 8 and 73 only, retrieved verbatim from gesetze-im-internet on 2026-09-10. It does **not** cover the rest of MPDG, MDR or IVDR themselves, MDCG guidance, BfArM practice, or any other member state's implementing law — an obligation here is German and says nothing about Ireland, France, Italy or elsewhere. A first-pass aid for spotting German-specific duties, not legal advice, and not a substitute for a regulatory professional or a Fachanwalt für Medizinrecht.\n\nOne caveat on the table above: whether *only* German-established parties owe the completion notification is my reading of § 73(2)'s *mit Sitz im Geltungsbereich* qualifier. The text supports it, but how the authorities expect the duty to be discharged when the manufacturer and AR are both outside Germany is not something I can state — confirm the reporting route with your German importer and your regulatory counsel."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 5,
+            "costUsd": 0.17812324999999998,
+            "judgeCostUsd": 0.003983999999999998,
+            "durationSeconds": 42,
+            "startedAt": "2026-09-18T19:19:15.428Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-JE1wlr/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "## English-only FSN into Germany\n\n**German market:** confirmed — devices affected in Germany\n**Answer:** No. The Field Safety Notice for the German-affected devices must be written in German.\n\n| Item | MDR requires | Germany adds | Basis |\n|---|---|---|---|\n| FSN language, FSCA taken in Germany | not carried here | FSN must be **abgefasst in deutscher Sprache** | MPDG § 73(1) `[verified]` |\n| Document FSCA + periodically review effectiveness | not carried here | Applies only to manufacturers **established in Germany** — not you | MPDG § 73(2) s.1 `[verified]` |\n| Notify **completion** of the FSCA to the competent authority *and* the federal higher authority | not carried here | Applies to manufacturers, authorised representatives and importers **established in Germany** | MPDG § 73(2) s.2 `[verified]` |\n| Importer's completion-notification duty | not carried here | Triggered **only where the authorised representative sits outside Germany** — your AR is in Ireland, so it is triggered | MPDG § 73(2) s.3 `[verified]` |\n\nThree things follow from your specific setup:\n\n1. **The German FSN duty is not escapable via your corporate geography.** § 73(1) attaches to manufacturers taking an FSCA *im Geltungsbereich dieses Gesetzes* — i.e. to the action landing in Germany, not to where you or your AR are established. Being in the US with an Irish AR does not move it. Translate the FSN before it goes to German recipients.\n\n2. **Two duties in § 73(2) do *not* reach you.** The documentation/effectiveness-review duty and the direct completion-notification duty are both limited to parties *mit Sitz im Geltungsbereich* — established in Germany. Neither a US manufacturer nor an Irish AR is. Don't let anyone tell you otherwise; over-applying here is as much an error as under-applying.\n\n3. **But check your German importers.** Because your AR sits outside Germany, sentence 3's condition is satisfied, so any importer established in Germany carries its own duty to notify FSCA completion to both the competent authority and the federal higher authority. That's a duty on them, not you — but it's your distribution chain, and it will fail silently if nobody tells them. Worth a line in your FSCA correspondence to German importers.\n\n**What would change this:** if no affected devices were made available in Germany, § 73(1) wouldn't apply at all. It doesn't turn on volume or on whether the German recipients are professionals — there is no professional-user exception in § 73 (the English-language carve-out in § 8(2) is about product information for users and patients, and even there it doesn't reach safety-related information).\n\n**On the other member states:** I can't answer for them. Your FSN also lands in countries whose FSN language rules sit in their own national implementing acts, and I don't carry those. There is EU-level provision on field safety notices in MDR itself `[verify]`, which I have not checked and won't state as the requirement. Treat each affected member state as its own open question rather than assuming German-plus-English covers you — and note that Ireland being English-speaking tells you nothing about, say, France or Italy.\n\n## Limits\n\nThis covers MPDG §§ 4, 8 and 73 only, retrieved verbatim from gesetze-im-internet on 2026-09-10. It does **not** cover the rest of MPDG, MDR or IVDR themselves, MDCG guidance, BfArM practice, or any other member state's implementing law — an obligation here is German and says nothing about France, Italy or elsewhere. A first-pass aid for spotting German-specific duties, not legal advice, and not a substitute for a regulatory professional or a Fachanwalt für Medizinrecht."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 5,
+            "costUsd": 0.1675475,
+            "judgeCostUsd": 0.0040469999999999985,
+            "durationSeconds": 38,
+            "startedAt": "2026-09-18T19:19:56.997Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-A2CVHv/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "## FSN language for an FSCA reaching Germany\n\n**German market:** confirmed (Germany named among affected countries)\n**Answer:** No — an English-only Field Safety Notice is not compliant for Germany. The FSN for the German market must be written in German.\n\nMPDG § 73(1) `[verified]`: where manufacturers take field safety corrective actions within the scope of the Act, the field safety notice under MDR Art. 89(8) / IVDR Art. 84(8) *\"sind ... in deutscher Sprache abzufassen.\"*\n\nTwo things about how that attaches to you:\n\n- **It follows the action, not your establishment.** § 73(1) applies to manufacturers taking an FSCA *im Geltungsbereich dieses Gesetzes*. Being a US manufacturer with an Irish authorised representative does not take you outside it — your devices are in Germany and the FSCA reaches them.\n- **There is no professional-user carve-out.** The English-is-acceptable exception in MPDG § 8(2) sentence 2 belongs to user/patient information, not to FSNs, and even there it is cumulative and expressly excludes safety-related information, which must still be in German. § 73(1) carries no exception at all — not for hospital-only distribution, not for specialist users.\n\n| Item | MDR requires | Germany adds | Basis |\n|---|---|---|---|\n| FSN language, German market | not carried here | FSN must be drafted in German | MPDG § 73(1) `[verified]` |\n| Document FSCA + periodically review effectiveness | not carried here | Duty on manufacturers **established in Germany** — not you | MPDG § 73(2) s.1 `[verified]` |\n| Notify **completion** of the FSCA to competent authority *and* federal higher authority | not carried here | Duty on manufacturers, authorised representatives and importers **established in Germany**. Your Irish AR is outside Germany, so your German-established importer's duty under s.3 is triggered | MPDG § 73(2) s.2–3 `[verified]` |\n\nThat last row is the one most likely to be missed: because your authorised representative sits in Ireland rather than Germany, the conditional importer duty in § 73(2) sentence 3 switches **on**. If you have an importer established in Germany, they must notify completion of the FSCA to both authorities. Worth telling them now rather than at closeout.\n\n**What would change this:** Germany dropping out of the affected-device scope. Nothing about your corporate structure or user population does.\n\n## The other EU countries\n\nI can't answer for them. Each member state has its own implementing act with its own language rule, and I only carry the German one. Do not read \"German FSN required\" as implying anything about the rest of your affected markets — and equally, don't assume English clears them. There is EU-level provision in MDR Art. 89 on FSNs `[verify]`, which I have not checked and which in any case does not displace national language law. Treat that as somewhere to look, not as the requirement; the binding text for each country is its national act.\n\nPractically: hold the English version as your master, get a German translation done for the German distribution, and get the per-country language position confirmed before the notices go out rather than after. An FSN sent in the wrong language generally has to be re-issued, which restarts your acknowledgement tracking.\n\n## Limits\n\nThis covers MPDG §§ 4, 8 and 73 only, retrieved verbatim from gesetze-im-internet on 2026-09-10. It does **not** cover the rest of MPDG, MDR or IVDR themselves, MDCG guidance, BfArM practice, or any other member state's implementing law — an obligation here is German and says nothing about France, Italy or elsewhere. A first-pass aid for spotting German-specific duties, not legal advice, and not a substitute for a regulatory professional or a Fachanwalt für Medizinrecht."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 5,
+            "costUsd": 0.17918250000000002,
+            "judgeCostUsd": 0.003642000000000003,
+            "durationSeconds": 42,
+            "startedAt": "2026-09-18T19:20:34.510Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-E2e9Rh/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "## English-only FSN for an FSCA reaching Germany\n\n**German market:** confirmed (Germany named among affected countries)\n**Answer:** Non-compliant for Germany — MPDG § 73(1) requires the Field Safety Notice to be **written in German**. Your Irish AR and US establishment don't change that.\n\n| Item | MDR requires | Germany adds | Basis |\n|---|---|---|---|\n| FSN language | not carried here | FSN for an FSCA taken in Germany must be **in German** | MPDG § 73(1) `[verified]` |\n| Document FSCA + periodically review effectiveness | not carried here | Duty on manufacturers **established in Germany** — you are not, so this does not bite you | MPDG § 73(2) s.1 `[verified]` |\n| Notify **completion** of the FSCA to competent authority *and* federal higher authority | not carried here | Duty on manufacturers, ARs and importers **established in Germany**. None of you are — but a German-established **importer** is caught, because sentence 3 makes their duty conditional on the AR sitting **outside** Germany, and yours is in Ireland | MPDG § 73(2) ss.2–3 `[verified]` |\n\nTwo things worth pre-empting:\n\n**\"Our device is professional-use only, so English is fine.\"** That argument comes from § 8(2) sentence 2, and it does not reach here. Even inside that exception, safety-related information must still be provided in German or the user's language `[verified]`. And § 73(1) is unconditional on its face — it has no professional-user carve-out at all.\n\n**The obligation attaches to the action, not to your address.** § 73(1) reads *Ergreifen Hersteller im Geltungsbereich dieses Gesetzes Sicherheitskorrekturmaßnahmen* — manufacturers taking an FSCA within the scope of the Act. Being a US manufacturer working through an Irish AR does not put you outside it.\n\n**What would change this:** only if the FSCA does not in fact reach devices made available in Germany. It does, so it applies.\n\n## One thing I have deliberately not answered\n\nYou said \"several EU countries.\" I can only speak to Germany. The binding text for each of the others is that member state's own national implementing act, and I do not carry any of them. There is EU-level provision on FSN language in MDR itself `[verify]`, which I have **not** checked — treat that as somewhere to look, not as the requirement, and do not assume the German answer generalises. Several member states do have their own language rules; which ones and what they say is an open question here, not a settled one.\n\nPractically: the German translation is the blocking item before you send, and you should get the same question asked separately for each other affected market.\n\n## Limits\n\nThis covers MPDG §§ 4, 8 and 73 only, retrieved verbatim from gesetze-im-internet on 2026-09-10. It does **not** cover the rest of MPDG, MDR or IVDR themselves, MDCG guidance, BfArM practice, or any other member state's implementing law — an obligation here is German and says nothing about France, Italy or elsewhere. A first-pass aid for spotting German-specific duties, not legal advice, and not a substitute for a regulatory professional or a Fachanwalt für Medizinrecht."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 4,
+            "costUsd": 0.15473874999999998,
+            "judgeCostUsd": 0.004073999999999994,
+            "durationSeconds": 35,
+            "startedAt": "2026-09-18T19:21:16.917Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-kTGFeW/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "## English-only Field Safety Notice, FSCA covering Germany\n\n**German market:** confirmed (devices in Germany affected)\n**Answer:** No — the FSN must be drafted in German for the German part of the action. § 73(1) MPDG is unconditional and applies to the FSCA regardless of where you or your authorised representative sit.\n\n| Item | MDR requires | Germany adds | Basis |\n|---|---|---|---|\n| FSN language, FSCA in Germany | not carried here | FSN **must be written in German** (*in deutscher Sprache abzufassen*) | MPDG § 73(1) `[verified]` |\n| Professional-user / English exception | not carried here | **None available.** The English-language carve-out sits in § 8(2) and covers information for users and patients; § 73(1) has no equivalent exception | MPDG § 8(2), § 73(1) `[verified]` |\n| Who the FSN duty attaches to | not carried here | The **action**, not the establishment: it applies to manufacturers taking an FSCA *im Geltungsbereich dieses Gesetzes* | MPDG § 73(1) `[verified]` |\n| Documenting the FSCA + periodic effectiveness review | not carried here | Required for manufacturers **established in Germany** — you are not, so this sentence does not attach to you | MPDG § 73(2) s.1 `[verified]` |\n| Notifying **completion** of the FSCA | not carried here | Owed by manufacturers, authorised representatives and importers **established in Germany**. Yours are in the US and Ireland, so not you — but see below | MPDG § 73(2) s.2 `[verified]` |\n| Completion duty falling on your German importer | not carried here | An importer established in Germany owes the completion notification **only where the authorised representative is outside Germany** — your AR is in Ireland, so the condition is met and the duty is live for them | MPDG § 73(2) s.3 `[verified]` |\n\nTwo things worth acting on now:\n\n1. **Produce a German-language FSN** for Germany before distribution there. The common reasoning — \"it only goes to hospitals and clinicians, so English is fine\" — imports § 8(2)'s professional-user exception into a section that does not have one. § 73(1) is flat.\n2. **Tell your German importer(s)** that the § 73(2) sentence 3 completion notification lands on them, to the competent authority *and* the federal higher authority. Because your AR is in Ireland, the conditional duty is triggered rather than switched off. Whether you or they file it, someone needs to own it, and it is not your Irish AR's under this sentence.\n\n**What would change this:** if no affected devices were made available in Germany, § 73(1) would not reach the action at all. Nothing about your US establishment or Irish AR changes the German FSN language duty.\n\n**On the other EU countries:** I can't answer for them. The binding text is each member state's own implementing act, and I carry only Germany's. Do not assume the German answer generalises, and equally do not assume English is acceptable elsewhere — treat every other affected market as an open question for your regulatory function or local ARs. There is EU-level provision on FSNs and language in MDR itself `[verify]`, which I have not checked and am not stating as the requirement.\n\n## Limits\n\nThis covers MPDG §§ 4, 8 and 73 only, retrieved verbatim from gesetze-im-internet on 2026-09-10. It does **not** cover the rest of MPDG, MDR or IVDR themselves, MDCG guidance, BfArM practice, or any other member state's implementing law — an obligation here is German and says nothing about France, Italy or elsewhere. A first-pass aid for spotting German-specific duties, not legal advice, and not a substitute for a regulatory professional or a Fachanwalt für Medizinrecht."
+              }
+            ]
+          }
+        ],
+        "without": [
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 0,
+            "costUsd": 0.0011849999999999986,
+            "judgeCostUsd": 0.0011849999999999986,
+            "durationSeconds": 2,
+            "startedAt": "2026-09-18T19:21:52.329Z",
+            "error": "Error: EACCES: permission denied, posix_spawn '/opt/homebrew/lib/node_modules/@anthropic-ai/claude-code/bin/claude.exe'",
+            "tracePath": "/private/tmp/e-K9FYNO/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "judge votes: FAIL FAIL FAIL",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  false,
+                  false,
+                  false
+                ],
+                "evidence": ""
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 0,
+            "costUsd": 0.0016349999999999976,
+            "judgeCostUsd": 0.0016349999999999976,
+            "durationSeconds": 3,
+            "startedAt": "2026-09-18T19:21:54.277Z",
+            "error": "Error: EACCES: permission denied, posix_spawn '/opt/homebrew/lib/node_modules/@anthropic-ai/claude-code/bin/claude.exe'",
+            "tracePath": "/private/tmp/e-3UVKPu/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "judge votes: FAIL FAIL FAIL",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  false,
+                  false,
+                  false
+                ],
+                "evidence": ""
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 0,
+            "costUsd": 0.0014049999999999965,
+            "judgeCostUsd": 0.0014049999999999965,
+            "durationSeconds": 3,
+            "startedAt": "2026-09-18T19:21:56.965Z",
+            "error": "Error: EACCES: permission denied, posix_spawn '/opt/homebrew/lib/node_modules/@anthropic-ai/claude-code/bin/claude.exe'",
+            "tracePath": "/private/tmp/e-52Y5T1/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "judge votes: FAIL FAIL FAIL",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  false,
+                  false,
+                  false
+                ],
+                "evidence": ""
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 0,
+            "costUsd": 0.0011849999999999986,
+            "judgeCostUsd": 0.0011849999999999986,
+            "durationSeconds": 2,
+            "startedAt": "2026-09-18T19:21:59.534Z",
+            "error": "Error: EACCES: permission denied, posix_spawn '/opt/homebrew/lib/node_modules/@anthropic-ai/claude-code/bin/claude.exe'",
+            "tracePath": "/private/tmp/e-euVYOU/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "judge votes: FAIL FAIL FAIL",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  false,
+                  false,
+                  false
+                ],
+                "evidence": ""
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 0,
+            "costUsd": 0.001684999999999999,
+            "judgeCostUsd": 0.001684999999999999,
+            "durationSeconds": 4,
+            "startedAt": "2026-09-18T19:22:01.214Z",
+            "error": "Error: EACCES: permission denied, posix_spawn '/opt/homebrew/lib/node_modules/@anthropic-ai/claude-code/bin/claude.exe'",
+            "tracePath": "/private/tmp/e-RKcuuL/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "judge votes: FAIL FAIL FAIL",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  false,
+                  false,
+                  false
+                ],
+                "evidence": ""
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 0,
+            "costUsd": 0.0013299999999999979,
+            "judgeCostUsd": 0.0013299999999999979,
+            "durationSeconds": 2,
+            "startedAt": "2026-09-18T19:22:05.128Z",
+            "error": "Error: EACCES: permission denied, posix_spawn '/opt/homebrew/lib/node_modules/@anthropic-ai/claude-code/bin/claude.exe'",
+            "tracePath": "/private/tmp/e-VMJ10s/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "judge votes: FAIL FAIL FAIL",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  false,
+                  false,
+                  false
+                ],
+                "evidence": ""
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 0,
+            "costUsd": 0.0011849999999999986,
+            "judgeCostUsd": 0.0011849999999999986,
+            "durationSeconds": 2,
+            "startedAt": "2026-09-18T19:22:07.550Z",
+            "error": "Error: EACCES: permission denied, posix_spawn '/opt/homebrew/lib/node_modules/@anthropic-ai/claude-code/bin/claude.exe'",
+            "tracePath": "/private/tmp/e-tJFzot/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "judge votes: FAIL FAIL FAIL",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  false,
+                  false,
+                  false
+                ],
+                "evidence": ""
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 0,
+            "costUsd": 0.0014850000000000002,
+            "judgeCostUsd": 0.0014850000000000002,
+            "durationSeconds": 2,
+            "startedAt": "2026-09-18T19:22:09.396Z",
+            "error": "Error: EACCES: permission denied, posix_spawn '/opt/homebrew/lib/node_modules/@anthropic-ai/claude-code/bin/claude.exe'",
+            "tracePath": "/private/tmp/e-FleR10/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "judge votes: FAIL FAIL FAIL",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  false,
+                  false,
+                  false
+                ],
+                "evidence": ""
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 0,
+            "costUsd": 0.0011849999999999986,
+            "judgeCostUsd": 0.0011849999999999986,
+            "durationSeconds": 2,
+            "startedAt": "2026-09-18T19:22:11.872Z",
+            "error": "Error: EACCES: permission denied, posix_spawn '/opt/homebrew/lib/node_modules/@anthropic-ai/claude-code/bin/claude.exe'",
+            "tracePath": "/private/tmp/e-2jyahQ/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "judge votes: FAIL FAIL FAIL",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  false,
+                  false,
+                  false
+                ],
+                "evidence": ""
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 1,
+        "passRate": 1,
+        "scoreWithout": 0,
+        "passRateWithout": 0,
+        "delta": 1
+      }
+    }
+  ],
+  "aggregates": {
+    "casesTotal": 1,
+    "casesPassed": 1,
+    "overallScore": 1,
+    "overallPassRate": 1,
+    "meanDelta": 1
+  }
+}

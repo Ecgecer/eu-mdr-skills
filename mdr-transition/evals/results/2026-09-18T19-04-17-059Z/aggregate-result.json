@@ -1,0 +1,569 @@
+{
+  "schemaVersion": 1,
+  "claudeVersion": "2.1.276",
+  "startedAt": "2026-09-18T19:04:17.059Z",
+  "durationSeconds": 702,
+  "costUsd": 2.22188975,
+  "partial": false,
+  "suite": {
+    "root": "/Users/egecangecer/projects/eu-mdr-skills/mdr-transition",
+    "ablation": "with-without",
+    "caseFilter": "implantable-exception",
+    "threshold": 1,
+    "concurrency": 1,
+    "plugins": [
+      {
+        "name": "mdr-transition",
+        "version": "0.1.0",
+        "path": "/Users/egecangecer/projects/eu-mdr-skills/mdr-transition"
+      }
+    ]
+  },
+  "cases": [
+    {
+      "name": "implantable-exception",
+      "dir": "evals/03-implantable-exception",
+      "source": "prose",
+      "promptMarkdown": "Class IIb implantable, valid MDD certificate. It's a surgical suture. When do we lose the\nright to place it on the market?",
+      "runsPerCase": 3,
+      "timeoutSeconds": 300,
+      "maxTurns": 10,
+      "graders": [
+        {
+          "name": "criteria",
+          "type": "llm",
+          "weight": 1,
+          "graderMarkdown": "This is the exception-list trap. Art. 120(3a)(a) gives class IIb IMPLANTABLE devices\n31 December 2027, \"except sutures, staples, dental fillings, dental braces, tooth\ncrowns, screws, wedges, plates, wires, pins, clips and connectors\". Sutures are named.\nSo this device falls to 3a(b) and gets **31 December 2028**, not 2027.\n\nPASS requires:\n(1) The stated deadline is **31 December 2028**.\n(2) The reasoning names the exception. That sutures are excluded from the IIb implantable\n    tier and therefore take the later date.\n\nFAIL if the answer is 31 December 2027. That is what applying \"class IIb implantable →\n2027\" without reading the exception produces, and it is the specific error this case\ntests. FAIL also if it is 26 May 2024.",
+          "config": {
+            "criteria": "This is the exception-list trap. Art. 120(3a)(a) gives class IIb IMPLANTABLE devices\n31 December 2027, \"except sutures, staples, dental fillings, dental braces, tooth\ncrowns, screws, wedges, plates, wires, pins, clips and connectors\". Sutures are named.\nSo this device falls to 3a(b) and gets **31 December 2028**, not 2027.\n\nPASS requires:\n(1) The stated deadline is **31 December 2028**.\n(2) The reasoning names the exception. That sutures are excluded from the IIb implantable\n    tier and therefore take the later date.\n\nFAIL if the answer is 31 December 2027. That is what applying \"class IIb implantable →\n2027\" without reading the exception produces, and it is the specific error this case\ntests. FAIL also if it is 26 May 2024.",
+            "focus": "last_message"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 4,
+            "costUsd": 0.12198174999999999,
+            "judgeCostUsd": 0.003378,
+            "durationSeconds": 26,
+            "startedAt": "2026-09-18T19:04:17.069Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-wBe9BW/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "## Surgical suture, class IIb implantable, MDD certificate\n\n**Class:** IIb implantable — but a **suture**, which is on the exception list in Art. 120(3a)(a)\n**Route:** 120(3a) — certificate issued under 93/42/EEC, valid by virtue of Art. 120(2)\n**Deadline:** **31 December 2028**, conditional on Article 120(3c)\n\n| Question | Answer | Basis |\n|---|---|---|\n| Which paragraph applies | 120(3a), certificate under 93/42/EEC | `[verified]` |\n| Class-dependent date | 31 Dec 2028 — sutures are expressly excepted from 3a(a), so they fall to 3a(b), not the 31 Dec 2027 class IIb implantable date | `[verified]` |\n| 3c conditions met? | **Not established** — you haven't told me | — |\n\nThe thing to be clear about: your device is class IIb implantable, which points at 31 December 2027 — except that 3a(a) carves out \"sutures, staples, dental fillings, dental braces, tooth crowns, screws, wedges, plates, wires, pins, clips and connectors.\" Sutures are first on that list, so they drop to the 3a(b) bucket and get the extra year. You also are **not** on the old 26 May 2024 market deadline from the original 2017 text; that was superseded by Regulation (EU) 2023/607.\n\n**What would change this:** the 120(3c) conditions, which are cumulative and two of which had deadlines that have already passed. On class alone the device runs to 31 December 2028, but the extension is conditional, not automatic. It applies only if all five conditions in 120(3c) were met — including a quality management system in place under Article 10(9) by **26 May 2024**, a formal application lodged with a notified body by the **same date**, and the written agreement signed by **26 September 2024** — plus continued compliance with 93/42/EEC, no significant change in design or intended purpose, and no unacceptable risk. If any of those was missed, the extension was never available and the answer is different. Can you confirm those three 2024 milestones?\n\nOne more that catches people: under 120(3d), MDR's post-market surveillance, market surveillance, vigilance, and economic-operator/device registration requirements apply to your suture **now**, in place of the corresponding 93/42/EEC requirements — the transition does not park you under the Directive for those.\n\n## Limits\n\n> This covers MDR Article 120(3) and (3a)–(3d) as amended by Regulation (EU) 2023/607, retrieved verbatim from the Official Journal on 2026-09-10. It does **not** cover Article 120's other paragraphs, **IVDR Article 110** (the parallel IVD transition, whose dates differ), MDCG guidance including on what counts as a significant change, Annex VII, or national practice. The transition is conditional and fact-specific; this is a first-pass aid, not legal or regulatory advice, and not a substitute for your notified body or a qualified regulatory professional."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 4,
+            "costUsd": 0.11744224999999998,
+            "judgeCostUsd": 0.003483000000000001,
+            "durationSeconds": 22,
+            "startedAt": "2026-09-18T19:04:42.620Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-MWOvLX/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "## Class IIb implantable surgical suture — MDD certificate\n\n**Class:** IIb implantable, and a **suture** — one of the items expressly excluded from 3a(a)\n**Route:** Article 120(3a) — notified-body certificate under 93/42/EEC\n**Deadline:** **31 December 2028**, conditional on Article 120(3c)\n\n| Question | Answer | Basis |\n|---|---|---|\n| Which paragraph applies | 120(3a)(b) — sutures are carved out of 3a(a), so they fall into the residual 3a(b) tier | `[verified]` |\n| Class-dependent date | 31 December 2028 (not 2027) | `[verified]` |\n| 3c conditions met? | **Not established** — you haven't told me, and this is what decides it | — |\n\nThe suture carve-out is the whole point here. A class IIb *implantable* device normally runs to **31 December 2027**, but 3a(a) excepts \"sutures, staples, dental fillings, dental braces, tooth crowns, screws, wedges, plates, wires, pins, clips and connectors\" — those drop into 3a(b) and get the **2028** date. So you gain a year over a generic IIb implantable.\n\n**One correction worth stating plainly:** if you're working from the original 2017 text, 26 May 2024 was the market deadline. Regulation (EU) 2023/607 changed that. 26 May 2024 did not disappear — it changed job.\n\n**What would change this:** Article 120(3c) is cumulative — **all five** conditions, and two of them had 2024 deadlines that have now passed:\n\n- a QMS under Article 10(9) in place **no later than 26 May 2024** (3c(d));\n- a formal application lodged with a notified body **no later than 26 May 2024**, and a signed written agreement with that notified body **no later than 26 September 2024** (3c(e));\n- plus continued compliance with 93/42/EEC, no significant changes in design or intended purpose, and no unacceptable risk.\n\nIf any of those was missed, the 2028 extension was never available to you and the answer is a different one. Given today's date, those windows are closed — they can't be remedied now. Can you confirm the application and written agreement are on file?\n\nOne more thing that catches people mid-transition: under **120(3d)**, MDR's requirements on post-market surveillance, vigilance, market surveillance and registration of economic operators and devices apply *in place of* the corresponding 93/42/EEC requirements — already, not from 2028. `[verified]`\n\n## Limits\n\n> This covers MDR Article 120(3) and (3a)–(3d) as amended by Regulation (EU) 2023/607, retrieved verbatim from the Official Journal on 2026-09-10. It does **not** cover Article 120's other paragraphs, **IVDR Article 110** (the parallel IVD transition, whose dates differ), MDCG guidance including on what counts as a significant change, Annex VII, or national practice. The transition is conditional and fact-specific; this is a first-pass aid, not legal or regulatory advice, and not a substitute for your notified body or a qualified regulatory professional."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 4,
+            "costUsd": 0.13016475000000002,
+            "judgeCostUsd": 0.003749999999999998,
+            "durationSeconds": 28,
+            "startedAt": "2026-09-18T19:05:04.573Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-mXopR8/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "## Surgical suture, class IIb implantable, MDD certificate\n\n**Class:** IIb implantable — but a **suture**, which is on the exception list in 120(3a)(a)\n**Route:** 120(3a) — notified-body certificate under 93/42/EEC, valid by virtue of Article 120(2)\n**Deadline:** **31 December 2028**, conditional on 120(3c)\n\n| Question | Answer | Basis |\n|---|---|---|\n| Which paragraph applies | 120(3a) — device holds an MDD certificate valid under 120(2) | `[verified]` |\n| Class-dependent date | 31 Dec 2028. Class IIb implantables are 31 Dec 2027 **except** sutures, staples, dental fillings, dental braces, tooth crowns, screws, wedges, plates, wires, pins, clips and connectors — the exception list moves sutures down a tier to 3a(b) | `[verified]` |\n| 3c conditions met? | **Not established — you need to confirm this.** All five are cumulative | `[verified]` |\n\nThe named exception is the whole answer here: on class alone a IIb implantable would be 31 December 2027, and a suture escapes that by being in the 3a(a) carve-out. Worth double-checking the device really is a suture as listed and not, say, a suture anchor or a mesh — that distinction is what separates 2027 from 2028.\n\n**What would change this:** the 120(3c) conditions, which are cumulative and have deadlines that have already passed. The extension applies only if the device still complies with 93/42/EEC, there are no significant changes in design and intended purpose, it presents no unacceptable risk, **a QMS under Article 10(9) was in place by 26 May 2024**, **a formal application was lodged with a notified body by 26 May 2024**, and **the written agreement with that notified body was signed by 26 September 2024**. If any of those was missed, the extension was never available and 31 December 2028 does not apply to you. Given today's date, those are all retrospective facts you can check now rather than plan for.\n\nTwo related points:\n\n- **26 May 2024 did not disappear, it changed job.** It is no longer the market deadline (that was the original 2017 text, superseded by Regulation (EU) 2023/607); it is the QMS and application deadline. Anyone who told you \"the deadline moved to 2028, so 2024 doesn't matter\" has it backwards — 2028 *depends* on 2024.\n- **Article 120(3d):** during the transition, MDR's post-market surveillance, market surveillance, vigilance, and registration of economic operators and devices requirements apply **in place of** the MDD equivalents. `[verified]`\n\nOne thing outside what I can cite: whether your certificate is in fact \"valid by virtue of paragraph 2\" turns on Article 120(2), which this reference does not carry. I'd rather flag that as an open question than give you a reading of it from memory.\n\n## Limits\n\n> This covers MDR Article 120(3) and (3a)–(3d) as amended by Regulation (EU) 2023/607, retrieved verbatim from the Official Journal on 2026-09-10. It does **not** cover Article 120's other paragraphs, **IVDR Article 110** (the parallel IVD transition, whose dates differ), MDCG guidance including on what counts as a significant change, Annex VII, or national practice. The transition is conditional and fact-specific; this is a first-pass aid, not legal or regulatory advice, and not a substitute for your notified body or a qualified regulatory professional."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 4,
+            "costUsd": 0.12193075,
+            "judgeCostUsd": 0.003416999999999998,
+            "durationSeconds": 24,
+            "startedAt": "2026-09-18T19:05:32.674Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-beeNUs/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "## Class IIb implantable surgical suture, MDD certificate\n\n**Class:** IIb implantable — but a **suture**, which is on the 3a(a) exception list\n**Route:** Article 120(3a) — notified-body certificate under 93/42/EEC, valid by virtue of 120(2)\n**Deadline:** **31 December 2028**, conditional on 120(3c)\n\n| Question | Answer | Basis |\n|---|---|---|\n| Which paragraph applies | 120(3a)(b) — via the exception carve-out in 3a(a) | `[verified]` |\n| Class-dependent date | 31 December 2028 | `[verified]` |\n| 3c conditions met? | **Not established — you need to confirm this** | `[verified]` |\n\n**The point that decides it:** a class IIb *implantable* device would normally run only to **31 December 2027** under 3a(a). But 3a(a) expressly excludes \"sutures, staples, dental fillings, dental braces, tooth crowns, screws, wedges, plates, wires, pins, clips and connectors.\" Sutures fall out of the 2027 tier and into 3a(b), which is 31 December 2028. Your device gets the extra year *because* it is a suture, not despite being implantable.\n\n**What would change this:** the 120(3c) conditions, which are cumulative — all five, not a menu. Two of them had deadlines that have now passed:\n\n- a **quality management system** under Article 10(9) in place **no later than 26 May 2024**;\n- a **formal application** lodged with a notified body **no later than 26 May 2024**, and the **written agreement** with that notified body signed **no later than 26 September 2024**.\n\nPlus: continued compliance with 93/42/EEC, **no significant change in design or intended purpose**, and no unacceptable risk.\n\nIf any of those was missed, the extension was never available to you and 31 December 2028 is not your date. Can you confirm the QMS, the application, and the signed agreement were all in place on time?\n\nTwo further things worth flagging:\n\n- **26 May 2024 is not your market deadline.** That was the original 2017 text, superseded by Regulation (EU) 2023/607. It is now the condition date, per above.\n- **Article 120(3d):** during the transition, MDR's requirements on post-market surveillance, vigilance, market surveillance and registration of economic operators and devices apply **in place of** the corresponding MDD requirements. That applies now, not from 2028.\n\n## Limits\n\n> This covers MDR Article 120(3) and (3a)–(3d) as amended by Regulation (EU) 2023/607, retrieved verbatim from the Official Journal on 2026-09-10. It does **not** cover Article 120's other paragraphs, **IVDR Article 110** (the parallel IVD transition, whose dates differ), MDCG guidance including on what counts as a significant change, Annex VII, or national practice. The transition is conditional and fact-specific; this is a first-pass aid, not legal or regulatory advice, and not a substitute for your notified body or a qualified regulatory professional."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 4,
+            "costUsd": 0.12798025,
+            "judgeCostUsd": 0.0035399999999999997,
+            "durationSeconds": 27,
+            "startedAt": "2026-09-18T19:05:56.352Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-6cAGK7/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "## Class IIb implantable surgical suture (MDD certificate)\n\n**Class:** IIb implantable — but **sutures are on the 3a(a) exception list**\n**Route:** 120(3a) — notified-body certificate under 93/42/EEC, valid by virtue of 120(2)\n**Deadline:** **31 December 2028**, conditional on 120(3c)\n\n| Question | Answer | Basis |\n|---|---|---|\n| Which paragraph applies | Article 120(3a), point (b) — sutures are expressly carved out of the class IIb implantable category in point (a) | `[verified]` |\n| Class-dependent date | 31 December 2028, not 31 December 2027 | `[verified]` |\n| 3c conditions met? | **Not established — you have not confirmed these** | `[verified]` (text of the conditions) |\n\nThe key mechanic: 3a(a) gives class IIb *implantable* devices 31 December 2027, but it excepts \"sutures, staples, dental fillings, dental braces, tooth crowns, screws, wedges, plates, wires, pins, clips and connectors.\" Your suture falls through that exception into 3a(b), which covers \"class IIb devices other than those covered by point (a)\" — **31 December 2028**. So being implantable does *not* pull you back to 2027 here.\n\n**What would change this:** the 120(3c) conditions, which are cumulative — all five, or the extension was never available to you. Two of them had deadlines that are now nearly two years past:\n\n- **26 May 2024** — quality management system in place under Article 10(9), *and* formal application lodged with a notified body under Annex VII Section 4.3\n- **26 September 2024** — written agreement signed between you and the notified body\n\nPlus: continued compliance with 93/42/EEC, no significant changes in design and intended purpose, and no unacceptable risk. If the QMS or the application slipped past 26 May 2024, or the agreement past 26 September 2024, then 31 December 2028 is not your date and the answer is a different one. Can you confirm those three were met?\n\nNote on 26 May 2024, since it is the date most people half-remember: it is **no longer the market deadline** (that was the 2017 text, superseded by Regulation (EU) 2023/607), but it has not gone away — it is now the condition date the 2028 extension depends on.\n\nOne more thing that catches people mid-transition: under **120(3d)**, MDR's post-market surveillance, vigilance, market surveillance and registration requirements apply to your suture *in place of* the corresponding MDD requirements, right now, during the transition. `[verified]`\n\n## Limits\n\n> This covers MDR Article 120(3) and (3a)–(3d) as amended by Regulation (EU) 2023/607, retrieved verbatim from the Official Journal on 2026-09-10. It does **not** cover Article 120's other paragraphs, **IVDR Article 110** (the parallel IVD transition, whose dates differ), MDCG guidance including on what counts as a significant change, Annex VII, or national practice. The transition is conditional and fact-specific; this is a first-pass aid, not legal or regulatory advice, and not a substitute for your notified body or a qualified regulatory professional."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 4,
+            "costUsd": 0.127509,
+            "judgeCostUsd": 0.0036419999999999994,
+            "durationSeconds": 26,
+            "startedAt": "2026-09-18T19:06:23.722Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-fdb3XA/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "## Surgical suture, class IIb implantable, MDD certificate\n\n**Class:** IIb implantable — but a **suture**, which is on the exception list in 120(3a)(a)\n**Route:** 120(3a) — notified-body certificate under 93/42/EEC, valid by virtue of 120(2)\n**Deadline:** **31 December 2028**, conditional on 120(3c)\n\n| Question | Answer | Basis |\n|---|---|---|\n| Which paragraph applies | 120(3a)(b) — via the exception carve-out in 3a(a) | `[verified]` |\n| Class-dependent date | 31 December 2028 | `[verified]` |\n| 3c conditions met? | NOT ESTABLISHED — needs your confirmation | — |\n\nThe key point: your device does **not** get the 31 December 2027 date that class IIb implantables normally get. Article 120(3a)(a) lists sutures first among its exceptions (\"except sutures, staples, dental fillings, dental braces, tooth crowns, screws, wedges, plates, wires, pins, clips and connectors\"), which pushes them into 3a(b) — so 2028, a year longer than a generic class IIb implantable. `[verified]`\n\n**What would change this:** the extension is conditional, not automatic. All five conditions in 120(3c) are cumulative, and two of them had deadlines that are now in the past:\n\n- a **quality management system** under Article 10(9) in place **no later than 26 May 2024** (3c(d));\n- a **formal application** lodged with a notified body under Annex VII 4.3 **no later than 26 May 2024**, and a **signed written agreement** with that notified body **no later than 26 September 2024** (3c(e));\n- plus continued compliance with 93/42/EEC, **no significant changes in design and intended purpose**, and no unacceptable risk.\n\nIf any of those was missed, the extension was never available to this device and 31 December 2028 is not your date. That is the thing to check first — can you confirm the QMS, the application, and the signed agreement were all in place on time? `[verified]`\n\nTwo smaller things worth flagging. 26 May 2024 is no longer a market deadline — it changed job, and is now the QMS/application date above. And under 120(3d), MDR's requirements on post-market surveillance, market surveillance, vigilance, and registration of economic operators and devices apply to your device *instead of* the 93/42/EEC equivalents throughout the transition. `[verified]`\n\nWhether any change you've made to the suture counts as a \"significant change in design and intended purpose\" under 3c(b) turns on MDCG guidance, which this skill does not carry. I can flag it as an open question, or you can paste the relevant guidance and I'll work from it — I won't answer that part from memory.\n\n## Limits\n\n> This covers MDR Article 120(3) and (3a)–(3d) as amended by Regulation (EU) 2023/607, retrieved verbatim from the Official Journal on 2026-09-10. It does **not** cover Article 120's other paragraphs, **IVDR Article 110** (the parallel IVD transition, whose dates differ), MDCG guidance including on what counts as a significant change, Annex VII, or national practice. The transition is conditional and fact-specific; this is a first-pass aid, not legal or regulatory advice, and not a substitute for your notified body or a qualified regulatory professional."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 4,
+            "costUsd": 0.12660425,
+            "judgeCostUsd": 0.0037139999999999986,
+            "durationSeconds": 26,
+            "startedAt": "2026-09-18T19:06:49.657Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-62Z9gi/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "## Class IIb implantable surgical suture\n\n**Class:** IIb implantable, and a **suture**, which is on the exception list in 120(3a)(a)\n**Route:** 120(3a), notified-body certificate under 93/42/EEC valid by virtue of 120(2)\n**Deadline:** **31 December 2028**, conditional on 120(3c)\n\n| Question | Answer | Basis |\n|---|---|---|\n| Which paragraph applies | 120(3a) — device holds a certificate issued under 93/42/EEC | `[verified]` |\n| Class-dependent date | 31 Dec 2028. Class IIb implantables normally get 31 Dec 2027 under 3a(a), but sutures are named in that paragraph's exception list, so the device falls to 3a(b) | `[verified]` |\n| 3c conditions met? | **Not established** — you haven't told me, and this is what the date depends on | — |\n\nThe single thing to note: being implantable IIb does *not* put you in the 2027 bucket here. Article 120(3a)(a) carves out \"sutures, staples, dental fillings, dental braces, tooth crowns, screws, wedges, plates, wires, pins, clips and connectors,\" and a carved-out device drops through to 3a(b), which is 31 December 2028. You have a year more than a typical IIb implantable.\n\n**What would change this:** the 120(3c) conditions, which are cumulative — all five, or the extension was never available to you:\n\n- The device still complies with 93/42/EEC, and there are **no significant changes in design or intended purpose**.\n- No unacceptable risk to health or safety.\n- A **quality management system** under Article 10(9) in place **no later than 26 May 2024**.\n- A **formal application** lodged with a notified body (Annex VII §4.3, first subparagraph) **no later than 26 May 2024**, and a **signed written agreement** with that notified body **no later than 26 September 2024**.\n\nThose last two are the ones worth checking in your files today. 26 May 2024 is no longer the market deadline — that was the superseded 2017 text — but it did not go away; it became the date the QMS and the application were due, with 26 September 2024 for the signed agreement. Both of those have passed. If either was missed, or if the design changed significantly, you do not have until 2028 and the answer is a different one.\n\nOne more thing that catches people mid-transition: under 120(3d), MDR's requirements on post-market surveillance, market surveillance, vigilance, and registration of economic operators and devices apply **in place of** the corresponding 93/42/EEC requirements, and have done throughout. The derogation covers conformity assessment, not your PMS obligations.\n\nCan you confirm the 3c conditions — specifically the application date and the signed agreement? If they were met, 31 December 2028 is your date for placing on the market.\n\n> This covers MDR Article 120(3) and (3a)–(3d) as amended by Regulation (EU) 2023/607, retrieved verbatim from the Official Journal on 2026-09-10. It does **not** cover Article 120's other paragraphs, **IVDR Article 110** (the parallel IVD transition, whose dates differ), MDCG guidance including on what counts as a significant change, Annex VII, or national practice. The transition is conditional and fact-specific; this is a first-pass aid, not legal or regulatory advice, and not a substitute for your notified body or a qualified regulatory professional."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 4,
+            "costUsd": 0.12469475,
+            "judgeCostUsd": 0.003470999999999995,
+            "durationSeconds": 27,
+            "startedAt": "2026-09-18T19:07:15.661Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-tqSOem/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "## Class IIb implantable surgical suture (MDD certificate)\n\n**Class:** IIb implantable — but a **suture**, which is on the exception list in 120(3a)(a)\n**Route:** 120(3a) — notified-body certificate under 93/42/EEC, valid by virtue of 120(2)\n**Deadline:** **31 December 2028**, conditional on 120(3c)\n\n| Question | Answer | Basis |\n|---|---|---|\n| Which paragraph applies | 120(3a)(b) — sutures are expressly carved out of the 2027 tier in 3a(a), which drops them into 3a(b) | `[verified]` |\n| Class-dependent date | 31 December 2028 for placing on the market or putting into service | `[verified]` |\n| 3c conditions met? | **Not established — you have not told me.** All five are cumulative | — |\n\nThe trap here is that \"class IIb implantable\" on its own reads as 31 December 2027. It isn't, because 3a(a) lists *sutures* first among the exceptions (with staples, dental fillings, braces, crowns, screws, wedges, plates, wires, pins, clips and connectors). Those items move down a tier to 2028.\n\n**What would change this:** the 120(3c) conditions, which are the real risk, not the class date. On class alone you run to 31 December 2028, but the extension is conditional and never was automatic. It requires all of: continued compliance with 93/42/EEC; **no significant change in design or intended purpose**; no unacceptable risk; a **quality management system in place by 26 May 2024**; a **formal application lodged with a notified body by 26 May 2024**, with the **written agreement signed by 26 September 2024**.\n\nThose last three dates have passed. If any was missed, the extension was never available to this device and the answer is different — please confirm the application was lodged and the agreement signed. Note also that 26 May 2024 is no longer the market deadline (that is the superseded 2017 text); it changed job and became the condition deadline.\n\nOne thing that is easy to miss: under 120(3d), MDR's requirements on post-market surveillance, market surveillance, vigilance and registration of economic operators and devices apply to you **now**, in place of the Directive's, for the whole transition.\n\n## Limits\n\n> This covers MDR Article 120(3) and (3a)–(3d) as amended by Regulation (EU) 2023/607, retrieved verbatim from the Official Journal on 2026-09-10. It does **not** cover Article 120's other paragraphs, **IVDR Article 110** (the parallel IVD transition, whose dates differ), MDCG guidance including on what counts as a significant change, Annex VII, or national practice. The transition is conditional and fact-specific; this is a first-pass aid, not legal or regulatory advice, and not a substitute for your notified body or a qualified regulatory professional.\n\nTwo things I can't answer from this reference and won't guess at: whether a given design change counts as \"significant\" under 3c(b) (MDCG guidance, not carried here), and the sell-off/making-available rules for stock already placed on the market (other Article 120 paragraphs). Paste the provision and I'll work from it."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 4,
+            "costUsd": 0.116757,
+            "judgeCostUsd": 0.003381000000000002,
+            "durationSeconds": 23,
+            "startedAt": "2026-09-18T19:07:43.015Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-3d14d0/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "## Class IIb implantable surgical suture, MDD certificate\n\n**Class:** IIb implantable — but a **suture**, which is on the 3a(a) exception list\n**Route:** Article 120(3a) — notified-body certificate under 93/42/EEC, valid by virtue of 120(2)\n**Deadline:** **31 December 2028**, conditional on 120(3c)\n\n| Question | Answer | Basis |\n|---|---|---|\n| Which paragraph applies | 120(3a), device holds an MDD notified-body certificate | `[verified]` |\n| Class-dependent date | 31 Dec 2028 — sutures are expressly excepted from the 2027 bucket in 3a(a), so they fall into 3a(b) | `[verified]` |\n| 3c conditions met? | **Not established — you have not told me** | `[verified]` provision, unverified facts |\n\nThe key move here: a class IIb implantable would normally run to **31 December 2027**, but 3a(a) carves out \"sutures, staples, dental fillings, dental braces, tooth crowns, screws, wedges, plates, wires, pins, clips and connectors.\" Those drop into 3a(b), giving you an extra year — **31 December 2028**.\n\n**What would change this:** the five cumulative conditions in 120(3c). Two of them had hard 2024 deadlines that have now passed:\n\n- a **quality management system** under Article 10(9) in place **no later than 26 May 2024** (3c(d));\n- a **formal application** lodged with a notified body **no later than 26 May 2024**, and a **signed written agreement** with that notified body **no later than 26 September 2024** (3c(e)).\n\nPlus continued compliance with 93/42/EEC, **no significant changes in design or intended purpose**, and no unacceptable risk. The 2028 date is not automatic — if any one of those was missed, the extension was never available to this device and 2028 is not your answer. Can you confirm the QMS date, the application date, and the agreement signature date?\n\nOne thing that catches people during the transition: under **120(3d)**, MDR's post-market surveillance, vigilance, market surveillance and registration requirements apply to your device **in place of** the MDD equivalents, even while the old certificate is running.\n\nAlso note this answers \"placing on the market.\" Whether stock already placed on the market can continue to be made available sits in other paragraphs of Article 120 that this reference does not carry — I'd need the text to answer that.\n\n## Limits\n\n> This covers MDR Article 120(3) and (3a)–(3d) as amended by Regulation (EU) 2023/607, retrieved verbatim from the Official Journal on 2026-09-10. It does **not** cover Article 120's other paragraphs, **IVDR Article 110** (the parallel IVD transition, whose dates differ), MDCG guidance including on what counts as a significant change, Annex VII, or national practice. The transition is conditional and fact-specific; this is a first-pass aid, not legal or regulatory advice, and not a substitute for your notified body or a qualified regulatory professional."
+              }
+            ]
+          }
+        ],
+        "without": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 1,
+            "costUsd": 0.10745424999999999,
+            "judgeCostUsd": 0.002906999999999993,
+            "durationSeconds": 41,
+            "startedAt": "2026-09-18T19:08:05.893Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-pf2MfF/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "**31 December 2028** — assuming the conditions of the extension were met.\n\n**Why that date:** Article 120(3a) MDR (as amended by Regulation (EU) 2023/607) splits legacy devices into two buckets:\n\n- **31 Dec 2027** — class III and class IIb implantables, *\"except sutures, staples, dental fillings, dental braces, tooth crowns, screws, wedges, plates, wires, pins, clips and connectors\"*\n- **31 Dec 2028** — class IIb devices other than those, class IIa, class I sterile/measuring\n\nSutures are named in the carve-out, so despite being a class IIb implantable you sit in the 2028 bucket, not 2027. That date is the last day you can **place on the market or put into service**.\n\n**Conditions (Art. 120(3c)) — all of these had to hold:**\n1. Device still complies with MDD, and no significant change in design or intended purpose\n2. No unacceptable risk to health and safety\n3. By **26 May 2024**: QMS in place per Art. 10(9) MDR\n4. By **26 May 2024**: formal application lodged with a notified body for MDR conformity assessment\n5. By **26 September 2024**: written agreement signed with that notified body\n\nThose milestones are in the past. If any was missed, the extension never applied to this device and the right to place it on the market ended at the earlier point (certificate expiry or 26 May 2024). Worth confirming the signed NB agreement is on file.\n\n**Two things to check:**\n\n- **Sell-off is unlimited.** Regulation 2023/607 deleted Art. 120(4). Units lawfully placed on the market before the cut-off can continue to be made available and put into service with no end date — so the 2028 date constrains your supply chain entry, not distributor stock or hospital shelves.\n- **Confirm the MDR class, not the MDD class.** The transition deadline follows the classification under *MDR* rules, not the class on your MDD certificate. Under MDR Rule 8 a suture is generally class IIb, but it goes class III if intended for direct contact with the heart, central circulatory system or CNS — and Rule 14 applies if it incorporates a medicinal substance (e.g. an antibacterial coating like triclosan). Either of those puts you at 31 Dec 2027 instead, a full year earlier. If there's any ancillary substance or cardiovascular/neuro indication in the intended purpose, verify this before planning to the 2028 date."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 3,
+            "costUsd": 0.17927575,
+            "judgeCostUsd": 0.0038489999999999983,
+            "durationSeconds": 71,
+            "startedAt": "2026-09-18T19:08:46.994Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-8n8u97/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "Empty working directory here, so answering this as a regulatory question rather than from anything in the repo.\n\n## Bottom line: 31 December 2028\n\nA surgical suture is explicitly carved out of the earlier deadline, so you get the later of the two MDR transition dates.\n\n## The legal chain\n\n**MDR Article 120(2) + (3a)**, as amended by **Regulation (EU) 2023/607**:\n\n- **(3a)(a) — 31 Dec 2027:** class III devices *and* class IIb implantables, *\"except sutures, staples, dental fillings, dental braces, tooth crowns, screws, wedges, plates, wires, pins, clips and connectors\"*\n- **(3a)(b) — 31 Dec 2028:** class IIb devices other than those in (a), class IIa, and class I sterile / measuring\n\nSutures are named in the (a) exception specifically to push them into (b). So despite being a class IIb implantable, your date is **31 December 2028**, not 2027.\n\n## The catch — the gating conditions are already behind you\n\nThe extension is not automatic. Under **Article 120(3c)** it only applies if all of these held:\n\n1. Device still complies with the MDD, and **no significant change in design or intended purpose**\n2. No unacceptable risk to health and safety\n3. **By 26 May 2024** — QMS in place per MDR Art. 10(9)\n4. **By 26 May 2024** — formal MDR application lodged with a notified body (Annex VII §4.3, 1st para)\n5. **By 26 September 2024** — signed written agreement with that notified body (Annex VII §4.3, 2nd para)\n\nToday is 18 Sept 2026, so items 3–5 are pure history: either you did them or the extension never attached and the certificate lapsed on its printed expiry date. Worth being precise about what \"valid MDD certificate\" means in your case — MDD certificates could only be issued up to 26 May 2021 with max 5-year validity, so **every** MDD certificate is now past its nominal expiry and is only \"valid\" by operation of Art. 120(2)/(3a). Confirm your file contains the NB agreement dated on or before 26 Sept 2024.\n\n## What 31 Dec 2028 actually means\n\n**\"Placing on the market\" is per unit** (MDR Art. 2(28) — first making available of *that individual device* on the Union market). So every unit must have been placed on the market by 31 Dec 2028. After that you cannot place another unit without an MDR certificate.\n\n**There is no sell-off deadline.** Regulation 2023/607 deleted the old 27 May 2025 sell-off date from Art. 120(4). Units lawfully placed on the market on or before 31 Dec 2028 can continue to be made available down the distribution chain and put into service **with no end date**.\n\n## Two things to verify on your side\n\n- **MDR classification, not MDD classification.** Per the Commission's Art. 120 Q&A, the class used to pick the deadline is the class under the *MDR*. For sutures this is almost certainly still IIb (Rule 8), and the explicit naming in the carve-out makes 2028 robust either way — but confirm, especially if the suture is absorbable, drug-coated, or animal-derived, any of which can trigger a different rule and a different date.\n- **The \"no significant change\" freeze** runs for the whole transition. Any design or intended-purpose change before your MDR certificate issues breaks the extension for the whole device — so plan changes to land *after* MDR certification, not before.\n\nGiven the 2028 wall and typical NB review timelines, the practical question now is where your MDR conformity assessment stands, not when the deadline is."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 1,
+            "costUsd": 0.10113975,
+            "judgeCostUsd": 0.0031050000000000036,
+            "durationSeconds": 36,
+            "startedAt": "2026-09-18T19:09:58.071Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-Oy2Hsd/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "## 31 December 2028\n\nYour device hits the **later** of the two MDR transition dates, because sutures are explicitly carved out of the earlier one.\n\nUnder Article 120(3a) MDR as amended by Regulation (EU) 2023/607:\n\n- **(a) 31 Dec 2027** — class III and class IIb *implantable* devices, ***except* sutures**, staples, dental fillings, dental braces, tooth crowns, screws, wedges, plates, wires, pins, clips and connectors\n- **(b) 31 Dec 2028** — class IIb devices other than those in (a), class IIa, and class I sterile/measuring\n\nA class IIb implantable surgical suture is named in the \"well-established technology\" exclusion list in (a), so it drops into (b). This is the single most commonly misread point on this article — people see \"class IIb implantable\" and stop reading before the exception.\n\n**The deadline is on *placing on the market*.** Each individual unit must be first made available in the EU by 31 Dec 2028. There is no longer a sell-off date — Regulation 2023/607 deleted old Article 120(4), so units already placed on the market before that date can continue to be made available and put into service with no cut-off.\n\n## The catch: the conditions in Article 120(3c)\n\nThe extension is not automatic. It applies only if **all** of the following hold — and two of them were hard deadlines that have already passed:\n\n| Condition | Deadline |\n|---|---|\n| Formal application for MDR conformity assessment lodged with a notified body | **26 May 2024** |\n| Written agreement signed with that notified body | **26 Sept 2024** |\n| QMS compliant with Art. 10(9) MDR in place | **26 May 2024** |\n| Device continues to comply with MDD | ongoing |\n| No significant changes in design or intended purpose | ongoing |\n| Device presents no unacceptable risk to health and safety | ongoing |\n\n**If those 2024 milestones were missed, you have no extension at all** — the answer is not 2028, it's that the right to place on the market already lapsed. Worth confirming before you plan against the 2028 date. Note also that the printed expiry date on your MDD certificate is irrelevant: the certificate remains valid by operation of law under Article 120(2) provided the conditions above are met.\n\n## Also applicable now, regardless of the transition\n\nSince 26 May 2021, MDR (not MDD) rules govern post-market surveillance, market surveillance, vigilance, and registration of economic operators and devices for your legacy device (Art. 120(3), final subparagraph).\n\nOne planning note: if you intend to make a significant change in design or intended purpose before 2028, that change itself terminates the transition for the device — you'd need the MDR certificate in hand first."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 2,
+            "costUsd": 0.1497345,
+            "judgeCostUsd": 0.003375000000000003,
+            "durationSeconds": 109,
+            "startedAt": "2026-09-18T19:10:34.451Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-GCvyOc/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "## 31 December 2028 — not 2027\n\nThis is the trap in Article 120(3a) MDR (as amended by Regulation (EU) 2023/607). The two staggered dates look like they split on \"implantable vs. not,\" but they don't:\n\n- **31 Dec 2027** — Class III and Class IIb **implantable**, *\"except sutures, staples, dental fillings, dental braces, tooth crowns, screws, wedges, plates, wires, pins, clips and connectors.\"*\n- **31 Dec 2028** — all other Class IIb, plus Class IIa and Class I sterile/measuring.\n\nSutures are named in the carve-out (the \"well-established technologies\" list), so your device drops out of the 2027 bucket and lands in the 2028 one. You have until **31 December 2028** to place units on the EU market under the MDD certificate.\n\n## The conditions are already past their deadlines\n\nThe extension is not automatic — it only applies if all of Article 120(3c) was satisfied, and every dated condition has already expired:\n\n| Condition | Deadline | Status |\n|---|---|---|\n| MDR-compliant QMS in place (Art. 10(9)) | 26 May 2024 | passed |\n| Formal MDR application lodged with a notified body | 26 May 2024 | passed |\n| Written agreement signed with that notified body | 26 Sep 2024 | passed |\n\nPlus the continuing conditions: no significant change in design or intended purpose, continued MDD compliance, and no unacceptable risk.\n\n**Verify those three dated items before relying on 2028.** If the application or the signed NB agreement slipped past its deadline, the extension never attached — your certificate lapsed at its own printed expiry date and you may have no legal basis for placing product on the market *today*. That's the first thing to confirm, not the 2028 date.\n\n## Two further points\n\n**No sell-off deadline.** Regulation 2023/607 deleted it. Units lawfully placed on the market on or before 31 Dec 2028 can continue to be made available down the distribution chain and put into service indefinitely. \"Placed on the market\" means first making available of each *individual* unit, so the date bites on your shipments out, not on inventory already sold into the channel.\n\n**MDR already applies to you in part.** Since 26 May 2021, the MDR requirements on post-market surveillance, vigilance, market surveillance, registration of economic operators and device registration/UDI apply in place of the MDD equivalents, even while the old certificate runs.\n\n**A \"significant change\" ends the extension immediately** — no grace period. Worth flagging to anyone contemplating changes to the suture's design, materials, sterilisation or indications between now and certification.\n\nPractically: with ~27 months left and typical notified body review running 12–18 months from complete submission, your technical documentation needs to be with the NB well inside 2027 to be safe.\n\nOne caveat worth checking rather than assuming — there has been ongoing discussion of a broader targeted MDR revision, and I can't confirm from here whether anything adopted since has moved these dates. Confirm against the current consolidated text of Article 120 on EUR-Lex before you commit this to a regulatory plan."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 1,
+            "costUsd": 0.1119145,
+            "judgeCostUsd": 0.003260999999999993,
+            "durationSeconds": 42,
+            "startedAt": "2026-09-18T19:12:23.440Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-T5lJic/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "## Short answer: 31 December 2028\n\nSurgical sutures are explicitly carved out of the Class IIb implantable group that loses the transition on 31 December 2027. Under MDR Article 120(3a)(a), as amended by Regulation (EU) 2023/607, the 2027 date applies to \"class III devices and class IIb implantable devices, **except sutures, staples, dental fillings, dental braces, tooth crowns, screws, wedges, plates, wires, pins, clips and connectors**.\" Those excepted well-established-technology devices fall into 120(3a)(b) with the rest of class IIb, class IIa and class I sterile/measuring: **31 December 2028**.\n\nSo you have roughly 27 months of placing-on-the-market runway left — *if* the extension conditions were met.\n\n## The conditions are the real risk, and their deadlines have passed\n\nThe extended validity only applies if all of 120(3c) was satisfied. Two of these were hard gates in 2024:\n\n- QMS compliant with MDR Article 10(9) in place by **26 May 2024**\n- Formal MDR application lodged with a notified body by **26 May 2024**\n- Written agreement signed with that notified body by **26 September 2024**\n- Device continues to comply with the MDD, no significant changes in design or intended purpose, and presents no unacceptable risk\n- Appropriate post-market surveillance, market surveillance, vigilance and registration of economic operators/devices under the MDR\n\nIf the application or the signed NB agreement slipped past those 2024 dates, the extension never attached to this device and the legal right to place it on the market lapsed at that point — not in 2028. That's the first thing to verify in the file.\n\n## Two classification flags worth double-checking\n\nYou've stated class IIb, but confirm the basis, because the answer changes:\n\n- **Absorbable suture** → intended to undergo chemical change in the body → Rule 8 puts it in **class III**, so the deadline is **31 December 2027**, not 2028.\n- **Antibacterial-coated suture** (e.g. triclosan) → Rule 14 ancillary medicinal substance → **class III**, again 31 December 2027, plus a consultation with a medicines authority in the conformity assessment.\n\nOnly a plain non-absorbable, uncoated suture sits comfortably in the 2028 bucket.\n\n## After the deadline\n\n31 December 2028 is the cut-off for *placing on the market* — i.e. first making each individual unit available in the EU. Devices lawfully placed on the market before then may continue to be **made available and put into service indefinitely**; Regulation 2023/607 deleted the old \"sell-off\" deadline from Article 120(4). Distributor and hospital stock does not have to be withdrawn.\n\nPractically: you need the MDR certificate issued before you stop shipping, so work backwards from a realistic NB review cycle rather than from the date itself.\n\n*General regulatory information, not legal advice — confirm against the consolidated MDR text and your notified body's own transition guidance.*"
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 1,
+            "costUsd": 0.10801275000000002,
+            "judgeCostUsd": 0.0032280000000000017,
+            "durationSeconds": 40,
+            "startedAt": "2026-09-18T19:13:05.076Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-A2visI/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "## Short answer: **31 December 2028**\n\nUnder Article 120(3a) of the MDR as amended by Regulation (EU) 2023/607, legacy devices split into two buckets:\n\n| Bucket | Deadline |\n|---|---|\n| Class III and Class IIb **implantable** devices | 31 Dec 2027 |\n| Class IIb implantable devices on the \"well-established technologies\" carve-out list, plus all other IIb, IIa, Is/Im | 31 Dec 2028 |\n\nSutures are named explicitly in the carve-out (\"sutures, staples, dental fillings, dental braces, tooth crowns, screws, wedges, plates, wires, pins, clips and connectors\"), so despite being Class IIb implantable you fall in the **2028** bucket, not 2027.\n\nYour MDD certificate is deemed valid until that date even though its printed expiry has passed.\n\n## But only if you met the conditional gates — all now in the past\n\nThe extension is not automatic. It lapsed retroactively unless, by these dates:\n\n- **26 May 2024** — an MDR-compliant QMS under Art. 10(9) was in place, *and* a formal MDR conformity assessment application was lodged with a notified body\n- **26 September 2024** — a signed written agreement with that notified body was in place\n\nSince today is 18 September 2026, these are settled facts in your file, not future tasks. If any of them was missed, **you already lost the right to place the device on the market on the corresponding date** — the certificate is void by operation of law, and any product shipped since then was placed on the market unlawfully. That's the first thing to verify.\n\nOngoing conditions that must still hold: no significant change in design or intended purpose, continued MDD compliance, no unacceptable risk, and the NB agreement remaining in force (if the NB terminates it or rejects your application, the extension falls away immediately).\n\n## Two things worth flagging\n\n**Sell-off is unlimited.** Regulation 2023/607 deleted the old Art. 120(4) sell-off date. Devices lawfully *placed on the market* before 31 Dec 2028 can continue to be made available down the supply chain and put into service indefinitely. So the deadline bites on your first transfer into the EU market, not on distributor stock or hospital shelves.\n\n**Check the coating.** If this is an antibacterial-coated suture (e.g. triclosan), it is a device incorporating an ancillary medicinal substance and classifies as **Class III** under MDR Rule 14 — which moves you to **31 December 2027**, roughly 15 months from now. You've stated IIb, which is right for a plain absorbable or non-absorbable suture, but the coated variants are a common misclassification and the consequence here is a full year of runway.\n\n**Practical read:** ~27 months to hold MDR certification, and your NB needs the technical documentation well before that — most are quoting review timelines that make late 2027 the real internal target."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 1,
+            "costUsd": 0.11746275,
+            "judgeCostUsd": 0.0035279999999999964,
+            "durationSeconds": 45,
+            "startedAt": "2026-09-18T19:13:44.846Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-msySGL/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "## Short answer: 31 December 2028\n\nSurgical sutures sit in the explicit carve-out from the earlier date. Under Article 120(3a) MDR (as amended by Regulation (EU) 2023/607):\n\n- **31 Dec 2027** — class III and class IIb *implantable* devices, **except** sutures, staples, dental fillings, dental braces, tooth crowns, screws, wedges, plates, wires, pins, clips and connectors\n- **31 Dec 2028** — class IIb devices other than those above (i.e. including sutures), class IIa, and class I sterile/measuring/reusable-surgical\n\nSo although a suture is a class IIb implantable, it's named in the \"well-established technology\" exclusion list and gets the **later** date. Placing on the market must happen on or before 31 Dec 2028 — about 27 months from now.\n\n## But the extension is conditional, and two gates have already passed\n\nThe 2028 date only applies if all of Article 120(3c) is satisfied. The two hard deadlines are behind us:\n\n| Condition | Deadline |\n|---|---|\n| QMS compliant with Article 10(9) MDR in place | **26 May 2024** |\n| Formal MDR application lodged with a notified body (Art. 70(1)) | **26 May 2024** |\n| Written agreement signed with that NB (Annex VII, 4.3) | **26 Sep 2024** |\n\nPlus, continuously: the device still complies with the MDD, **no significant change in design or intended purpose**, and it presents no unacceptable risk to health and safety.\n\nIf the NB application and signed agreement weren't in place by those 2024 dates, the extension never attached — the right to place on the market ended when the MDD certificate's own expiry date hit (or has already ended). That's the first thing to verify in your file, not the 2028 date.\n\n## Two things that could pull you back to 2027\n\nConfirm the device is genuinely class IIb and not class III:\n\n1. **Ancillary medicinal substance** (e.g. a triclosan-coated antibacterial suture) → Rule 14 MDR / Rule 13 MDD, class III → **31 Dec 2027**.\n2. **Non-viable animal tissue or derivatives** (catgut, collagen-derived) → Rule 18 MDR, class III → **31 Dec 2027**.\n\nPlain absorbable or synthetic non-absorbable sutures stay IIb and keep 2028.\n\n## Two points in your favour\n\n- **No sell-off deadline.** Regulation 2023/607 deleted the old Article 120(4) cut-off. Devices lawfully placed on the market on or before 31 Dec 2028 can continue to be made available and put into service with no end date.\n- The extension operates **by law**. Your notified body doesn't have to reissue the certificate; the expiry date printed on the MDD certificate is superseded. Many NBs issue a confirmation letter anyway, which is useful for customers and tenders.\n\nOne caveat on the premise: \"valid MDD certificate\" is doing a lot of work here. If the certificate expired *before* 20 March 2023, Article 120(2) means it's only treated as extended where the written NB agreement was signed before expiry or an Article 59 derogation was granted. Worth checking which situation the certificate is actually in."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 1,
+            "costUsd": 0.11935525000000001,
+            "judgeCostUsd": 0.003258000000000011,
+            "durationSeconds": 47,
+            "startedAt": "2026-09-18T19:14:29.910Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-RYGqJA/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "**31 December 2028** — provided the Article 120 conditions are all still met.\n\n## Why that date\n\nUnder MDR Article 120(3c) as amended by Regulation (EU) 2023/607, the staggered deadlines are:\n\n- **26 May 2026** — class III custom-made implantables\n- **31 December 2027** — class III and class IIb implantable devices\n- **31 December 2028** — class IIa, class I sterile/measuring, other class IIb — **and** the \"well-established technologies\" carved out of the 2027 bucket\n\nSutures are named explicitly in that carve-out (`\"except sutures, staples, dental fillings, dental braces, tooth crowns, screws, wedges, plates, wires, pins, clips and connectors\"`), so your device drops out of the 2027 group and into 31 December 2028.\n\n## Conditions you must still satisfy\n\nThe extension is not automatic. It lapses — retroactively, in effect — unless:\n\n1. The certificate was valid on 26 May 2021 and either still valid, or expired after 20 March 2023 with an NB agreement or competent-authority derogation in place.\n2. No significant change in design or intended purpose. This is the one that most often bites — a change here ends the transition for that device immediately, not at the deadline.\n3. The device presents no unacceptable risk to health and safety.\n4. **By 26 May 2024**: a QMS compliant with Article 10(9) MDR in place.\n5. **By 26 May 2024**: a formal application lodged with a notified body under Annex VII Section 4.3.\n6. **By 26 September 2024**: a written agreement signed with that notified body.\n\nItems 4–6 are hard past deadlines. If you missed any of them, you have no transition period and lost the right to place the device on the market at those dates, regardless of what the MDD certificate says on its face.\n\n## Two things worth checking\n\n**Absorbable vs. non-absorbable.** Your class IIb is presumably the MDD classification. Under MDR Annex VIII Rule 8, a device \"wholly or mainly absorbed\" is class III — so an absorbable suture up-classifies. The deadline stays 31 December 2028 either way (MDCG has confirmed WET devices get 2028 regardless of MDR class), but it changes your conformity assessment route, your NB's required scope, and whether the application you filed in 2024 actually covers the right class.\n\n**Sell-off.** Regulation 2023/607 deleted the old Article 120(4) sell-off date. Stock legally placed on the market before 31 December 2028 can continue to be made available and put into service with no end date. So the 2028 cliff is about *placing on the market*, not about pulling product from distribution.\n\nAlso note that surveillance of the legacy device transfers to your MDR notified body under Article 120(3e) once the agreement is in place — the MDD NB is no longer the one auditing you."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 1,
+            "costUsd": 0.1124755,
+            "judgeCostUsd": 0.003372,
+            "durationSeconds": 42,
+            "startedAt": "2026-09-18T19:15:16.700Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-WJcRca/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "**31 December 2028** — because a surgical suture is on the \"well-established technology\" exception list.\n\n## Why 2028 and not 2027\n\nUnder MDR Art. 120(3a) as amended by Regulation (EU) 2023/607:\n\n- **(a) 31 Dec 2027** — Class III *and* Class IIb implantable, **except** sutures, staples, dental fillings, dental braces, tooth crowns, screws, wedges, plates, wires, pins, clips and connectors.\n- **(b) 31 Dec 2028** — everything else: other Class IIb, Class IIa, Class Is/Im/Ir.\n\nSutures are named in the carve-out, so despite being Class IIb implantable you fall into bucket (b). This is the single most-missed point on this device category — plenty of suture manufacturers built plans around 2027 unnecessarily.\n\nThe expiry date printed on your MDD certificate is **not** the operative date; validity is extended by operation of law under Art. 120(2), provided the certificate was valid on 26 May 2021 and still valid on 20 March 2023.\n\n## The extension is conditional (Art. 120(3c))\n\nYou only get 2028 if all of these hold:\n\n1. Device continues to comply with MDD.\n2. **No significant change in design or intended purpose** — a significant change ends the extension immediately, whenever it happens.\n3. No unacceptable risk to health and safety.\n4. MDR-compliant QMS (Art. 10(9)) in place **by 26 May 2024**.\n5. Formal MDR conformity assessment application lodged with a notified body **by 26 May 2024**, and a signed written agreement with that notified body **by 26 September 2024**.\n\nConditions 4 and 5 are hard past deadlines. If either was missed, the extension never attached and your right to place on the market lapsed at the certificate's own expiry date — worth confirming against your file before you plan around 2028.\n\n## Two things that are *not* deadlines\n\n- **No sell-off date.** Art. 120(4) was amended to delete the 26 May 2025 sell-off provision. Units lawfully **placed on the market** before 31 Dec 2028 can continue to be made available and put into service indefinitely. \"Placing on the market\" is the first making available of each individual device in the Union, so stock already transferred into the distribution chain before the cut-off is fine.\n- **MDR obligations already apply now.** Since 26 May 2021, MDR rules on post-market surveillance, vigilance, registration of economic operators and devices, and market surveillance replace the MDD equivalents for legacy devices. Surveillance of the MDD certificate stays with the issuing notified body unless your MDR notified body has agreed in writing to take it over.\n\nPractical read: your real deadline is your notified body's MDR review timeline, not 31 Dec 2028 — and any design change you're contemplating to the suture between now and then needs a significant-change assessment first.\n\nI'd confirm the condition 4/5 evidence and the significant-change position with your notified body in writing; this is the regulatory framework, not a substitute for your RA sign-off."
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 1,
+        "passRate": 1,
+        "scoreWithout": 1,
+        "passRateWithout": 1,
+        "delta": 0
+      }
+    }
+  ],
+  "aggregates": {
+    "casesTotal": 1,
+    "casesPassed": 1,
+    "overallScore": 1,
+    "overallPassRate": 1,
+    "meanDelta": 0
+  }
+}

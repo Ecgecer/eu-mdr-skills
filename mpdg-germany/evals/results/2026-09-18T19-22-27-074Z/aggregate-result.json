@@ -1,0 +1,233 @@
+{
+  "schemaVersion": 1,
+  "claudeVersion": "2.1.277",
+  "startedAt": "2026-09-18T19:22:27.074Z",
+  "durationSeconds": 274,
+  "costUsd": 0.9060785,
+  "partial": false,
+  "suite": {
+    "root": "/Users/egecangecer/projects/eu-mdr-skills/mpdg-germany",
+    "ablation": "with-without",
+    "caseFilter": "doc-english-sufficient",
+    "threshold": 1,
+    "concurrency": 1,
+    "plugins": [
+      {
+        "name": "mpdg-germany",
+        "version": "0.1.0",
+        "path": "/Users/egecangecer/projects/eu-mdr-skills/mpdg-germany"
+      }
+    ]
+  },
+  "cases": [
+    {
+      "name": "doc-english-sufficient",
+      "dir": "evals/01-doc-english-sufficient",
+      "source": "prose",
+      "promptMarkdown": "We're a Dutch manufacturer, Class IIa device, selling into Germany among other markets.\nOur EU Declaration of Conformity is in English only. Our distributor says everything\nhas to be translated into German for the German market. Do we need to translate the\nDeclaration of Conformity?",
+      "runsPerCase": 3,
+      "timeoutSeconds": 300,
+      "maxTurns": 10,
+      "graders": [
+        {
+          "name": "criteria",
+          "type": "llm",
+          "weight": 1,
+          "graderMarkdown": "MPDG § 8(1): the manufacturer must make the EU Declaration of Conformity available \"in\ndeutscher oder in englischer Sprache\". German OR English. English alone is compliant.\nThe distributor is wrong about the DoC specifically.\n\nPASS requires:\n(1) The answer is NO, the Declaration of Conformity does not need translating.\n    English alone satisfies § 8(1).\n(2) It cites MPDG § 8(1) or clearly attributes the German-or-English rule to German\n    national law rather than to MDR.\n(3) It distinguishes the DoC from information for users and patients, which under\n    § 8(2) does default to German. Saying \"the DoC is fine in English, but your user\n    information is a different question\" is the ideal answer.\n\nFAIL if it says the DoC must be translated into German. FAIL if it agrees with the\ndistributor wholesale, or answers \"everything must be in German\". That is the\nover-application this case exists to catch, and it is the more common error.\n\nNot required: naming other markets, or MDR Art. 19 itself.",
+          "config": {
+            "criteria": "MPDG § 8(1): the manufacturer must make the EU Declaration of Conformity available \"in\ndeutscher oder in englischer Sprache\". German OR English. English alone is compliant.\nThe distributor is wrong about the DoC specifically.\n\nPASS requires:\n(1) The answer is NO, the Declaration of Conformity does not need translating.\n    English alone satisfies § 8(1).\n(2) It cites MPDG § 8(1) or clearly attributes the German-or-English rule to German\n    national law rather than to MDR.\n(3) It distinguishes the DoC from information for users and patients, which under\n    § 8(2) does default to German. Saying \"the DoC is fine in English, but your user\n    information is a different question\" is the ideal answer.\n\nFAIL if it says the DoC must be translated into German. FAIL if it agrees with the\ndistributor wholesale, or answers \"everything must be in German\". That is the\nover-application this case exists to catch, and it is the more common error.\n\nNot required: naming other markets, or MDR Art. 19 itself.",
+            "focus": "last_message"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 4,
+            "costUsd": 0.128673,
+            "judgeCostUsd": 0.003711,
+            "durationSeconds": 26,
+            "startedAt": "2026-09-18T19:22:27.086Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-j0agpR/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "## Does the EU Declaration of Conformity need German translation for the German market?\n\n**German market:** confirmed (product made available in Germany)\n**Answer:** No. MPDG § 8(1) expressly allows the EU Declaration of Conformity to be provided **in German *or* English** — English alone is compliant. Your distributor is over-applying the rule.\n\nThe German text: *\"...die EU-Konformitätserklärung nach Artikel 19 Absatz 1 der Verordnung (EU) 2017/745 ... in deutscher oder in englischer Sprache zur Verfügung zu stellen.\"*\n\n| Item | MDR requires | Germany adds | Basis |\n|---|---|---|---|\n| EU Declaration of Conformity | not carried here | German **or** English — English alone sufficient | MPDG § 8(1) `[verified]` |\n| Information for users and patients (IFU, labelling) | not carried here | **German** — and it is a *condition of supply*: products may only be handed over to users/patients if met | MPDG § 8(2) s.1 `[verified]` |\n| Same, where exclusively for professional users | not carried here | English or another easily understood language permitted, but only *in begründeten Fällen* **and** exclusively professional users **and** safety-related info still in German | MPDG § 8(2) s.2 `[verified]` |\n| Implant information under MDR Art. 18(1) | not carried here | **German**, no professional-user exception | MPDG § 8(3) `[verified]` |\n| Field Safety Notice, if you ever run an FSCA in Germany | not carried here | Must be **written in German** | MPDG § 73(1) `[verified]` |\n\nYour distributor is right that \"everything has to be translated\" as a rough instinct about *product information*, and wrong about the DoC specifically. The distinction is worth making explicit with them, because the parts that do need German are the ones with teeth: § 8(2) makes German user information a precondition for handing the product over at all, and the professional-user exception is cumulative — all three conditions must hold, or sentence 1's default applies. A Class IIa device sold to professional users only does not automatically qualify; you would also need a justified case and German-language safety information.\n\n**What would change this:** Nothing on the DoC — § 8(1) is unconditional as to class or user type. What *would* change the picture for the rest: whether your device is implantable (then § 8(3), German implant information, mandatory), and whether your user information genuinely goes exclusively to professional users.\n\n## Limits\n\n> This covers MPDG §§ 4, 8 and 73 only, retrieved verbatim from gesetze-im-internet on 2026-09-10. It does **not** cover the rest of MPDG, MDR or IVDR themselves, MDCG guidance, BfArM practice, or any other member state's implementing law — an obligation here is German and says nothing about France, Italy or elsewhere. A first-pass aid for spotting German-specific duties, not legal advice, and not a substitute for a regulatory professional or a Fachanwalt für Medizinrecht.\n\nOne flag on your wider situation: you mention \"other markets.\" This answer is German law only. Each member state has its own implementing act with its own language rules, and several are stricter than Germany on the DoC. Do not generalise the English-is-fine conclusion beyond Germany — that needs checking per market, and I do not carry those acts."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 4,
+            "costUsd": 0.12686325,
+            "judgeCostUsd": 0.003204000000000001,
+            "durationSeconds": 21,
+            "startedAt": "2026-09-18T19:22:53.344Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-CAMkiZ/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "## Does the EU Declaration of Conformity need German translation?\n\n**German market:** confirmed (device made available in Germany)\n**Answer:** No. MPDG § 8(1) expressly allows the EU Declaration of Conformity to be provided **in German *or* English** — English alone is compliant. Your distributor is over-applying the rule.\n\nThe § 8 language rule is asymmetric, and \"everything has to be in German\" is the wrong reading of it:\n\n| Item | MDR requires | Germany adds | Basis |\n|---|---|---|---|\n| EU Declaration of Conformity | not carried here | German **or English** — no translation duty | MPDG § 8(1) `[verified]` |\n| Information for users and patients | not carried here | **German**, and it is a *condition of supply*: the product may only be handed over to users/patients if it is provided | MPDG § 8(2) sentence 1 `[verified]` |\n| Same, where recipients are exclusively professional users | not carried here | English or another easily understood language permitted — but only in a *begründeter Fall*, and **safety-related information must still be in German** or the user's language | MPDG § 8(2) sentence 2 `[verified]` |\n| Implant information under MDR Art. 18(1) | not carried here | **German**. No professional-user exception | MPDG § 8(3) `[verified]` |\n\nYour Dutch establishment and the Class IIa classification don't change any of this — § 8(1) attaches to products *made available in the German market*, not to where the manufacturer sits, and it draws no distinction by class.\n\n**What would change this:** nothing for the DoC — § 8(1) is unconditional. But if the distributor's complaint is really about your *product information* (IFU, labelling, user-facing materials) rather than the DoC specifically, they have a point there: that defaults to German under § 8(2) sentence 1. The professional-user exception is cumulative — justified case **and** exclusively professional users **and** safety information still in German — so missing any one of the three puts you back on the German default. Worth asking them which documents they actually mean; conflating the two is a common way this argument starts.\n\n## Limits\n\nThis covers MPDG §§ 4, 8 and 73 only, retrieved verbatim from gesetze-im-internet on 2026-09-10. It does **not** cover the rest of MPDG, MDR or IVDR themselves, MDCG guidance, BfArM practice, or any other member state's implementing law — the answer above is German and says nothing about your other markets, each of which has its own implementing act with its own language rule. A first-pass aid for spotting German-specific duties, not legal advice, and not a substitute for a regulatory professional or a Fachanwalt für Medizinrecht."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 4,
+            "costUsd": 0.1344925,
+            "judgeCostUsd": 0.0038790000000000022,
+            "durationSeconds": 25,
+            "startedAt": "2026-09-18T19:23:13.984Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-6TJJQt/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "## Does the EU Declaration of Conformity need German translation?\n\n**German market:** confirmed (device made available in Germany)\n**Answer:** No. MPDG § 8(1) requires the EU Declaration of Conformity in German **or** English — English alone is compliant. Your distributor is over-applying the rule.\n\nThe German text is explicit:\n\n> Der Hersteller hat für Produkte, die im Geltungsbereich dieses Gesetzes auf dem Markt bereitgestellt werden, die EU-Konformitätserklärung nach Artikel 19 Absatz 1 der Verordnung (EU) 2017/745 … **in deutscher oder in englischer Sprache** zur Verfügung zu stellen.\n\n| Item | MDR requires | Germany adds | Basis |\n|---|---|---|---|\n| EU Declaration of Conformity | not carried here | German **or** English — no translation duty | MPDG § 8(1) `[verified]` |\n| Information for users and patients (IFU, labelling) | not carried here | **German**, and it is a *condition of supply* — devices may only be handed over to users/patients if it is met | MPDG § 8(2) sentence 1 `[verified]` |\n| Same, where information is *exclusively* for professional users | not carried here | English or another easily understood language permitted, but only in a *begründeter Fall*, and safety-related information must still be in German or the user's language — all three conditions cumulative | MPDG § 8(2) sentence 2 `[verified]` |\n| Implant information under MDR Art. 18(1) | not carried here | **German**, no professional-user exception | MPDG § 8(3) `[verified]` |\n\n**Where your distributor is half right:** \"everything has to be translated\" is wrong for the DoC, but correct for the user- and patient-facing information. If your Class IIa device goes to lay users or patients, the IFU and labelling must be in German, and that one is a precondition for handover, not a paperwork formality. If it is exclusively a professional-user device, the § 8(2) sentence 2 exception may let the general information stay in English — but only if you can articulate the *begründeter Fall*, and the safety-related content still has to be German. Missing any one of the three conditions drops you back to the default.\n\n**What would change this:** the DoC answer flips only if your Dutch entity is also caught by something outside § 8 — it does not turn on class, on where the manufacturer sits, or on the distributor's contract terms. A distributor can of course *ask* for a German DoC commercially; that is a negotiation, not a legal requirement.\n\n**Also worth checking, since you are established outside Germany:** if you ever run a field safety corrective action in Germany, the Field Safety Notice must be written in German (§ 73(1) `[verified]`) — that duty attaches to the action taken in Germany, not to where you sit. The § 73(2) documentation and completion-notification duties are framed for manufacturers/representatives/importers established in Germany, so whether they reach you depends on your authorised representative's seat.\n\n## Limits\n\nThis covers MPDG §§ 4, 8 and 73 only, retrieved verbatim from gesetze-im-internet on 2026-09-10. It does **not** cover the rest of MPDG, MDR or IVDR themselves, MDCG guidance, BfArM practice, or any other member state's implementing law — this answer is about Germany and says nothing about your other markets, each of which has its own implementing act and its own language rule. A first-pass aid for spotting German-specific duties, not legal advice, and not a substitute for a regulatory professional or a Fachanwalt für Medizinrecht."
+              }
+            ]
+          }
+        ],
+        "without": [
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 2,
+            "costUsd": 0.19050825,
+            "judgeCostUsd": 0.004572000000000001,
+            "durationSeconds": 75,
+            "startedAt": "2026-09-18T19:23:38.658Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-k0W5o0/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "judge votes: FAIL FAIL FAIL",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  false,
+                  false,
+                  false
+                ],
+                "evidence": "I can't reach the memory directory in this session, so this is just the answer — no notes saved.\n\n## Short answer\n\nYour distributor is overstating a real obligation. \"Everything must be in German\" is wrong, but the Declaration of Conformity specifically **does** have its own translation rule, and for Germany you should issue a German version.\n\n## The legal basis\n\nThe DoC language rule is **not** the same rule as the one for labelling and IFU. It sits in **MDR Article 19(1)**, final sentence:\n\n> \"It shall be translated into an official Union language or languages required by the Member State(s) in which the device is made available.\"\n\nSo the obligation is delegated to each Member State — it is not a blanket EU-wide translation duty, and it is not the distributor's call. You need to check, per market, what that Member State requires.\n\nFor Germany, language requirements sit in the **MPDG § 8 (Sprachenregelungen)**. German is unambiguously required for the information supplied with the device. For the DoC itself, I'd verify the current MPDG wording and any ZLG/Länder-authority guidance before you rely on English-only — German authorities do accept English for parts of the technical documentation, but I wouldn't assume that extends to the DoC. Given that the DoC is a one-page document, this is not a fight worth having.\n\n## What definitely must be in German for the German market\n\n- **Label and instructions for use** — Annex I Section 23, via Article 10(11). Non-negotiable.\n- **Field safety notices** and any safety information directed at users or patients.\n- **Information and documentation requested by the competent authority** — Article 10(14) lets them require it in the official language they determine, so parts of your technical documentation can be pulled into German on request.\n\nNot applicable to you: the **SSCP** is Class III and implantable only, so your IIa device doesn't need one. Your technical documentation as a whole can stay in English unless specifically requested otherwise.\n\n## What your distributor is actually obliged to check\n\n**Article 14(2)(a)** requires them to verify that the CE marking is affixed and that the EU DoC **has been drawn up**. It imposes no language condition on the DoC. Their verification duty is satisfied by an English DoC. Their commercial preference for German is a separate matter — and a legitimate one, since German hospital tenders and wholesalers routinely ask for a German DoC even though MDR doesn't require it to ship in the box.\n\n## What I'd do\n\n1. Issue a German DoC — either a bilingual EN/DE two-column version or a separate German translation. Keep English as the master language and say so on the document.\n2. Give both versions the **same revision number and date**, and control the translation under your ISO 13485 document control. A translation drifting out of sync with the master is the failure mode auditors actually find.\n3. Add the DoC to your standard distributor pack so this doesn't recur per-customer.\n4. Apply the same Article 19(1) analysis to your other markets rather than defaulting to \"translate everything everywhere.\"\n\nOne thing to watch: if the distributor starts translating your **IFU** themselves, **Article 16(3)** pulls them into needing a quality management system covering translation accuracy, plus notification duties. It's cleaner and lower-risk for you to own all translations."
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 2,
+            "costUsd": 0.1672955,
+            "judgeCostUsd": 0.004503,
+            "durationSeconds": 66,
+            "startedAt": "2026-09-18T19:24:53.820Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-SxsKm7/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "judge votes: FAIL FAIL FAIL",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  false,
+                  false,
+                  false
+                ],
+                "evidence": "## Short answer\n\nYour distributor is overstating it as a blanket rule, but for the DoC specifically they're probably right in practice — and it's a one-page document, so this isn't the fight to have.\n\n## The legal basis\n\nMDR Article 19(4) is the operative provision:\n\n> \"The EU declaration of conformity shall be translated into an official Union language or languages required by the Member State(s) in which the device is made available on the market.\"\n\nSo there is no EU-wide English-is-fine rule. The obligation is conditional on what each destination Member State requires, and it's on you as the manufacturer, not the distributor.\n\nFor Germany, the language rules sit in the **MPDG (Medizinprodukterecht-Durchführungsgesetz), § 8**. German is required for the Annex I Section 23 information (label and IFU), with a narrow carve-out permitting English for devices used exclusively by professional users under defined conditions. Before you rely on English for the DoC, confirm the current § 8 text and any BfArM position directly — that's the single point worth verifying, and the answer determines only whether the German version is mandatory or merely prudent. Either way my recommendation below is the same.\n\n## What I'd actually do\n\nIssue a **German version of the DoC** (or a bilingual DE/EN document). Rationale:\n\n- It's one page against Annex IV's fixed content list. The translation cost is trivial next to any market-access delay.\n- The audience is the German competent authority (BfArM / the Land authority) during an inspection or market surveillance action — and a German-language request that you answer in English creates friction you don't need.\n- Keep the English version as the master/original in your QMS, with the German version as a controlled translated document, same version and revision date, released through your document control procedure. Don't let the two drift — the DoC must be kept continuously updated under Art. 19(1), and that applies to every language version.\n\n## Where to push back\n\n**\"Everything has to be translated\" is not correct.** Scope it:\n\n- **Label, IFU, any patient-facing information — German, definitely.** This is the real obligation, under Art. 10(11) + MPDG § 8.\n- **Declaration of Conformity — translate it,** per above.\n- **Technical documentation — no.** There's no requirement to hand your tech doc to a distributor in any language. Your notified body accepted it in English; BfArM can request it and language is negotiated at that point.\n- **The DoC is not a customer-facing document.** Under Art. 14(2)(a) the distributor's obligation is to *verify* that a DoC has been drawn up — not to receive, hold, or distribute a German copy. If they want one for their file, that's a reasonable commercial courtesy, not a legal entitlement.\n\n## One trap worth flagging\n\nIf the distributor translates your IFU or labelling themselves, Article 16(2)(b) pulls them into manufacturer-like obligations: they need a QMS covering the translation, they must inform you and the competent authority 28 days before making the relabelled device available, and they must provide a sample to the authority on request. Most distributors don't want this and don't realise they're triggering it.\n\n**Keep all translation in-house under your own QMS.** It's cleaner for you, it avoids your distributor acquiring Article 16 status against your product, and it keeps you in control of the accuracy of clinical and safety wording.\n\nOne thing I don't know from what you've described: whether the device is implantable. If any part of your Class IIa range is, Article 18's implant card and patient information also require German — worth checking if relevant."
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 3,
+            "costUsd": 0.15824599999999997,
+            "judgeCostUsd": 0.0038520000000000013,
+            "durationSeconds": 61,
+            "startedAt": "2026-09-18T19:25:59.477Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-n7D1Ap/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "judge votes: FAIL FAIL FAIL",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  false,
+                  false,
+                  false
+                ],
+                "evidence": "Short answer: **probably yes for Germany in practice, but not because \"everything has to be translated.\"** Your distributor is overstating the rule, and the DoC happens to be one of the few places where they may nonetheless be right.\n\n## What the MDR actually says\n\n**Article 19(1), last sentence** — the EU Declaration of Conformity \"shall be translated into an official Union language or languages required by the Member State(s) in which the device is made available on the market.\"\n\nSo the MDR itself doesn't mandate German. It hands the decision to each Member State. The question is therefore purely: *has Germany exercised that option?*\n\n## Germany specifically\n\nThe German implementing act is the **MPDG** (Medizinprodukterecht-Durchführungsgesetz). It contains the national language rules, and German is required for the Annex I Section 23 information (label, IFU, safety information) — with a narrow carve-out allowing English for devices intended exclusively for professional users under defined conditions.\n\nFor the **DoC** specifically, I'd flag this as the one point to verify rather than take from me: check the current MPDG language provision (the \"Sprache\"/Sprachenregelung section) and, if there's any ambiguity, ask your Notified Body or the relevant ZLG-designated authority. My recollection is that Germany has historically been permissive here and English has been broadly accepted for the DoC, but this is exactly the kind of national detail that has shifted between MPG and MPDG, and it's not something you should act on from memory — mine or your distributor's.\n\n**The pragmatic answer:** the DoC is one page. Issue it as a bilingual EN/DE document (side-by-side or two columns, single document, single signature). That costs you almost nothing, closes the argument permanently, and removes the risk entirely. There's no downside — a bilingual DoC is compliant everywhere a monolingual English one is.\n\n## Where your distributor is wrong\n\n\"Everything has to be translated\" is not correct:\n\n- **Technical documentation (Annex II/III)** — stays in whatever language you and your Notified Body work in. English is standard. Distributors have no right to it at all.\n- **Notified Body certificate** — issued in the NB's chosen language; you don't translate it.\n- **Your QMS documentation** — not a German-market translation obligation.\n- **Label, IFU, safety information** — *this* is where German is genuinely mandatory (Annex I Section 23 + MPDG). If your distributor's real concern is buried here, that's the legitimate part of their complaint and worth confirming you've covered it for a Class IIa device.\n\n## Two things worth checking while you're at it\n\n1. **Article 10(14)**: if a competent authority (BfArM, or the relevant Land authority) requests documentation, they can demand it \"in an official Union language determined by the Member State concerned\" — i.e. German, on request, with a deadline. Independent of the DoC question, this is a real exposure if your whole file is English-only. Worth knowing your translation turnaround in advance.\n\n2. **Article 14(2)**: your distributor has a *verification* duty — they must check that a DoC has been drawn up and that the device carries the required language versions of the Annex I §23 information. They do not have a right to dictate translation beyond what law requires. It's plausible they're applying a generic checklist rather than citing a specific German provision. **Ask them which provision of the MPDG they're relying on.** If they can cite it, you have your answer; if they can't, you've established that the rest of their \"everything\" demand is unfounded.\n\nOne caveat on all of the above: this is regulatory orientation, not a substitute for your RA function or regulatory counsel signing off on the MPDG text as currently in force."
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 1,
+        "passRate": 1,
+        "scoreWithout": 0,
+        "passRateWithout": 0,
+        "delta": 1
+      }
+    }
+  ],
+  "aggregates": {
+    "casesTotal": 1,
+    "casesPassed": 1,
+    "overallScore": 1,
+    "overallPassRate": 1,
+    "meanDelta": 1
+  }
+}

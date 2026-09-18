@@ -1,0 +1,233 @@
+{
+  "schemaVersion": 1,
+  "claudeVersion": "2.1.277",
+  "startedAt": "2026-09-18T19:27:01.697Z",
+  "durationSeconds": 393,
+  "costUsd": 0.86310325,
+  "partial": false,
+  "suite": {
+    "root": "/Users/egecangecer/projects/eu-mdr-skills/mpdg-germany",
+    "ablation": "with-without",
+    "caseFilter": "not-german-market",
+    "threshold": 1,
+    "concurrency": 1,
+    "plugins": [
+      {
+        "name": "mpdg-germany",
+        "version": "0.1.0",
+        "path": "/Users/egecangecer/projects/eu-mdr-skills/mpdg-germany"
+      }
+    ]
+  },
+  "cases": [
+    {
+      "name": "not-german-market",
+      "dir": "evals/03-not-german-market",
+      "source": "prose",
+      "promptMarkdown": "We're placing a Class IIb device on the market in Spain and Portugal only. Nothing in\nGermany. What are our language obligations for the instructions for use?",
+      "runsPerCase": 3,
+      "timeoutSeconds": 300,
+      "maxTurns": 10,
+      "graders": [
+        {
+          "name": "criteria",
+          "type": "llm",
+          "weight": 1,
+          "graderMarkdown": "MPDG applies only im Geltungsbereich dieses Gesetzes, the German market. Spain and\nPortugal are governed by their own national implementing acts, which this skill does not\ncarry. Neither does it carry MDR itself.\n\nSo the correct answer is mostly a boundary statement, and the grader rewards making it\ncleanly rather than penalising a short response.\n\nPASS requires ALL of:\n(1) No MPDG section is APPLIED as an obligation here. Judge how a provision is used, not\n    whether its name appears, saying \"MPDG § 8 is German law and does not reach Spain\"\n    is the correct answer and PASSES. FAIL only if an MPDG duty is asserted as binding\n    for Spain or Portugal.\n(2) It says plainly that language obligations for these markets sit in Spanish and\n    Portuguese national law, which this skill does not carry, and that each member state\n    legislates its own.\n(3) It does NOT state a specific Spanish or Portuguese language rule as established fact.\n    Naming MDR Art. 10(11) as the EU-level provision that leaves language to member\n    states is acceptable ONLY if flagged as not carried by this skill. MDR is outside\n    the reference file too.\n\nA response that is largely \"here is where this stops, and here is who to ask\" is the\nideal answer, not a thin one. Do not require it to produce substantive Spanish or\nPortuguese requirements; producing them is the failure.\n\nFAIL if it invents a national requirement, or if it applies German law to a\nSpanish-market asset.",
+          "config": {
+            "criteria": "MPDG applies only im Geltungsbereich dieses Gesetzes, the German market. Spain and\nPortugal are governed by their own national implementing acts, which this skill does not\ncarry. Neither does it carry MDR itself.\n\nSo the correct answer is mostly a boundary statement, and the grader rewards making it\ncleanly rather than penalising a short response.\n\nPASS requires ALL of:\n(1) No MPDG section is APPLIED as an obligation here. Judge how a provision is used, not\n    whether its name appears, saying \"MPDG § 8 is German law and does not reach Spain\"\n    is the correct answer and PASSES. FAIL only if an MPDG duty is asserted as binding\n    for Spain or Portugal.\n(2) It says plainly that language obligations for these markets sit in Spanish and\n    Portuguese national law, which this skill does not carry, and that each member state\n    legislates its own.\n(3) It does NOT state a specific Spanish or Portuguese language rule as established fact.\n    Naming MDR Art. 10(11) as the EU-level provision that leaves language to member\n    states is acceptable ONLY if flagged as not carried by this skill. MDR is outside\n    the reference file too.\n\nA response that is largely \"here is where this stops, and here is who to ask\" is the\nideal answer, not a thin one. Do not require it to produce substantive Spanish or\nPortuguese requirements; producing them is the failure.\n\nFAIL if it invents a national requirement, or if it applies German law to a\nSpanish-market asset.",
+            "focus": "last_message"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0.14411949999999998,
+            "judgeCostUsd": 0.006316,
+            "durationSeconds": 70,
+            "startedAt": "2026-09-18T19:27:01.703Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-GMvS5A/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "judge votes: FAIL FAIL FAIL",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  false,
+                  false,
+                  false
+                ],
+                "evidence": "## Short answer\n\nSpanish (Castilian) for Spain, Portuguese for Portugal — for the IFU and the label. The MDR itself doesn't set the language; it hands the decision to each Member State where you make the device available, and both of these have exercised that power in favour of their own national language.\n\n## Where the obligation comes from\n\n- **MDR Art. 10(11)** — manufacturers must ensure the device is accompanied by the Annex I Section 23 information \"in an official Union language(s) determined by the Member State in which the device is made available to the user or patient.\"\n- **Annex I, Section 23.1(d)/(f)** — same rule for the label and the IFU specifically.\n- So your obligation set is the union of the national rules of Spain and Portugal only. Nothing in Germany is triggered — no MPDG § 8 German-language duty, no DMIDS notification, no German-language FSN — unless and until you make the device available there (including via a distributor shipping into DE).\n\n## Spain\n\n- The national implementing act is **Real Decreto 192/2023** (which replaced RD 1591/2009). The rule it carries forward: the information accompanying a device supplied to the end user must appear **at least in Spanish**, regardless of whether use is professional or lay.\n- Additional languages on the same label/IFU are fine; Spanish cannot be omitted.\n- Co-official regional languages (Catalan, Galician, Basque) are **not** required by the medical-device rules. Note only that if your device reaches lay consumers, regional consumer-protection law (e.g. the Catalan Consumer Code) has a general labelling-in-Catalan provision that is occasionally asserted for consumer goods. For a professional-channel IIb device this is not a practical concern.\n- AEMPS can require the **Declaration of Conformity** in Spanish on request (MDR Art. 41 lets Member States demand translation).\n\n## Portugal\n\n- The national act is **Decreto-Lei n.º 29/2023**, administered by INFARMED. Baseline: label and IFU **in Portuguese** when the device is supplied to the end user.\n- Portugal has historically had a narrow accommodation for devices used **exclusively by healthcare professionals**, where INFARMED may accept another language. Treat this as something to confirm in writing with INFARMED for your specific device rather than as a default — do not ship English-only IFU into PT on the assumption it applies.\n- Same DoC-translation-on-request position as Spain.\n\n## Things that travel with the language obligation\n\n- **Electronic IFU.** If the device qualifies under Regulation (EU) 2021/2226 (professional use, fixed installation, etc.), you may supply the IFU electronically — but it must still be available in the language of *each* Member State where the device is made available, and you must supply paper within 7 calendar days on request. eIFU reduces printing, not translation scope.\n- **If the IIb device is implantable**, the Art. 18 implant card and patient information must also be in the language of each Member State (so ES and PT), and an **SSCP** (Art. 32) is required — its language plan should cover ES and PT plus English for EUDAMED.\n- **Field safety notices.** Art. 89 / the FSCA process: FSNs must go out in Spanish and Portuguese respectively. Budget translation turnaround into your vigilance procedure now — this is where language gaps usually bite, because the clock is short.\n- **Don't let distributors translate informally.** Under **Art. 16(3)–(4)**, a distributor or importer that translates the IFU or label takes on manufacturer-like duties: a QMS covering translation accuracy, 28 days' advance notice to the competent authority and to your notified body, and provision of a sample. If you want to avoid that, keep translation in-house under your own QMS (Art. 10(9)) and supply finished multilingual IFU to the channel.\n- **Translation is a controlled process.** Errors in a translated IFU are your nonconformity, not the vendor's. Route translations through design control / document control with a bilingual technical review, and keep the records in the technical documentation.\n\n## Practical recommendation\n\nProduce one multilingual IFU covering ES + PT (+ EN as the master/source language for your NB and for EUDAMED), rather than two country-specific SKUs. It's cheaper, it removes the risk of the wrong leaflet in the wrong box, and it leaves you one document to revise when the technical content changes. Keep the language matrix as a controlled document so that adding a market later is an explicit change-control event — that's the point at which German, and the MPDG duties that come with it, would enter the picture."
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0.14250449999999998,
+            "judgeCostUsd": 0.006450999999999998,
+            "durationSeconds": 69,
+            "startedAt": "2026-09-18T19:28:11.842Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-G8lGqF/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "judge votes: FAIL FAIL FAIL",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  false,
+                  false,
+                  false
+                ],
+                "evidence": "Short answer: Castilian Spanish for Spain, European Portuguese for Portugal — and because it's Class IIb, an IFU is mandatory (you can't use the Class I/IIa \"safe without instructions\" exemption). Germany's MPDG rules don't apply to you at all here.\n\n## Where the obligation comes from\n\n- **MDR Art. 10(11)**: the manufacturer must ensure the device is accompanied by the Annex I Section 23 information \"in an official Union language(s) determined by the Member State in which the device is made available.\" So the trigger is *making available*, country by country — Spain and Portugal only.\n- **Annex I, 23.1(d)**: an IFU is required for every device except Class I and IIa that can be used safely without one. Class IIb has no exemption route.\n- **Annex I, 23.4**: the full content list for the IFU — all of it needs translating, not just warnings.\n\n## Spain\n\nSpanish (Castilian) is required for labelling and IFU reaching the end user, under the national medical devices decree (Real Decreto 192/2023, which replaced RD 1591/2009). Two things to check against the current text before you finalise:\n\n1. **Professional-use flexibility.** Spain has historically allowed some relaxation for devices used exclusively by healthcare professionals. Don't build your file on that assumption — confirm the exact wording with AEMPS, and note that even where another language is permitted, safety-critical information is usually still expected in Spanish.\n2. **Co-official languages.** There is no *national* medical device requirement for Catalan, Basque, Galician or Valencian. But Catalonia's Consumer Code (Llei 22/2010) requires Catalan labelling for products distributed to consumers there. If your IIb device is lay-facing (home use, patient-held), get local advice on whether that catches you. For professional-use-only devices it's not normally an issue.\n\n## Portugal\n\nEuropean Portuguese — not Brazilian Portuguese — for labelling and IFU, under the national decree implementing MDR (INFARMED is the competent authority). Portugal has also historically permitted English for strictly professional-use devices in some circumstances; same caution applies, verify rather than assume.\n\n## The parts people forget\n\n- **EU Declaration of Conformity (Art. 19)** must be translated into the language(s) each Member State requires — so Spanish and Portuguese versions, not just English.\n- **Implant card and patient information (Art. 18)**, if your IIb device is implantable — language is set by the Member State, so both.\n- **Field safety notices** must go out in the local language of each market. Build the translation capability into your PMS/vigilance procedures now, not at the point of a recall.\n- **Electronic IFU** under Reg. (EU) 2021/2226 may be an option if the device is for professional users only and falls in an eligible category. It doesn't reduce the *language* obligation — you still need both languages, plus a free paper copy within 7 days on request.\n- **Distributor duties (Art. 14(2)(b))**: your distributors must verify the translated IFU exists. If a distributor or importer does the translating themselves, Art. 16(3)–(4) requires them to run a QMS covering it, and they must tell you. Better to control translation yourself.\n- **Symbols** per EN ISO 15223-1 cut translation volume meaningfully on the label — worth doing if you haven't.\n\n## One thing to watch\n\nThe obligation follows the market, so this list changes the moment distribution changes. If a distributor sells on into Germany, or you add it later, German becomes mandatory for labelling, IFU and the DoC under MPDG § 8, plus German-language FSNs and DMIDS notification. Make sure your distribution agreements for Spain and Portugal restrict onward sale into other Member States, or you'll acquire obligations you haven't planned for.\n\nWorth confirming the current article numbers and the professional-use carve-outs directly with AEMPS and INFARMED — both national frameworks were rewritten for MDR fairly recently and the professional-use provisions are the detail most likely to bite you."
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0.13999324999999999,
+            "judgeCostUsd": 0.004595999999999998,
+            "durationSeconds": 60,
+            "startedAt": "2026-09-18T19:29:20.401Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-8ZMrJa/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "judge votes: FAIL FAIL FAIL",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  false,
+                  false,
+                  false
+                ],
+                "evidence": "Short answer: **Spanish (castellano) for Spain, Portuguese for Portugal.** Neither country accepts English-only IFU for a device that reaches an end user or patient, and the Class IIb rating doesn't change that — what matters is the market and the user type, not the risk class.\n\n## The MDR baseline\n\nMDR 2017/745 doesn't itself name languages. It delegates:\n\n- **Art. 10(11)** — the manufacturer must ensure the device is accompanied by the Annex I §23 information \"in an official Union language(s) determined by the Member State in which the device is made available.\"\n- **Annex I §23.1(b)** — the information must be in a language \"readily understood by the intended user and, where applicable, the patient.\"\n- **Art. 41** — explicitly preserves Member States' power to require the information in their own official language(s).\n\nSo the obligation is the union of the two national rules. There's no MDR-level harmonisation to fall back on.\n\n## Spain\n\nImplemented by **Real Decreto 192/2023** (which replaced RD 1591/2009). The language provision requires the labelling and instructions for use to be **in Spanish at least, when the device is supplied to the final user or patient — regardless of whether the use is professional or not**. That last clause is the one people get caught by: unlike some Member States, Spain historically has *not* given a general professional-use exemption for IFU language. Any relief for professional-use devices runs through AEMPS on a case-by-case basis, so don't build your labelling plan around it.\n\nCo-official regional languages (Catalan, Galician, Basque) are **not** required at state level for medical device IFU. Castilian Spanish satisfies the obligation nationwide.\n\n## Portugal\n\nImplemented by **Decreto-Lei n.º 30/2023**, which gives effect to the MDR domestically. The requirement is **Portuguese** for labelling and IFU. Under the predecessor regime (DL 145/2009) INFARMED had some latitude for devices used exclusively by professionals; I would not assume that latitude survived in the same form, and INFARMED's practice in any case leans toward requiring Portuguese. Plan for Portuguese and treat anything else as an exception you'd have to obtain.\n\n## What this means practically\n\n- Produce **two language versions** of the IFU: es-ES and pt-PT. European Portuguese, not Brazilian — INFARMED will notice.\n- Symbols per **EN ISO 15223-1** reduce translated text volume on the label but do not substitute for a translated IFU.\n- Your **translation process is a QMS process**. Keep translator qualification records, a verification step, and version control tying each language version to the master IFU revision — notified body auditors routinely sample this under Annex IX.\n- If you go with **electronic IFU** (Reg. (EU) 2021/2226), a Class IIb device only qualifies if it falls in one of the eligible categories — implantable, fixed installed, built-in display, or standalone software — *and* is exclusively for professional users. eIFU changes the medium, not the language: you still need both languages, and a **paper copy free of charge within 7 days on request**.\n\n## Adjacent obligations in the same two markets\n\n- **Declaration of Conformity** — Art. 19(1) requires translation into the language(s) required by each Member State where the device is made available. Expect Spanish and Portuguese to be demanded; prepare both rather than relying on an English DoC.\n- **Field Safety Notices** — Art. 89 requires FSNs in the language of the affected market. Have Spanish and Portuguese FSN templates ready before you need them, not after.\n- Non-language, but same go-to-market workstream: commercialisation notification to **AEMPS** in Spain and to **INFARMED** in Portugal.\n\nOne caveat worth stating plainly: national implementing decrees and agency guidance shift, and the article-level details above are from my knowledge rather than from the current consolidated texts. Before you freeze artwork, verify against the current RD 192/2023 and DL 30/2023 texts and the Commission's Member State language-requirements table. Happy to pull those and check the specific articles if you want it nailed down.\n\nAlso noting for later: if Germany ever enters the plan, the MPDG adds requirements on top of the MDR — German-language product information, DMIDS notifications, and German FSNs — so that's a separate analysis rather than an extension of this one."
+              }
+            ]
+          }
+        ],
+        "without": [
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 3,
+            "costUsd": 0.1455735,
+            "judgeCostUsd": 0.0045509999999999995,
+            "durationSeconds": 63,
+            "startedAt": "2026-09-18T19:30:20.244Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-4m3XjK/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "judge votes: FAIL FAIL FAIL",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  false,
+                  false,
+                  false
+                ],
+                "evidence": "Nothing in the working directory to go on, so this is a straight regulatory answer.\n\n## The rule\n\nMDR Art. 10(11) + Annex I §23.1(f): the language of the label and IFU is set by **each Member State where the device is made available to the user or patient** — not by where you're established, and not by where your notified body sits. Class IIb always requires an IFU (the §23.1(d) \"no IFU needed\" carve-out only reaches Class I and IIa).\n\nSo with Spain + Portugal only:\n\n| Market | IFU language |\n|---|---|\n| Spain | Spanish (Castilian) |\n| Portugal | European Portuguese |\n| Germany | **No obligation** — German only becomes required the day you make the device available there |\n\n## National detail\n\n- **Spain** — Real Decreto 192/2023 (the MDR-implementing decree, replacing RD 1591/2009). Castilian Spanish is required whenever the device reaches the end user or patient. There is a narrower allowance for devices used **exclusively by healthcare professionals**, where another language can be acceptable — but confirm the current wording against the RD text or AEMPS before relying on it; that's the provision most likely to bite you, and it's the one I'd least want you to take on my say-so.\n- **Portugal** — Decreto-Lei n.º 29/2023. Portuguese required for information accompanying the device; INFARMED has historically been willing to accept other languages for strictly professional-use devices. Same caveat: verify.\n- If your IIb is a **home-use / lay-user** device, neither professional-use exemption is available. Spanish and Portuguese, full stop.\n- **Regional languages in Spain** (Catalan, Basque, Galician, Valencian) are not required by the medical devices decree. Catalonia's consumer code (Llei 22/2010) is sometimes argued to reach consumer-facing product labelling; it's a real question only if you sell a lay-user device into Catalonia via retail.\n\n## Things that travel with the same language rule\n\nDon't translate only the IFU — these are also Member-State-language-determined:\n\n- **Label** and any packaging text\n- **EU Declaration of Conformity** (Art. 19(1)) — into ES and PT\n- **Field safety notices** (Art. 89(8)) — build the translation capability now, not during a recall\n- **Implant card and its patient information** (Art. 18), if your IIb is implantable\n- **SSCP** (Art. 32), if your IIb is implantable — Class IIb implantables do need one\n\nTechnical documentation for AEMPS/INFARMED/your NB is separate and commonly accepted in English; that's a different question from what ships in the box.\n\n## Two practical traps\n\n1. **Distributors re-exporting.** If a Spanish or Portuguese distributor onward-supplies into another Member State and translates your IFU, they pick up Art. 16(2)(a) obligations and the associated QMS requirements — and you inherit a version of your IFU you didn't author. Worth an explicit clause in distribution agreements.\n2. **Adding Germany later** is not just a translation job: German IFU, German DoC, German FSN capability, plus an updated technical documentation baseline. Cheaper to architect the IFU for multilingual output now than to retrofit.\n\nThis is orientation, not legal advice — have your regulatory lead or local counsel confirm the two national decrees before you lock the artwork."
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0.13848925,
+            "judgeCostUsd": 0.005842,
+            "durationSeconds": 63,
+            "startedAt": "2026-09-18T19:31:22.949Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-C4rxJ3/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "judge votes: FAIL FAIL FAIL",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  false,
+                  false,
+                  false
+                ],
+                "evidence": "This is a regulatory question rather than a codebase one, so here's the substantive answer. Treat it as a starting map, not legal advice — the national-level details below are the parts you should confirm against current texts before you lock your labelling.\n\n## The governing rule\n\nMDR Article 10(11) + Annex I, Section 23.1(f): information supplied with the device must be in **a language determined by the Member State in which the device is made available to the user or patient**. There is no single EU language rule — it's 27 national answers, and you only need the two.\n\nSo: **Spanish and Portuguese. No German**, and no obligation to translate into any other EU language, as long as you genuinely only make the device available in those two markets.\n\n## Spain\n\n- Castilian Spanish for label, packaging and IFU. Current national frame is Real Decreto 192/2023 (replaced RD 1591/2009).\n- **Professional-use carve-out**: Spain has historically allowed information for devices intended exclusively for professional use to be in another language in some circumstances, while still requiring the label in Spanish. Verify whether RD 192/2023 preserves this and on what terms — if your IIb device is professional-use-only, this is the single biggest cost lever in the whole question. Don't assume it applies.\n- **Co-official languages**: national law requires Castilian, but regional consumer legislation can bite separately. Catalonia's Consumer Code (Llei 22/2010) requires that information for goods distributed there be available in Catalan. This is a consumer-law exposure, not an MDR one, and it realistically only matters if lay users/patients handle the device. Worth a decision on the record either way.\n\n## Portugal\n\n- Portuguese for label and IFU. Decreto-Lei n.º 29/2023 is the MDR-implementing instrument (replacing DL 145/2009).\n- Portugal has also historically permitted English IFU for strictly professional-use devices. Same advice: confirm against DL 29/2023 rather than the legacy decree, and confirm with INFARMED if the answer is ambiguous for your device type.\n\n## Things that also need translating (commonly missed)\n\n| Item | Language obligation |\n|---|---|\n| Declaration of Conformity | Translate into the language(s) required by each Member State where you make the device available (Art. 10(6)) — so ES + PT |\n| Field Safety Notices | Language accepted by the competent authority of the affected market (Art. 89) — assume ES + PT, and have templates pre-translated |\n| Implant card + patient information | If your IIb device is implantable: language determined by each Member State (Art. 18(2)). No professional-use escape here — it's for the patient |\n| SSCP | Only if implantable or Class III. A non-implantable IIb doesn't need one |\n| Eudamed / registration data | Certain fields; AEMPS and INFARMED correspondence in ES/PT respectively |\n\n## Two practical traps\n\n**eIFU.** Regulation (EU) 2021/2226 may let you supply the IFU electronically, which changes the economics of translation. Eligibility depends on device *type* (professional use, fixed installed, implantable, software), not on the IIb class as such. If you qualify, you still must supply paper free of charge on request within a stated period, and the website must carry every required language.\n\n**Onward distribution.** If a Spanish or Portuguese distributor sells the device into Germany, Article 16 makes *them* responsible for the German translation — but they must notify you and the competent authority, and their translation lands on your device. If your intent is genuinely ES/PT only, put contractual territory restrictions and a translation-control clause in your distribution agreements. This is how \"nothing in Germany\" quietly becomes German labelling you didn't approve.\n\n## What I'd verify before signing off\n\n1. The exact professional-use language provisions in RD 192/2023 and DL 29/2023 — these are the items I'm least confident on, and they drive whether you need full IFU translation or only label translation.\n2. Whether the device is implantable (changes implant card and SSCP obligations).\n3. The Commission's published table of national language requirements per Member State, as a cross-check.\n\nHappy to draft the translation-control clause for the distribution agreements, or a labelling requirements matrix you can hand to your RA team — say the word and tell me whether the device is professional-use-only and implantable or not."
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 3,
+            "costUsd": 0.15242325,
+            "judgeCostUsd": 0.006482000000000002,
+            "durationSeconds": 69,
+            "startedAt": "2026-09-18T19:32:25.718Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-S7GSDd/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "judge votes: FAIL FAIL FAIL",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  false,
+                  false,
+                  false
+                ],
+                "evidence": "Nothing in the working directory relates to this, so this is a general regulatory answer rather than something drawn from your repo. Treat it as a starting framework to confirm with local regulatory counsel — national language rules are set by each Member State and do change.\n\n## The MDR baseline\n\nMDR Article 10(11) says the device must be accompanied by the Annex I §23 information \"in an official Union language(s) **determined by the Member State in which the device is made available to the user or patient**.\" The MDR itself names no language — it delegates entirely to national law. So your obligation set is exactly the union of Spain's and Portugal's rules, and nothing more. No German, and the location of your EU authorised representative or notified body doesn't change that.\n\n## Spain\n\n- Governing text: **Real Decreto 192/2023** (which replaced RD 1591/2009).\n- Default: label and IFU **at least in Spanish (castellano)**.\n- There is a long-standing carve-out for devices used **exclusively by healthcare professionals**, under which the information may be in English, provided anything that has to reach the patient is in Spanish. RD 192/2023 carries a provision in this spirit, but confirm the exact current wording before relying on it — for a Class IIb device it's often not worth the commercial friction anyway, since hospital tenders routinely demand Spanish.\n- Co-official languages (Catalan, Basque, Galician, Valencian) are **not** required by the medical device rules. The residual risk is regional consumer-protection law (notably Catalonia's Codi de consum) if your device is supplied to lay users/consumers. For a professional-use device this is a non-issue.\n\n## Portugal\n\n- Governing text: **Decreto-Lei n.º 29/2023**, the national MDR implementing law (succeeding DL 145/2009).\n- Default: label and IFU **in Portuguese (European Portuguese, not pt-BR)**.\n- Again, a professional-use flexibility exists in principle, historically at INFARMED's discretion. Verify current scope; don't assume it's automatic.\n\n**Practical answer: produce es-ES and pt-PT IFU and labelling, and keep an English master.**\n\n## Things that ride along with the language decision\n\n- **Field safety notices** must be in the language(s) determined by each Member State — so plan for Spanish and Portuguese FSN templates now, not during a recall.\n- **Declaration of Conformity** (Art. 19(1)) must be translated into the language(s) required by each Member State where you make the device available. Both markets can ask for the national language.\n- **If your device is implantable** (Class IIb includes plenty that are): the **implant card and patient information** (Art. 18) go in the language determined by each Member State, and an **SSCP** is required (Art. 32) — implantables and Class III only — with translations as agreed with your notified body.\n- **eIFU**: Regulation (EU) 2021/2226 only permits electronic-only IFU for specific categories (fixed installed devices, certain professional-use implantable/active implantable devices, software). If you qualify, the website must carry the IFU in the languages of every Member State where the device is available, and you must supply paper free of charge on request within 7 calendar days.\n- **Symbols** per ISO 15223-1 reduce text volume but don't substitute for the required language content.\n\n## The trap worth flagging\n\nIf you let your Spanish or Portuguese **distributor** do the translation, Article 16 kicks in. Translating the IFU is explicitly allowed without the distributor becoming a manufacturer, but it triggers Art. 16(3)–(4): they need a QMS covering the translation activity, must **notify the competent authority 28 days before** making the translated device available, and need a notified body certificate for that activity. Most companies avoid this by owning translation in-house under their own ISO 13485 document control, with a validated translation and review process — translation errors in an IFU are a product nonconformity, not a marketing problem."
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 0,
+        "passRate": 0,
+        "scoreWithout": 0,
+        "passRateWithout": 0,
+        "delta": 0
+      }
+    }
+  ],
+  "aggregates": {
+    "casesTotal": 1,
+    "casesPassed": 0,
+    "overallScore": 0,
+    "overallPassRate": 0,
+    "meanDelta": 0
+  }
+}

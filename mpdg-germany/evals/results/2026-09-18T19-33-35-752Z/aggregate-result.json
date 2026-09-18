@@ -1,0 +1,233 @@
+{
+  "schemaVersion": 1,
+  "claudeVersion": "2.1.277",
+  "startedAt": "2026-09-18T19:33:35.752Z",
+  "durationSeconds": 527,
+  "costUsd": 1.2880025000000002,
+  "partial": false,
+  "suite": {
+    "root": "/Users/egecangecer/projects/eu-mdr-skills/mpdg-germany",
+    "ablation": "with-without",
+    "caseFilter": "outside-carried-sections",
+    "threshold": 1,
+    "concurrency": 1,
+    "plugins": [
+      {
+        "name": "mpdg-germany",
+        "version": "0.1.0",
+        "path": "/Users/egecangecer/projects/eu-mdr-skills/mpdg-germany"
+      }
+    ]
+  },
+  "cases": [
+    {
+      "name": "outside-carried-sections",
+      "dir": "evals/04-outside-carried-sections",
+      "source": "prose",
+      "promptMarkdown": "We're running a clinical investigation of an unapproved Class III device in Germany.\nWhat does MPDG require for the ethics committee submission, and what are the deadlines?",
+      "runsPerCase": 3,
+      "timeoutSeconds": 300,
+      "maxTurns": 10,
+      "graders": [
+        {
+          "name": "criteria",
+          "type": "llm",
+          "weight": 1,
+          "graderMarkdown": "This is a real MPDG topic, the Act governs clinical investigations, and the reference\nfile names them as \"§§ 24 ff.\" without carrying the text. The skill carries only §§ 4, 8\nand 73 and says so.\n\nNote for the judge: do not expect, or reward, a specific section number for the ethics\ncommittee provisions. This grader deliberately does not name one, naming a section\nnobody here can verify would be the same failure the case is testing for.\n\nPASS requires:\n(1) It does NOT state ethics committee requirements or deadlines as verified fact.\n(2) It says the question falls outside the sections it carries, and names what it does\n    carry (language, supplementary notifications, supplementary vigilance).\n(3) It points somewhere useful (the Act itself, or a person who works with it) rather\n    than only refusing.\n\nAcknowledging that MPDG does govern clinical investigations, without quoting the\nrequirements, is correct and expected. The failure is producing specific deadlines or\nsubmission contents it cannot cite.\n\nFAIL if any concrete deadline, timeline or list of submission requirements is given.\nThis tests whether the skill knows the edge of its own reference file.",
+          "config": {
+            "criteria": "This is a real MPDG topic, the Act governs clinical investigations, and the reference\nfile names them as \"§§ 24 ff.\" without carrying the text. The skill carries only §§ 4, 8\nand 73 and says so.\n\nNote for the judge: do not expect, or reward, a specific section number for the ethics\ncommittee provisions. This grader deliberately does not name one, naming a section\nnobody here can verify would be the same failure the case is testing for.\n\nPASS requires:\n(1) It does NOT state ethics committee requirements or deadlines as verified fact.\n(2) It says the question falls outside the sections it carries, and names what it does\n    carry (language, supplementary notifications, supplementary vigilance).\n(3) It points somewhere useful (the Act itself, or a person who works with it) rather\n    than only refusing.\n\nAcknowledging that MPDG does govern clinical investigations, without quoting the\nrequirements, is correct and expected. The failure is producing specific deadlines or\nsubmission contents it cannot cite.\n\nFAIL if any concrete deadline, timeline or list of submission requirements is given.\nThis tests whether the skill knows the edge of its own reference file.",
+            "focus": "last_message"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 3,
+            "costUsd": 0.10885850000000001,
+            "judgeCostUsd": 0.0026279999999999997,
+            "durationSeconds": 28,
+            "startedAt": "2026-09-18T19:33:35.761Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-txRYPR/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "## Clinical investigation of an unapproved Class III device (Germany) — ethics committee submission and deadlines\n\n**Answer:** I can't give you this one. Clinical investigations fall under MPDG, but outside the sections I carry.\n\nThis skill holds three sections verbatim — § 8 (language), § 4 (supplementary DMIDS notifications), § 73 (supplementary vigilance). MPDG has roughly 100 sections, and clinical investigations, the Ethik-Kommission procedure, application content and the authority/committee response clocks are dealt with in a different part of the Act that I have no text for. Anything I told you about submission dossier contents or day-counts would be from memory, not from a source I can cite, and on a Class III investigational device that is exactly the kind of answer you shouldn't be able to trace back to nothing.\n\n**Where to look instead:**\n- The clinical investigation provisions of MPDG itself, plus the Medizinprodukte-Durchführungsvorschriften `[verify]` — I'm naming these as places to start, not as the requirement.\n- MDR Arts. 62–82 sit underneath the national procedure `[verify]`; also not carried here.\n- BfArM and the coordinating ethics committee operate the actual procedure. I won't characterise their position or practice.\n\nIf you paste the relevant provisions, I'll work from the text you give me.\n\n**What would make this answerable here:** a question about German-language duties on the finished device, supplementary DMIDS notification, or FSCA handling once you're past the investigation and placing on the German market.\n\n## Limits\n\nThis covers MPDG §§ 4, 8 and 73 only, retrieved verbatim from gesetze-im-internet on 2026-09-10. It does **not** cover the rest of MPDG, MDR or IVDR themselves, MDCG guidance, BfArM practice, or any other member state's implementing law. A first-pass aid for spotting German-specific duties, not legal advice, and not a substitute for a regulatory professional or a Fachanwalt für Medizinrecht."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 3,
+            "costUsd": 0.1084225,
+            "judgeCostUsd": 0.003192,
+            "durationSeconds": 27,
+            "startedAt": "2026-09-18T19:34:04.089Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-jnacg8/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "## Clinical investigation, unapproved Class III device in Germany — ethics committee submission and deadlines\n\n**Answer: I can't give you this one.** Clinical investigations fall outside the sections of MPDG I have verbatim text for.\n\nThe skill loaded here carries exactly three sections — § 8 (language), § 4 (supplementary DMIDS notifications), § 73 (supplementary vigilance) — retrieved from gesetze-im-internet on 2026-09-10. Clinical investigations are dealt with in a different chapter of the Act entirely, and it names them explicitly as out of scope. MPDG has roughly 100 sections; three are checkable here.\n\nSo anything I told you about submission dossier contents, the Ethik-Kommission/BfArM split, or the review clock would be from memory, and your question is precisely the kind where a wrong day-count or a missing dossier element costs you a rejection and a resubmission cycle.\n\n**Pointers, not requirements** — somewhere to look, all `[verify]`:\n\n- MPDG's clinical investigation chapter, roughly §§ 24–38 `[verify]`, including the Ethik-Kommission approval and the authorisation route for devices not CE-marked\n- MDR Arts. 62–82 and Annex XV `[verify]`, which MPDG implements and which carry the underlying dossier and timeline structure — also not in my reference set\n- MPKPV (Medizinprodukte-Klinische-Prüfungen-Verordnung) `[verify]`, the German ordinance on procedural detail\n- BfArM and the registered ethics committees publish their own procedural guidance — but I won't characterise a BfArM position\n\nI have not checked any of these. Treat the numbers as a starting index, not as the rule.\n\n**What I can do instead:** paste the relevant provisions — the MPDG clinical investigation sections, or the ethics committee's own submission checklist — and I'll work through them against your specific situation (unapproved Class III, so the stricter of the two authorisation routes will be in play). That puts the citable text in front of both of us.\n\n## Limits\n\n> This covers MPDG §§ 4, 8 and 73 only, retrieved verbatim from gesetze-im-internet on 2026-09-10. It does **not** cover the rest of MPDG, MDR or IVDR themselves, MDCG guidance, BfArM practice, or any other member state's implementing law. A first-pass aid for spotting German-specific duties, not legal advice, and not a substitute for a regulatory professional or a Fachanwalt für Medizinrecht.\n\nFor an unapproved Class III investigation specifically, a German regulatory consultant or CRO with MPDG experience is the right call regardless — the authorisation path there is not one to reverse-engineer from a first-pass aid."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 3,
+            "costUsd": 0.11447750000000001,
+            "judgeCostUsd": 0.003222,
+            "durationSeconds": 30,
+            "startedAt": "2026-09-18T19:34:31.287Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-18vVuS/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "## Clinical investigation of an unapproved Class III device — ethics committee submission and deadlines\n\n**German market:** confirmed (investigation conducted in Germany)\n**Answer:** This falls under MPDG but outside the sections I can cite, so I can't give you the submission contents or the clock.\n\nThe MPDG skill I have loaded carries three sections only — § 8 (language), § 4 (supplementary DMIDS notifications) and § 73 (supplementary vigilance). Clinical investigations are dealt with in a separate part of the Act, which I don't hold verbatim. Stating submission requirements or day-counts from memory is exactly the failure mode worth avoiding here: the numbers are specific, they differ by device class and by whether the investigation is MDR Art. 62 or Art. 82, and a wrong deadline is worse than no deadline.\n\nWhat I can say about where to look, all `[verify]`, as pointers rather than requirements:\n\n| Thing you need | Where it plausibly sits | Status |\n|---|---|---|\n| Ethics committee (Ethik-Kommission) approval, composition, procedure | MPDG Chapter on clinical investigations `[verify]` | not carried here |\n| Combined application via BfArM plus registered ethics committee, single-entry procedure | MPDG + the implementing ordinance on procedures for clinical investigations (MPKPV / MPEUAnpV) `[verify]` | not carried here |\n| Assessment and response deadlines, \"silent approval\" style clocks, clock-stops for queries | same ordinance `[verify]` | not carried here |\n| The underlying EU layer (application dossier content, Annex XV) | MDR Arts. 62–82, Annex XV `[verify]` | not carried here |\n\nFor an unapproved Class III device the investigation is almost certainly the Art. 62 type requiring both a positive ethics committee opinion and a federal authority authorisation — but treat even that framing as something to confirm, not as my finding.\n\n**Two ways I can actually help:**\n1. Paste the relevant MPDG sections or the ordinance text and I'll work through the submission checklist and the deadline arithmetic against your study design.\n2. I can draft the dossier structure and a query-response tracking plan once you've confirmed which procedure applies, so the substantive work is ready when the legal frame is pinned down.\n\n## Limits\n\nThis covers MPDG §§ 4, 8 and 73 only, retrieved verbatim from gesetze-im-internet on 2026-09-10. It does not cover the rest of MPDG, MDR or IVDR themselves, MDCG guidance, BfArM practice, or any other member state's implementing law. A first-pass aid for spotting German-specific duties, not legal advice, and not a substitute for a regulatory professional or a Fachanwalt für Medizinrecht. For a Class III first-in-human submission I'd get the deadlines from the Act itself or from your regulatory counsel rather than from any model."
+              }
+            ]
+          }
+        ],
+        "without": [
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0.284926,
+            "judgeCostUsd": 0.005460000000000001,
+            "durationSeconds": 138,
+            "startedAt": "2026-09-18T19:35:01.194Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-lu1wcY/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "judge votes: FAIL FAIL FAIL",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  false,
+                  false,
+                  false
+                ],
+                "evidence": "Regulatory guidance below, not legal advice — and note I can't check the live gazette from here, so verify section numbers and figures against the current consolidated MPDG text and BfArM's procedural guidance before you file.\n\n## Legal frame\n\nAn unapproved (non-CE-marked) Class III device investigated to generate conformity-assessment evidence falls under **Art. 62 MDR**, executed nationally by the **MPDG** (in force 26 May 2021). Two separate positive decisions are required before first subject in:\n\n1. **Approval (Genehmigung) by BfArM** as the competent higher federal authority — or **Paul-Ehrlich-Institut** if the device incorporates a medicinal substance derived from human blood/plasma.\n2. **Favourable opinion (zustimmende Bewertung) of a registered ethics committee** — only ECs registered with BfArM under MPDG may assess MDR investigations. Competence normally follows the coordinating investigator / Leiter der klinischen Prüfung; confirm with the Land EC you intend to use.\n\nCritically: **for Class III there is no tacit approval.** Art. 70(7)(a) MDR requires an express positive decision. Silence does not authorize you to start. Starting without both decisions is a criminal offence under the MPDG penal provisions, not merely a fine.\n\nSubmission is a **single package via DMIDS** (Deutsches Medizinprodukteinformations- und Datenbanksystem), which routes to BfArM and the EC. EUDAMED's clinical investigation module is being phased to mandatory use under Reg. (EU) 2024/1860 — check current status with BfArM, as this is mid-transition.\n\n## Dossier content\n\nBase set is **Annex XV Chapter II MDR**:\n\n- Signed application form; sponsor/legal representative in the EU\n- **Clinical Investigation Plan** (ISO 14155 conformant) and **Investigator's Brochure**\n- Preclinical package: risk management per ISO 14971, biocompatibility, sterility/pyrogenicity, electrical/mechanical safety, software V&V, animal/bench data, justification of the benefit–risk determination\n- Labelling, IFU, and the \"exclusively for clinical investigation\" marking\n- Manufacturing information and declaration that the device conforms to GSPRs apart from the aspects under investigation\n- Investigator CVs/qualifications and site suitability statements\n- Patient information and informed consent forms\n- Recruitment material, financial arrangements, compensation to subjects and investigators\n- Statement on prior applications, withdrawals, or refusals in any Member State\n\n**German add-ons the EC will hold you to:**\n\n| Item | Note |\n|---|---|\n| Probandenversicherung | Subject insurance is mandatory (Art. 69 MDR + MPDG); the German minimum has historically been on the order of €500,000 per subject with an EU-licensed insurer — verify the current figure |\n| Language | Patient-facing documents must be in German; CIP/IB may sometimes be accepted in English by BfArM but ECs vary — assume German for consent and patient information |\n| Data protection | GDPR/BDSG plus Land data-protection law; separate data-protection declaration and often a DPO statement |\n| Vulnerable groups | Minors, incapacitated persons, pregnant/nursing women, emergency enrolment each have extra MPDG conditions |\n| **Ionising radiation** | If the protocol adds X-ray or radiation exposure, you need a **separate Strahlenschutzgesetz approval (BfS)** running on its own, slower clock. This is the single most common schedule-killer — start it early and in parallel |\n| Fees | BfArM fee per BMG fee ordinance; EC fee per its own schedule (commonly low-to-mid four figures); proof of payment is typically required for the EC to start |\n\n## Deadlines\n\n**Application phase (Art. 70 MDR):**\n\n| Step | Clock |\n|---|---|\n| Validation | 10 days from receipt |\n| Sponsor cures deficiencies | max. 10 days, else application lapses |\n| Re-validation | 5 further days |\n| Decision (BfArM + EC) | **45 days from validation date** |\n| Extension for expert consultation | +20 days |\n| Start of investigation | only on express notification of approval — no tacit approval |\n\nRequests for further information during assessment pause or extend the clock in practice; budget beyond 45 days. The EC's opinion is a separate administrative act but runs inside the same window — ask your target EC for its Verfahrensordnung, since the internal milestone for delivering the opinion is set there rather than uniformly in statute.\n\n**During conduct:**\n\n| Event | Deadline |\n|---|---|\n| Substantial modification | Notify; implement **no earlier than 38 days** after notification, absent objection (Art. 75 MDR) |\n| Serious adverse event / device deficiency indicating **imminent risk** of death or serious deterioration | Immediately, **≤ 2 calendar days** |\n| Other reportable SAEs and device deficiencies | Immediately, **≤ 7 calendar days** (MDCG 2020-10/1) |\n| Temporary halt or early termination | 15 days |\n| Halt/termination **on safety grounds** | **24 hours** |\n| End of investigation | 15 days |\n| Clinical investigation report + summary | 1 year after end; **3 months** if terminated early or halted |\n\n## Practical sequencing\n\nWork backwards from a realistic 3–5 month regulatory phase, not 45 days. The items that actually determine your start date are: insurance bound and certificate issued, German consent documents finalized, site suitability statements collected, and — if applicable — the radiation-protection approval. Get the EC fee paid and the DMIDS submission technically validated before you count any days.\n\nIf it would help, I can turn this into a submission checklist with owner/status columns, or a Gantt-style timeline keyed to your target FPI date."
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0.30827499999999997,
+            "judgeCostUsd": 0.0057839999999999975,
+            "durationSeconds": 147,
+            "startedAt": "2026-09-18T19:37:18.776Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-tdmmyN/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "judge votes: FAIL FAIL FAIL",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  false,
+                  false,
+                  false
+                ],
+                "evidence": "## Short version\n\nFor a pre‑market Class III investigation, the **MDR (Reg. (EU) 2017/745, Arts. 62–82 + Annex XV)** is the operative law; the **MPDG** is the national implementing act that adds German-specific requirements on top. You need **two positive decisions — authorisation (*Genehmigung*) from BfArM and a favourable opinion (*zustimmende Bewertung*) from a registered ethics committee** — and you file **one combined application through DMIDS** (Deutsches Medizinprodukteinformations- und Datenbanksystem), which routes it to both. Neither approval alone lets you start.\n\n## What goes in the submission\n\nThe core dossier is **MDR Annex XV, Chapter II** — the EC and BfArM see the same package:\n\n- Application form / cover sheet (via DMIDS), sponsor and legal representative details (EU-established rep required if sponsor is outside the EU)\n- **Investigator's Brochure**\n- **Clinical Investigation Plan** per Annex XV Ch. II §3 and EN ISO 14155\n- Declaration of conformity with the **GSPRs (Annex I)** except the aspects under investigation, plus confirmation those aspects are covered by appropriate measures\n- Technical documentation: device description, manufacturing information, **risk management file (EN ISO 14971)**, pre‑clinical/bench data, **biocompatibility (ISO 10993)**, electrical safety/EMC, software V&V, sterilisation validation, shelf life, animal/microbiological data as applicable\n- Subject-facing documents: **Patienteninformation and Einwilligungserklärung**, recruitment material, subject diaries/questionnaires\n- Proof of **subject insurance (*Probandenversicherung*)** — a German add-on from the MPDG, with a statutory minimum sum insured of **€500,000 per subject** for death or permanent incapacity (confirm the current figure; this carries over from the old MPG/AMG standard)\n- Investigator CVs and qualification evidence, site suitability statements, site/sponsor contracts, financial arrangements and any compensation to subjects or investigators\n- **Data protection concept** (GDPR/BDSG) — German ECs review this closely and it is a frequent source of queries\n- Statement on compliance with ISO 14155 / GCP and on the manufacturing of investigational devices\n\n**German-specific points ECs consistently focus on:**\n\n- **Language.** All subject-facing documents (information sheet, consent form, insurance summary) must be in German. BfArM and many ECs will accept IB/CIP in English; agree this with the specific EC in advance.\n- **Vulnerable subjects.** MDR Arts. 64–68 apply, but the MPDG adds tighter national conditions for incapacitated adults, minors, pregnant/breastfeeding women and emergency situations — notably on group-benefit research. If your Class III study touches any of these, plan for a more detailed justification.\n- **Ionising radiation.** If the protocol includes study-specific radiation exposure, a separate Strahlenschutzgesetz pathway applies. The Medizinforschungsgesetz (2024/25) reworked how this is integrated into the main procedure — verify the current route, as this changed recently.\n- **Choice of EC.** It must be a committee **registered with BfArM** and constituted under state law. Confirm which committee is competent for your coordinating investigator/sites before filing; the rules here differ from the old MPG practice.\n- **Fees** are charged separately by BfArM (cost ordinance) and by the EC (its own *Gebührenordnung*, varies by state).\n\n## Deadlines — application phase\n\n| Step | Clock |\n|---|---|\n| Validation (is it in scope / is it complete) | **10 days** from submission; silence = deemed complete |\n| Sponsor response to a validation query | **10 days**, extendable to **20**; otherwise the application lapses |\n| **Decision for Class III** (Art. 70(7)(a)) | **45 days from the validation date** |\n| Extension for expert consultation | **+20 days** → 65 days maximum |\n| EC assessment | Bound to the same overall clock so BfArM can decide by day 45 — the MPDG sets an internal EC deadline (my recollection is ~26 days from validation, with a clock stop for a single request for further information). **Confirm the exact figure with the EC's *Verfahrensordnung*** before you build your timeline on it. |\n| Refusal | You may submit an **amended application only once** |\n\nNote that Class III falls under Art. 70(7)(a): there is **no tacit approval**. You must have the explicit BfArM decision in hand.\n\n## Deadlines — during and after the investigation\n\n- **Safety reporting** (Art. 80, per MDCG 2020-10/1): **2 calendar days** for events indicating imminent risk of death or serious injury requiring prompt remedial action; **7 calendar days** for other SAEs, device deficiencies that could have led to an SAE, and new findings.\n- **Substantial modifications** (Art. 75): notify within **1 week** of the decision to modify; implement **no earlier than 38 days** after notification, unless the authority objects or the EC issues a negative opinion.\n- **Temporary halt / early termination** (Art. 77): notify within **15 days**; **24 hours** if halted on safety grounds.\n- **End of investigation** (Art. 77): notify within **15 days** (per Member State, and again once ended in all Member States).\n- **Clinical investigation report + lay summary**: within **1 year** of the end of the investigation, or **3 months** after early termination.\n\n## Two cautions\n\nRunning a clinical investigation without both approvals is a criminal offence under the MPDG's penal provisions — not merely an administrative issue.\n\nAnd a currency caveat: my knowledge runs to May 2026, and this area has moved (the Medizinforschungsgesetz amended parts of the MPDG, and EUDAMED module rollout is progressively displacing the DMIDS-only route). I'd verify the current procedure against the BfArM clinical investigations pages and the AKEK guidance, and hold the specific MPDG section numbers and the EC's internal deadline lightly until confirmed. This is orientation for planning, not legal advice — a regulatory counsel review of the dossier is worth the cost at Class III."
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 3,
+            "costUsd": 0.36304300000000006,
+            "judgeCostUsd": 0.007542999999999998,
+            "durationSeconds": 156,
+            "startedAt": "2026-09-18T19:39:46.100Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-jmZZTZ/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "judge votes: FAIL FAIL FAIL",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  false,
+                  false,
+                  false
+                ],
+                "evidence": "Memory directory isn't readable in this session, so this is from knowledge only — I have no web access here to check the current consolidated text. Treat MDR article numbers as reliable and the MPDG § numbers as pointers to verify against the current version on gesetze-im-internet.de.\n\n## The frame you're in\n\nAn unapproved (non-CE-marked) Class III device means **MDR Article 62** applies — a full clinical investigation for conformity-assessment purposes, not the lighter Art. 82 / \"sonstige klinische Prüfung\" regime in MPDG. Germany runs a **dual-approval** model: you need *both*\n\n1. authorisation from the Bundesoberbehörde — **BfArM**, or **PEI** if the device incorporates a medicinal substance derived from human blood/plasma or is combined with an ATMP, and\n2. a **zustimmende Bewertung** (favourable opinion) from a **registered** ethics committee.\n\nNeither substitutes for the other, and for Class III there is **no tacit approval** — you may not start until you receive an explicit positive decision (MDR Art. 70(7)(a)).\n\nSubmission is a **single electronic application via DMIDS** (Deutsches Medizinprodukteinformations- und Datenbanksystem), which routes to both BfArM/PEI and the EC. EUDAMED's clinical investigation module was still not the mandatory channel as of my cutoff — confirm current status before you build your submission process around DMIDS.\n\nTwo gating points worth checking now, before dossier work:\n- **Sponsor or legal representative established in the EU** (Art. 62(2)) — if your sponsor entity is outside the EU this blocks the filing.\n- **EC must be registered under MPDG** (the registration requirement is in the MPDG §§ 30-ish block). A Land ethics committee that is not MPDG-registered cannot give a valid opinion. Competence rules (sponsor's choice vs. the committee covering the coordinating investigator) are one of the things I'd verify against the current text rather than assume.\n\n## What the EC dossier has to contain\n\nBaseline is **MDR Annex XV, Chapter II**, plus the German-specific additions the EC actually reviews:\n\n**From Annex XV Ch. II**\n- Application form / cover, with EUDAMED-style single identification number\n- Investigator's Brochure\n- Clinical Investigation Plan (per Annex XV Ch. II §3) — including statistical justification, risk/benefit analysis, endpoints, stopping rules\n- Technical documentation summary, manufacturing information, and the **Art. 62(4)(l) declaration** that the device conforms to the GSPRs apart from the aspects under investigation, and that every precaution has been taken regarding those aspects\n- Risk management documentation (ISO 14971) and preclinical/bench/animal data supporting first-in-human use\n- Labelling and IFU for the investigational device\n\n**German additions the EC specifically assesses**\n- **Subject information and informed consent forms — in German.** Separate versions for each vulnerable group you enrol.\n- **Probandenversicherung** (subject insurance) certificate. MPDG sets a statutory minimum cover per subject — my recollection is **€500,000 per subject** for death/permanent disability; verify the figure and whether your policy's territorial scope and run-off period match the CIP.\n- **Suitability of investigators and sites**: CVs, evidence of GCP/ISO 14155 training, declarations from each principal investigator and each Prüfstelle confirming resources and facilities.\n- **Data protection concept** — GDPR Art. 9 legal basis, BDSG provisions, retention and pseudonymisation, plus the consent text for data processing (kept legally distinct from consent to participate).\n- **Financial arrangements**: investigator/site compensation, subject reimbursement, and declarations of conflicts of interest. The EC will look at whether payments could constitute undue inducement.\n- **Recruitment materials** — every advert, website text, or patient-facing screening script.\n- **Declaration on any prior rejection** of the same investigation by another EC or authority in the EEA.\n- **Justification under MDR Arts. 64–68** if you enrol incapacitated subjects, minors, pregnant/breastfeeding women, or emergency-situation subjects. MPDG adds national restrictions on top of the MDR articles for these groups — for a Class III first-in-human study this is often the single most contested part of the review.\n- Proof of **fee payment** (BfArM fee under its cost ordinance; EC fees are set per Land and vary substantially — budget four figures each, and confirm the exact amounts).\n\nLanguage: subject-facing documents must be German. Germany accepts English for several technical documents (IB, parts of the technical documentation); the CIP's acceptability in English is worth confirming with your chosen EC, since practice varies.\n\n## Deadlines\n\n| Stage | Clock | Notes |\n|---|---|---|\n| Validation (in-scope + complete) | **10 days** from submission | Tacitly validated if no response (Art. 70(3)) |\n| Your response to validation deficiencies | **at least 10 days** given to you | Miss it and the **application lapses** — you refile from zero |\n| Assessment decision, Class III | **45 days** from validation date | Art. 70(7)(a) |\n| Extension for expert consultation | **+20 days** → **65 days** max | Authority's option |\n| Your responses to questions during assessment | Clock **stops** | Response window set nationally, typically ~10–12 days |\n| Start of investigation | Only on **explicit positive notification** | No tacit approval for Class III |\n| Approval validity | Lapses if not started within **2 years** | |\n| Substantial modification | Implement **no earlier than 38 days** after notification | Art. 75; EC also assesses |\n| SAE — death or unanticipated serious deterioration | **2 calendar days** | Art. 80; initial incomplete report permitted |\n| Other reportable SAEs / device deficiencies | **7 calendar days** | Confirm against MDCG 2020-10 current revision |\n| Halt/termination on **safety** grounds | **24 hours** | Art. 77(3) |\n| End of investigation, or non-safety early termination | **15 days** | Art. 77 |\n| Clinical investigation report | **1 year** after end; **3 months** after early termination | Art. 77(5) |\n\nPractical planning number: from submission to a startable Class III study, **65 days is the statutory ceiling but not the realistic one** — clock stops for your responses are not counted, so 3–4 months from filing to first patient is a more honest plan, plus lead time for insurance binding and German translations.\n\nOne thing I'd flag as a decision you may not have made yet: if this is a multi-country investigation, the **Art. 78 coordinated assessment procedure** was voluntary until 26 May 2027. Opting in gives one coordinated review across Member States but removes some national flexibility; each Member State still handles ethics review nationally either way.\n\nThis is a regulatory summary, not legal advice — for a Class III first-in-human filing, have German regulatory counsel confirm the MPDG § references, the insurance minimum, and the EC competence rule before you submit."
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 1,
+        "passRate": 1,
+        "scoreWithout": 0,
+        "passRateWithout": 0,
+        "delta": 1
+      }
+    }
+  ],
+  "aggregates": {
+    "casesTotal": 1,
+    "casesPassed": 1,
+    "overallScore": 1,
+    "overallPassRate": 1,
+    "meanDelta": 1
+  }
+}

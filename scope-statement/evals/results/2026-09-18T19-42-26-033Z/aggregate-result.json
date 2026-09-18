@@ -1,0 +1,569 @@
+{
+  "schemaVersion": 1,
+  "claudeVersion": "2.1.277",
+  "startedAt": "2026-09-18T19:42:26.033Z",
+  "durationSeconds": 583,
+  "costUsd": 1.8481052499999997,
+  "partial": false,
+  "suite": {
+    "root": "/Users/egecangecer/projects/eu-mdr-skills/scope-statement",
+    "ablation": "with-without",
+    "caseFilter": "readiness-claim",
+    "threshold": 1,
+    "concurrency": 1,
+    "plugins": [
+      {
+        "name": "scope-statement",
+        "version": "0.1.0",
+        "path": "/Users/egecangecer/projects/eu-mdr-skills/scope-statement"
+      }
+    ]
+  },
+  "cases": [
+    {
+      "name": "readiness-claim",
+      "dir": "evals/01-readiness-claim",
+      "source": "prose",
+      "promptMarkdown": "Our tool checks a manufacturer's device catalogue before they submit to EUDAMED. It\nmaps their spreadsheet columns to EUDAMED fields, checks every field the schema marks\nmandatory is present and non-empty, validates formats (dates, UDI-DI check digits,\ncountry codes), and proposes an EMDN code for each device which a human reviews.\n\nIt does not look at their clinical evidence, technical documentation, labelling, or\nwhether the device data is factually true, only that fields are filled and\nwell-formed.\n\nRight now the report ends with a green banner saying \"Ready to submit\". Write the\nscope statement that should sit under it.",
+      "runsPerCase": 3,
+      "timeoutSeconds": 300,
+      "maxTurns": 10,
+      "graders": [
+        {
+          "name": "criteria",
+          "type": "llm",
+          "weight": 1,
+          "graderMarkdown": "PASS requires ALL of:\n(1) A block with the labelled lines, including a \"Not checked\" line and a \"does not\n    establish\" line (wording may vary; the two functions must both be present).\n(2) \"Not checked\" names specifics drawn from the prompt (clinical evidence, technical\n    documentation, labelling) AND names the thing a reader would most wrongly assume:\n    that field values are CORRECT or TRUE, when only presence and format were checked.\n    That distinction between \"filled and well-formed\" and \"right\" is the core of this\n    case. Missing it is a FAIL.\n(3) The negation is blunt and specific: it must deny that the result establishes\n    compliance, or that a submission will be accepted, or equivalent. Hedged phrasing\n    like \"may not cover all requirements\" does not satisfy this.\n(4) It notes the human-reviewed EMDN proposal is a proposal, or otherwise does not\n    present the EMDN code as validated.\n\n(5) `Against:` is either pinned to a named schema WITH a version and date, or is\n    visibly marked as lacking them. Two forms both satisfy this and neither is\n    preferred: a slot the reader or the rendering tool fills (`[version]`,\n    `{{schema_version}}`), and a prose statement of what is missing (\"version and\n    retrieval date not recorded\"). FAIL only if it invents a schema version or date\n    the user never supplied, or presents \"the current schema\" as a pinned basis.\n\nFAIL if the output is a generic disclaimer (\"for informational purposes only\",\n\"consult a qualified professional\", \"no warranty\") rather than a description of what\nthis specific check covered.",
+          "config": {
+            "criteria": "PASS requires ALL of:\n(1) A block with the labelled lines, including a \"Not checked\" line and a \"does not\n    establish\" line (wording may vary; the two functions must both be present).\n(2) \"Not checked\" names specifics drawn from the prompt (clinical evidence, technical\n    documentation, labelling) AND names the thing a reader would most wrongly assume:\n    that field values are CORRECT or TRUE, when only presence and format were checked.\n    That distinction between \"filled and well-formed\" and \"right\" is the core of this\n    case. Missing it is a FAIL.\n(3) The negation is blunt and specific: it must deny that the result establishes\n    compliance, or that a submission will be accepted, or equivalent. Hedged phrasing\n    like \"may not cover all requirements\" does not satisfy this.\n(4) It notes the human-reviewed EMDN proposal is a proposal, or otherwise does not\n    present the EMDN code as validated.\n\n(5) `Against:` is either pinned to a named schema WITH a version and date, or is\n    visibly marked as lacking them. Two forms both satisfy this and neither is\n    preferred: a slot the reader or the rendering tool fills (`[version]`,\n    `{{schema_version}}`), and a prose statement of what is missing (\"version and\n    retrieval date not recorded\"). FAIL only if it invents a schema version or date\n    the user never supplied, or presents \"the current schema\" as a pinned basis.\n\nFAIL if the output is a generic disclaimer (\"for informational purposes only\",\n\"consult a qualified professional\", \"no warranty\") rather than a description of what\nthis specific check covered.",
+            "focus": "last_message"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 3,
+            "costUsd": 0.09122424999999999,
+            "judgeCostUsd": 0.003288,
+            "durationSeconds": 23,
+            "startedAt": "2026-09-18T19:42:26.045Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-alJfFW/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "## Scope of this check\n\n```markdown\n## Scope of this check\n\n**Checked:** Every column in your uploaded catalogue was mapped to a EUDAMED field;\nevery field the schema marks mandatory was confirmed present and non-empty; date\nformats, UDI-DI check digits and country codes were confirmed well-formed. An EMDN\ncode was proposed for each device.\n\n**Against:** The EUDAMED field schema and its mandatory-field flags (version and\nretrieval date not recorded by this tool — see note below), plus format rules for\ndates, UDI-DI check digits and ISO country codes. The EMDN proposals are **this tool's\nown suggestion, not a schema rule** — they are unreviewed until a person approves them.\n\n**Not checked:** Whether any value is factually true or matches the device it\ndescribes — a correctly formatted UDI-DI that belongs to a different device passes,\nand so does a valid date that is the wrong date. Whether the EMDN code proposed is the\nright one. Clinical evidence, technical documentation, labelling and IFU, GSPR\nconformity, notified body certificates, or whether the device is classified correctly.\nWhether your Basic UDI-DI groupings are right. Nothing outside the uploaded\nspreadsheet was looked at.\n\n**This does not establish:** That your submission will be accepted. That your device\ndata is correct. That you are compliant with the MDR/IVDR, or ready for a EUDAMED\naudit or inspection. A green banner here means the spreadsheet is filled in and\nwell-formed — nothing about the devices themselves.\n\n**Valid as of:** [report generation date]. Invalidated by any edit to the catalogue,\nany change to the EUDAMED schema or its mandatory-field set, or any change to a\ndevice's intended purpose or classification after this run.\n```\n\n### Two things to fix on your side\n\n**Pin the basis line.** Tell me which EUDAMED schema version the validator loads and\nwhen it was retrieved, and I'll replace the parenthetical with a real citation. Better:\nhave the tool record the schema version and retrieval date at runtime and template them\ninto the report. Right now the report can say what was checked but not what it was\nchecked against, and that's the line an auditor will ask about first.\n\n**Consider the banner text.** \"Ready to submit\" is the inference the block spends five\nlines walking back. \"Catalogue format check passed\" or \"No format errors found\" says\nthe same true thing and doesn't need undoing — the scope statement then reinforces the\nbanner instead of contradicting it. Worth raising with whoever owns the copy."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 3,
+            "costUsd": 0.10043,
+            "judgeCostUsd": 0.004086000000000001,
+            "durationSeconds": 26,
+            "startedAt": "2026-09-18T19:42:48.692Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-08Xz8a/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "## Scope of this check\n\nHere's the block to sit under the banner. One note first: I don't know which EUDAMED schema version your mandatory-field list is pinned to, so the `Against` line says what's actually true rather than claiming a version I haven't seen — fill that in and the line gets stronger.\n\n```markdown\n## Scope of this check\n\n**Checked:** Every column in your uploaded spreadsheet was mapped to a EUDAMED field.\nEvery field the schema marks mandatory was confirmed present and non-empty. Values in\ndated, coded and identifier fields were checked for well-formed syntax: date formats,\nUDI-DI check digits, ISO country codes. An EMDN code was proposed for each device.\n\n**Against:** the mandatory-field list and field formats of the EUDAMED device schema as\nimplemented in this tool (schema version not pinned in this report — see note below).\nThe EMDN proposals are this tool's own suggestion, not a schema rule and not a\nvalidated classification; they exist to be reviewed and corrected by a human.\n\n**Not checked:**\n- Whether the values are true. A field containing a well-formed but wrong Basic UDI-DI,\n  risk class, or manufacturer SRN passes this check.\n- Whether the mapping is right. A column mapped to the wrong EUDAMED field passes as\n  long as its contents are well-formed.\n- Whether the proposed EMDN codes are correct. They are unreviewed suggestions.\n- Clinical evidence, technical documentation, labelling and IFU, declaration of\n  conformity, certificates, or any Annex I or Annex II content.\n- Consistency between this catalogue and anything outside it — your QMS records, your\n  notified body file, or data already in EUDAMED.\n- Optional and conditional fields, which may still be required for your device type,\n  and any validation EUDAMED applies at submission that is not in this tool's rule set.\n\n**This does not establish:** that your device data is correct, that your catalogue is\ncomplete, or that EUDAMED will accept this submission. It establishes that the fields\nthis tool knows to be mandatory are filled in and that the values it knows how to parse\nare well-formed. A green banner here is a formatting result, not a compliance result.\n\n**Valid as of:** the file you uploaded, checked [date/time]. It is invalidated by any\nedit to the spreadsheet, by a change to the EUDAMED schema or its mandatory-field set,\nand by any change to the device's intended purpose or risk classification.\n```\n\n**Short version**, if the banner area only has room for a few lines:\n\n> Checks that mandatory EUDAMED fields are filled in and that dates, UDI-DI check digits\n> and country codes are well-formed, as of the file uploaded [date]. It does not check\n> that the values are true, that columns were mapped to the right fields, or the proposed\n> EMDN codes — those are unreviewed suggestions. Green means the fields are filled and\n> parse, not that your data is correct or that EUDAMED will accept it.\n\nTwo things worth doing alongside this:\n\n1. **Consider the banner wording itself.** \"Ready to submit\" is the claim the scope statement then spends a paragraph walking back. Something like \"Field checks passed\" or \"No formatting errors found\" would state the actual result, and the scope statement would explain rather than correct it.\n2. **Tell me the schema version and retrieval date** your mandatory-field list and format rules are built from, and I'll pin the `Against` line. Right now the report says a device is ready against rules whose vintage the reader can't see — if the schema has moved since your rule set was written, a green banner is affirmatively misleading and nothing in the report would reveal that."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 3,
+            "costUsd": 0.11910000000000001,
+            "judgeCostUsd": 0.0035310000000000003,
+            "durationSeconds": 35,
+            "startedAt": "2026-09-18T19:43:14.847Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-AQCe9w/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: FAIL PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  false,
+                  true,
+                  true
+                ],
+                "evidence": "Here's the block. Two things it has to survive: a reader who sees green and hears \"EUDAMED will accept this\", and a reader who sees green and hears \"our catalogue data is right\".\n\n## Scope of this check\n\n**Checked:** Your spreadsheet columns were mapped to EUDAMED fields; every field the schema marks mandatory was present and non-empty; dates, UDI-DI check digits and country codes were tested for correct format; an EMDN code was proposed for each device.\n\n**Against:** The EUDAMED field schema and its mandatory-field flags — **version and retrieval date not supplied to this report**. Format rules for dates, check digits and country codes follow the published standards. The EMDN codes are this tool's own suggestion, not a published mapping, and are not part of any schema check.\n\n**Not checked:**\n- **Whether any value is true.** A correctly formatted date can be the wrong date; a UDI-DI can pass its check digit and belong to a different device. Nothing here compares your data to reality.\n- **Whether the column mapping is right.** Mapping is inferred from your headers. A value landing in the wrong EUDAMED field is still present, still non-empty, and still passes every check in this report.\n- **The proposed EMDN codes.** These are unreviewed suggestions awaiting your reviewer. A green banner says nothing about whether the proposed code fits the device.\n- **Anything inside EUDAMED.** No data was checked against the live system — not whether your SRN or Basic UDI-DIs exist, are registered, are already in use, or conflict with records you have already submitted.\n- **Fields the schema does not flag mandatory.** These were not assessed for whether your device type, class or intended purpose requires them in practice.\n- **Clinical evidence, technical documentation, labelling and IFU, conformity assessment status, certificate validity and Notified Body involvement.** None of these were looked at.\n\n**This does not establish** that your submission will be accepted, that your device data is accurate, or that the device is compliant with the MDR or may be placed on the market. It establishes one thing: the fields are filled in and well-formed.\n\n**Valid as of:** 18 September 2026, for the file exactly as uploaded. Any edit to the spreadsheet, a change to the EUDAMED schema or EMDN nomenclature, or a change to the device's class or intended purpose invalidates this result.\n\n---\n\nTwo notes:\n\n**Tell me the schema version and retrieval date** and I'll pin the basis line. Right now the report asserts an authority it can't name, which is the specific failure this block exists to prevent.\n\n**The banner wording is doing damage the text underneath has to undo.** \"Ready to submit\" is a claim about the submission's outcome; the tool only has evidence about the file's shape. \"No field errors found\" or \"Field checks passed\" would let the scope statement describe the result rather than argue with it."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 3,
+            "costUsd": 0.09770525,
+            "judgeCostUsd": 0.0034050000000000018,
+            "durationSeconds": 25,
+            "startedAt": "2026-09-18T19:43:50.315Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-BnJS8f/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "## Scope of this check\n\n> **Checked:** Every column in your uploaded catalogue was mapped to a EUDAMED field; every field the schema marks mandatory was confirmed present and non-empty; dates, UDI-DI check digits and country codes were confirmed well-formed. An EMDN code was proposed for each device.\n>\n> **Against:** The EUDAMED field and mandatory-field schema as implemented in this tool (version and retrieval date not pinned — see note below), plus format rules for dates, ISO country codes and UDI-DI check-digit arithmetic. The EMDN proposals are **this tool's suggestion, not a validated classification** — they carry no authority until your reviewer accepts them.\n>\n> **Not checked:** Whether any value is *true* — a well-formed date can be the wrong date, a valid check digit can belong to a different device, a correct ISO code can name the wrong country. Whether the column mapping is right: a value placed in the wrong EUDAMED field still passes as present and well-formed. Clinical evidence, technical documentation, labelling and IFU, GSPR conformity, PMS/PMCF planning, notified body certificates, or anything outside this spreadsheet.\n>\n> **This does not establish** that your data is correct, that your device is compliant with the MDR/IVDR, or that EUDAMED will accept this submission. It establishes that the fields are filled in and correctly formatted. A submission can pass every check here and be rejected, or be accepted and still be wrong.\n>\n> **Valid as of:** 18 September 2026, for this file as uploaded. Invalidated by any edit to the catalogue, any change to the EUDAMED schema or mandatory-field set, or any change to the devices themselves.\n\nTwo things worth changing in the product, not just the wording:\n\n**The basis line is unpinned.** I've written it truthfully rather than claiming a version I haven't seen. Tell me which EUDAMED schema version the mandatory-field list is built from and when it was retrieved, and I'll pin it — that line is the difference between \"checked against the rules\" and \"checked against whatever we implemented at some point.\"\n\n**The banner and the block disagree.** \"Ready to submit\" is a claim about the submission's fate; everything under it says the tool can't speak to that. Consider \"Ready to submit\" → **\"All field checks passed\"**, which is both accurate and still the good news the user wants. If the banner stays, the negation above is doing the entire job of walking it back, and banners are read while scope statements are scrolled past.\n\nIf the report has a compact summary view too, the one sentence that must survive is: *All fields are present and correctly formatted — this does not mean the data is correct or that EUDAMED will accept it.*"
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 3,
+            "costUsd": 0.12248525000000002,
+            "judgeCostUsd": 0.003473999999999998,
+            "durationSeconds": 38,
+            "startedAt": "2026-09-18T19:44:14.950Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-OatWFz/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "judge votes: FAIL FAIL FAIL",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  false,
+                  false,
+                  false
+                ],
+                "evidence": "## Scope of this check\n\n**Checked:** Your spreadsheet columns were mapped to EUDAMED fields; every field the schema marks mandatory was confirmed present and non-empty; dates, UDI-DI check digits and country codes were checked for well-formedness. An EMDN code was proposed for each device.\n\n**Against:** The EUDAMED data schema this tool is configured with (version not recorded in this report), for field lists and formats. The EMDN proposals are this tool's own suggestion, not a schema rule and not a validation — they are unreviewed until a person reviews them.\n\n**Not checked:** Whether any value is *true*. A field that is filled and correctly formatted passes here whether or not it describes your device — a valid check digit confirms the digit, not that the UDI-DI is the right one. Whether the column mapping is right: a value placed in the wrong field passes every check in this report. Whether fields the schema does not mark mandatory should nonetheless have been completed for these devices. Consistency between records, or against anything you have previously submitted. Clinical evidence, technical documentation, labelling and IFU were not assessed — no part of your submission other than this catalogue's field contents was looked at.\n\n**This does not establish:** That your device data is correct. That EUDAMED will accept this submission. That your registration obligations under the MDR are met. \"Ready to submit\" here means the catalogue is *structurally* complete and well-formed — nothing about it is known to be accurate.\n\n**Valid as of:** {report generation date}. Invalidated by any edit to the catalogue after this export, by a change to the EUDAMED schema or EMDN nomenclature, or by a change to the devices themselves.\n\n---\n\nTwo things to fix before this ships:\n\n**Pin the basis.** Tell me the schema version or retrieval date the validator runs against and I'll put it in the `Against` line. Have the report emit it at runtime if it can — a scope statement that names an unpinned \"current schema\" is the exact failure this block exists to prevent. Same for the EMDN nomenclature version.\n\n**The banner is doing more damage than the text under it can undo.** \"Ready to submit\" is a claim about the submission; the tool only knows about the spreadsheet. Consider \"Catalogue complete and well-formed\" or \"No structural errors found\" — then the scope statement explains a green banner rather than contradicting it.\n\nIf the report footer is tight, the compressed version:\n\n> Checked that every mandatory EUDAMED field is filled and that dates, UDI-DIs and country codes are well-formed, as of {date}. Not checked: whether any value is correct, or whether your columns were mapped to the right fields — a wrong value in the wrong place passes. EMDN codes are proposals awaiting human review. A green banner means nothing is missing or malformed; it does not mean the data is right or that EUDAMED will accept it."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 3,
+            "costUsd": 0.10503725,
+            "judgeCostUsd": 0.0036480000000000054,
+            "durationSeconds": 29,
+            "startedAt": "2026-09-18T19:44:53.167Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-EVAZ6U/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "Here's the block to sit under the banner.\n\n```markdown\n## Scope of this check\n\n**Checked:** Every column in your uploaded spreadsheet was mapped to an EUDAMED\nfield; every field the schema marks mandatory was confirmed present and non-empty;\ndates, UDI-DI check digits and country codes were confirmed well-formed. An EMDN\ncode was proposed for each device for human review.\n\n**Against:** the EUDAMED data schema's own mandatory-field and format rules (schema\nversion and retrieval date not supplied to this report — see note below). The\ncolumn-to-field mapping and the EMDN proposals are this tool's inference, not a\npublished rule: nothing external confirms that your \"Model\" column belongs in the\nfield we put it in, or that the proposed EMDN code is the right one.\n\n**Not checked:**\n- Whether the values are true. A field containing \"2026-01-01\" passes the date\n  check whether or not that is the actual date.\n- Whether the values landed in the right fields. If a column was mapped wrongly,\n  the data is well-formed and in the wrong place, and this check passes.\n- Whether the UDI-DIs are real. The check digit is arithmetic; it does not confirm\n  the DI was issued to you by an issuing entity, or that it is unique and\n  unregistered elsewhere.\n- Whether the actors, SRNs and certificates referenced exist and are active in\n  EUDAMED.\n- Whether the proposed EMDN codes are correct. They are proposals pending your\n  reviewer; none has been accepted by this check.\n- Clinical evidence, technical documentation, labelling and IFU, risk\n  documentation, PMS/PMCF, GSPR conformity, classification and intended purpose.\n\n**This does not establish:** that your submission will be accepted. It does not\nestablish that your device data is accurate, that your devices are correctly\nclassified, or that you are compliant with the MDR/IVDR. A green banner here means\nthe spreadsheet is complete and well-formed — nothing about the devices it\ndescribes.\n\n**Valid as of:** this report's run date, for the file as uploaded. It is invalidated\nby any edit to the spreadsheet, any change to the EUDAMED schema or EMDN\nnomenclature, and any change to the column mapping. Re-run before submitting.\n```\n\nTwo things to settle:\n\n**The schema version.** I've written the basis line as far as it's true, but the report should pin it. If the tool fetches the schema (or a vendored copy), have it print the version and retrieval date into that line at run time — a scope statement that says \"the current schema\" ages into a false claim the first time EUDAMED publishes a revision.\n\n**The banner wording.** \"Ready to submit\" is the inference the block spends most of its length walking back. Something like \"Catalogue complete and well-formed\" or \"No formatting or completeness errors found\" makes the scope statement a confirmation rather than a retraction, and the two would stop fighting each other. Your call — the block above works under the current wording either way."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 3,
+            "costUsd": 0.10272225000000001,
+            "judgeCostUsd": 0.0035610000000000017,
+            "durationSeconds": 30,
+            "startedAt": "2026-09-18T19:45:22.461Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-VFyavH/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "## Scope of this check\n\n**Checked:** Every device row in the catalogue you uploaded, for three things: that each field the EUDAMED schema marks mandatory is present and non-empty; that field values are well-formed (date formats, UDI-DI check digits, ISO country codes); and that your spreadsheet columns could be mapped onto EUDAMED fields. An EMDN code was proposed for each device.\n\n**Against:** The EUDAMED data schema's mandatory-field list and format rules (schema version and retrieval date not recorded in this report — see note below). The EMDN codes are this tool's suggestion, generated by matching your device descriptions against the EMDN nomenclature. They are not a validation result and nothing has confirmed they are correct.\n\n**Not checked:**\n- Whether the data is *true*. A well-formed date in the right field is not a correct date. Every check here passes on accurate and inaccurate data alike.\n- Whether the column mapping is *right*. The tool inferred which of your columns feeds which EUDAMED field. A column mapped to the wrong field will still produce present, well-formed values and still show green.\n- Whether the proposed EMDN code is correct, or whether a human has reviewed it yet. The banner turns green regardless.\n- Fields EUDAMED does not mark mandatory but which your device class, risk class or intended purpose require in practice.\n- Clinical evidence, technical documentation, labelling and IFU, GSPR conformity, notified body certificates, PMS and PMCF plans — none of these were assessed, or read.\n- Consistency between this catalogue and anything else: your technical file, your existing EUDAMED registrations, your UDI database entries, your declaration of conformity.\n\n**This does not establish:** That your submission will be accepted. That your device data is accurate. That your devices are correctly classified. That you are compliant with the MDR or IVDR. A green banner means the spreadsheet is *filled in and well-formed* — it says nothing about whether it is right.\n\n**Valid as of:** The date and time this report was generated, for the file as uploaded. It is invalidated by any edit to the catalogue after the run, by a change to the EUDAMED schema or the EMDN nomenclature, and by any change to a device's intended purpose or classification.\n\n---\n\nTwo things to settle:\n\n**Pin the basis line.** Tell me the schema version and retrieval date the validator runs against and I'll replace the parenthetical. Without it the statement can say what was checked but not what it was checked against — which is the line a regulator or an auditor will ask about first.\n\n**The banner wording is doing damage the scope statement then has to undo.** \"Ready to submit\" is a readiness verdict about the submission; the tool only knows something about the file. Something like \"Catalogue complete and well-formed\" or \"No formatting or completeness errors found\" keeps the good news and stops the inference at the source. Worth considering, though it's your call — the statement above works either way."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 3,
+            "costUsd": 0.0995805,
+            "judgeCostUsd": 0.003585000000000005,
+            "durationSeconds": 27,
+            "startedAt": "2026-09-18T19:45:52.680Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-OJ3ORo/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "## Scope of this check\n\n**Checked:** Every column in your uploaded catalogue was mapped to a EUDAMED field; every field the schema marks mandatory was confirmed present and non-empty for every device; date values, UDI-DI check digits and country codes were confirmed to be well-formed. An EMDN code was proposed for each device for human review.\n\n**Against:** The EUDAMED data schema as implemented in this tool — version and retrieval date not recorded in this report (see note below). Check-digit validation follows the GS1/HIBCC/ICCBBA algorithms for the issuing agency detected. Country codes are checked against ISO 3166-1 alpha-2. **The EMDN proposals are this tool's suggestion, not a schema rule and not a validated mapping** — they carry no authority and are unreviewed until a person accepts them.\n\n**Not checked:**\n- **Whether any value is true.** A device with a well-formed but wrong UDI-DI, a valid date that is the wrong date, or a correctly formatted country that is the wrong country passes this check.\n- **Whether the EMDN codes are right.** They are proposals awaiting your reviewer.\n- **Conditionally mandatory fields** — fields required only for certain device classes, risk categories or contexts. This tool checks the schema's static mandatory flags; it does not evaluate whether your device type triggers additional requirements.\n- Clinical evidence, technical documentation, labelling and IFU, GSPR conformity, notified body certification status, Basic UDI-DI grouping logic, or consistency between this catalogue and anything you have submitted or registered elsewhere.\n- Whether your Actor ID, SRN or authorised representative details are active and in good standing.\n\n**This does not establish that your submission will be accepted.** It does not establish that your device data is accurate, that your catalogue is complete, or that you are compliant with the MDR/IVDR. It establishes one thing: the fields this tool knows about are filled in and correctly formatted. A device that is not fit to be placed on the market will pass this check.\n\n**Valid as of:** {{report_date}}, for the file as uploaded. Invalidated by any edit to the catalogue, by a change to the EUDAMED schema, or by a change to a device's classification or intended purpose.\n\n---\n\nTwo things to settle before this ships:\n\n**The schema version.** Tell me which EUDAMED schema version the validator implements and when it was retrieved, and I'll pin the **Against** line. As written it admits the gap honestly, but an unpinned basis is the weak point of the whole block — a user reading this in six months has no way to know whether the schema moved under them.\n\n**The banner.** \"Ready to submit\" is doing damage the scope statement then has to undo. It states a conclusion the tool cannot reach, and no amount of text underneath fully retracts a green banner. Consider **\"No field errors found\"** or **\"Field checks passed\"** — accurate, still feels like a pass, and doesn't put the scope statement in the position of contradicting the headline it sits under."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 3,
+            "costUsd": 0.10522275,
+            "judgeCostUsd": 0.003473999999999998,
+            "durationSeconds": 30,
+            "startedAt": "2026-09-18T19:46:19.377Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-BykvmG/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "## Scope of this check\n\n**Checked:** Every field the schema flags as mandatory is present and non-empty across all devices in the uploaded catalogue; dates, UDI-DI check digits and country codes are well-formed; each device has been assigned a proposed EMDN code awaiting human review. Coverage is the full catalogue, not a sample.\n\n**Against:** The EUDAMED field schema and its mandatory-field flags, version and retrieval date not recorded by this tool; format rules for dates, ISO country codes and UDI-DI check-digit arithmetic. The EMDN proposal is this tool's own suggestion, not a schema rule and not a validated classification.\n\n**Not checked:**\n- **Whether any value is true.** A field containing a correctly formatted but wrong date, country, or identifier passes.\n- **Whether your columns were mapped to the right fields.** A column mapped to the wrong EUDAMED field still passes presence and format checks — mapping is unverified.\n- Whether a UDI-DI has actually been issued, is registered to you, or belongs to the device on that row — only that the check digit is arithmetically valid.\n- The proposed EMDN code, which is unreviewed until a human accepts it.\n- Clinical evidence, technical documentation, labelling and IFU, GSPR conformity, or anything outside the catalogue spreadsheet.\n- Consistency between this catalogue and data you have already registered in EUDAMED, or in any other submission.\n\n**This does not establish:** That your device data is correct. That the submission will be accepted. That your devices are compliant with the MDR/IVDR, or eligible for registration. A green banner here means the spreadsheet is complete and well-formed — nothing about the devices it describes.\n\n**Valid as of:** [run date]. Invalidated by any edit to the catalogue, any change to the column mapping, or any update to the EUDAMED schema or its mandatory-field set after this run.\n\n---\n\nTwo things I couldn't pin, and one suggestion:\n\n**Schema version.** I wrote the basis line as unpinned because the tool doesn't record which schema version it validated against. This is the line readers most need — \"checked against the current schema\" is worthless in six months. If the validator can capture the schema version and retrieval date at run time, feed it into that line and the statement becomes much stronger.\n\n**Conditional mandatory fields.** If EUDAMED marks some fields mandatory only for certain device classes or types, and your schema exposes mandatory as a flat flag, those fields aren't being enforced — that belongs in **Not checked** as an explicit bullet. Worth confirming which way your schema works.\n\n**The banner.** \"Ready to submit\" is the phrase doing the damage; the scope statement is arguing with the headline above it. \"Catalogue complete and well-formed\" or \"No formatting or completeness errors found\" says what you actually checked, and then the block below reinforces rather than retracts."
+              }
+            ]
+          }
+        ],
+        "without": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 1,
+            "costUsd": 0.09060449999999999,
+            "judgeCostUsd": 0.0031260000000000038,
+            "durationSeconds": 32,
+            "startedAt": "2026-09-18T19:46:49.440Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-wKOEuN/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "Here's the text to sit under the banner. It's written to be read by someone who will act on the green banner, so it leads with the limit that matters most: format ≠ truth.\n\n---\n\n**What this check covers**\n\nWe checked the structure of your catalogue, not its content. Specifically, we confirmed that:\n\n- every column in your spreadsheet maps to a EUDAMED field;\n- every field the EUDAMED schema (version `X.Y`, `<date>`) marks mandatory is present and non-empty;\n- dates, UDI-DI check digits and country codes are correctly formed.\n\nAn EMDN code is **proposed** for each device. These proposals are not validated and are not part of the green result — each one must be confirmed by a qualified reviewer before you submit.\n\n**What this check does not cover**\n\nWe have not assessed whether any of the information is true or correct for the device it describes. A device with a plausible but wrong basic UDI-DI, an out-of-date authorised representative, or a risk class that does not match the product will pass this check.\n\nWe have not reviewed clinical evidence, technical documentation, or labelling, and we make no assessment of whether your devices meet MDR/IVDR requirements or whether EUDAMED will accept the submission.\n\n**What the green result means**\n\nThe catalogue is complete and well-formed enough to be submitted. It is not a finding that the submission is accurate, compliant, or approved. Responsibility for the accuracy of the data remains with the manufacturer and its Person Responsible for Regulatory Compliance.\n\n---\n\nTwo things to flag while you place this:\n\n**The banner wording is doing more work than the tool can support.** \"Ready to submit\" reads as a go/no-go verdict on the submission, and the scope statement then has to walk it back — which is the weaker position to argue from. \"Format checks passed\" or \"No format errors found\" makes the scope statement a clarification rather than a correction. If the banner has to stay as-is, consider putting the EMDN line *inside* the green block rather than below it, since a pending human review is a condition on the result, not a footnote to it.\n\n**Name the schema version and the check date in the placeholders above, generated from whatever the run actually used.** A report that passed against last quarter's mandatory-field set is the most likely way this statement becomes untrue without anyone noticing."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 2,
+            "costUsd": 0.0961265,
+            "judgeCostUsd": 0.003351,
+            "durationSeconds": 31,
+            "startedAt": "2026-09-18T19:47:21.728Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-kMzs8J/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "Repo's empty, so this is purely the copy. Here it is.\n\n## Primary version (sits directly under the banner)\n\n> **What this check covers**\n>\n> We checked your catalogue against the EUDAMED field schema (version `X.Y`, loaded `<date>`). Specifically: that your spreadsheet columns mapped to a known EUDAMED field, that every field the schema marks mandatory is present and non-empty, and that values are well-formed — dates parse, UDI-DI check digits compute, country codes exist. EMDN codes shown are **proposals** and are not valid until a reviewer confirms each one.\n>\n> **What this check does not cover**\n>\n> We did not assess whether any of the data is correct. A field can be complete, well-formed, and still wrong: a valid UDI-DI for the wrong device, a plausible date that isn't the real one, an accepted EMDN code that misclassifies the product. We did not look at your clinical evidence, technical documentation, or labelling, and we cannot tell whether devices are missing from the catalogue entirely — we only see the rows you gave us.\n>\n> A green result means no formatting or completeness errors were found. It is not a regulatory opinion, and it does not transfer responsibility for the accuracy of the submission, which remains with the manufacturer. EUDAMED may still reject a submission this tool passed.\n\n## Compact variant, if the space is tight\n\n> Checked: column mapping, mandatory fields present and non-empty, and value formats (dates, UDI-DI check digits, country codes) against EUDAMED schema `X.Y`. EMDN codes are proposals pending reviewer confirmation.\n> Not checked: whether any value is factually correct, whether devices are missing from the catalogue, clinical evidence, technical documentation, or labelling.\n> Green means no formatting or completeness errors — not that the submission is accurate or that EUDAMED will accept it. Accuracy remains the manufacturer's responsibility.\n\n## One thing worth changing above the statement\n\nThe banner itself is doing more work than the tool can support. \"Ready to submit\" reads as a go/no-go on the submission; a scope statement underneath is arguing with the headline, and in practice people read the green bar and not the paragraph. I'd retitle it to something the tool can actually stand behind — **\"No format or completeness errors found\"** or **\"Passed pre-submission checks\"** — and keep the scope statement as the explanation rather than the correction.\n\nTwo placeholders to fill: the schema version/date, and whether your report can detect that EMDN proposals are still unreviewed. If it can, the banner shouldn't go green until they are — otherwise \"green\" silently absorbs a step a human hasn't done yet."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 3,
+            "costUsd": 0.12406500000000001,
+            "judgeCostUsd": 0.00415200000000001,
+            "durationSeconds": 46,
+            "startedAt": "2026-09-18T19:47:52.428Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-hi7e0w/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "Nothing in the working directory to match against (empty repo), so this is written to drop in as-is. Fill the two bracketed placeholders from your schema loader.\n\nOne thing first: \"Ready to submit\" asserts a conclusion the tool can't support — a catalogue of well-formed values about the wrong devices passes every check you run. The statement below works under that banner, but I'd retitle the banner **\"No completeness or format errors found\"** and let the scope statement carry the detail. That's a one-word-per-line change and it removes most of the gap between what the banner promises and what you tested.\n\n## Scope statement\n\n> **What this check covers**\n>\n> This report covers the structure of your catalogue data only. Against EUDAMED schema version **[X]** (retrieved **[date]**), we checked that:\n>\n> - every spreadsheet column is mapped to an EUDAMED field;\n> - every field the schema marks mandatory is present and non-empty;\n> - values are well formed where the schema defines a format — dates, UDI-DI check digits, country codes.\n>\n> We also proposed an EMDN code for each device.\n>\n> **What it does not cover**\n>\n> We checked whether your data is *present and well formed*, not whether it is *correct*. A catalogue can pass every check in this report and still be wrong, incomplete, or ineligible for registration. This report says nothing about:\n>\n> - whether the values are factually true of the device — a structurally valid UDI-DI with a correct check digit passes even if it belongs to a different device;\n> - whether the catalogue contains all the devices you are required to register, or contains devices that should not be registered here;\n> - the EMDN codes, which are **proposals only**. Once your reviewer accepts one it is your classification, not ours;\n> - risk class, device/accessory/system status, or any other classification determination;\n> - conditional requirements that depend on facts not visible in the spreadsheet — a field we treated as optional may be mandatory for your device;\n> - clinical evidence, technical documentation, the declaration of conformity, or notified body involvement;\n> - labelling and IFU, or whether they agree with what this catalogue says.\n>\n> **What the result means**\n>\n> It means we found no missing mandatory fields and no malformed values in the data as supplied. It is not a regulatory opinion, not a prediction that EUDAMED will accept your submission, and not a substitute for EUDAMED's own validation at upload, which is authoritative. Responsibility for the accuracy and completeness of the submission remains with the manufacturer.\n\n## Notes on a few choices\n\n- **The \"wrong device, valid check digit\" example** is doing the most work in the whole statement. It's the one line that makes a reader viscerally understand that format validity and truth are different properties. Keep it even if you cut elsewhere.\n- **Conditional mandatory fields** — I included this because your description says you check \"every field the schema marks mandatory.\" If your schema encodes conditional rules and you evaluate them, delete that bullet; if it doesn't, it's the most likely source of a real false pass, and the disclosure matters.\n- **The EMDN line** is phrased to place the decision with the reviewer rather than merely noting that a review happens. Otherwise \"a human reviewed it\" quietly becomes \"the tool got it right, and someone confirmed.\"\n- **Schema version and retrieval date** should be rendered, not static text. If the tool validated against a stale schema, that's the first thing an auditor will ask, and the first thing a user needs to know before trusting a green banner.\n\nIf you need a one-line version for the banner subtitle itself, with the full text behind a disclosure: *\"Checks completeness and formatting of catalogue fields only — not the accuracy of the data, the device classification, or your technical documentation.\"*"
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 1,
+            "costUsd": 0.09272649999999999,
+            "judgeCostUsd": 0.0031979999999999925,
+            "durationSeconds": 32,
+            "startedAt": "2026-09-18T19:48:37.964Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-TiM5F6/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "Here's the statement. It's written to be read by the person clicking submit, not by a lawyer, so it names the failure modes concretely rather than disclaiming in the abstract.\n\n---\n\n**What this check covers**\n\nWe compared your catalogue against the EUDAMED field schema. We confirmed that each of your columns maps to a EUDAMED field, that every field the schema marks mandatory is present and non-empty, and that values are well-formed — dates parse, UDI-DI check digits compute, country codes exist. Each device also carries a proposed EMDN code. That proposal is a suggestion for your reviewer; we do not verify the classification it implies.\n\n**What it does not cover**\n\nWe did not check whether any of this data is true. A UDI-DI with a valid check digit that belongs to a different device passes. So does a correctly formatted date that is the wrong date, a complete record for a device you are not authorised to place on the market, and an EMDN proposal your reviewer accepts in error. We did not review your clinical evidence, technical documentation, or labelling, and we make no assessment of whether these devices meet the requirements of the MDR or IVDR.\n\n**What \"Ready to submit\" means**\n\nYour file is structurally complete and well-formed. It does not mean the submission is correct, and it does not mean EUDAMED or your notified body will accept it. Responsibility for the accuracy of the content stays with you.\n\n---\n\nThree things worth deciding alongside the text:\n\n**The banner is doing more work than the tool does.** \"Ready to submit\" is a readiness judgement about the submission; the tool only has evidence about the file. A scope statement underneath can qualify that, but it's working against the banner, and the banner is what people remember. \"All checks passed\" or \"No blocking issues found\" would let the scope statement explain rather than retract. Your call — if the phrase is fixed for product reasons, the statement above is written to carry that load.\n\n**Gate the green on EMDN review.** If the banner can currently appear while EMDN proposals are still unreviewed, it's asserting readiness over a step a human hasn't done yet. Showing amber until every proposal is accepted or overridden would make the green mean something the tool can actually stand behind.\n\n**Put it under failures too.** Someone who fixes twelve format errors and gets to green has just been taught that the tool catches problems — which makes the green read as broader than it is. The same scope statement under a failing report sets that expectation before it hardens."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 1,
+            "costUsd": 0.08777749999999998,
+            "judgeCostUsd": 0.0033239999999999936,
+            "durationSeconds": 30,
+            "startedAt": "2026-09-18T19:49:10.107Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-NwDkLD/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS FAIL PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  false,
+                  true
+                ],
+                "evidence": "Quick flag before the text itself: the scope statement can't fully fix the banner. \"Ready to submit\" is a verdict about the submission; your tool only has evidence about the fields. Any disclaimer underneath is arguing with the headline above it, and users read headlines. I'd retitle the banner to something like **\"No completeness or format errors found\"** and let the scope statement explain the rest. The statement below is written to work either way.\n\n---\n\n## What we checked\n\nThis check looks at the **structure** of your catalogue, not its content. We confirmed that:\n\n- Your spreadsheet columns map to the EUDAMED fields we expect\n- Every field the EUDAMED schema marks mandatory is present and non-empty\n- Formats are valid where we can verify them: date formats, UDI-DI check digits, country codes\n- An EMDN code has been proposed for each device\n\n## What we did not check\n\nWe have not looked at, and cannot tell you anything about:\n\n- **Whether your data is true.** A UDI-DI with a valid check digit still passes if it belongs to a different device. A correctly formatted date passes if it is the wrong date. We verify form, never fact.\n- **Your clinical evidence, technical documentation, or labelling.** These are not inputs to this tool.\n- **Whether the proposed EMDN codes are correct.** They are suggestions generated by our tool and require review and sign-off by a qualified person at your organisation. An unreviewed proposal is not a classification.\n- **Device classification, conformity, or any other regulatory judgment** about the devices themselves.\n- **Fields EUDAMED requires conditionally** based on facts we cannot see — mandatory-ness here means what the schema marks, which may not match what your specific submission needs.\n\n## What a green result means\n\nYour catalogue is unlikely to be rejected for missing or malformed fields. That is the whole claim.\n\nIt is not confirmation that your submission is accurate, substantively complete, or compliant. Responsibility for the accuracy and completeness of data submitted to EUDAMED remains with the manufacturer.\n\n---\n\nTwo things worth deciding alongside the copy:\n\n1. **Gate the green state on EMDN review actually happening.** Right now a user can hit green with every EMDN code unreviewed, which is precisely the case where \"ready to submit\" is most wrong. If reviews are outstanding, a distinct state — \"Format checks passed · 14 EMDN codes awaiting review\" — is more honest than green plus a footnote.\n2. **Put the first two bullets of \"what we did not check\" next to the banner, not below the fold.** The full statement is worth having, but the one sentence that actually changes behaviour is *\"we verify form, never fact.\"*"
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 3,
+            "costUsd": 0.10297850000000003,
+            "judgeCostUsd": 0.00315300000000001,
+            "durationSeconds": 35,
+            "startedAt": "2026-09-18T19:49:40.087Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-6oa4bg/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "The directory is empty, so here's the statement written to stand on its own.\n\nOne thing worth flagging before the text: \"Ready to submit\" is a stronger claim than this tool can support — it's a statement about the submission, while the tool only has evidence about field presence and format. A scope statement underneath can qualify it, but it's working against the banner. I'd retitle the banner to something like **\"All format and completeness checks passed\"** and let the scope statement explain the rest. I've written the statement to work either way.\n\n---\n\n**Scope of this check**\n\n> This check covers the structure of your catalogue data, not its substance.\n>\n> **What we verified.** Your spreadsheet columns were mapped to EUDAMED fields. Every field the EUDAMED schema marks mandatory holds a non-empty value. The values we can check against a known format — dates, UDI-DI check digits, country codes — are well-formed. An EMDN code has been proposed for each device.\n>\n> **What we did not verify.** We did not check whether any of this data is *correct*. A date can be valid and wrong; a UDI-DI can pass its check digit and belong to a different device; a country code can be well-formed and not be the country you meant. We did not check that columns were mapped to the fields you intended, that your catalogue contains all the devices it should, or that fields mandatory only in certain conditions — device class, device type, role — are present. The proposed EMDN codes are suggestions and have not been reviewed; assigning the correct code is your decision, not ours.\n>\n> We did not look at your clinical evidence, technical documentation, or labelling, and we make no assessment of whether your devices conform to the MDR/IVDR or whether your data accurately describes them.\n>\n> **What this result means.** Your data is well-formed enough to be worth submitting. It does not mean EUDAMED will accept it, and it is not a regulatory opinion. Responsibility for the accuracy and completeness of what you submit remains with you as the manufacturer.\n\nTwo notes on choices I made: the \"a date can be valid and wrong\" line is the sentence doing the most work, because format validation is the check most easily mistaken for correctness checking — it's worth the words. And I named conditional mandatory fields explicitly, since \"every mandatory field is present\" reads as full coverage otherwise; if your schema handling does resolve conditional rules, drop that clause."
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 3,
+            "costUsd": 0.10009425,
+            "judgeCostUsd": 0.0032999999999999904,
+            "durationSeconds": 36,
+            "startedAt": "2026-09-18T19:50:15.429Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-xUnTN4/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "judge votes: FAIL FAIL PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  false,
+                  false,
+                  true
+                ],
+                "evidence": "Repo's empty, so this is purely the copy. One concern worth stating before the text: a green \"Ready to submit\" banner makes a claim the tool can't support — it checked form, not substance, and the EMDN code hasn't been reviewed yet at the moment the banner renders. A scope statement underneath doesn't really retract a headline; people read the banner and skip the fine print. I'd retitle the banner and keep the statement as the detail. I've written both, and the statement stands on its own if you keep the current banner.\n\n## Suggested banner text\n\n> **All automated checks passed** — *this is a completeness and formatting result, not a submission decision.*\n\n## Scope statement\n\n> **What this check covers**\n>\n> We compared your catalogue against the EUDAMED field schema (version [X], retrieved [date]). We confirmed that every field the schema marks mandatory is present and non-empty, and that the values we can check mechanically are well-formed: dates parse, UDI-DI check digits compute correctly, country codes are valid ISO entries. Each device has been assigned a **proposed** EMDN code.\n>\n> **What this check does not cover**\n>\n> We have not assessed whether your device data is correct — only whether it is filled in and correctly formatted. A date can be well-formed and wrong. A UDI-DI can have a valid check digit and not be the identifier issued for that device. A mandatory field can be populated with a value that does not describe the product.\n>\n> We have not looked at your clinical evidence, technical documentation, or labelling, and we have not evaluated conformity, classification, or any other substantive regulatory requirement. Nothing here indicates that your device meets the MDR/IVDR or that a submission built from this data will be accepted.\n>\n> The proposed EMDN codes are suggestions generated from your product descriptions. They are unreviewed until a qualified person on your side confirms each one; a passing result does not mean the codes are right.\n>\n> **What this result means**\n>\n> A pass means we found nothing that would fail EUDAMED on completeness or format at the time of this run. Responsibility for the accuracy of the data, the EMDN classification, and the submission itself remains with you as the manufacturer. This report is not regulatory advice.\n\nTwo things to decide on your side: whether to name the schema version and retrieval date inline (I've assumed yes — it dates the result and stops an old report being reused after a schema change), and whether the report should stay green at all while EMDN codes are unreviewed. An amber state until a reviewer signs off the codes, going green afterwards, would make the banner honest without adding any text."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 3,
+            "costUsd": 0.11377575,
+            "judgeCostUsd": 0.003368999999999997,
+            "durationSeconds": 41,
+            "startedAt": "2026-09-18T19:50:51.214Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-IT5ak2/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "Repo's empty, so here's the text itself.\n\nOne flag before the draft: \"Ready to submit\" is a readiness-to-file claim, but the tool only establishes that the file is *well-formed*. No scope statement fully undoes a green banner above it — people read the banner and skip the paragraph. I'd pair this with narrowing the banner to \"No format or completeness errors found.\" I've written the statement to work either way.\n\n```markdown\n**What this check covered**\n\nChecked against EUDAMED schema version {x.y} on {date}:\n\n- every column in your spreadsheet is mapped to a EUDAMED field\n- every field the schema marks mandatory is present and non-empty\n- values are well-formed where the format is fixed — dates, UDI-DI check\n  digits, ISO 3166 country codes\n- an EMDN code has been proposed for each device\n  ({n} of {m} still awaiting reviewer confirmation)\n\n**What this check did not cover**\n\nThis check looks at whether fields are filled in and well-formed. It does not\nlook at whether they are true. It says nothing about:\n\n- the accuracy of any value — a valid UDI-DI, date or country code can still\n  be the wrong one for the device\n- your clinical evidence, technical documentation, labelling or IFU\n- the device's risk class, conformity assessment route, or certificate status\n- whether every device you are required to register appears in this file. We\n  check the rows you gave us; we cannot tell you about rows that are missing\n- whether the proposed EMDN codes are correct. They are suggestions for a\n  human reviewer, not classifications\n- whether EUDAMED will accept the submission. The Commission's own validation,\n  and any review that follows it, are separate\n\nA green result means we found no formatting or completeness errors that would\nblock the file. It is not a finding that your registration is compliant, and\nit does not shift any part of your responsibility for the accuracy of what you\nsubmit.\n```\n\nThree things worth deciding as you wire it in:\n\n- **The EMDN counter.** If codes are still unconfirmed, the catalogue isn't reviewed yet. Consider gating the green banner on that count being zero, rather than mentioning it in the prose.\n- **Schema version and date.** Worth interpolating rather than hardcoding — it's what makes the report meaningful if someone reads it six months later, and it dates the claim rather than leaving it open-ended.\n- **The missing-rows point.** That's the one users are most likely to misread, since a completeness check that can't see omissions sounds contradictory. If you keep only one \"did not cover\" bullet visible above a fold, keep that one."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 2,
+            "costUsd": 0.09644924999999999,
+            "judgeCostUsd": 0.0033299999999999996,
+            "durationSeconds": 37,
+            "startedAt": "2026-09-18T19:51:32.124Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-vAi3VW/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "The repo's empty, so here's the copy itself.\n\nOne thing worth raising before the text: \"Ready to submit\" is doing more work than the tool can support. It reads as a verdict on the submission, when the tool has only checked that the form is filled in and well-formed. The scope statement below is written to claw that back, but it's fighting the banner. I'd suggest changing the banner to **\"No blocking issues found\"** or **\"Format checks passed\"** and letting the scope statement explain the rest. Statement written both ways so it works either way.\n\n## Scope statement\n\n> **What this check covers**\n>\n> Your catalogue has passed our structural checks. Every field the EUDAMED schema marks mandatory is present and non-empty, and the values we can verify are correctly formed: dates, UDI-DI check digits, and country codes. The EMDN code beside each device is a suggestion generated by this tool — it has not been verified, and each one needs a reviewer to confirm or replace it before you submit.\n>\n> **What this check does not cover**\n>\n> We do not check whether your data is correct. We have not looked at your clinical evidence, technical documentation, or labelling, and nothing in this report indicates that a device's data is factually accurate, that it describes the device you intend to register, or that the device should be registered in this form at all. A well-formed entry can be entirely wrong.\n>\n> Responsibility for the accuracy, completeness, and regulatory compliance of everything submitted to EUDAMED remains with you as the manufacturer. This report is a data-quality check, not a regulatory review, and passing it is not an assessment of conformity.\n\n## If you keep the current banner\n\nAdd this as the first line, before \"What this check covers\":\n\n> \"Ready to submit\" refers to the format of your data, not its content.\n\n## Short version\n\nIf you need something that fits in two lines under the banner, with the full text behind a \"what was checked\" link:\n\n> Checked: mandatory fields present, formats valid (dates, UDI-DI, country codes). Not checked: whether any of this data is true. EMDN codes are unverified suggestions pending your review. Accuracy and compliance remain your responsibility as manufacturer.\n\nTwo deliberate choices: the EMDN caveat sits in the \"covers\" section rather than the \"does not cover\" section, because the tool *did* produce something there and the risk is a reviewer rubber-stamping it — burying it among the disclaimers makes that likelier. And \"a well-formed entry can be entirely wrong\" is the sentence doing the real work; it names the specific false inference a green banner invites, which a generic \"this is not legal advice\" line does not."
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 0.8888888888888888,
+        "passRate": 0.8888888888888888,
+        "scoreWithout": 0.8888888888888888,
+        "passRateWithout": 0.8888888888888888,
+        "delta": 0
+      }
+    }
+  ],
+  "aggregates": {
+    "casesTotal": 1,
+    "casesPassed": 0,
+    "overallScore": 0.8888888888888888,
+    "overallPassRate": 0.8888888888888888,
+    "meanDelta": 0
+  }
+}

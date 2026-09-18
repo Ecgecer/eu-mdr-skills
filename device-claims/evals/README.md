@@ -6,35 +6,35 @@ Do not hand-edit the table.
 <!-- report-evals:start -->
 | Case | with | without | delta | runs | measured | CLI |
 |---|---|---|---|---|---|---|
-| `clean-copy-control` | 0.67 | 0.00 | **+0.67** | 3×2 | 2026-09-17 | 2.1.274 |
+| `clean-copy-control` | 0.78 | 0.00 | **+0.78** | 9×2 | 2026-09-18 | 2.1.277 |
 | `hwg11-item-scope` | 1.00 | 0.00 | **+1.00** | 3×2 | 2026-09-17 | 2.1.274 |
 | `hwg11-wrong-audience` | 1.00 | 0.00 | **+1.00** | 3×2 | 2026-09-17 | 2.1.274 |
-| `hwg3a-arzneimittel-only` | 0.67 | 0.00 | **+0.67** | 3×2 | 2026-09-17 | 2.1.274 |
-| `limb-c-omission` | 1.00 | 0.67 | **+0.33** | 3×2 | 2026-09-17 | 2.1.274 |
-| `limb-d-intended-purpose-drift` | 1.00 | 0.33 | **+0.67** | 3×2 | 2026-09-17 | 2.1.274 |
+| `hwg3a-arzneimittel-only` | 1.00 | 0.00 | **+1.00** | 9×2 | 2026-09-18 | 2.1.277 |
+| `limb-c-omission` | 1.00 | 0.44 | **+0.56** | 9×2 | 2026-09-18 | 2.1.277 |
+| `limb-d-intended-purpose-drift` | 0.89 | 0.33 | **+0.56** | 9×2 | 2026-09-18 | 2.1.277 |
 | `no-case-law-supplement` | 1.00 | 0.00 | **+1.00** | 3×2 | 2026-09-17 | 2.1.274 |
 | `non-german-eu-market` | 1.00 | 0.00 | **+1.00** | 3×2 | 2026-09-17 | 2.1.274 |
 | `puffery-restraint` | 1.00 | 0.00 | **+1.00** | 3×2 | 2026-09-17 | 2.1.274 |
-| `uwg6-comparison` | 1.00 | 0.67 | **+0.33** | 3×2 | 2026-09-17 | 2.1.274 |
+| `uwg6-comparison` | 1.00 | 0.44 | **+0.56** | 9×2 | 2026-09-18 | 2.1.277 |
 
-**Mean delta +0.77** across 10 case(s) with both arms measured.
+**Mean delta +0.84** across 10 case(s) with both arms measured.
 
 ### Every other stored run for these cases
 
-- `clean-copy-control`, earlier runs: 2026-09-09 (2.1.266) 1.00/0.00; 2026-09-10 (2.1.267) n/a/n/a (6 errored); 2026-09-10 (2.1.267) 0.67/0.00; 2026-09-10 (2.1.268) 1.00/0.00; 2026-09-11 (2.1.268) 1.00/0.00; 2026-09-11 (2.1.268) 1.00/0.00
+- `clean-copy-control`, earlier runs: 2026-09-09 (2.1.266) 1.00/0.00; 2026-09-10 (2.1.267) n/a/n/a (6 errored); 2026-09-10 (2.1.267) 0.67/0.00; 2026-09-10 (2.1.268) 1.00/0.00; 2026-09-11 (2.1.268) 1.00/0.00; 2026-09-11 (2.1.268) 1.00/0.00; 2026-09-17 (2.1.274) 0.67/0.00
 - `hwg11-item-scope`, earlier runs: 2026-09-09 (2.1.266) n/a/n/a; 2026-09-09 (2.1.266) 0.67/0.00; 2026-09-09 (2.1.266) 1.00/0.00; 2026-09-10 (2.1.267) n/a/n/a (6 errored); 2026-09-10 (2.1.267) 1.00/0.00; 2026-09-10 (2.1.268) 1.00/0.00; 2026-09-11 (2.1.268) 1.00/0.00; 2026-09-11 (2.1.268) 1.00/0.00
 - `hwg11-wrong-audience`, earlier runs: 2026-09-09 (2.1.266) 1.00/0.67; 2026-09-10 (2.1.267) n/a/n/a (6 errored); 2026-09-10 (2.1.267) 1.00/0.00; 2026-09-10 (2.1.268) 1.00/0.00; 2026-09-11 (2.1.268) 1.00/0.00; 2026-09-11 (2.1.268) 1.00/0.00
-- `hwg3a-arzneimittel-only`, earlier runs: 2026-09-09 (2.1.266) n/a/n/a; 2026-09-09 (2.1.266) 0.67/0.00; 2026-09-10 (2.1.267) n/a/n/a (6 errored); 2026-09-10 (2.1.267) 0.00/0.00; 2026-09-10 (2.1.268) 0.67/0.00; 2026-09-11 (2.1.268) 1.00/0.33; 2026-09-11 (2.1.268) 0.67/0.33
-- `limb-c-omission`, earlier runs: 2026-09-09 (2.1.266) 1.00/1.00; 2026-09-10 (2.1.267) n/a/n/a (6 errored); 2026-09-10 (2.1.267) 0.67/1.00; 2026-09-10 (2.1.268) 0.67/0.67; 2026-09-11 (2.1.268) 1.00/0.33; 2026-09-11 (2.1.268) 1.00/0.00
-- `limb-d-intended-purpose-drift`, earlier runs: 2026-09-09 (2.1.266) 1.00/1.00; 2026-09-10 (2.1.267) n/a/n/a (6 errored); 2026-09-10 (2.1.267) 0.33/0.00; 2026-09-10 (2.1.268) 1.00/0.67; 2026-09-11 (2.1.268) 0.67/0.67; 2026-09-11 (2.1.268) 1.00/0.67
+- `hwg3a-arzneimittel-only`, earlier runs: 2026-09-09 (2.1.266) n/a/n/a; 2026-09-09 (2.1.266) 0.67/0.00; 2026-09-10 (2.1.267) n/a/n/a (6 errored); 2026-09-10 (2.1.267) 0.00/0.00; 2026-09-10 (2.1.268) 0.67/0.00; 2026-09-11 (2.1.268) 1.00/0.33; 2026-09-11 (2.1.268) 0.67/0.33; 2026-09-17 (2.1.274) 0.67/0.00
+- `limb-c-omission`, earlier runs: 2026-09-09 (2.1.266) 1.00/1.00; 2026-09-10 (2.1.267) n/a/n/a (6 errored); 2026-09-10 (2.1.267) 0.67/1.00; 2026-09-10 (2.1.268) 0.67/0.67; 2026-09-11 (2.1.268) 1.00/0.33; 2026-09-11 (2.1.268) 1.00/0.00; 2026-09-17 (2.1.274) 1.00/0.67
+- `limb-d-intended-purpose-drift`, earlier runs: 2026-09-09 (2.1.266) 1.00/1.00; 2026-09-10 (2.1.267) n/a/n/a (6 errored); 2026-09-10 (2.1.267) 0.33/0.00; 2026-09-10 (2.1.268) 1.00/0.67; 2026-09-11 (2.1.268) 0.67/0.67; 2026-09-11 (2.1.268) 1.00/0.67; 2026-09-17 (2.1.274) 1.00/0.33
 - `no-case-law-supplement`, earlier runs: 2026-09-09 (2.1.266) 1.00/0.33; 2026-09-10 (2.1.267) n/a/n/a (6 errored); 2026-09-10 (2.1.267) 0.33/n/a (2 errored); 2026-09-10 (2.1.268) 0.00/0.00; 2026-09-11 (2.1.268) 0.00/0.00; 2026-09-11 (2.1.268) 0.67/0.00
 - `non-german-eu-market`, earlier runs: 2026-09-09 (2.1.266) n/a/n/a; 2026-09-09 (2.1.266) 1.00/0.33; 2026-09-10 (2.1.267) n/a/n/a (6 errored); 2026-09-10 (2.1.267) 1.00/0.00; 2026-09-10 (2.1.268) 1.00/0.00; 2026-09-11 (2.1.268) 1.00/0.00; 2026-09-11 (2.1.268) 1.00/0.00
 - `puffery-restraint`, earlier runs: 2026-09-09 (2.1.266) n/a/n/a; 2026-09-09 (2.1.266) 0.33/0.00; 2026-09-10 (2.1.267) n/a/n/a (6 errored); 2026-09-10 (2.1.267) n/a/n/a; 2026-09-10 (2.1.267) 1.00/0.00; 2026-09-10 (2.1.268) 1.00/0.00; 2026-09-11 (2.1.268) 1.00/0.00; 2026-09-11 (2.1.268) 1.00/0.00
-- `uwg6-comparison`, earlier runs: 2026-09-09 (2.1.266) 0.67/0.67; 2026-09-09 (2.1.266) 0.33/0.67; 2026-09-09 (2.1.266) 1.00/1.00; 2026-09-10 (2.1.267) n/a/n/a (6 errored); 2026-09-10 (2.1.267) 0.00/0.00; 2026-09-10 (2.1.268) 0.33/0.33; 2026-09-11 (2.1.268) 0.67/0.67; 2026-09-11 (2.1.268) 1.00/0.67
+- `uwg6-comparison`, earlier runs: 2026-09-09 (2.1.266) 0.67/0.67; 2026-09-09 (2.1.266) 0.33/0.67; 2026-09-09 (2.1.266) 1.00/1.00; 2026-09-10 (2.1.267) n/a/n/a (6 errored); 2026-09-10 (2.1.267) 0.00/0.00; 2026-09-10 (2.1.268) 0.33/0.33; 2026-09-11 (2.1.268) 0.67/0.67; 2026-09-11 (2.1.268) 1.00/0.67; 2026-09-17 (2.1.274) 1.00/0.67
 
 Listed because publishing only the most favourable run of several is how the earlier tables went wrong.
 
-<sub>Claude Code 2.1.266, 2.1.267, 2.1.268, 2.1.274. A row measured on one CLI version and an earlier run on another are not directly comparable: between 2.1.268 and 2.1.274 one baseline here went from 1/9 to 3/3 and another from 9/9 to 0/3, with no change in this repo. The CLI column is per row so a cross-version reading is visible rather than inferred. The harness records the CLI version, not the model; these runs used the CLI default. A run pinned to another model with `--model` belongs in `evals/model-probes/`, which this table does not read. Each row is that case's most recent run with a scorable arm, so rows can come from different runs and the mean is a composite rather than any single run's figure, the dates say which.</sub>
+<sub>Claude Code 2.1.266, 2.1.267, 2.1.268, 2.1.274, 2.1.277. A row measured on one CLI version and an earlier run on another are not directly comparable: between 2.1.268 and 2.1.274 one baseline here went from 1/9 to 3/3 and another from 9/9 to 0/3, with no change in this repo. The CLI column is per row so a cross-version reading is visible rather than inferred. The harness records the CLI version, not the model; these runs used the CLI default. A run pinned to another model with `--model` belongs in `evals/model-probes/`, which this table does not read. Each row is that case's most recent run with a scorable arm, so rows can come from different runs and the mean is a composite rather than any single run's figure, the dates say which.</sub>
 <!-- report-evals:end -->
 
 ---
