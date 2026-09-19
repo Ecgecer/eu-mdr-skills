@@ -15,11 +15,11 @@ Measured across 5 suites, 30 cases:
 |---|---|---|---|
 | `device-claims` | **+0.84** | 10 | MDR/IVDR Art. 7 **plus HWG and UWG** |
 | `mpdg-germany` | **+0.62** | 5 | German national law only |
+| `scope-statement` | +0.30 | 3 | domain-general |
 | `mdr-classification` | +0.27 | 7 | EU-level only |
 | `mdr-transition` | +0.20 | 5 | EU-level only |
-| `scope-statement` | +0.00 | 3 | domain-general |
 
-**13 of those 30 cases measure a delta of 0.00**, the skill changes nothing. They are published case by case, because a suite that reports only what it earns is not reporting.
+**12 of those 30 cases measure a delta of 0.00**, the skill changes nothing. They are published case by case, because a suite that reports only what it earns is not reporting.
 <!-- suite-summary:end -->
 
 **The two highest carry German national law.** The EU-only skills trail them because
@@ -123,7 +123,7 @@ existing tooling.
 Done 2026-09-18, $40.46, all on one pinned CLI version.
 
 <!-- run-counts:start -->
-10 case(s) are measured at nine runs per arm and 20 at three. **Every one of those has a delta of exactly 0.00 or 1.00, so none is ambiguous at its own sample size.**
+11 case(s) are measured at nine runs per arm and 19 at three. **Every one of those has a delta of exactly 0.00 or 1.00, so none is ambiguous at its own sample size.**
 <!-- run-counts:end -->
 
   implantable-exception          +0.33 ->  0.00     9/9 vs 9/9

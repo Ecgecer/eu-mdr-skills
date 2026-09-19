@@ -31,6 +31,41 @@ by reading transcripts, not by reading scores.
 
 ---
 
+## 2026-09-19: "the base model absorbed this skill", from one three-run sample
+
+For two days this repo's headline reading was that skills carrying statute held their
+value while `scope-statement`, which teaches discipline rather than carrying text, had
+been absorbed by an improving base model. The evidence was `unpinned-basis`, whose
+baseline arm appeared to go from 1/9 on CLI 2.1.268 to 3/3 on 2.1.274, taking the case
+from +0.89 to +0.00.
+
+Measured at nine runs on 2.1.277, the baseline is **1/9** and the case is **+0.89** again.
+
+  v2.1.267   1/3, 1/3
+  v2.1.268   0/3, 0/3, 2/3, 1/9
+  v2.1.274   3/3            <- three runs, the only sample that ever showed absorption
+  v2.1.277   1/9
+
+Six baseline passes out of 33 runs on three versions, and one 3/3 on the fourth. The
+absorption story rested entirely on that single three-run sample, and the repo's own
+METHOD says three runs cannot carry a claim like that. It was published in commit
+messages, in a memory file, and told to the user twice as a strategic finding.
+
+`scope-statement` is +0.30, not 0.00 and not -0.22. Its strongest case works.
+
+Two things this does not license. The 3/3 is not obviously noise either: against an 18%
+baseline its probability is about 0.006, so 2.1.274 may genuinely have differed and
+2.1.277 reverted. Both readings agree on the only thing that matters, which is that no
+claim about absorption survives contact with nine runs on the current model. And the
+wider correction that followed the first one, which held that the suite mean going to
+0.00 disproved absorption, was equally unfounded: it replaced one unmeasured story with
+another.
+
+The lesson is narrower than "be careful". Every wrong claim in this file that concerned
+a movement between measurements had the same shape: a difference between two runs was
+given a cause before the smaller run was repeated. Repeating the smaller run costs about
+$2 and settles it.
+
 ## 2026-09-18: a skill fix that did not work, kept visible
 
 `not-german-market` scored 0.00 in both arms because every response named MDR Art.

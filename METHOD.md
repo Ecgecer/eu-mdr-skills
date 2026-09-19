@@ -29,7 +29,7 @@ What it got wrong was where rules **stop**:
 | Applied a lay-audience advertising rule to a gated professional audience | 3 of 3 runs |
 | Answered "plan for a notified body" to a question the cited rule does not settle | 3 of 3 runs |
 | Manufactured findings on clean copy | 3 of 3 runs |
-| Invented an authority rather than asking which rule set was meant | 0 of 3 runs |
+| Invented an authority rather than asking which rule set was meant | 3 of 3 runs |
 <!-- method-failures:end -->
 
 Every one is plausible, well-reasoned, and wrong in a way you cannot detect from the
@@ -208,7 +208,7 @@ since; its current figure is in its own eval README rather than restated here. T
 ## What it costs
 
 <!-- eval-cost:start -->
-**$247 of eval spend so far**, across 64 stored runs of 5 suites and 30 cases, at 3 runs per case per arm. The largest single run (`device-claims`, 10 cases, both arms) was **$16.39** and took 97 minutes.
+**$250 of eval spend so far**, across 65 stored runs of 5 suites and 30 cases, at 3 runs per case per arm. The largest single run (`device-claims`, 10 cases, both arms) was **$16.39** and took 97 minutes.
 <!-- eval-cost:end -->
 
 Budget for re-running after every substantive change, because that is when a suite earns
