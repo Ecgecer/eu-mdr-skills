@@ -118,6 +118,73 @@ existing tooling.
 
 ---
 
+## Candidates: EUDAMED roll-out, Article 10a, clinical equivalence
+
+**Unmeasured. Written 2026-10-18, decided by the probe, not by this section.**
+
+These came out of an external review of the repo: a model-written roadmap proposing
+five skills, four new kinds of test, three distribution channels and a cross-vendor
+cost study. Each idea was checked against the evidence above. Most were turned down
+(see Rejected); three skills survive as probes, because they have the shape that has
+earned here before, a real rule over-applied, and because their text post-dates most
+training data, which the Art. 120 suite's text did not.
+
+| Candidate | Text | Why it might earn | Why it might not |
+|---|---|---|---|
+| `eudamed-mandatory-rollout` | Art. 123(3)(d)-(ec) MDR, Art. 113(3)(f)-(fd) IVDR as amended by 2024/1860; Decision (EU) 2025/2371 | the Decision is from November 2025; "every legacy device", "EUDAMED is mandatory" for modules it does not cover, one date for MDR and IVDR | `superseded-deadline` showed Opus tracks amended transition law well |
+| `article-10a-supply-interruption` | Art. 10a MDR, applicable since 10 January 2025 | a gated duty (serious harm, not custom-made, the manufacturer's own authority only) that invites over-application | one short article; a frontier model may simply know it |
+| `clinical-equivalence` | Art. 61(4)-(6), Annex XIV Part A Section 3 | the 61(5) contract over-applied to Class IIa; FDA substantial equivalence imported | the 61(5) contract rule is the best-known change MDR made |
+
+The external review got two dates wrong by a day (registration and certificate entry
+both put on the 28th, where the MDR counts to the 27th), placed the well-established
+technology exemption in 61(4) rather than 61(6), and described the 61(5) contract as
+blocking equivalence when it governs only whether equivalence lets an implantable or
+Class III device skip a clinical investigation. Those are the errors the candidate
+skills would exist to catch, made by the document proposing them.
+
+**The probe.** Thirteen cases in [`mdr-transition/roadmap-probe/`](mdr-transition/roadmap-probe/),
+graders quoting the operative text verbatim from EUR-Lex. The decision rule is written
+there before any result exists: build where the CLI-default baseline fails two of a
+candidate's cases in 3 of 3 runs, do not build where it passes them all.
+
+**Three candidate cases for existing suites**, outside `evals/` until measured:
+`premise-class-i-pressure` and `mdd-class-carryover` in
+[`mdr-classification/candidates/`](mdr-classification/candidates/), and
+`fda-clearance-not-nb-application` in [`mdr-transition/candidates/`](mdr-transition/candidates/).
+Pressure and jurisdiction-bleed are the shapes of `mdcg-bait` and `non-german-eu-market`,
+the repo's strongest cases.
+
+### The order to run it in
+
+```
+# 1. the probe, Claude, harness the tables use (~$5-10, as MPBetreibV was)
+cd mdr-transition && claude plugin eval . --eval-dir roadmap-probe --ablation with-without
+
+# 2. the candidates, both arms, since these skills exist
+cd mdr-classification && claude plugin eval . --eval-dir candidates --ablation with-without
+cd mdr-transition && claude plugin eval . --eval-dir candidates --ablation with-without
+
+# 3. the probe on a second vendor, baseline only, thinking pinned
+python3 scripts/run-benchmark.py --provider gemini --model <flash-tier> \
+    --probe-dir mdr-transition/roadmap-probe --thinking-level medium
+python3 scripts/judge-benchmark.py benchmark/runs/<run>.json
+python3 scripts/score-benchmark.py --score benchmark/runs/<run>.json
+
+# 4. the cross-vendor matrix the section below asks for: both arms, every case
+for arm in "" "--with-skill"; do
+  python3 scripts/run-benchmark.py --provider gemini --model <flash-tier> --thinking-level medium $arm
+  python3 scripts/run-benchmark.py --provider gemini --model <pro-tier>   --thinking-level medium $arm
+done
+```
+
+Steps 1 and 2 decide what gets built. Step 3 says whether a small model needs the
+reference text even where Opus does not. Step 4 is the first cross-vendor delta this repo
+will have; publish it per suite and per axis (`score-benchmark.py` prints both), not as a
+single "cheap model plus skills beats frontier" line, because MODELS.md already predicts
+the answer splits: detection transfers, boundary discipline does not.
+
+---
+
 ## Paid: nine runs for every number three could not carry
 
 Done 2026-09-18, $40.46, all on one pinned CLI version.
@@ -188,6 +255,33 @@ them. The knowledge cases will measure zero whatever you do.
 jurisdiction errors, so this looks attractive. But each existing skill already opens by
 establishing market and audience, and `non-german-eu-market` (+1.00) shows that machinery
 works where it exists. A standalone version would duplicate it.
+
+**From the 2026-10-18 external review, turned down:**
+
+- *An MDR and AI Act skill* (Art. 6(1) high-risk via notified-body involvement, Art.
+  43(3) single conformity assessment). The traps are real and boundary-shaped, but the
+  law is moving: the Digital Omnibus proposal to change the AI Act's high-risk dates was
+  in the legislature at the last check, and harmonised standards are not published. A
+  skill pinned to text that may be amended within months breaks the promise
+  `verify-sources.py` makes. Revisit once the Omnibus outcome is in the Official Journal.
+- *IVDR classification and companion diagnostics.* Knowledge-heavy, the shape that
+  measures zero on the default model. The one boundary piece, the Art. 5(5) in-house
+  justification date, was attributed by the review to 2024/1860; the delay comes from
+  Regulation (EU) 2022/112 as best this repo can tell, unverified here. Hospital labs are
+  also the MPBetreibV audience problem again.
+- *A GitHub Action that comments regulatory verdicts on pull requests.* It applies the
+  skills to a task none of their evals cover, code diffs, and its false positives would
+  train engineers to ignore it. That is the opposite of what this repo is for.
+- *An MCP server with a statute lookup tool.* `dist/` already serves every tool that
+  cannot read the repo. Build it when someone asks, not before.
+- *Multi-skill routing tests.* Real, `mpdg-germany`'s blind spot is one, but they
+  measure the harness's skill selection more than the skills.
+- *Context caching, OpenRouter, temperature 0.* Caching saves cents on a ~180-call matrix
+  and adds a variable between arms; OpenRouter's failover hides which backend answered;
+  temperature 0 is against Google's guidance for Gemini 3 and against the three-run
+  method. The review's latency diagnosis was also wrong for this repo: the 2026-09-11
+  Gemini arm died of a spent quota, not of reasoning loops. `run-benchmark.py` now aborts
+  on quota exhaustion instead of failing every remaining case.
 
 ---
 
