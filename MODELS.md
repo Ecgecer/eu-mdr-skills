@@ -145,8 +145,9 @@ way to know that until a model from another vendor ran against it.
 These verdicts are mine, recorded per response with reasons in
 [`benchmark/judgments/`](benchmark/judgments/). Two things about them:
 
-Twelve of the thirty cases carry criteria that assume the skill's output shape, so a
-baseline cannot satisfy them on format regardless of its reasoning. Those criteria were
+Seven of the thirty cases carry criteria that assume the skill's output shape, so a
+baseline cannot satisfy them on format regardless of its reasoning. (This paragraph said
+twelve until 2026-10-18; see CORRECTIONS.md.) Those criteria were
 disregarded and substance judged instead; the protocol is written into the judgments file.
 That defect was invisible while only Claude ran the benchmark.
 

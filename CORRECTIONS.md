@@ -31,6 +31,28 @@ by reading transcripts, not by reading scores.
 
 ---
 
+## 2026-10-18: a typed count of format-dependent criteria, 12 where the flag says 7
+
+**Published:** `benchmark/README.md` and MODELS.md said 12 of the 30 cases carry criteria
+that assume the skill's output shape.
+
+**Actually:** the `criteria_assume_skill_format` flag in `eu-mdr-bench.json`, computed
+from the graders by `export-benchmark.py`, marks **7**, all in `device-claims`. The
+number was typed into the generator's prose and into MODELS.md rather than counted from
+the flag, so nothing noticed when the two disagreed. The candidate explanation for the
+difference, `no-case-law-supplement` mentioning the Limits block and the `[verify]` tier,
+does not hold: it cites them as things a passing answer may contain, not as conditions a
+baseline must meet.
+
+**Fix:** the README figure is generated from the flag. MODELS.md now says seven and points
+here. The Gemini judgments from 2026-09-11 are unaffected in substance: their protocol
+was to judge substance on every case, which is the right treatment for all thirty.
+
+**What this says about the method:** it is the same failure as the row "Counts and ranges
+typed into prose, drifting" in the table above, in a file that row's fix did not reach.
+
+---
+
 ## 2026-09-19: "the base model absorbed this skill", from one three-run sample
 
 For two days this repo's headline reading was that skills carrying statute held their
@@ -419,6 +441,7 @@ are the places that quote the claim in order to retract it.
 <!-- retracted-re: "(applying|applied|apply(ing)?)\s+German\s+(national\s+)?law\s+to\s+a\s+French-market asset" -->
 <!-- retracted: "All ten score 1.00 with the skill" -->
 <!-- retracted: "7/7 cases pass" -->
+<!-- retracted-re: "(12|[Tt]welve)\s+of\s+(these|the)\s+(30|thirty)\s+cases\s+carry\s+criteria" -->
 
 ---
 
