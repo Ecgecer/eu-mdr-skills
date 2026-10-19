@@ -75,6 +75,26 @@ For each candidate, on the **Claude CLI default** baseline:
   result in ROADMAP the way MPBetreibV was recorded.
 - **In between**, re-run the ambiguous cases at nine runs before deciding.
 
+**The nine-run step, fixed 2026-10-19 after the three-run result and before any nine-run
+result exists.** The three-run rule above did not say how to read nine runs, so this does:
+
+- A case **fails** if its baseline fails at least **6 of 9** runs. At a true failure rate
+  of 30% that happens 2% of the time, at 50% 25%, at 70% 73%: it separates "usually
+  fails" from an occasional slip without missing a case that usually fails.
+- **Build** if at least two of the candidate's cases fail, counting cases that already
+  failed 3 of 3. **Do not build** otherwise. Nine runs is final; there is no third zone
+  and no further re-run.
+- **A run counts as a failure only if two graders agree.** The harness judge's score
+  stays the published score. Every failed baseline run is re-graded blind by a separate
+  model given only the grader criteria and the response, not the judge's verdict. Where
+  they disagree, the run does not count toward the decision and the disagreement is
+  reported with its reason. The three-run result showed why: `eudamed-nb-enters-certificates`
+  failed two runs that meet both of its criteria on a plain reading.
+- Only what a grader tests counts. Errors a case does not grade (wrong dates in a
+  certificate case, say) are reported as evidence, not scored.
+- The two-case bar stands even where one case fails badly. A single severe miss is
+  recorded as its own question, not read as meeting the rule.
+
 Separately, if **Haiku** or a flash-tier model fails the detection cases (`03` and
 `06`, the two tagged `detection`) that Opus passes, record it. MODELS.md found that reference text transfers
 to small models where discipline does not, so a reference-only skill may be justified
