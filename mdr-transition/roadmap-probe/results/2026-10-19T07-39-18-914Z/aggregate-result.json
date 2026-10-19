@@ -1,0 +1,569 @@
+{
+  "schemaVersion": 1,
+  "claudeVersion": "2.1.303",
+  "startedAt": "2026-10-19T07:39:18.914Z",
+  "durationSeconds": 271,
+  "costUsd": 2.3933289999999996,
+  "partial": false,
+  "suite": {
+    "root": "/Users/egecangecer/projects/eu-mdr-skills/mdr-transition",
+    "ablation": "with-without",
+    "caseFilter": "eudamed-mdr-ivdr-anchor",
+    "threshold": 1,
+    "concurrency": 3,
+    "plugins": [
+      {
+        "name": "mdr-transition",
+        "version": "0.1.0",
+        "path": "/Users/egecangecer/projects/eu-mdr-skills/mdr-transition"
+      }
+    ]
+  },
+  "cases": [
+    {
+      "name": "eudamed-mdr-ivdr-anchor",
+      "dir": "roadmap-probe/03-eudamed-mdr-ivdr-anchor",
+      "source": "prose",
+      "promptMarkdown": "We have two legacy products that we are still placing on the EU market: a Class IIa\nmedical device under an MDD certificate, and an IVD under an IVDD certificate. Neither\nhas an MDR or IVDR successor registered yet.\n\nWhat is the last day by which each must be registered in EUDAMED, and what is each\ndeadline counted from? I need the legal basis for both, not just a date.",
+      "runsPerCase": 3,
+      "timeoutSeconds": 300,
+      "maxTurns": 10,
+      "graders": [
+        {
+          "name": "criteria",
+          "type": "llm",
+          "weight": 1,
+          "graderMarkdown": "The two deadlines are set by different provisions and counted from different anchors.\nBoth verbatim from Regulation (EU) 2024/1860 (retrieved from EUR-Lex 2026-10-18).\n\nMDR Art. 123(3)(e):\n> no later than **12 months from the date of publication of the notice** referred to in\n> Article 34(3) [...]\n\nIVDR Art. 113(3)(fa):\n> no later than **6 months from the date set out in point (f), first subparagraph**, of\n> this paragraph [...]\n\nPoint (f) is the date the electronic-system obligations apply: 6 months from\npublication of the notice. The notice is Commission Decision (EU) 2025/2371, OJ\n27.11.2025. So the MDR device is due 12 months from 27 November 2025, and the IVD 6\nmonths from the mandatory-use date (28 May 2026). Both land in late November 2026.\n\nPASS requires:\n(1) Both deadlines placed in late November 2026, and\n(2) separate legal bases named: MDR Art. 123 for the device and IVDR Art. 113 for the\n    IVD (point letters not required), with the anchor for each stated or the difference\n    acknowledged.\n\nDo not fail on the day of the month. Under Regulation (EEC, Euratom) No 1182/71, 12\nmonths from publication on 27 November 2025 ends at the close of 27 November 2026, and\nthe IVD date sits a day either side of that depending on how the anchor is read. Record\nin the reason which days the response gave; that observation is part of the\nmeasurement.\n\nFAIL if it gives one date for both without distinguishing MDR and IVDR bases. FAIL if\neither deadline is placed in 2027 or later, or is reasoned from the superseded rule\n(registration due once all EUDAMED modules are functional, or within 18 months). FAIL if\nit substitutes an IVDR Art. 110 transition date (certificate validity or market\ndeadline) for the registration deadline.",
+          "config": {
+            "criteria": "The two deadlines are set by different provisions and counted from different anchors.\nBoth verbatim from Regulation (EU) 2024/1860 (retrieved from EUR-Lex 2026-10-18).\n\nMDR Art. 123(3)(e):\n> no later than **12 months from the date of publication of the notice** referred to in\n> Article 34(3) [...]\n\nIVDR Art. 113(3)(fa):\n> no later than **6 months from the date set out in point (f), first subparagraph**, of\n> this paragraph [...]\n\nPoint (f) is the date the electronic-system obligations apply: 6 months from\npublication of the notice. The notice is Commission Decision (EU) 2025/2371, OJ\n27.11.2025. So the MDR device is due 12 months from 27 November 2025, and the IVD 6\nmonths from the mandatory-use date (28 May 2026). Both land in late November 2026.\n\nPASS requires:\n(1) Both deadlines placed in late November 2026, and\n(2) separate legal bases named: MDR Art. 123 for the device and IVDR Art. 113 for the\n    IVD (point letters not required), with the anchor for each stated or the difference\n    acknowledged.\n\nDo not fail on the day of the month. Under Regulation (EEC, Euratom) No 1182/71, 12\nmonths from publication on 27 November 2025 ends at the close of 27 November 2026, and\nthe IVD date sits a day either side of that depending on how the anchor is read. Record\nin the reason which days the response gave; that observation is part of the\nmeasurement.\n\nFAIL if it gives one date for both without distinguishing MDR and IVDR bases. FAIL if\neither deadline is placed in 2027 or later, or is reasoned from the superseded rule\n(registration due once all EUDAMED modules are functional, or within 18 months). FAIL if\nit substitutes an IVDR Art. 110 transition date (certificate validity or market\ndeadline) for the registration deadline.",
+            "focus": "last_message"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 5,
+            "costUsd": 0.1784215,
+            "judgeCostUsd": 0.0008411,
+            "durationSeconds": 51,
+            "startedAt": "2026-10-19T07:39:18.988Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-BHLTfz/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "judge votes: FAIL FAIL FAIL",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  false,
+                  false,
+                  false
+                ],
+                "evidence": "I can't give you either date with a legal basis I've verified, and I won't give you dates from memory.\n\n**What I could verify.** The reference text I have is MDR Article 120(3)–(3d) as amended by Regulation (EU) 2023/607 (OJ L 80, 20.3.2023). For your Class IIa MDD device it shows two things:\n\n- **The registration duty applies to legacy devices.** Article 120(3d) says MDR's requirements on \"registration of economic operators and of devices\" apply to 3a/3b devices \"in place of the corresponding requirements in Directives 90/385/EEC and 93/42/EEC.\" So the device must be registered under MDR rules.\n- **Its market deadline is 31 December 2028** (Art. 120(3a)(b), Class IIa). That only holds if all five conditions in 120(3c) were met, including a quality management system by 26 May 2024, a notified-body application by 26 May 2024, and a signed written agreement by 26 September 2024. If any was missed, the device has no extension and the registration question doesn't arise in the same way.\n\n**What I can't verify.** Article 120(3d) says registration applies, but not when the EUDAMED registration obligation starts or how long legacy devices get. Those rules are elsewhere:\n\n1. **MDR (Class IIa device):** the transitional provisions on EUDAMED in **MDR Article 123(3)**, as amended by **Regulation (EU) 2024/1860** (the EUDAMED gradual-rollout amendment). As I understand it, the deadline is a set period counted from the date the registration module became mandatory. That date is itself tied to the Commission's Official Journal notice that the module works (MDR Art. 34(3)). So you need both the amended Article 123(3) text and the OJ notice with its publication date.\n2. **IVDR (IVDD device):** the parallel provisions in **IVDR Article 113(3)**, also amended by 2024/1860. The IVDD legacy device's status depends on **IVDR Article 110**, which has its own transition dates. I have neither text here.\n\nI'm deliberately not giving the length of the period or a calendar date for either product. Getting this wrong means a registration failure, and the only basis I'd have is recall.\n\n**How to close it:** paste the following and I'll work out both deadlines, with the date each is counted from, citing the text:\n- MDR Art. 123(3) as amended by 2024/1860\n- IVDR Art. 113(3) as amended by 2024/1860\n- IVDR Art. 110(3) as currently in force\n- the OJ notice on EUDAMED functionality, with its publication date\n\nPlease also confirm whether the Class IIa device met the 120(3c) conditions.\n\nThis is a first-pass aid, not legal or regulatory advice. Confirm the final dates with your notified body or a qualified regulatory professional."
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 5,
+            "costUsd": 0.1500402,
+            "judgeCostUsd": 0.0006571999999999999,
+            "durationSeconds": 49,
+            "startedAt": "2026-10-19T07:39:18.988Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-d67a8X/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "judge votes: FAIL FAIL FAIL",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  false,
+                  false,
+                  false
+                ],
+                "evidence": "I can't give you either date with a legal basis I can cite. Neither deadline is in the source text I have.\n\n**What I could confirm.** The only reference I have is MDR Article 120(3)–(3d) as amended by Regulation (EU) 2023/607 (OJ L 80, 20.3.2023). For your Class IIa MDD device, Article 120(3d) says that during the transition, MDR's rules on registration of economic operators and of devices apply to legacy devices **instead of** the Directive's rules:\n\n> \"the requirements of this Regulation relating to post-market surveillance, market surveillance, vigilance, registration of economic operators and of devices shall apply to devices referred to in paragraphs 3a and 3b of this Article in place of the corresponding requirements in Directives 90/385/EEC and 93/42/EEC.\"\n\nSo the Class IIa device does have to be registered under MDR. That provision does not say **by when**, or what the clock runs from.\n\n**What I couldn't confirm:**\n\n1. **The EUDAMED deadline for the MDD device.** It comes from MDR's transitional rules for EUDAMED (Article 123, as amended by Regulation (EU) 2024/1860, the EUDAMED roll-out amendment). I don't have that text.\n2. **The IVDD device, in full.** The IVD rules are a separate track: IVDR's own transitional provisions (Article 110 for the transition, Article 113 for EUDAMED, also amended by 2024/1860). Their timing doesn't simply copy MDR's. I don't have any of that text.\n\nI'm not giving you dates from memory. You asked for the legal basis, and a remembered date for a deadline counted from a variable start point is exactly the kind of answer that sounds right and is off.\n\n**Where to look.** Both deadlines are tied to the Commission notice in the Official Journal saying the relevant EUDAMED modules work, not to a fixed calendar date. You need two things:\n- the operative paragraphs of Regulation (EU) 2024/1860, for MDR Article 123(3) and IVDR Article 113(3), covering legacy devices and devices without a registered successor;\n- the OJ publication date of that Commission notice.\n\nIf you paste those provisions and the notice reference, I'll work out both dates from them and cite each one to the paragraph. Today is 19 October 2026, so the window may be short or already running. Please confirm this soon with your regulatory lead or notified body.\n\n*This is a first-pass aid, not legal or regulatory advice.*"
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 5,
+            "costUsd": 0.13868540000000001,
+            "judgeCostUsd": 0.0005208000000000001,
+            "durationSeconds": 39,
+            "startedAt": "2026-10-19T07:39:18.988Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-q6PQkU/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "judge votes: FAIL FAIL FAIL",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  false,
+                  false,
+                  false
+                ],
+                "evidence": "I can't give you a reliable date for either product. The provisions that set these deadlines aren't in the source I can check, and guessing from memory is how you'd get a confident wrong answer.\n\n## What the source I have does establish\n\n**Class IIa device under an MDD certificate:** MDR Article 120(3d), as amended by Regulation (EU) 2023/607 (OJ L 80, 20.3.2023), says the MDR's rules on \"registration of economic operators and of devices\" apply to legacy devices **in place of** the old Directive's rules. So your device does fall under the MDR's EUDAMED registration duty while it is sold under its MDD certificate.\n\nThat text tells you the duty exists. It does not say by when you must register or what the clock starts from.\n\n## What actually answers your question, and isn't in my source\n\n| Product | Where the deadline and its start point come from | Status |\n|---|---|---|\n| Class IIa (MDD) | The EUDAMED transition rules in **MDR Article 123(3)**, as amended by **Regulation (EU) 2024/1860**. The start point is tied to the Commission notice in the Official Journal saying a EUDAMED module works (MDR Art. 34). | Not checked |\n| IVD (IVDD) | **IVDR Article 113(3)**, as amended by **Regulation (EU) 2024/1860**, together with the IVDR transition rules in **Article 110**. It runs on its own timeline, which is different from the MDR's. | Not checked |\n\nTwo points will decide your answer:\n\n1. **There may be different deadlines for different devices.** I believe the 2024/1860 amendments give devices that have no MDR/IVDR successor their own registration window, separate from the one for devices placed on the market after a module becomes mandatory. Both your products have no successor yet, so that would be your case. I can't confirm the length of that window or its exact wording, so don't rely on this.\n2. **The start date is a publication, not a fixed date.** The countdown runs from when the Commission's notice for the relevant EUDAMED module appears in the OJ. You need that notice, not just the amending Regulation.\n\n## The quickest way to a cited answer\n\nSend me:\n- Regulation (EU) 2024/1860, Articles 1 and 2 (the amendments to MDR Art. 123 and IVDR Art. 113)\n- the OJ notice(s) on which EUDAMED modules are working (actor registration and UDI/device registration)\n\nWith those I can give you both dates, what each is counted from, and the exact paragraph behind each.\n\n**This may be urgent.** It's now October 2026. If the module notices came out in late 2025 or early 2026, your deadlines may be close or may already have passed. Check this now, either with your regulatory team or directly in the OJ.\n\nThis is a first-pass aid, not legal or regulatory advice. Confirm it with a qualified regulatory professional before you rely on it."
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 5,
+            "costUsd": 0.13851770000000002,
+            "judgeCostUsd": 0.0005042999999999998,
+            "durationSeconds": 32,
+            "startedAt": "2026-10-19T07:39:57.916Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-ayqb7B/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "judge votes: FAIL FAIL FAIL",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  false,
+                  false,
+                  false
+                ],
+                "evidence": "I can't give you either date with a legal basis I can actually point to, and since you asked for the basis, I'm not going to guess.\n\n## What I can confirm\n\n**The MDD Class IIa device: MDR registration rules apply to it.** MDR Article 120(3d), as amended by Regulation (EU) 2023/607 (OJ L 80, 20.3.2023), says that for legacy devices under 120(3a)/(3b):\n\n> the requirements of this Regulation relating to post-market surveillance, market surveillance, vigilance, **registration of economic operators and of devices** shall apply … in place of the corresponding requirements in Directives 90/385/EEC and 93/42/EEC.\n\nSo your Class IIa device must be registered under the MDR, not under the old Directive. Separately, under 120(3a)(b) a Class IIa device can stay on the market until **31 December 2028**. That only holds if all the conditions in 120(3c) were met, including a quality management system in place by 26 May 2024, a formal application lodged with a notified body by 26 May 2024, and a written agreement signed by 26 September 2024.\n\n## What I can't confirm\n\n- **The EUDAMED deadline itself and what it's counted from.** Article 120(3d) makes registration apply but doesn't set a deadline. The deadline comes from Regulation (EU) 2024/1860, which amended the MDR's transitional provisions (around Article 123) to phase in EUDAMED module by module. The clock depends on when the Commission publishes a notice in the Official Journal that the relevant EUDAMED modules are working. I don't have the text of 2024/1860 or that notice in front of me. A date from memory could be wrong, and since we're now in October 2026 that deadline may already be close or past.\n- **The IVDD device.** This is governed by IVDR Article 110, plus the IVDR changes made by the same Regulation 2024/1860. The IVD rules run on their own timetable and I have none of that text either.\n\n## How to get the answer\n\n1. **Regulation (EU) 2024/1860**: the article amending MDR Article 123 and the matching IVDR provisions (around Articles 110 and 113). You need the wording on registering legacy devices and how long you have after the start date.\n2. **The Commission notice in the OJ** confirming the EUDAMED modules are functional. Its publication date is what starts the clock.\n3. **IVDR Article 110** as currently amended, to confirm your IVDD device is still lawfully on the market.\n\nIf you paste those in, I'll give you both deadlines with the exact clause behind each, including what each one is counted from.\n\n*This is a first-pass aid, not legal advice. Check the final dates with your notified body or regulatory counsel.*"
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 5,
+            "costUsd": 0.15727720000000003,
+            "judgeCostUsd": 0.0005148000000000002,
+            "durationSeconds": 39,
+            "startedAt": "2026-10-19T07:40:08.164Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-4B33sw/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "judge votes: FAIL FAIL FAIL",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  false,
+                  false,
+                  false
+                ],
+                "evidence": "I can't give you either date with a citation I'd stand behind. Neither deadline is in the source text I have checked, and you asked for the legal basis, so I'd rather not give you a date from memory. Here is what I can confirm, and where the dates actually come from.\n\n## What I can confirm\n\n**MDD Class IIa device.** MDR Article 120(3d), as amended by Regulation (EU) 2023/607 (OJ L 80, 20.3.2023), says that MDR's rules on registering economic operators and devices apply to legacy devices instead of the old Directive's rules:\n\n> \"...the requirements of this Regulation relating to post-market surveillance, market surveillance, vigilance, **registration of economic operators and of devices** shall apply to devices referred to in paragraphs 3a and 3b...\"\n\nSo the device has to be registered under MDR. But Article 120 doesn't set the registration deadline. It only establishes that the obligation exists.\n\nFor context, a Class IIa legacy device can stay on the market until **31 December 2028** (Art. 120(3a)(b)). That only holds if all five conditions in Art. 120(3c) were met, including a quality management system and a formal notified-body application by 26 May 2024, and a signed written agreement by 26 September 2024. If the device didn't qualify, the registration question doesn't arise.\n\n**IVDD device.** I have nothing verified for this one. The IVD transition runs on its own timetable under IVDR Articles 110 and 113.\n\n## Where the deadlines come from (not checked here)\n\n- **The provisions:** MDR Article 123(3) and IVDR Article 113(3), both amended by **Regulation (EU) 2024/1860**. That regulation brought in the gradual roll-out of EUDAMED. It also contains the transitional registration windows for devices already on the market, including legacy devices without an MDR or IVDR successor registered.\n- **The starting point:** the registration obligations become mandatory a set period after the Commission publishes a notice in the Official Journal confirming that the relevant EUDAMED modules work (MDR Art. 34(3), and the IVDR equivalent). Legacy devices then get a further window counted from that date. So you need two things: the notice's publication date and the length of the legacy window in the amended Article 123 / 113.\n\nI'm not giving you the window length or the resulting date. I'm not sure enough of the exact figures, and an error of a few months is the kind of mistake that matters here.\n\n## Next step\n\nIf you paste the amended text of MDR Art. 123(3) and IVDR Art. 113(3) from Regulation 2024/1860, plus the OJ reference of the EUDAMED notice, I'll work out both deadlines with exact citations. Otherwise your regulatory affairs team or notified body can confirm them.\n\nThis isn't legal or regulatory advice."
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 5,
+            "costUsd": 0.1522206,
+            "judgeCostUsd": 0.0008690000000000004,
+            "durationSeconds": 54,
+            "startedAt": "2026-10-19T07:40:09.826Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-qmumXZ/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "judge votes: FAIL FAIL FAIL",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  false,
+                  false,
+                  false
+                ],
+                "evidence": "I can't give you either date with a citation I can stand behind. Here is what I can confirm, what's missing, and where the answer is.\n\n## What I can confirm\n\n**MDD Class IIa device: the duty to register applies, but the deadline isn't in my source.**\n\nMDR Article 120(3d), as amended by Regulation (EU) 2023/607 (OJ L 80, 20.3.2023):\n\n> \"…the requirements of this Regulation relating to post-market surveillance, market surveillance, vigilance, **registration of economic operators and of devices** shall apply to devices referred to in paragraphs 3a and 3b of this Article in place of the corresponding requirements in Directives 90/385/EEC and 93/42/EEC.\"\n\nSo your legacy Class IIa device is subject to MDR registration, not the MDD regime. But 120(3d) only says *that* the MDR registration rules apply. It doesn't say *when* EUDAMED registration becomes mandatory, or what that deadline is counted from. That is set elsewhere in the MDR, outside the text I have.\n\nSeparately: on class alone, this device can stay on the market until **31 December 2028** (Art. 120(3a)(b)). That only holds if all the conditions in 120(3c) were met, including a quality management system in place by 26 May 2024, a formal notified-body application lodged by 26 May 2024, and a written agreement signed by 26 September 2024. If any of those was missed, the extension never applied, and the registration question changes too.\n\n**IVDD device: nothing.** The IVD side runs under the IVDR on its own transition clock. My reference text covers only MDR Article 120. I'd only be guessing at dates and their trigger, so I won't.\n\n## Where the answer is\n\nFrom memory, and not checked against the text: the EUDAMED timing rules are in the transitional provisions as amended by **Regulation (EU) 2024/1860**. For devices that's MDR Article 123(3). For IVDs it's the matching IVDR provision, which I believe is Article 113. Under that scheme:\n- each EUDAMED module becomes mandatory a set period after the Commission publishes a notice in the Official Journal that the module works;\n- legacy devices with no MDR/IVDR successor get a separate, longer period to register, counted from that point.\n\nSo each deadline is probably counted from the date a Commission notice was published, not from a fixed date in the Regulation. That's exactly why I don't want to give you a date from recall. Both the length of the period and the notice date need to be checked against the OJ.\n\n## To get you an answer with the legal basis\n\nPaste any of these and I'll work from the text, quoted verbatim:\n1. MDR Article 123(3) as amended by Regulation (EU) 2024/1860\n2. The matching IVDR transitional provision (likely Article 113(3)) as amended by 2024/1860\n3. The Commission notice or decision on EUDAMED functionality, so we have the date the count starts from\n\nAlso confirm the MDD device's 120(3c) status, since the market-access position underneath the registration duty depends on it.\n\nThis is a first-pass aid, not legal or regulatory advice. Check the final dates with your notified body or a qualified regulatory professional."
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 5,
+            "costUsd": 0.1455394,
+            "judgeCostUsd": 0.0006602000000000005,
+            "durationSeconds": 33,
+            "startedAt": "2026-10-19T07:40:29.444Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-ZJcJv2/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "judge votes: FAIL FAIL FAIL",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  false,
+                  false,
+                  false
+                ],
+                "evidence": "I can't give you either date with a legal basis I can stand behind, so I'm not going to give you dates.\n\n**What I can confirm from the source text I have:** MDR Article 120(3d), as amended by Regulation (EU) 2023/607 (OJ L 80, 20.3.2023), says the MDR's registration requirements, for both economic operators and devices, apply to legacy devices under 120(3a) and 120(3b) instead of the MDD's. That covers your Class IIa MDD device, which falls under 120(3a). So it does have to be registered under MDR rules. But 120(3d) sets no deadline and doesn't say what any deadline is counted from.\n\n**What the answer depends on, which I don't have:**\n\n- **MDD Class IIa device:** the EUDAMED transitional provisions in MDR Article 123, as amended by Regulation (EU) 2024/1860 (the gradual EUDAMED roll-out amendment). That's where the legacy-device registration period and its starting point are set.\n- **IVDD device:** the matching provisions in IVDR Article 113, also amended by 2024/1860, read together with IVDR Article 110. The IVD transition runs on its own dates, so you can't assume it matches the MDR side.\n- **For both:** the Commission notice in the Official Journal declaring the relevant EUDAMED modules functional. The registration obligations become applicable a set time after that notice is published. So you need its publication date, not just the regulation text, to work out an actual calendar date.\n\nI'm leaving out dates from memory deliberately. You asked for the legal basis, and this is exactly the kind of question where recalled dates and counting rules go wrong. If you paste the amended text of Article 123(3) from the MDR, Article 113(3) from the IVDR, and the EUDAMED notice (or its OJ reference), I'll work out both deadlines with exact citations.\n\n**Separate from registration:** your Class IIa device can only stay on the market until **31 December 2028** (Art. 120(3a)(b)) if all five conditions in 120(3c) were met. Those include a quality management system in place by 26 May 2024, an application lodged with a notified body by 26 May 2024, and a written agreement signed by 26 September 2024. If any of those was missed, the extension never applied, and registration is the smaller problem.\n\nThis is a first pass, not legal or regulatory advice. Check the final dates with your notified body or a regulatory professional."
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 5,
+            "costUsd": 0.1424617,
+            "judgeCostUsd": 0.0005241,
+            "durationSeconds": 33,
+            "startedAt": "2026-10-19T07:40:47.325Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-NB20Mr/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "judge votes: FAIL FAIL FAIL",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  false,
+                  false,
+                  false
+                ],
+                "evidence": "I can't give you a sourced date for either device. The only legal text I have here is MDR Article 120(3)–(3d) as amended by Regulation (EU) 2023/607. That text says legacy devices must be registered, but it doesn't say by when, and it doesn't cover IVDs at all. I could give you dates from memory, but you asked for the legal basis, and I won't hand you dates I can't cite.\n\n## What the text I have supports\n\n**MDR Class IIa device on an MDD certificate**\n\n| Question | Answer | Basis |\n|---|---|---|\n| Does MDR device registration apply to a legacy device? | Yes. MDR's rules on registering economic operators and devices apply \"in place of the corresponding requirements\" in 93/42/EEC | MDR Art. 120(3d), as amended by 2023/607 `[verified]` |\n| How long it can stay on the market | Until **31 December 2028** (Class IIa), but only if all five conditions in 120(3c) are met | Art. 120(3a)(b), (3c) `[verified]` |\n| Last day to register in EUDAMED, and what it's counted from | **Not in the text I have** | — |\n\nThe 2028 date depends on conditions with past deadlines: a quality management system in place by 26 May 2024, a formal application to a notified body lodged by 26 May 2024, and a written agreement with the notified body signed by 26 September 2024. If any of these was missed, the extension never applied, and there is nothing to register under it. Please confirm all three before relying on the 2028 date.\n\n**IVD on an IVDD certificate:** Nothing I have covers this. IVDs follow a separate transition under IVDR Article 110, with different dates.\n\n## Where the answer is (I haven't checked these)\n\nThese are pointers for you to check, not citations:\n\n- **EUDAMED registration timing** comes from Regulation (EU) 2024/1860, which changed how EUDAMED's registration duties start. For devices it amended MDR Article 123(3); the IVDR has a matching provision. As I understand it, the deadline isn't counted from your certificate date. It's counted from a Commission notice in the Official Journal confirming the relevant EUDAMED modules work, and legacy devices get a longer period than new devices. Please check that against the text itself.\n- **Legacy IVD market rules**: IVDR Article 110 as amended by Regulations (EU) 2022/112 and 2024/1860.\n- **The start date**: the Commission notice in the Official Journal on EUDAMED module functionality. Its publication date is what the counting runs from.\n\nIf you paste the amended MDR Art. 123(3), the matching IVDR provision and the Commission notice, I'll work out the exact last day for each product and show the count. Article 110 as well would let me check the IVD's market deadline.\n\nThis isn't legal or regulatory advice. Check the final dates with your notified body or a qualified regulatory professional."
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 5,
+            "costUsd": 0.1484823,
+            "judgeCostUsd": 0.0005349000000000005,
+            "durationSeconds": 49,
+            "startedAt": "2026-10-19T07:41:02.354Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-0dZKK5/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "judge votes: FAIL FAIL FAIL",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  false,
+                  false,
+                  false
+                ],
+                "evidence": "I can't give you either date with a citation I'm confident in, so I haven't given dates. Here is what I can confirm and what's missing.\n\n## What the source text confirms\n\n**The MDD Class IIa device is subject to MDR registration.** Article 120(3d) of the MDR, as amended by Regulation (EU) 2023/607 (OJ L 80, 20.3.2023), says:\n\n> \"the requirements of this Regulation relating to post-market surveillance, market surveillance, vigilance, **registration of economic operators and of devices** shall apply to devices referred to in paragraphs 3a and 3b of this Article in place of the corresponding requirements in Directives 90/385/EEC and 93/42/EEC.\"\n\nSo the device must be registered under MDR rules, not the old MDD rules. But that provision only says *which* rules apply. It doesn't set a registration date.\n\n**Related point: the legacy Class IIa device can stay on the market until 31 December 2028 at the latest** (Art. 120(3a)(b)). That holds only if all five conditions in Art. 120(3c) were met. Two of them have already passed:\n- a quality management system in place by 26 May 2024;\n- a formal application lodged with a notified body by 26 May 2024, and a written agreement signed by 26 September 2024.\n\nIf any of those was missed, the extension never applied, and the registration question matters less than whether the device can lawfully be on the market at all.\n\n## What I don't have\n\nThe actual EUDAMED deadline, and what it is counted from, is set elsewhere. None of these provisions are in the source text I'm working from:\n\n- **MDR device:** the EUDAMED transitional provisions in **MDR Article 123(3)**, as amended by **Regulation (EU) 2024/1860** (the gradual EUDAMED roll-out). Under that amendment the clock is tied to the Commission's notice in the Official Journal that the relevant EUDAMED modules work, not to a fixed calendar date. So you also need **the date that notice was published**.\n- **IVD device:** the parallel provisions in **IVDR Article 113(3)**, as amended by the same Regulation 2024/1860, plus the legacy rules in **IVDR Article 110**. The IVD transition has its own dates, and I won't fill them in from memory.\n\nThe two deadlines may look similar but are counted under different articles. If I gave you dates from recall, you'd have an answer that looks cited but isn't, which is the wrong thing to give a regulatory file.\n\n## How to close this\n\nIf you paste these, I can give you both deadlines with exact paragraph references:\n1. the consolidated text of MDR Art. 123(3) and IVDR Art. 113(3) as amended by Regulation 2024/1860;\n2. the Commission notice(s) on EUDAMED module functionality, with their OJ publication dates.\n\nSince both products are on the market now with no MDR/IVDR successor registered, the window may already be running. Please also check this with your regulatory lead or notified body. This is a first-pass aid, not legal advice."
+              }
+            ]
+          }
+        ],
+        "without": [
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0.1044459,
+            "judgeCostUsd": 0.0005564999999999997,
+            "durationSeconds": 38,
+            "startedAt": "2026-10-19T07:41:04.321Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-aQs3yV/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "judge votes: FAIL FAIL FAIL",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  false,
+                  false,
+                  false
+                ],
+                "evidence": "# EUDAMED registration deadlines for MDD and IVDD legacy devices\n\n**Short answer:** Both deadlines are counted from the same date and run for the same length. Each product must be registered within 12 months of the date EUDAMED registration became mandatory. That date is 6 months after the Commission published its notice that the modules work. On my reading this puts both deadlines at about 27/28 May 2027.\n\nI had no access to EUR-Lex in this session, so all of this comes from memory. Check the citations against the consolidated texts before you rely on them.\n\n## Legal basis\n\n**Regulation (EU) 2024/1860** amended the transitional provisions so that EUDAMED could become mandatory one module at a time, instead of waiting until the whole system was finished:\n\n- **MDR:** Article 123(3)(d)–(e) of Regulation (EU) 2017/745, as amended.\n- **IVDR:** Article 113(3)(f)–(g) of Regulation (EU) 2017/746, as amended. The paragraph lettering differs from the MDR, but the mechanism is the same.\n\n## What each deadline is counted from\n\n1. **The trigger.** The Commission publishes a notice in the Official Journal that a module is fully functional (MDR Art. 34(3), applied through Art. 123(3)(d)). For the first four modules, including actor registration, UDI/device registration, and notified bodies and certificates, this was **Commission Decision (EU) 2025/2371, published 27 November 2025**.\n2. **The date of application.** Registration obligations apply from **6 months after that publication**, which is **late May 2026** (the Commission has said 28 May 2026).\n3. **The legacy device deadline.** Devices that are still placed on the market under Art. 120 MDR / Art. 110 IVDR must be registered **within 12 months of the date in step 2**. That gives roughly **27/28 May 2027** for both of your products.\n\n   The obligation ends if an MDR or IVDR \"successor\" device is registered before the deadline. In that case the legacy device does not have to be registered.\n\n   For comparison, MDR and IVDR devices already on the market before the date of application have a shorter window of **6 months**, which ended around 28 November 2026. That one does not apply to your two products.\n\n## Points to check\n\n- **Exact day.** Read the \"six months after publication\" rule together with Regulation 1182/71 on calculating time periods, and check the Commission's published date. It is 27 or 28 May depending on how the period is counted.\n- **Letter numbering.** The point letters in IVDR Art. 113(3) are the citation I'm least sure about. Confirm them in the consolidated text.\n- **Proposed changes.** The Commission proposed a targeted revision of the MDR and IVDR in December 2025. If it has been adopted, or progressed, since then, it could change these provisions. Check its status before you treat May 2027 as final.\n- **Prerequisites.** Before you can register either device you need an SRN (actor registration). Under the legacy rules you also register the MDD or IVDD certificate data, and the IVD needs a notified body certificate.\n\nSince today is 19 October 2026, you have about seven months for both products. Registering early avoids risk around the exact day the deadline falls on."
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 2,
+            "costUsd": 0.12996950000000002,
+            "judgeCostUsd": 0.0006445000000000001,
+            "durationSeconds": 45,
+            "startedAt": "2026-10-19T07:41:20.069Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-Gqgy4N/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "judge votes: FAIL FAIL FAIL",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  false,
+                  false,
+                  false
+                ],
+                "evidence": "I don't have the OJ texts available here, and nothing in your workspace covers this, so the answer below comes from memory. The legal structure is solid. Check the exact calendar date and the point lettering against the consolidated texts before you rely on them in a regulatory file.\n\n## How the deadline is set (both products)\n\nRegulation (EU) 2024/1860 (OJ L, 9 July 2024) amended the MDR and IVDR so EUDAMED becomes mandatory module by module. Before that, nothing was mandatory until the whole system was declared functional.\n\n1. **Trigger:** the Commission publishes a notice in the OJ under **Article 34(3) MDR** confirming that a EUDAMED module works. That notice also triggers the IVDR, through the IVDR's cross-reference to the MDR system.\n2. **Mandatory-use date:** the module's obligations apply **6 months after that notice is published**. See **Art. 123(3)(d) MDR** and **Art. 113(3)(f) IVDR**, both as amended by 2024/1860.\n3. **Legacy-device registration:** devices still placed on the market under an MDD/AIMDD or IVDD certificate must be registered in the UDI/device registration module **within 12 months of the mandatory-use date in step 2**. This applies only if no MDR/IVDR device that replaces it has been registered first. The provisions are the transitional points added to **Art. 123(3) MDR** and **Art. 113(3) IVDR** by 2024/1860. Legacy registration rests on **Art. 120(3)–(4) MDR** and **Art. 110(3)–(4) IVDR**, read with **Art. 29 MDR** and **Art. 26 IVDR**.\n\n**What the deadline is counted from:** for both devices, the 12 months run from the **mandatory-use date of the UDI/device registration module**. They do not run from the notice's publication date, and they do not run from the date each device was placed on the market. In total, that is about 18 months after the OJ notice.\n\n## The calendar date\n\nThe Commission's functionality decision/notice for the first four modules was published in the OJ in **late November 2025**. Those modules are actor registration, UDI/device registration, notified bodies and certificates, and market surveillance. As I recall it:\n\n- **Mandatory use:** about late May 2026\n- **Last day to register legacy devices (both your Class IIa MDD device and your IVDD device):** about **late May 2027**\n\nI'm not confident of the exact day. Take the OJ publication date of the notice, add 6 months to get the mandatory-use date, then add 12 months to get your last day. Check the result against the notice itself and the Commission's EUDAMED timeline page.\n\n## Points that could change your answer\n\n- **A successor device ends the legacy route.** If you register an MDR or IVDR device that replaces the legacy one, the legacy device no longer needs its own registration. The replacement device must be registered **before** it is placed on the market. The 12-month window doesn't apply to it.\n- **Your certificates must still be valid.** Registration doesn't extend market access. The Class IIa MDD device depends on the conditions of Art. 120 MDR as amended by Regulation (EU) 2023/607. The IVDD device depends on Art. 110 IVDR as amended by Regulation (EU) 2024/1860, which sets staggered dates by risk class.\n- **You must be registered as an actor first.** Actor registration (SRN) has been mandatory since the same mandatory-use date. You can't register a device without it."
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0.1096302,
+            "judgeCostUsd": 0.0008008,
+            "durationSeconds": 40,
+            "startedAt": "2026-10-19T07:41:42.645Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-g0iyK1/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "judge votes: FAIL FAIL FAIL",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  false,
+                  false,
+                  false
+                ],
+                "evidence": "# EUDAMED registration deadlines for your MDD and IVDD legacy devices\n\n**Both deadlines fall on the same day, 28 May 2027, and both are counted from the same start date, 28 May 2026.** That start date is the day EUDAMED registration became mandatory. The deadlines are the same because both rules come from one amending regulation, Regulation (EU) 2024/1860, which wrote matching provisions into the MDR and the IVDR. The device class (IIa) makes no difference.\n\nI couldn't check the Official Journal from here, so this is from memory. Confirm the dates and the exact article sub-paragraph letters on EUR-Lex before relying on them in a submission.\n\n## The start date: 28 May 2026\n\n- **MDR Art. 34(3):** the Commission publishes a notice in the Official Journal once EUDAMED modules have been audited and found functional.\n- **MDR Art. 123(3)(d), as amended by Reg. 2024/1860:** registration obligations for a functional module apply **6 months after that notice is published.** This replaced the old rule that nothing applied until all of EUDAMED worked.\n- **The notice:** Commission Decision (EU) 2025/2371 confirmed the first four modules work (actor registration, UDI/device registration, notified bodies and certificates, market surveillance). It was published in the OJ on **27 November 2025**, so the obligations apply from **28 May 2026**.\n- **IVDR:** Art. 113(3), as amended by the same regulation, relies on the same MDR Art. 34(3) notice. EUDAMED is one system shared by both regulations, so the IVDR start date is also 28 May 2026.\n\n## 1. Class IIa device under an MDD certificate\n\n- **Legal basis:** MDR Art. 123(3)(e), as amended by Reg. 2024/1860, read with Art. 120(3), which is what lets MDD devices stay on the market as \"legacy devices\".\n- **Rule:** a legacy device placed on the market from the start date must be registered in EUDAMED **no later than 12 months after that date.**\n- **Deadline:** **28 May 2027**, counted from 28 May 2026.\n- **Exception:** you don't need to register the legacy device if its MDR successor is registered before that deadline.\n\n## 2. IVD under an IVDD certificate\n\n- **Legal basis:** the matching IVDR transitional provision in Art. 113(3), as amended by Reg. 2024/1860, read with Art. 110(3), which covers IVDD legacy devices during the extended IVDR transition.\n- **Rule:** the same 12 months, counted from the date the obligations apply.\n- **Deadline:** **28 May 2027**, counted from 28 May 2026.\n- **Exception:** the same as above. An IVDR successor registered before the deadline removes the obligation.\n\n## Points to check\n\n1. **The 6-month window doesn't apply to you.** Devices that already have an MDR or IVDR certificate get only 6 months from the start date (to about 28 November 2026). Since you have no MDR or IVDR successors, your two products follow the 12-month rule.\n2. **Your actor registration (SRN) must come first.** Device registration needs it, so if you don't have one yet, do that well ahead of the deadline.\n3. **Legacy devices have no Basic UDI-DI.** EUDAMED assigns a \"EUDAMED DI\" or \"EUDAMED ID\" in its place. Collect the UDI-DI and certificate data early.\n4. **The exact deadline day.** Counting \"12 months after\" under Regulation 1182/71 can move the last day by one. Plan to submit before 27 May 2027 so the day doesn't matter.\n5. **The successor exception depends on timing.** If an MDR or IVDR certificate for either product might arrive before May 2027, registering the successor before the deadline means you won't have to register the legacy device at all."
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 2,
+            "costUsd": 0.1169435,
+            "judgeCostUsd": 0.0008750999999999993,
+            "durationSeconds": 42,
+            "startedAt": "2026-10-19T07:41:51.374Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-hgLnlm/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "judge votes: FAIL FAIL FAIL",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  false,
+                  false,
+                  false
+                ],
+                "evidence": "I can't give you dates I'm sure of. There are no source documents in this workspace and I have no web access, so everything below is from memory. The legal structure I'm fairly confident about. The calendar dates depend on a Commission notice in the Official Journal (OJ) that you need to check yourself before relying on any date.\n\n## The legal basis (the same for both products)\n\n**Regulation (EU) 2024/1860** changed both regulations so that EUDAMED is made mandatory one module at a time, instead of all at once when the whole system was ready.\n\n- **MDR (your Class IIa MDD device):** Article 123(3)(d) and (e) of Regulation (EU) 2017/745, as amended by 2024/1860.\n- **IVDR (your IVDD device):** Article 113(3) of Regulation (EU) 2017/746, as amended by 2024/1860. This mirrors the MDR provisions. Check the letter numbering in the consolidated text.\n\nHow the two clocks work:\n\n1. **When the module becomes mandatory.** The duty to register devices in the UDI/device registration module applies from **6 months after the Commission publishes a notice in the OJ** saying the module works. That notice is under Article 34(3) MDR and Article 31(3) IVDR as amended.\n2. **The legacy deadline.** Devices certified under the old Directives that are still being placed on the market on that date must be registered **within 12 months of the date the obligation applies**. Under the original MDR and IVDR text this period was 18 months, counted from full EUDAMED functionality. 2024/1860 shortened it and changed what it's counted from.\n3. **When the duty falls away.** You don't have to register a legacy device if you've already registered a corresponding MDR or IVDR device before the deadline. Neither of yours has one, so the duty applies to both.\n\nSo the deadline is **not** counted from:\n- when you placed the device on the market,\n- the MDR or IVDR general date of application (26 May 2021 or 26 May 2022), or\n- your certificate dates.\n\nIt runs **from the date the device-registration module becomes mandatory**, plus 12 months.\n\n## The dates (from memory, please verify)\n\n- My recollection is that the Commission's functionality notice for the first four modules was published in late November 2025. Those modules are actor registration, UDI/device registration, notified bodies and certificates, and market surveillance. That would make them mandatory from about **late May 2026** (I recall 28 May 2026 being cited).\n- That would put the legacy registration deadline at about **late May 2027** for both products.\n- I don't think the MDR and IVDR legacy periods are different lengths. Both are 12 months from the same trigger, so the two deadlines should be the same day, provided one notice covered both regulations.\n\nBefore you rely on these, check:\n1. The OJ reference and publication date of the Commission notice or decision, and the exact mandatory-use date it gives.\n2. That your device-registration duty is tied to the UDI/device registration module notice. If the modules had separate notices, a different one could apply.\n3. The current consolidated text of Article 123(3) MDR and Article 113(3) IVDR, to confirm the \"12 months\" wording and the subparagraph numbers.\n4. MDCG guidance and the Commission Q&A on 2024/1860 and on registering legacy devices, which spell out the calculation.\n\n## Related points\n\n- **Actor registration comes first.** You need a Single Registration Number (SRN) before you can register devices. That duty has no 12-month grace period; it applies from the mandatory date.\n- **Your right to keep selling** these devices is a separate question from the registration deadline:\n  - **MDD Class IIa:** Article 120(3) MDR as amended by Regulation (EU) 2023/607 runs to 31 December 2028, provided its conditions are met: an MDR quality management system, an MDR application lodged, and a signed notified body agreement.\n  - **IVDD:** Article 110 IVDR as amended by 2024/1860 runs to 2027, 2028 or 2029 depending on the IVDR class, again with conditions.\n  \n  Losing transitional status would end the legacy registration question altogether.\n\nIf you can paste or download the OJ notice and the consolidated articles into this directory, I can check the exact dates against the text."
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 2,
+            "costUsd": 0.12580950000000002,
+            "judgeCostUsd": 0.0005697000000000002,
+            "durationSeconds": 42,
+            "startedAt": "2026-10-19T07:42:04.644Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-6SriaR/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "judge votes: FAIL FAIL FAIL",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  false,
+                  false,
+                  false
+                ],
+                "evidence": "I can't give you a verified answer from here, and I don't want to hand you a guessed date for a compliance filing. There are no source documents in this workspace and I have no web access, so everything below comes from memory. Treat it as a map of where to look and confirm each point in the consolidated texts on EUR-Lex.\n\n## The legal framework I'm fairly confident about\n\n**Regulation (EU) 2024/1860** changed the EUDAMED rules in both regulations:\n\n- **MDR:** it amended Article 34 and Article 123(3)(d)–(e) of Regulation (EU) 2017/745.\n- **IVDR:** it amended Article 34 and Article 113(3)(f) of Regulation (EU) 2017/746.\n- **Before 2024/1860:** nothing in EUDAMED was mandatory until all modules were declared functional, and registration duties started 18 months after that notice.\n- **After 2024/1860:** each module becomes mandatory on its own. Its obligations apply **6 months after the Commission publishes a notice in the Official Journal** confirming that the module works (Art. 34(3) MDR / Art. 34(3) IVDR).\n- **Legacy devices:** for a device still placed on the market under an MDD/AIMDD certificate (MDR Art. 120(3)) or an IVDD certificate (IVDR Art. 110(3)), with no MDR/IVDR successor registered, the amended transitional provisions give **12 months** to register in EUDAMED.\n\n## What each deadline is counted from\n\nAs I recall the amended text, both 12-month periods start on the **date the registration obligations begin to apply**. That is the date 6 months after the OJ notice for the UDI/device registration module. They do **not** start from:\n- the date the notice was published, or\n- the date the device was placed on the market.\n\nSo the full chain is: OJ notice → 6 months → obligations apply → 12 months → last day to register the legacy device.\n\n## The dates, and where I'm unsure\n\n1. **Date obligations began to apply.** I believe the Commission published the functionality notice for the first EUDAMED modules (actor, UDI/device, notified body and certificates, market surveillance) in late November 2025, and that mandatory use began around **late May 2026**. If so, your legacy-device deadline would fall around **late May 2027** for both products. Please check the exact OJ reference and publication date. A single day's difference changes your deadline.\n2. **Whether the MDR and IVDR periods are identical.** I remember both as 12 months from the same starting point. Your question suggests you may expect them to differ, and I can't rule out a difference in the exact wording of the IVDR Article 113(3) provision. Read the two consolidated articles side by side.\n\n## How to confirm it\n\n- **EUR-Lex:** read the consolidated MDR Art. 123(3)(e) and IVDR Art. 113(3)(f), as amended by Regulation (EU) 2024/1860.\n- **OJ notice:** find the Commission notice/decision under Art. 34(3) declaring the modules functional, and note its publication date.\n- **Guidance:** check the Commission's EUDAMED pages and the MDCG Q&A on the gradual roll-out. Both cover legacy-device registration explicitly.\n\nIf you paste the text of those articles and the notice here, I'll work out the exact last day for each device and cite the provisions properly."
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0.11229739999999999,
+            "judgeCostUsd": 0.0005520000000000004,
+            "durationSeconds": 42,
+            "startedAt": "2026-10-19T07:42:22.873Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-4u1LER/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "judge votes: FAIL FAIL FAIL",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  false,
+                  false,
+                  false
+                ],
+                "evidence": "Both deadlines run on the same clock. Each legacy product must be registered **no later than 12 months after the date EUDAMED's device-registration (UDI/Device) module became mandatory.** That mandatory date is itself 6 months after the Commission published its notice in the Official Journal saying the module is functional. The deadline is not counted from your certificate dates or from the notice publication itself.\n\nI'm answering from memory of the legal texts; I had no sources to check against here. Check the point letters and the dates against the consolidated texts on EUR-Lex before relying on them.\n\n## Medical device under an MDD certificate (MDR legacy device)\n\n- **Legal basis:** Regulation (EU) 2024/1860 amended Article 123(3) of the MDR (Regulation (EU) 2017/745). The new point (d) makes EUDAMED obligations apply module by module, starting 6 months after the Commission publishes its notice under Article 34(3) that the module is functional. The new point (e) sets the catch-up period for devices already on the market. Legacy devices placed on the market under Article 120(3) must be registered within 12 months of that point (d) date.\n- **Counted from:** the point (d) mandatory-use date of the device-registration module.\n- **Exception:** you don't have to register the legacy device if you register its MDR successor (\"corresponding device\") before the deadline.\n\n## IVD under an IVDD certificate (IVDR legacy device)\n\n- **Legal basis:** Regulation (EU) 2024/1860 made the same change to Article 113(3) of the IVDR (Regulation (EU) 2017/746) for devices placed on the market under Article 110(3). It also extended the IVDR legacy transition periods in that same article.\n- **Counted from:** the same thing, i.e. 12 months after the mandatory-use date of the device-registration module.\n- **Exception:** the same one applies if the IVDR successor is registered first.\n\n## Calendar dates\n\nAs I recall, the Commission's functionality notice for the first EUDAMED modules was published in late November 2025. That would make registration mandatory from about **28 May 2026**, which puts the legacy deadline for both products at about **28 May 2027**. Please confirm the exact notice publication date in the Official Journal and count from it, rather than relying on my recollection.\n\n## Two related checks\n\n1. **Do the legacy transitions still cover these products?** The registration deadline only matters while you're still allowed to place the device on the market. The MDD Class IIa device relies on MDR Article 120(3a)–(3c), as amended by Regulation (EU) 2023/607: up to 31 Dec 2028, provided you met the conditions, including a QMS by 26 May 2024 and a notified-body application and signed agreement by 26 May/26 Sept 2024. The IVDD device relies on IVDR Article 110(3), as amended by Regulation 2024/1860: 31 Dec 2027, 2028 or 2029, depending on its IVDR class. If either transition has lapsed, the registration question no longer applies to that product.\n2. **Actor registration (SRN)** is a separate obligation, and it already applies from the module's mandatory date. You need an SRN before you can register any device."
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 2,
+            "costUsd": 0.12088900000000001,
+            "judgeCostUsd": 0.0007451999999999997,
+            "durationSeconds": 42,
+            "startedAt": "2026-10-19T07:42:33.849Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-g75QeL/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "judge votes: FAIL FAIL FAIL",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  false,
+                  false,
+                  false
+                ],
+                "evidence": "**Short answer:** both products have the same deadline, about **28 May 2027**. In each case it is counted from the date EUDAMED registration became mandatory, about **28 May 2026**. It is **not** counted from your certificate dates, from when the product was first placed on the market, or from when the legacy transition period ends.\n\nI had no source documents to check against here. The legal structure below I'm confident about. The specific notice reference and the dates come from memory, so check them in the Official Journal (EUR-Lex) before relying on them.\n\n## Legal basis\n\n**Amending act:** Regulation (EU) 2024/1860, which changed both the MDR and the IVDR to allow EUDAMED to go live module by module.\n\n| | Class IIa legacy device (MDD) | Legacy IVD (IVDD) |\n|---|---|---|\n| Registration duty | MDR Art. 29 (UDI/device registration) and Art. 31 (actor registration) | IVDR Art. 26 (UDI/device registration) and Art. 28 (actor registration) |\n| Transitional rule | **MDR Art. 123(3)(e)**, as amended by 2024/1860 | **IVDR Art. 113(3)(f)**, as amended by 2024/1860 |\n| Start of the clock | 6 months after the Commission publishes its notice under **MDR Art. 34(3)** that the module works | 6 months after the notice under **IVDR Art. 34(3)** |\n| Legacy device deadline | 12 months after that start date | 12 months after that start date |\n\n**How the clock works:**\n1. **The Commission notice.** The Commission confirms in the Official Journal that the relevant EUDAMED modules work. As I recall, this was **Commission Decision (EU) 2025/2371, published around 27 November 2025**. It covered four modules: actor registration, UDI/device registration, notified bodies and certificates, and market surveillance.\n2. **Registration becomes mandatory.** The registration obligations apply from 6 months after that publication, so about **28 May 2026**.\n3. **Grace period for legacy devices.** A legacy device that you keep placing on the market after that date must be registered **within 12 months of it**, so by about **28 May 2027**.\n\nThe one-day uncertainty (27 or 28 May 2027) depends on how the Official Journal date is counted under Regulation 1182/71 on time limits. Plan for the earlier date.\n\n## Conditions that matter for you\n- **The duty applies only while you keep selling.** It covers legacy devices still placed on the market after the mandatory date. You are, so it applies to both products.\n- **An MDR or IVDR successor removes the duty.** You don't have to register the legacy device if a corresponding MDR or IVDR device is registered before the deadline. Neither of yours is, so this doesn't help you unless one is registered before May 2027.\n- **Actor registration comes first.** You need an SRN (single registration number) from actor registration before you can register devices. If you don't have one yet, that is overdue now.\n- **The EUDAMED deadline is separate from the transition period.** The period during which you may keep selling comes from different provisions:\n  - MDD device: MDR Art. 120(3), as amended by Regulation 2023/607. For Class IIa that runs to 31 Dec 2028, subject to its conditions.\n  - IVDD device: IVDR Art. 110(3), as amended by Regulations 2022/112 and 2024/1860.\n  \n  Being within the transition period doesn't postpone EUDAMED registration.\n\nSince today is 19 October 2026, you have about seven months left. Before you fix internal dates, confirm three things on EUR-Lex: the notice reference, its publication date, and the current text of MDR Art. 123(3)(e) and IVDR Art. 113(3)(f)."
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0.10613529999999999,
+            "judgeCostUsd": 0.000585900000000002,
+            "durationSeconds": 38,
+            "startedAt": "2026-10-19T07:42:46.395Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-vFHoU9/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "judge votes: FAIL FAIL FAIL",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  false,
+                  false,
+                  false
+                ],
+                "evidence": "The deadlines are the same for both products: **28 May 2027**. Both are counted **12 months from 28 May 2026**, the date EUDAMED registration became mandatory. That start date is itself counted from when the Commission published its EUDAMED notice in the Official Journal. I don't have web access in this session, so this is from memory. Check the exact wording and point numbering against the consolidated texts on EUR-Lex before you rely on it.\n\n## The rule that applies to both\n\n**Regulation (EU) 2024/1860** changed the MDR and the IVDR so that EUDAMED could go live one module at a time.\n\n- For each module, the obligations apply **6 months after the Commission publishes a notice in the Official Journal** confirming the module works. For the MDR this is the Art. 34(3) notice. The IVDR links to the same procedure.\n- The Commission published its Decision on the first four modules on **27 November 2025**. Those modules are actor registration, UDI/device registration, notified bodies and certificates, and market surveillance.\n- Use of those modules became **mandatory from 28 May 2026**.\n\n## Class IIa device under an MDD certificate (MDR legacy device)\n\n- **Legal basis:** MDR Art. 123(3)(d)–(e), as amended by Art. 1 of Reg. 2024/1860. Read it with Art. 120(3), which covers legacy devices, and Art. 29, which covers device registration.\n- **Rule:** A legacy device that is still being placed on the market must be registered in EUDAMED **within 12 months of the date the obligation applies**. The exception is where a successor device under the MDR has already been registered, in which case that registration counts.\n- **Counted from:** 28 May 2026, not the November 2025 publication date.\n- **Deadline:** **28 May 2027**\n\n## IVD under an IVDD certificate (IVDR legacy device)\n\n- **Legal basis:** IVDR Art. 113(3), the EUDAMED point (originally (f)), as amended by Art. 2 of Reg. 2024/1860. Read it with Art. 110(3) on legacy devices and Art. 26 on registration.\n- **Rule and starting point:** Same 12-month window, counted from the same 28 May 2026 date. Reg. 2024/1860 made the IVDR mirror the MDR here.\n- **Deadline:** **28 May 2027**\n\n## Points to check\n\n1. **Point numbering:** Reg. 2024/1860 replaced and inserted some sub-points in Art. 123(3) MDR and Art. 113(3) IVDR. Cite whatever letters the consolidated version on EUR-Lex uses.\n2. **Day counting:** \"Six months after publication\" and \"12 months from\" are counted under Regulation 1182/71 on time limits. The Commission's own communications give 28 May 2026 as the start date, and 28 May 2027 follows from that. If you want to be safe, plan to finish by 27 May 2027.\n3. **Different 6-month window:** There is a separate, shorter window for devices placed on the market *before* 28 May 2026. It applies to devices that already hold MDR or IVDR certificates, not to legacy devices. Don't mix the two up.\n4. **If you register a successor:** Registering an MDR or IVDR successor before the deadline replaces the need to register the legacy device.\n5. **Prerequisite:** You need an SRN (actor registration) before you can register any device. That obligation has applied since 28 May 2026, so if you don't have one yet, it's already overdue."
+              }
+            ]
+          },
+          {
+            "score": 0,
+            "passed": false,
+            "turns": 1,
+            "costUsd": 0.11556269999999998,
+            "judgeCostUsd": 0.0006092999999999984,
+            "durationSeconds": 45,
+            "startedAt": "2026-10-19T07:43:04.628Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-Fk6AXT/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": false,
+                "weight": 1,
+                "explanation": "judge votes: FAIL FAIL FAIL",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  false,
+                  false,
+                  false
+                ],
+                "evidence": "# EUDAMED registration deadlines for your MDD and IVDD legacy devices\n\n**Short answer:** Both products have the same deadline, worked out the same way. Each must be registered in EUDAMED **within 12 months of the date the EUDAMED registration obligations started to apply**, which was **28 May 2026**. That puts the last day at **about 27–28 May 2027**. Plan to have both registered by **27 May 2027** at the latest.\n\nI'm answering from my knowledge of the legal texts. I couldn't check the Official Journal from here, so please confirm the citations below against the consolidated texts on EUR-Lex before relying on them.\n\n## Legal basis\n\n**1. The amending regulation.** Regulation (EU) 2024/1860 changed the transitional EUDAMED provisions in both regulations:\n- **Medical devices:** MDR (EU) 2017/745, Article 123(3)(d)–(e)\n- **IVDs:** IVDR (EU) 2017/746, Article 113(3)(f) and following\n\nIt dropped the old rule that EUDAMED was mandatory only once every module was working. Now each module becomes mandatory separately.\n\n**2. When the obligations started.** An obligation linked to a module applies **6 months after the Commission publishes a notice in the Official Journal** confirming that the module works (MDR Art. 34(3); IVDR Art. 34 via Art. 113). For the first four modules (actor registration, UDI/device registration, notified bodies and certificates, market surveillance):\n- The notice was published on 27 November 2025 (Commission Decision (EU) 2025/2371, if I recall the number correctly).\n- The obligations therefore applied from **28 May 2026**.\n\n**3. The legacy device rule.** If a legacy device is still being placed on the market after that date, it must be registered **within 12 months of the date the obligation started to apply**. This covers:\n- MDD/AIMDD devices under MDR Art. 120(3)\n- IVDD devices under IVDR Art. 110(3)\n\nThe obligation lapses if a corresponding MDR or IVDR device is registered in EUDAMED before the 12 months run out. Since neither of your products has a successor registered, the obligation applies to both.\n\n## What the deadline is counted from\n\nThe 12 months run from the **date of application of the obligations (28 May 2026)**. They do **not** run from when the notice was published (27 November 2025). People often get this wrong in two ways:\n- Counting from the publication date, which gives roughly November 2026.\n- Using the old 18-month legacy-device period from the earlier version of MDR Art. 123(3)(e) and MDCG 2021-1, which was replaced by Regulation 2024/1860.\n\n**On the exact last day:** under Regulation 1182/71 on time limits, a period of months counted from 28 May 2026 can be read as ending at the end of 28 May 2027. A stricter reading of \"within 12 months\" gives 27 May 2027. Treat **27 May 2027** as your internal deadline so either reading is covered.\n\n## Practical points\n\n- **Do both registrations now.** Registering a legacy device in EUDAMED requires a validated actor registration (SRN). Legacy device records are also usually entered without a full UDI-DI, using a EUDAMED-assigned ID instead. Both steps take time.\n- **The deadline can change.** If an MDR or IVDR successor is registered before May 2027, the legacy registration obligation for that product falls away. Don't rely on that unless the successor's certification will definitely be finished in time.\n- **Vigilance is a separate timeline.** Reporting incidents through the EUDAMED vigilance module is not mandatory yet. It will follow its own 6-month clock once the Commission publishes a notice for that module."
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 0,
+        "passRate": 0,
+        "scoreWithout": 0,
+        "passRateWithout": 0,
+        "delta": 0
+      }
+    }
+  ],
+  "aggregates": {
+    "casesTotal": 1,
+    "casesPassed": 0,
+    "overallScore": 0,
+    "overallPassRate": 0,
+    "meanDelta": 0
+  }
+}

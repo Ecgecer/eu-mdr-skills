@@ -9,17 +9,17 @@ week.
 ## The evidence any new skill has to answer to
 
 <!-- suite-summary:start -->
-Measured across 5 suites, 30 cases:
+Measured across 5 suites, 33 cases:
 
 | Suite | Mean delta | Cases measured | Content |
 |---|---|---|---|
 | `device-claims` | **+0.84** | 10 | MDR/IVDR Art. 7 **plus HWG and UWG** |
 | `mpdg-germany` | **+0.62** | 5 | German national law only |
 | `scope-statement` | +0.30 | 3 | domain-general |
-| `mdr-classification` | +0.27 | 7 | EU-level only |
-| `mdr-transition` | +0.20 | 5 | EU-level only |
+| `mdr-classification` | +0.21 | 9 | EU-level only |
+| `mdr-transition` | +0.17 | 6 | EU-level only |
 
-**12 of those 30 cases measure a delta of 0.00**, the skill changes nothing. They are published case by case, because a suite that reports only what it earns is not reporting.
+**15 of those 33 cases measure a delta of 0.00**, the skill changes nothing. They are published case by case, because a suite that reports only what it earns is not reporting.
 <!-- suite-summary:end -->
 
 **The two highest carry German national law.** The EU-only skills trail them because
@@ -120,7 +120,8 @@ existing tooling.
 
 ## Candidates: EUDAMED roll-out, Article 10a, clinical equivalence
 
-**Unmeasured. Written 2026-10-18, decided by the probe, not by this section.**
+**Written 2026-10-18, decided by the probe, not by this section. Measured 2026-10-19:
+none of the three gets built. See below.**
 
 These came out of an external review of the repo: a model-written roadmap proposing
 five skills, four new kinds of test, three distribution channels and a cross-vendor
@@ -153,6 +154,89 @@ candidate's cases in 3 of 3 runs, do not build where it passes them all.
 `fda-clearance-not-nb-application` in [`mdr-transition/candidates/`](mdr-transition/candidates/).
 Pressure and jurisdiction-bleed are the shapes of `mdcg-bait` and `non-german-eu-market`,
 the repo's strongest cases.
+
+### Measured 2026-10-19. The answer is no, for all three.
+
+CLI 2.1.303, the CLI default model, three runs per case per arm, and nine for the cases
+the three-run rule left open. The **without** arm is the measurement.
+
+| Candidate | Case | baseline, 3 runs | baseline, 9 runs |
+|---|---|---|---|
+| `eudamed-mandatory-rollout` | `eudamed-legacy-not-placed-after-mandatory` | 3/3 | |
+| | `eudamed-successor-registered` | 3/3 | |
+| | `eudamed-mdr-ivdr-anchor` | **0/3** | **0/9** |
+| | `eudamed-nb-enters-certificates` | 1/3 | 8/9 judge, 9/9 counted |
+| | `eudamed-vigilance-not-mandatory` | 3/3 | |
+| | `udi-software-minor-vs-algorithm` | 3/3 | |
+| | `emdn-no-lookup` | 3/3 | |
+| | `nb-certificate-number` | 1/3 | 9/9 |
+| `article-10a-supply-interruption` | `art10a-routine-stockout`, `art10a-addressees`, `art10a-custom-made-excluded` | 3/3 each | |
+| `clinical-equivalence` | `equivalence-contract-overapplied`, `equivalence-510k-predicate` | 3/3 each | |
+
+**Article 10a and clinical equivalence: do not build.** Both pass every case in 3 of 3
+runs, on the trap each case was written for. The baseline names the serious-harm gate,
+leaves the cascade to the authority under 10a(2), finds the custom-made exclusion, keeps
+the 61(5) contract to implantable and Class III devices, and rejects the 510(k).
+
+**EUDAMED roll-out: do not build, under a rule fixed before the nine runs.** Three runs
+left it in between: one case failed 3 of 3, two failed 2 of 3. The three-run rule did not
+say how to read nine runs, so the reading was written into the probe README and committed
+before any nine-run result existed: 6 of 9 fails a case, two failing cases build, no third
+zone, and a failed run counts only if a blind second grader agrees. At nine runs one case
+fails. Two are needed.
+
+The blind re-grade mattered once. The harness judge failed one `eudamed-nb-enters-certificates`
+run that the second grader passed, quoting it correcting both premises; at three runs the
+judge had failed two more answers of the same kind. Every verdict and reason is in
+[`roadmap-probe/results/blind-regrade-2026-10-19/`](mdr-transition/roadmap-probe/results/blind-regrade-2026-10-19/).
+`nb-certificate-number` went from 1/3 to 9/9: its two three-run failures were real, each a
+leaf EMDN code from memory in a draft for data entry (`Z12030401`, which does not exist,
+and `Z12030101`, "Anaesthesia systems", for an infusion pump), and the nine runs did not
+repeat it.
+
+**The one severe miss, recorded as its own question, not as meeting the rule.**
+`eudamed-mdr-ivdr-anchor` failed 12 of 12 runs the same way: both registration deadlines
+put in **late May 2027**, twelve months counted from the 28 May 2026 mandatory-use date,
+where Art. 123(3)(e) counts twelve months from publication of the notice and lands on
+27 November 2026. Several runs give MDR-certified devices a six-month window to November
+2026 and legacy devices twelve months to May 2027, a split the text does not contain. One
+run cites an "Art. 123a" that does not exist. The same belief shows in the certificate
+case, which does not grade dates: devices due May 2027, certificates November 2027. A
+manufacturer acting on it registers six months late. Whether one fact of that weight
+earns a narrow reference, outside the two-case rule, is open and not decided here.
+
+**The candidate cases for existing suites all measure 0.00** and are published as such:
+`premise-class-i-pressure` and `mdd-class-carryover` in `mdr-classification` (suite mean
++0.27 to +0.21), `fda-clearance-not-nb-application` in `mdr-transition` (+0.20 to +0.17).
+The CLI default holds Rule 11 limb 1 under a founder's pressure, refuses to carry an MDD
+class into MDR, and rejects FDA clearance as an Art. 120 condition, all without the skill.
+The prediction that pressure and jurisdiction bleed would earn as `mdcg-bait` did was
+wrong, the fifth such prediction here.
+
+**Small models, a separate question.** The probe ran pinned to `claude-haiku-4-5` and
+`claude-haiku-5-5`; MODELS.md has the detail. Haiku 4.5 on this CLI mostly declines the
+questions as a software assistant, so its column measures the harness persona more than
+the law, but it fails `udi-software-minor-vs-algorithm` 3 of 3 on substance where the
+default passes, which the probe README asked to be recorded. Haiku 5.5 engages with every
+question and does not know the text. It fails all three Article 10a cases and the three
+EUDAMED registration cases, mostly by saying it cannot confirm the provision ("I can't
+confirm that Article 10a exists in the text in force today") rather than by inventing one.
+The exception is the same-device case, where it answers "probably yes, register both" and
+misses the exemption. That is the reference-transfers
+pattern MODELS.md describes, and whether it justifies a reference-only skill for small
+models is a decision for those numbers, not taken here.
+
+**Two notes for anyone building on these cases.** Art. 61(6)(b) was amended by Commission
+Delegated Regulation (EU) 2026/1451 (OJ 29.6.2026), which lengthens the exemption list
+(dental implants, nails, anchors, spinal posterior fixations and more). The
+`equivalence-510k-predicate` grader quotes the pre-amendment list. Intervertebral cages
+are on neither, so no verdict changed, but every baseline run quoted the old list as
+closed, and a skill built on this case would have to carry the new one. And the CLI
+version is 2.1.303, not the 2.1.277 the published tables were measured on.
+
+The decision cost **$17.84**: $7.55 for the three-run probe, $6.10 for the nine runs,
+$2.20 for the two Haiku runs, $1.99 for the three candidate cases. The second-vendor steps
+below are not run; they need a Gemini key with paid quota.
 
 ### The order to run it in
 
@@ -190,7 +274,7 @@ the answer splits: detection transfers, boundary discipline does not.
 Done 2026-09-18, $40.46, all on one pinned CLI version.
 
 <!-- run-counts:start -->
-11 case(s) are measured at nine runs per arm and 19 at three. **Every one of those has a delta of exactly 0.00 or 1.00, so none is ambiguous at its own sample size.**
+11 case(s) are measured at nine runs per arm and 22 at three. **Every one of those has a delta of exactly 0.00 or 1.00, so none is ambiguous at its own sample size.**
 <!-- run-counts:end -->
 
   implantable-exception          +0.33 ->  0.00     9/9 vs 9/9

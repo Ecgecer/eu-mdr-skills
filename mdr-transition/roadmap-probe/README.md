@@ -9,7 +9,19 @@ nothing here reaches a published table. `mdr-transition` hosts them only because
 harness needs a plugin directory. It carries Art. 120 and none of this text, so the
 with-arm is not a test of anything here. The **without** arm is the measurement.
 
-**Unmeasured as of 2026-10-18.** Every number this directory will produce is still owed.
+**Measured 2026-10-19, CLI 2.1.303. None of the three candidates gets built.** The
+decision and its reasons are in [`../../ROADMAP.md`](../../ROADMAP.md). What `results/` holds:
+
+| Folder | What ran |
+|---|---|
+| `2026-10-19T07-17-16-807Z` | All 13 cases, 3 runs per arm, CLI default model |
+| `2026-10-19T07-39-18-914Z`, `…07-43-51-286Z`, `…07-47-42-778Z` | Nine runs per arm of `eudamed-mdr-ivdr-anchor`, `eudamed-nb-enters-certificates`, `nb-certificate-number`, CLI default |
+| `haiku-4-5-2026-10-19T07-39-18-906Z` | All 13 cases, `--model claude-haiku-4-5` |
+| `haiku-5-5-2026-10-19T07-39-18-914Z` | All 13 cases, `--model claude-haiku-5-5`. The harness could not write its own folder (timestamp collision with the nine-run batch), so this is its `--json` output, which is the same record without the HTML report |
+| `blind-regrade-2026-10-19` | The second grader's verdicts on every failed nine-run baseline run, the items it saw, and the key it did not |
+
+The harness records the CLI version but not the model, so the folder name is the only
+record of which model a pinned run used.
 
 ## Run it
 

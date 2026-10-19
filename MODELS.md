@@ -156,6 +156,55 @@ criteria were fixed before any Gemini response existed and every verdict carries
 reason in text, so a reader can disagree with a specific call. On `limb-c-omission` the
 call went against the repo.
 
+## The roadmap probe on two Haikus, 2026-10-19
+
+The thirteen-case roadmap probe in `mdr-transition/roadmap-probe/` (EUDAMED roll-out,
+Article 10a, clinical equivalence) ran pinned to two small models on CLI 2.1.303, three
+runs per arm. Only the baseline arm means anything here: the plugin hosting the probe
+carries Art. 120, not this text. Folder names in `roadmap-probe/results/` record the model.
+
+| Case | CLI default | `claude-haiku-4-5` | `claude-haiku-5-5` |
+|---|---|---|---|
+| `eudamed-legacy-not-placed-after-mandatory` | 3/3 | 0/3 | 0/3 |
+| `eudamed-successor-registered` | 3/3 | 0/3 | 0/3 |
+| `eudamed-mdr-ivdr-anchor` (detection) | 0/3 | 0/3 | 0/3 |
+| `eudamed-nb-enters-certificates` | 1/3 | 0/3 | 3/3 |
+| `eudamed-vigilance-not-mandatory` | 3/3 | 3/3 | 3/3 |
+| `udi-software-minor-vs-algorithm` (detection) | 3/3 | **0/3** | 3/3 |
+| `emdn-no-lookup` | 3/3 | 3/3 | 3/3 |
+| `nb-certificate-number` | 1/3 | 3/3 | 1/3 |
+| `art10a-routine-stockout` | 3/3 | 0/3 | 0/3 |
+| `art10a-addressees` | 3/3 | 0/3 | 0/3 |
+| `art10a-custom-made-excluded` | 3/3 | 0/3 | 0/3 |
+| `equivalence-contract-overapplied` | 3/3 | 0/3 | 3/3 |
+| `equivalence-510k-predicate` | 3/3 | 0/3 | 3/3 |
+
+The CLI-default column for `eudamed-nb-enters-certificates` is the harness judge's; at nine
+runs, with a blind second grader, it is 9/9 (ROADMAP has the detail).
+
+**Haiku 4.5's column mostly measures the harness, not the law.** Of its 30 failed baseline
+runs, about 19 by my reading decline the question on identity grounds ("I'm a software
+engineering assistant, not a regulatory or legal professional"; "outside the scope of what
+Claude Code is designed to help with") and give no substantive answer. On 2026-09-11, on
+CLI 2.1.268, the same model declined 2 of 36. Something between the two CLI versions moved
+that from 6% to roughly two thirds of the failures, and a zero produced that way says
+nothing about whether the model knows Article 10a. The substantive failures are real:
+all three `udi-software-minor-vs-algorithm` runs say a security patch needs a new UDI-DI,
+where Annex VI Part C 6.5.3 gives it a new UDI-PI, and one `art10a-addressees` run has the
+manufacturer notify every Member State and the Commission.
+
+**Haiku 5.5 declines nothing and does not know the new text.** Zero identity refusals in
+78 runs. It passes the software UDI case, both equivalence cases, the certificate-entry
+case and the lookup traps. It fails the Article 10a and EUDAMED-registration cases mostly
+by saying it cannot confirm the provision exists, which is the honest failure, with one
+substantive miss on the same-device exemption. That is the pattern this file already
+describes: what a small model lacks here is the text, which a reference file supplies, not
+the discipline.
+
+**Neither changes a build decision.** The probe's rule is set on the CLI default. The
+README asked for one thing to be recorded from these runs, and it is above: Haiku 4.5 fails
+a detection case the default passes.
+
 ## What this does not show
 
 - **n=3 per arm.** The Claude comparison is one family, Opus against Haiku. The Gemini
