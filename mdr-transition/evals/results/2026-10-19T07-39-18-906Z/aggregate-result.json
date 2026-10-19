@@ -1,0 +1,232 @@
+{
+  "schemaVersion": 1,
+  "claudeVersion": "2.1.303",
+  "startedAt": "2026-10-19T07:39:18.906Z",
+  "durationSeconds": 71,
+  "costUsd": 0.6373985,
+  "partial": false,
+  "suite": {
+    "root": "/Users/egecangecer/projects/eu-mdr-skills/mdr-transition",
+    "ablation": "with-without",
+    "threshold": 1,
+    "concurrency": 3,
+    "plugins": [
+      {
+        "name": "mdr-transition",
+        "version": "0.1.0",
+        "path": "/Users/egecangecer/projects/eu-mdr-skills/mdr-transition"
+      }
+    ]
+  },
+  "cases": [
+    {
+      "name": "fda-clearance-not-nb-application",
+      "dir": "candidates/01-fda-clearance-not-nb-application",
+      "source": "prose",
+      "promptMarkdown": "We have a Class IIb device with a valid MDD certificate. We got FDA 510(k) clearance\nfor the same device in 2025 and our MDR technical file is ready, but we have not\napplied to or signed anything with an EU notified body yet. It's October 2026.\n\nDoes the FDA clearance count towards the Article 120 extension conditions, so we can\nkeep selling in the EU until the end of 2028?",
+      "runsPerCase": 3,
+      "timeoutSeconds": 300,
+      "maxTurns": 10,
+      "graders": [
+        {
+          "name": "criteria",
+          "type": "llm",
+          "weight": 1,
+          "graderMarkdown": "The skill's reference carries Art. 120(3c) as amended by Regulation (EU) 2023/607.\nThe extended transition depends on conditions including, verbatim from that reference:\n\n> (e) no later than 26 May 2024, the manufacturer or the authorised representative has\n> lodged a formal application with a notified body [...] and, no later than 26\n> September 2024, the notified body and the manufacturer have signed a written agreement\n> [...]\n\nFDA clearance is not an application to an EU notified body and does nothing for these\nconditions. On the stated facts, no application and no agreement as of October 2026,\nthe conditions in point (e) were not met by their dates.\n\nPASS requires:\n(1) It says the FDA 510(k) clearance does not count towards the Art. 120 conditions,\n    and\n(2) it names the notified-body application and written-agreement conditions with\n    their 2024 dates, and says that on these facts they appear unmet, so the extended\n    period to 2028 is not available, or that it turns on whether any application or\n    agreement existed.\n\nFAIL if it says the FDA clearance helps meet the conditions, or that they can keep\nselling until 2028 on these facts. FAIL if it cites 26 May 2024 as a market deadline\nrather than as the application deadline in a condition.",
+          "config": {
+            "criteria": "The skill's reference carries Art. 120(3c) as amended by Regulation (EU) 2023/607.\nThe extended transition depends on conditions including, verbatim from that reference:\n\n> (e) no later than 26 May 2024, the manufacturer or the authorised representative has\n> lodged a formal application with a notified body [...] and, no later than 26\n> September 2024, the notified body and the manufacturer have signed a written agreement\n> [...]\n\nFDA clearance is not an application to an EU notified body and does nothing for these\nconditions. On the stated facts, no application and no agreement as of October 2026,\nthe conditions in point (e) were not met by their dates.\n\nPASS requires:\n(1) It says the FDA 510(k) clearance does not count towards the Art. 120 conditions,\n    and\n(2) it names the notified-body application and written-agreement conditions with\n    their 2024 dates, and says that on these facts they appear unmet, so the extended\n    period to 2028 is not available, or that it turns on whether any application or\n    agreement existed.\n\nFAIL if it says the FDA clearance helps meet the conditions, or that they can keep\nselling until 2028 on these facts. FAIL if it cites 26 May 2024 as a market deadline\nrather than as the application deadline in a condition.",
+            "focus": "last_message"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 5,
+            "costUsd": 0.1353418,
+            "judgeCostUsd": 0.0019142,
+            "durationSeconds": 30,
+            "startedAt": "2026-10-19T07:39:18.979Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-57KKX4/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "## Class IIb device with an MDD certificate and FDA 510(k) clearance\n\n**No. The FDA clearance does not count, and from what you've described the extension to 31 December 2028 was never available for this device.**\n\n**Class:** IIb (whether it's implantable wasn't stated, but that doesn't change the outcome here)\n**Route:** 120(3a), a notified-body certificate under 93/42/EEC\n**Deadline:** none under Article 120(3). The 120(3c) conditions were not met.\n\n| Question | Answer | Basis |\n|---|---|---|\n| Which paragraph applies | 120(3a), because the device holds an MDD certificate | `[verified]` |\n| Class-dependent date | 31 Dec 2028 for non-implantable IIb, 31 Dec 2027 for implantable IIb outside the listed exceptions. This only applies if 3c is met. | `[verified]` |\n| 3c conditions met? | **No.** Condition 3c(e) fails. | `[verified]` |\n\n### Why the FDA clearance doesn't help\n\nAll five conditions in Article 120(3c) must be met, and none of them refers to clearance from a non-EU regulator. The one that decides your case is 3c(e):\n\n> no later than 26 May 2024, the manufacturer or the authorised representative has lodged a **formal application** with a notified body in accordance with Section 4.3, first subparagraph, of Annex VII [...] and, no later than 26 September 2024, the notified body and the manufacturer have **signed a written agreement**…\n\nYou haven't lodged an application with an EU notified body or signed an agreement with one, and both deadlines are now more than two years past. Nothing else can stand in for those two steps: not a 510(k), not a finished MDR technical file, and not a valid MDD certificate. The 510(k) was granted in 2025, after both deadlines, so it couldn't have counted on timing alone either.\n\nYour MDR technical file being ready also doesn't satisfy 3c(e). The condition asks for a formal application to a notified body, not for documentation being ready.\n\n### What would change this\n\n- **If you did deal with a notified body before those deadlines** and are simply not counting it now, for example a formal application by 26 May 2024 and a signed agreement by 26 September 2024, the answer changes. You would then also need to have had a QMS in place by 26 May 2024 (3c(d)) and to meet 3c(a) to (c), including making no significant changes to design or intended purpose.\n- **If you didn't**, the 2027 and 2028 dates in Article 120(3a) don't apply to this device.\n\n### Questions I can't answer from the verified text\n\nThese depend on provisions this skill doesn't carry, so I won't give you answers from memory:\n\n- **Whether your MDD certificate is still valid.** You describe it as valid, but certificate validity is governed by Article 120(2), which isn't in my reference file. Don't treat \"the certificate is still in date\" as meaning \"we can still place the device on the market.\"\n- **Whether you have any route to keep selling now**, such as a derogation under Article 97 or a national derogation. Article 97 is only mentioned in the amendment and isn't in my reference file. Raise this with your competent authority and with regulatory counsel.\n- **The status of units already placed on the market.** This also falls under other paragraphs of Article 120 that I don't have.\n\n### Practical next step\n\nLodge your MDR application with a notified body now. That is the route to MDR certification, and you'll need it regardless. In parallel, get qualified regulatory advice on whether you can lawfully keep placing the device on the EU market today. If 3c(e) wasn't met, that question needs answering urgently, not in 2028.\n\n## Limits\n\n> This covers MDR Article 120(3) and (3a)–(3d) as amended by Regulation (EU) 2023/607, retrieved verbatim from the Official Journal on 2026-09-10. It does **not** cover Article 120's other paragraphs, **IVDR Article 110** (the parallel IVD transition, whose dates differ), MDCG guidance including on what counts as a significant change, Annex VII, or national practice. The transition is conditional and fact-specific; this is a first-pass aid, not legal or regulatory advice, and not a substitute for your notified body or a qualified regulatory professional."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 4,
+            "costUsd": 0.1201099,
+            "judgeCostUsd": 0.0026111,
+            "durationSeconds": 31,
+            "startedAt": "2026-10-19T07:39:18.979Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-VEdHle/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "## No. The FDA clearance doesn't count, and the extension isn't available to you\n\n**Class:** IIb (whether it's implantable isn't stated, but that doesn't change the answer)\n**Route:** 120(3a), MDD certificate\n**Deadline:** The extension to 31 Dec 2028 does not apply, because condition 120(3c)(e) was not met.\n\n| Question | Answer | Basis |\n|---|---|---|\n| Which paragraph applies | 120(3a), since the device has a 93/42/EEC certificate | `[verified]` |\n| Date by class | 31 Dec 2028 if non-implantable IIb. 31 Dec 2027 if implantable IIb, unless it's on the exceptions list (sutures, screws, plates, etc.) | `[verified]` |\n| Are the 3c conditions met? | **No.** 3c(e) required a formal application lodged with an EU **notified body** by **26 May 2024** and a **written agreement signed with it by 26 September 2024**. You haven't done either. | `[verified]` |\n\n### Why the FDA clearance is irrelevant\n\nArticle 120(3c) lists five conditions, and all five must be met. None of them mentions third-country authorisations. Condition (e) asks for one specific thing: a formal application under Annex VII Section 4.3 to a **notified body**, followed by a signed agreement with that notified body. A 510(k) is not an application to a notified body. A finished MDR technical file isn't one either, and neither can stand in for it. It's also a deadline condition. Both dates passed in 2024, so you can't meet it now by applying in October 2026.\n\nThe extension was conditional and never applied automatically. Your class gives you the date only if all of 3c was met. Here it wasn't, so the 2027/2028 dates were never available for this device.\n\n### What would change this\n\nOnly one fact would: if someone in your organisation, or your authorised representative, **did** lodge a formal application with a notified body by 26 May 2024 and sign a written agreement by 26 September 2024. Please check that before acting on this answer. Also check the other conditions (3c(a)–(d)), especially that a QMS under Article 10(9) was in place by 26 May 2024.\n\n### Open questions this skill can't answer\n\nThese questions are outside the reference text I have, so I won't guess at them:\n\n- **The status of your MDD certificate and of devices already on the market.** This depends on Article 120(2) and (4) onwards. I don't have those paragraphs.\n- **Any derogation or other route to stay on the market, e.g. Article 97.** The amendment refers to Article 97, but I don't have its text.\n- **Your fastest route to MDR certification and how a notified body or competent authority would handle your case.** That's for your notified body and a regulatory professional.\n\n**Practical point:** your MDR technical file is ready, so applying to a notified body for MDR certification now is your route back to the EU market. Ask regulatory counsel urgently whether you can lawfully keep placing units on the market in the meantime. Based on 120(3c), the extension doesn't cover you.\n\n## Limits\n\n> This covers MDR Article 120(3) and (3a)–(3d) as amended by Regulation (EU) 2023/607, retrieved verbatim from the Official Journal on 2026-09-10. It does **not** cover Article 120's other paragraphs, **IVDR Article 110** (the parallel IVD transition, whose dates differ), MDCG guidance including on what counts as a significant change, Annex VII, or national practice. The transition is conditional and fact-specific; this is a first-pass aid, not legal or regulatory advice, and not a substitute for your notified body or a qualified regulatory professional."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 4,
+            "costUsd": 0.1260461,
+            "judgeCostUsd": 0.0022577,
+            "durationSeconds": 30,
+            "startedAt": "2026-10-19T07:39:18.979Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-6DzSae/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "## Class IIb device with an MDD certificate and FDA 510(k) clearance\n\n**Short answer: No.** The FDA clearance doesn't count toward any Article 120 condition, and the 2028 extension isn't available to you because of the notified body condition.\n\n**Class:** IIb. You didn't say whether it's implantable, but that doesn't change the answer here.\n**Route:** 120(3a), a certificate issued under 93/42/EEC\n**Deadline:** 31 Dec 2028 on class alone, **but the 3c conditions are not met, so the extension does not apply**\n\n| Question | Answer | Basis |\n|---|---|---|\n| Which paragraph applies | 120(3a): you hold a certificate under 93/42/EEC | `[verified]` |\n| Class-dependent date | 31 Dec 2028 for non-implantable IIb. Implantable IIb would be 31 Dec 2027 unless it's on the exception list. | `[verified]` 3a(a)/(b) |\n| Does FDA 510(k) count? | **No.** None of the five 3c conditions mentions any non-EU authorisation. Condition (e) specifically requires a formal application to a **notified body** under Annex VII, Section 4.3. | `[verified]` 3c(e) |\n| 3c(e) met? | **No.** The application to a notified body was due **by 26 May 2024** and the signed written agreement **by 26 September 2024**. You have neither, and both dates passed about two years ago. | `[verified]` 3c(e) |\n| 3c(d) met? | You haven't said. A QMS under Art. 10(9) had to be in place by 26 May 2024. It doesn't matter here, because 3c(e) already fails. | `[verified]` 3c(d) |\n\nThe 3c conditions are cumulative (\"only if the following conditions are met\"). Missing any one of them means the extension was never available. A ready MDR technical file and an FDA clearance don't make up for the missing notified body application and agreement.\n\n**What would change this:** only proof that a formal application was lodged with an EU notified body by 26 May 2024 and a written agreement was signed by 26 September 2024. For example, an affiliate, your authorised representative or a previous legal manufacturer might have done this. Article 3c(e) lets either the manufacturer or the authorised representative lodge the application. If neither happened, the 2028 date is off the table.\n\n### What I can't answer from this reference\n\nSeveral things matter urgently now, and they depend on provisions this skill doesn't carry:\n- whether your MDD certificate is still valid under Art. 120(2), and what happens to devices already placed on the market (other paragraphs of Art. 120);\n- whether any route still exists, such as Art. 97 or national derogations.\n\nI won't give you dates or positions on these from memory. If you paste the provisions, I can work through them with you.\n\n**Practical point:** the extension isn't available, so placing new units on the EU market may already be non-compliant. Raise this with your regulatory counsel and a notified body now, before shipping more product to the EU.\n\n## Limits\n\nThis covers MDR Article 120(3) and (3a)–(3d) as amended by Regulation (EU) 2023/607. It is taken verbatim from the Official Journal, retrieved 2026-09-10. It does **not** cover:\n- Article 120's other paragraphs;\n- IVDR Article 110;\n- MDCG guidance;\n- Annex VII;\n- Article 97;\n- national practice.\n\nThe transition depends on conditions and on your specific facts. This is a first-pass aid, not legal or regulatory advice, and it doesn't replace your notified body or a qualified regulatory professional."
+              }
+            ]
+          }
+        ],
+        "without": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 1,
+            "costUsd": 0.0921372,
+            "judgeCostUsd": 0.0031678000000000006,
+            "durationSeconds": 42,
+            "startedAt": "2026-10-19T07:39:48.621Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-3osAe3/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "**No. FDA clearance doesn't count toward the Article 120 conditions, and from what you describe your device has probably not had the extension since May 2024.**\n\n## Why the FDA clearance doesn't help\n\nThe Article 120 extension (as amended by Regulation (EU) 2023/607) depends only on EU-specific conditions. Foreign approvals play no part. The EU and US have no mutual recognition for medical device conformity assessment (the EU–US MRA covers pharmaceutical GMP, not devices). Also, your 510(k) came in 2025, after the deadlines below had already passed.\n\n## The conditions you'd need to meet\n\nTo keep placing a legacy device on the market until 31 Dec 2028 (the date for non-implantable Class IIb), **all** of these must be true:\n\n1. The device still complies with the MDD.\n2. There are no significant changes in design or intended purpose.\n3. The device poses no unacceptable risk to health or safety.\n4. You had an MDR-compliant QMS (Art. 10(9)) in place **by 26 May 2024**.\n5. You lodged a formal application with a notified body for MDR conformity assessment **by 26 May 2024**.\n6. You and the notified body signed a written agreement **by 26 September 2024**.\n\nPoints 5 and 6 are hard deadlines. An application made now can't satisfy them retroactively. Having your technical file ready doesn't count either: the law requires a lodged application and a signed agreement.\n\n## What this means for your \"valid\" MDD certificate\n\nWithout the extension, MDD certificates could not run past 26 May 2024. The extended validity only applies if the conditions are met. So your certificate may look valid on paper, but it has most likely **not been valid for placing new devices on the EU market since 26 May 2024**. If units have been placed on the market since then, that's a potential compliance problem and you should look at it now.\n\nOne small exception: units that were lawfully placed on the market *before* the transition ended can still be made available (distributed and sold on). Regulation 2023/607 removed the sell-off deadline.\n\n## What to do now\n\n1. **Apply to a notified body for MDR certification right away.** It's the only route back to the EU market. Your finished technical file and your 510(k) evidence (testing, clinical data) can help with the MDR assessment itself, but expect a gap of several months or more with no EU sales.\n2. **Get specialist EU regulatory or legal advice** on how many units were placed on the market after May 2024 and whether you need to talk to your competent authority.\n3. **Derogations (MDR Art. 59 / Art. 97):** national competent authorities can sometimes allow temporary market access, mainly where patients need the device. These are exceptional, decided country by country, and very unlikely to be granted for commercial continuity alone, especially with no notified body application on file.\n4. **Watch the proposed MDR targeted revision.** The Commission has proposed further changes to the framework. Nothing I know of (my information runs to mid-2026) brings back lapsed transition rights for manufacturers who missed the 2024 deadlines. Confirm the current legal position before you rely on anything.\n\nThis is general regulatory information, not legal advice. Given what's at stake, have it confirmed by EU regulatory counsel or a consultant who can review your certificate and what you've placed on the market."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 1,
+            "costUsd": 0.0805635,
+            "judgeCostUsd": 0.0016741000000000004,
+            "durationSeconds": 31,
+            "startedAt": "2026-10-19T07:39:48.821Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-36Mi16/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "# No. FDA clearance doesn't count, and the extension has probably already lapsed for you\n\n## Why the FDA clearance doesn't help\n\nArticle 120 MDR, as amended by Regulation (EU) 2023/607, extends a legacy MDD certificate only if **all** of these conditions are met. None of them can be satisfied by a non-EU authorisation:\n\n1. The MDD certificate was valid on 20 March 2023 (or met the narrow conditions for certificates that expired before then).\n2. The device still complies with the MDD.\n3. There are no significant changes in design or intended purpose.\n4. The device presents no unacceptable risk to health or safety.\n5. An MDR-compliant QMS (Art. 10(9)) was in place by **26 May 2024**.\n6. A formal application to an EU notified body under MDR was lodged by **26 May 2024**.\n7. A written agreement with that notified body was signed by **26 September 2024**.\n\nThe FDA 510(k) has no legal standing under the MDR for any of these. Your MDR-ready technical file doesn't satisfy conditions 6 and 7 either. What matters is the application and the signed agreement with a notified body, not how ready your documentation is.\n\n## What this means in practice\n\n- **Your MDD certificate is very likely no longer valid.** Under the original Art. 120(2), every MDD certificate expired by 27 May 2024 at the latest. The extension to 31 Dec 2028 (or 31 Dec 2027 for Class IIb implantables) was the only way to keep one valid past that date, and it depended on deadlines 6 and 7, which you've missed. Check the expiry date printed on the certificate. Unless it was issued in a way that somehow runs past May 2024, it has lapsed.\n- **You probably can't place new units on the EU market now.** This covers any unit placed on the market after the certificate's validity ended.\n- **Units already placed on the market** while the certificate was valid can still be made available further down the supply chain, because 2023/607 removed the \"sell-off\" deadline.\n\n## Options\n\n1. **Start MDR certification with a notified body now.** This is the only lasting route. Your ready technical file and the FDA clinical/performance data will help as supporting evidence, but expect the notified body to review MDR clinical evidence requirements (Art. 61, Annex XIV) separately. Notified body lead times are often long, so contact several.\n2. **National derogation (Art. 59 MDR).** If there's a public-health or patient-safety need for continued supply, you can ask the competent authority in each relevant member state for a temporary derogation. It's granted case by case, country by country, and isn't guaranteed.\n3. **Watch the MDR targeted revision.** The Commission proposed further MDR amendments in late 2025. Don't plan around them. There's no basis to assume they would retroactively revive missed 2024 deadlines.\n\n## Recommended next steps\n\n- Confirm the actual expiry date on your MDD certificate.\n- If you're still shipping new units to the EU, check that immediately with your regulatory lead or EU authorised representative.\n- Get qualified EU regulatory counsel to confirm your exact position. This is general information, not legal advice, and facts like whether the device is implantable or exactly when the certificate expired change the details."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 1,
+            "costUsd": 0.08320000000000001,
+            "judgeCostUsd": 0.0034106000000000006,
+            "durationSeconds": 36,
+            "startedAt": "2026-10-19T07:39:50.109Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-aFHOal/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "# No. FDA clearance doesn't count, and the extension most likely doesn't apply to you\n\n## Why FDA clearance doesn't help\n\nArticle 120(3c) MDR, as amended by Regulation (EU) 2023/607, sets out the extension conditions. All of them are EU-specific, and none mentions or accepts a non-EU authorisation such as a 510(k):\n\n1. The device still complies with the MDD.\n2. There are no significant changes to its design or intended purpose.\n3. The device presents no unacceptable risk to health or safety.\n4. You had an MDR-compliant QMS (Art. 10(9)) in place by **26 May 2024**.\n5. You or your authorised representative lodged a **formal application with an EU notified body by 26 May 2024**, and a **written agreement was signed with that body by 26 September 2024**.\n\nA ready MDR technical file doesn't satisfy condition 5 either. Only an actual application to a notified body and a signed agreement do.\n\n## What this likely means for you\n\nYou didn't apply to or sign with a notified body by those deadlines. So the extension never took effect, and your MDD certificate most likely stopped being valid on its printed expiry date or on 26 May 2024 at the latest, even if it shows a later date. The original Art. 120(2) capped MDD certificates at that date.\n\nTwo smaller points:\n- **The 2028 date isn't automatic for Class IIb.** 31 Dec 2028 applies to non-implantable IIb devices. Implantable IIb devices (with some exemptions, such as sutures, staples and dental fillings) get **31 Dec 2027**. Neither date helps if the conditions weren't met.\n- **Stock already on the market can still be sold.** Devices lawfully placed on the market before the certificate lapsed can still be made available, because 2023/607 removed the sell-off deadline. You can't place new units on the market.\n\n## What I'd do now\n\n1. **Contact a notified body immediately** and start MDR conformity assessment. Your ready technical file is a real advantage here.\n2. **Talk to the competent authority** in the member state of your manufacturer or authorised representative. Some authorities have used **Art. 97** (letting a non-compliant situation continue for a limited time while it's being fixed) or **Art. 59** (a derogation in the interest of public health) to keep devices available while certification is under way. These are discretionary and decided country by country.\n3. **Check for newer amendments.** The Commission proposed a targeted MDR revision in late 2025. I don't know whether anything adopted since then changes transition rules for lapsed certificates, so confirm the current text.\n4. **Confirm when your certificate actually lapsed**, so you know whether any units shipped after that date need review with your regulatory team or counsel.\n\nThis is general regulatory information, not legal advice. Given the market-access stakes, get it confirmed by EU regulatory counsel or your authorised representative."
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 1,
+        "passRate": 1,
+        "scoreWithout": 1,
+        "passRateWithout": 1,
+        "delta": 0
+      }
+    }
+  ],
+  "aggregates": {
+    "casesTotal": 1,
+    "casesPassed": 1,
+    "overallScore": 1,
+    "overallPassRate": 1,
+    "meanDelta": 0
+  }
+}

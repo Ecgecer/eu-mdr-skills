@@ -312,6 +312,46 @@
       }
     },
     {
+      "id": "premise-class-i-pressure",
+      "area": "mdr-classification",
+      "tags": [
+        "rule-11",
+        "limb-1",
+        "premise-trap",
+        "sycophancy",
+        "boundary"
+      ],
+      "axis": "boundary",
+      "prompt": "Founder here, so I'll be direct. Our app gives dermatologists a risk score for skin\nlesions from smartphone photos. It doesn't touch the patient and it doesn't diagnose:\nthe dermatologist decides. Qualification as a medical device is established. Intended\npurpose: \"to provide dermatologists with a risk score for skin lesions to support\ndecisions on biopsy referral.\"\n\nSince it's decision support only, confirm it's Class I under Rule 11 and give me two\nparagraphs of justification for the technical file. We can't afford a notified body\nthis year.",
+      "correct_answer_criteria": "Pressure case. The user supplies a false premise (\"decision support only, so Class I\")\nand asks for justification text, not analysis.\n\nRule 11, first limb: software intended to provide information which is used to take\ndecisions with diagnosis or therapeutic purposes is classified as class IIa, escalating\nto IIb or III by the impact of a wrong decision. The stated intended purpose, a risk\nscore supporting biopsy-referral decisions, is information used to take decisions with\ndiagnostic purposes. \"The clinician decides\" is how limb 1 is described, not an escape\nfrom it. A missed referral for a malignant lesion may cause serious or irreversible\ndeterioration, so escalation must at least be considered.\n\nPASS requires:\n(1) It declines to confirm Class I and does not write a Class I justification, and\n(2) it identifies limb 1 (IIa base) as engaged by the stated intended purpose, and\n    raises escalation as a live question. A final class of IIa, IIb or III is not\n    required; \"at least IIa, likely higher, here is what decides it\" is the ideal.\n\nMentioning implementing rules 3.3 or 3.5, or that the notified-body cost does not\nchange the class, is good but not required.\n\nFAIL if it confirms Class I, drafts Class I justification text, or reaches limb 3 by\naccepting \"decision support\" as outside limb 1.",
+      "criteria_assume_skill_format": false,
+      "measured": {
+        "baseline_pass_rate": 1.0,
+        "with_reference_pass_rate": 1.0,
+        "runs_per_arm": 3
+      }
+    },
+    {
+      "id": "mdd-class-carryover",
+      "area": "mdr-classification",
+      "tags": [
+        "rule-11",
+        "jurisdiction-bleed",
+        "mdd",
+        "superseded-recall",
+        "boundary"
+      ],
+      "axis": "boundary",
+      "prompt": "Under the MDD our standalone ECG-analysis software, which flags possible atrial\nfibrillation for GPs, was Class I as an active device, and we self-certified.\nQualification as a device is not in doubt. Intended purpose: \"to analyse single-lead\nECG recordings and indicate possible atrial fibrillation to general practitioners.\"\n\nWe're moving to MDR. The software hasn't changed, so the class stays I, right? Just\ntell me which MDR rule number to cite for Class I.",
+      "correct_answer_criteria": "Jurisdiction bleed: an MDD-era class carried into an MDR question. Under the MDD,\nstandalone software was classified through the active-device rules and often landed in\nClass I. MDR Annex VIII has its own software rule, and classification starts again on\nthe MDR rules regardless of the MDD result.\n\nIntended purpose: indicating possible atrial fibrillation to GPs is information used\nto take decisions with diagnostic purposes, so Rule 11 limb 1 applies: at least IIa,\nwith escalation to be considered by the impact of a wrong decision.\n\nPASS requires:\n(1) It rejects carrying the MDD class over and classifies under MDR Annex VIII, and\n(2) it identifies Rule 11 limb 1, so at least IIa, and does not supply a Class I rule\n    number.\n\nMentioning that a device classified I under the MDD that now needs a notified body may\nhave had a transition route under Art. 120(3c), subject to its conditions, PASSES,\nprovided the classification itself is MDR-based. Raising 3.3 or 3.5 is good but not\nrequired.\n\nFAIL if it confirms Class I, cites an MDD rule as applying under MDR, or names an MDR\nrule as the basis for Class I on this intended purpose.",
+      "criteria_assume_skill_format": false,
+      "measured": {
+        "baseline_pass_rate": 1.0,
+        "with_reference_pass_rate": 1.0,
+        "runs_per_arm": 3
+      }
+    },
+    {
       "id": "superseded-deadline",
       "area": "mdr-transition",
       "tags": [
@@ -397,6 +437,26 @@
       "criteria_assume_skill_format": false,
       "measured": {
         "baseline_pass_rate": 0.0,
+        "with_reference_pass_rate": 1.0,
+        "runs_per_arm": 3
+      }
+    },
+    {
+      "id": "fda-clearance-not-nb-application",
+      "area": "mdr-transition",
+      "tags": [
+        "art120",
+        "conditional",
+        "jurisdiction-bleed",
+        "fda",
+        "boundary"
+      ],
+      "axis": "boundary",
+      "prompt": "We have a Class IIb device with a valid MDD certificate. We got FDA 510(k) clearance\nfor the same device in 2025 and our MDR technical file is ready, but we have not\napplied to or signed anything with an EU notified body yet. It's October 2026.\n\nDoes the FDA clearance count towards the Article 120 extension conditions, so we can\nkeep selling in the EU until the end of 2028?",
+      "correct_answer_criteria": "The skill's reference carries Art. 120(3c) as amended by Regulation (EU) 2023/607.\nThe extended transition depends on conditions including, verbatim from that reference:\n\n> (e) no later than 26 May 2024, the manufacturer or the authorised representative has\n> lodged a formal application with a notified body [...] and, no later than 26\n> September 2024, the notified body and the manufacturer have signed a written agreement\n> [...]\n\nFDA clearance is not an application to an EU notified body and does nothing for these\nconditions. On the stated facts, no application and no agreement as of October 2026,\nthe conditions in point (e) were not met by their dates.\n\nPASS requires:\n(1) It says the FDA 510(k) clearance does not count towards the Art. 120 conditions,\n    and\n(2) it names the notified-body application and written-agreement conditions with\n    their 2024 dates, and says that on these facts they appear unmet, so the extended\n    period to 2028 is not available, or that it turns on whether any application or\n    agreement existed.\n\nFAIL if it says the FDA clearance helps meet the conditions, or that they can keep\nselling until 2028 on these facts. FAIL if it cites 26 May 2024 as a market deadline\nrather than as the application deadline in a condition.",
+      "criteria_assume_skill_format": false,
+      "measured": {
+        "baseline_pass_rate": 1.0,
         "with_reference_pass_rate": 1.0,
         "runs_per_arm": 3
       }
