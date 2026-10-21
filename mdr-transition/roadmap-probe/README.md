@@ -21,7 +21,10 @@ decision and its reasons are in [`../../ROADMAP.md`](../../ROADMAP.md). What `re
 | `blind-regrade-2026-10-19` | The second grader's verdicts on every failed nine-run baseline run, the items it saw, and the key it did not |
 
 The harness records the CLI version but not the model, so the folder name is the only
-record of which model a pinned run used.
+record of which model a pinned run used. For the unpinned runs, the CLI default on 2.1.303
+resolved to `claude-opus-5-5`. That was confirmed on 2026-10-19 by replaying
+`eudamed-mdr-ivdr-anchor` once per arm and reading the model ID from the run traces, which
+the harness deletes afterwards. The replay is not stored as a result.
 
 ## Run it
 
