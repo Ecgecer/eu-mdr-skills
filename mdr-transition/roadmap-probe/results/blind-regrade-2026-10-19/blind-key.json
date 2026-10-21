@@ -1,0 +1,122 @@
+{
+ "e5115995ed": {
+  "case": "eudamed-mdr-ivdr-anchor",
+  "run": 1,
+  "judge_passed": false,
+  "judge_votes": [
+   false,
+   false,
+   false
+  ]
+ },
+ "7e68538d23": {
+  "case": "eudamed-mdr-ivdr-anchor",
+  "run": 2,
+  "judge_passed": false,
+  "judge_votes": [
+   false,
+   false,
+   false
+  ]
+ },
+ "6f1d2e1775": {
+  "case": "eudamed-mdr-ivdr-anchor",
+  "run": 3,
+  "judge_passed": false,
+  "judge_votes": [
+   false,
+   false,
+   false
+  ]
+ },
+ "7fa5e2cd26": {
+  "case": "eudamed-mdr-ivdr-anchor",
+  "run": 4,
+  "judge_passed": false,
+  "judge_votes": [
+   false,
+   false,
+   false
+  ]
+ },
+ "8b3f88d09b": {
+  "case": "eudamed-mdr-ivdr-anchor",
+  "run": 5,
+  "judge_passed": false,
+  "judge_votes": [
+   false,
+   false,
+   false
+  ]
+ },
+ "c4fbb4cac4": {
+  "case": "eudamed-mdr-ivdr-anchor",
+  "run": 6,
+  "judge_passed": false,
+  "judge_votes": [
+   false,
+   false,
+   false
+  ]
+ },
+ "e01673417d": {
+  "case": "eudamed-mdr-ivdr-anchor",
+  "run": 7,
+  "judge_passed": false,
+  "judge_votes": [
+   false,
+   false,
+   false
+  ]
+ },
+ "4f21c4d0dd": {
+  "case": "eudamed-mdr-ivdr-anchor",
+  "run": 8,
+  "judge_passed": false,
+  "judge_votes": [
+   false,
+   false,
+   false
+  ]
+ },
+ "50e01ddea1": {
+  "case": "eudamed-mdr-ivdr-anchor",
+  "run": 9,
+  "judge_passed": false,
+  "judge_votes": [
+   false,
+   false,
+   false
+  ]
+ },
+ "9e64f8e9a4": {
+  "case": "eudamed-nb-enters-certificates",
+  "run": 4,
+  "judge_passed": false,
+  "judge_votes": [
+   false,
+   false,
+   false
+  ]
+ },
+ "a8297ea986": {
+  "case": "eudamed-nb-enters-certificates",
+  "run": 1,
+  "judge_passed": true,
+  "judge_votes": [
+   true,
+   true,
+   true
+  ]
+ },
+ "aba8524acd": {
+  "case": "nb-certificate-number",
+  "run": 1,
+  "judge_passed": true,
+  "judge_votes": [
+   true,
+   true,
+   true
+  ]
+ }
+}

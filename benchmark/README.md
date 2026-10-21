@@ -6,7 +6,7 @@ regulation to things the provision it cites does not reach?**
 Not a knowledge test. Every case here is one a competent model can reason about;
 what it measures is whether the model knows where the rule stops.
 
-**30 cases**, 30 with measured baseline difficulty. Apache-2.0.
+**33 cases**, 33 with measured baseline difficulty. Apache-2.0.
 Machine-readable in [`eu-mdr-bench.json`](eu-mdr-bench.json).
 
 ## How to run it
@@ -36,7 +36,27 @@ python3 scripts/run-benchmark.py --list          # cases and their measured base
 
 It writes `benchmark/runs/<model>-<timestamp>.json` with every response and the
 retrieval condition. Judge those against each case's `correct_answer_criteria`,
-and do not let the model judge itself.
+and do not let the model judge itself. `scripts/judge-benchmark.py` does that with
+a second model and records a reason per verdict; `scripts/score-benchmark.py`
+scores the result.
+
+Already on inspect_ai? The same cases, criteria and three epochs are a task:
+
+```
+inspect eval benchmark/inspect/eu_mdr_bench.py --model <model> \
+    --model-role grader=<a different model>
+```
+
+Pin `--thinking-level` and record it. Unpinned, each model runs at its own default,
+and two columns then differ by a setting nobody chose.
+
+### Two axes, not one score
+
+Each case carries an `axis`: **boundary** (24), does the model stop where
+the rule stops, or **detection** (9), does it find what is there. It is derived from the
+case's tags. Report them separately: the reference text helps a small model on
+detection while the discipline to stop does not transfer (MODELS.md), so a single
+pass rate averages two effects that move in opposite directions.
 
 ### One model has been tested
 
@@ -53,7 +73,7 @@ measures.
 
 If you run it against another model, the results are welcome as a PR.
 
-**12 of these 30 cases carry criteria that assume the skill's own output shape**
+**7 of these 33 cases carry criteria that assume the skill's own output shape**
 a `## Limits` block, a `Ready to publish` line, the `Breach:` / `Call:` /
 `Also engaged:` fields, or refer the judge to `SKILL.md`, which is not in this
 directory. No model can satisfy those without the plugin loaded, so scoring a
@@ -101,7 +121,7 @@ Untested on other models:
 - **`rule-not-carried`**, concludes confidently where the cited rule does not settle it  
   <sub>mdr-classification</sub>
 
-## Cases a baseline already passes (10)
+## Cases a baseline already passes (13)
 
 Published because a benchmark that hides its easy cases overstates itself.
 These measure nothing about boundary discipline; a model gets them right unaided.
@@ -109,11 +129,14 @@ These measure nothing about boundary discipline; a model gets them right unaided
 - `class-dependent-date` (mdr-transition)
 - `conditions-not-automatic` (mdr-transition)
 - `driving-software-3-3` (mdr-classification)
+- `fda-clearance-not-nb-application` (mdr-transition)
 - `implantable-exception` (mdr-transition)
 - `limb1-escalation-iii` (mdr-classification)
 - `limb2-both-conditions` (mdr-classification)
 - `limb3-class-i` (mdr-classification)
+- `mdd-class-carryover` (mdr-classification)
 - `no-disclaimer` (scope-statement)
+- `premise-class-i-pressure` (mdr-classification)
 - `qualification-not-established` (mdr-classification)
 - `superseded-deadline` (mdr-transition)
 

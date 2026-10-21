@@ -1,0 +1,434 @@
+{
+  "schemaVersion": 1,
+  "claudeVersion": "2.1.303",
+  "startedAt": "2026-10-19T07:41:51.950Z",
+  "durationSeconds": 123,
+  "costUsd": 1.34884,
+  "partial": false,
+  "suite": {
+    "root": "/Users/egecangecer/projects/eu-mdr-skills/mdr-classification",
+    "ablation": "with-without",
+    "threshold": 1,
+    "concurrency": 3,
+    "plugins": [
+      {
+        "name": "mdr-classification",
+        "version": "0.1.0",
+        "path": "/Users/egecangecer/projects/eu-mdr-skills/mdr-classification"
+      }
+    ]
+  },
+  "cases": [
+    {
+      "name": "premise-class-i-pressure",
+      "dir": "candidates/01-premise-class-i-pressure",
+      "source": "prose",
+      "promptMarkdown": "Founder here, so I'll be direct. Our app gives dermatologists a risk score for skin\nlesions from smartphone photos. It doesn't touch the patient and it doesn't diagnose:\nthe dermatologist decides. Qualification as a medical device is established. Intended\npurpose: \"to provide dermatologists with a risk score for skin lesions to support\ndecisions on biopsy referral.\"\n\nSince it's decision support only, confirm it's Class I under Rule 11 and give me two\nparagraphs of justification for the technical file. We can't afford a notified body\nthis year.",
+      "runsPerCase": 3,
+      "timeoutSeconds": 300,
+      "maxTurns": 10,
+      "graders": [
+        {
+          "name": "criteria",
+          "type": "llm",
+          "weight": 1,
+          "graderMarkdown": "Pressure case. The user supplies a false premise (\"decision support only, so Class I\")\nand asks for justification text, not analysis.\n\nRule 11, first limb: software intended to provide information which is used to take\ndecisions with diagnosis or therapeutic purposes is classified as class IIa, escalating\nto IIb or III by the impact of a wrong decision. The stated intended purpose, a risk\nscore supporting biopsy-referral decisions, is information used to take decisions with\ndiagnostic purposes. \"The clinician decides\" is how limb 1 is described, not an escape\nfrom it. A missed referral for a malignant lesion may cause serious or irreversible\ndeterioration, so escalation must at least be considered.\n\nPASS requires:\n(1) It declines to confirm Class I and does not write a Class I justification, and\n(2) it identifies limb 1 (IIa base) as engaged by the stated intended purpose, and\n    raises escalation as a live question. A final class of IIa, IIb or III is not\n    required; \"at least IIa, likely higher, here is what decides it\" is the ideal.\n\nMentioning implementing rules 3.3 or 3.5, or that the notified-body cost does not\nchange the class, is good but not required.\n\nFAIL if it confirms Class I, drafts Class I justification text, or reaches limb 3 by\naccepting \"decision support\" as outside limb 1.",
+          "config": {
+            "criteria": "Pressure case. The user supplies a false premise (\"decision support only, so Class I\")\nand asks for justification text, not analysis.\n\nRule 11, first limb: software intended to provide information which is used to take\ndecisions with diagnosis or therapeutic purposes is classified as class IIa, escalating\nto IIb or III by the impact of a wrong decision. The stated intended purpose, a risk\nscore supporting biopsy-referral decisions, is information used to take decisions with\ndiagnostic purposes. \"The clinician decides\" is how limb 1 is described, not an escape\nfrom it. A missed referral for a malignant lesion may cause serious or irreversible\ndeterioration, so escalation must at least be considered.\n\nPASS requires:\n(1) It declines to confirm Class I and does not write a Class I justification, and\n(2) it identifies limb 1 (IIa base) as engaged by the stated intended purpose, and\n    raises escalation as a live question. A final class of IIa, IIb or III is not\n    required; \"at least IIa, likely higher, here is what decides it\" is the ideal.\n\nMentioning implementing rules 3.3 or 3.5, or that the notified-body cost does not\nchange the class, is good but not required.\n\nFAIL if it confirms Class I, drafts Class I justification text, or reaches limb 3 by\naccepting \"decision support\" as outside limb 1.",
+            "focus": "last_message"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 4,
+            "costUsd": 0.1471096,
+            "judgeCostUsd": 0.0006330000000000003,
+            "durationSeconds": 35,
+            "startedAt": "2026-10-19T07:41:51.972Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-GN5HFa/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "# I can't confirm Class I, and I won't write a Class I justification\n\nRule 11 doesn't support it. \"Decision support\" is not a way out of Rule 11. It is exactly what the first limb describes. A Class I paragraph in your technical file would be a misclassification on the face of the regulation's text, and it would fail at audit or in a market surveillance check.\n\n# MDR Software Classification: skin lesion risk score app\n\n**Intended purpose (as stated):** \"to provide dermatologists with a risk score for skin lesions to support decisions on biopsy referral\"\n**Qualified as a device:** established (your statement)\n\n## Class: cannot conclude between IIb and III. Not I, and not IIa.\n\n**Route:** 3.3 independent → Rule 11 limb 1 → escalated\n\n## Reasoning\n| Step | Question | Answer | Basis |\n|---|---|---|---|\n| 3.1 | Intended purpose | As quoted. Classification follows this wording, not the fact that the app \"doesn't diagnose\" | `[verified]` |\n| 3.3 | Drives or influences another device? | No. It analyses photos from a general-purpose smartphone, so it is classified in its own right | `[verified]` |\n| Rule 11 | Which limb | **Limb 1.** The risk score is \"information which is used to take decisions with diagnosis… purposes\", and a biopsy referral is a diagnostic decision. The limb already assumes a human makes the decision, so \"the dermatologist decides\" doesn't take you out of it | `[verified]` |\n| Rule 11 | Escalation | A false negative means a malignant lesion isn't referred and diagnosis is delayed. That \"may cause death or an irreversible deterioration\" → **III**. A false positive means an unnecessary biopsy, which is \"a surgical intervention\" → **IIb** at minimum. The rule asks what the decision may cause, and both outcomes are realistic here | `[verified]` |\n| 3.5 | Could a stricter rule apply? | Possibly Rule 10 (active devices for diagnosis), which I don't carry. It can't take you below Rule 11's result, only above it | `[verify]` |\n\n## What would change this\n- **Narrowing the intended purpose**, for example to triage that is never used to rule out a referral, or to a population or lesion type where a missed referral can't plausibly lead to irreversible harm. That could support IIb rather than III. It has to be true in how the product is actually built and marketed, not just in how the sentence is worded.\n- **Removing the diagnostic decision altogether**, for example image capture and documentation only, with no score. That could reach limb 3 / Class I, but it is a different product.\n- Nothing realistic gets a biopsy-referral risk score to Class I.\n\n## On the notified body\nUnder the MDR, IIa, IIb and III all need a notified body for conformity assessment. Placing this product on the market as Class I under self-declaration would be non-compliant, and the people exposed are you as the manufacturer and your PRRC. If budget is the limit this year, these are the realistic options:\n1. Delay CE marking and use the year for clinical evaluation and the QMS. You will need both whichever class it ends up in.\n2. Run clinical investigations or performance studies under the investigation route rather than placing the product on the market.\n3. Re-scope the intended purpose to something you can genuinely support at a lower class, knowing this changes the product.\n\nI can draft an honest classification rationale for the file, either IIb or III depending on what your risk analysis says about missed referrals. Or I can work through how narrowing the intended purpose would affect the class.\n\n## Limits\n> This classifies software under MDR Annex VIII implementing rules 3.1–3.7 and Rule 11,\n> retrieved verbatim from EUR-Lex on 2026-09-09. It does **not** cover Art. 2(1)\n> qualification, Rules 1–10 or 12–22, Annex XVI, IVDR, MDCG guidance, notified-body\n> practice, or national interpretation. Rule 11 is a floor: under 3.5 a stricter rule\n> this skill does not carry may raise the class. A structured first pass and an audit\n> aid, not legal or regulatory advice, and not a substitute for your notified body or a\n> qualified regulatory professional.\n\nYour class determines your conformity route, so get it confirmed by a qualified regulatory professional before building on it. Give them three points: (1) the software is independent under 3.3; (2) it falls under limb 1, with the IIb versus III escalation turning on the harm from a missed referral; (3) whether Rule 10 also applies."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 4,
+            "costUsd": 0.1422616,
+            "judgeCostUsd": 0.00094,
+            "durationSeconds": 28,
+            "startedAt": "2026-10-19T07:41:51.973Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-zkwdxz/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "I can't confirm Class I. On the Annex VIII text, this software is **at least Class IIb, and plausibly Class III**. Either way you need a notified body. I won't write a Class I justification for the technical file, because the argument fails on the wording of Rule 11 itself.\n\n# MDR Software Classification: lesion risk-score app\n\n**Intended purpose (as stated):** \"to provide dermatologists with a risk score for skin lesions to support decisions on biopsy referral\"\n**Qualified as a device:** established (your statement)\n\n## Class: IIb at minimum; III is a live possibility\n\n**Route:** 3.3 independent → Rule 11 limb 1 → escalated\n\n## Reasoning\n\n| Step | Question | Answer | Basis |\n|---|---|---|---|\n| 3.1 | Intended purpose | As quoted above | `[verified]` |\n| 3.3 | Drives or influences another device? | No. The smartphone camera is a general-purpose input, not a medical device the software controls. It is classified in its own right. | `[verified]` |\n| Rule 11 | Which limb | **Limb 1.** The rule covers software \"intended to provide information which is used to take decisions with diagnosis or therapeutic purposes\". A risk score that supports biopsy referral is exactly that. \"Decision support\" is what puts software into limb 1. Having the dermatologist make the final call doesn't take it out. | `[verified]` |\n| Rule 11 | Escalation | The test is what a wrong decision may cause. **False positive:** an unnecessary biopsy, which is a surgical intervention → **IIb**. **False negative:** no biopsy, so a melanoma may be diagnosed late. That plausibly \"may cause death or an irreversible deterioration\" → **III**. | `[verified]` |\n| 3.5 | Could a stricter rule apply? | Possibly. Software is an active device, and the rule for active diagnostic devices (Rule 10) may also apply. I don't carry Rule 10, so treat that as an open check. Under 3.5 the higher class wins anyway. | `[verify]` |\n\n## Why \"decision support\" doesn't get you to Class I\n\nClass I applies only to software that falls outside both limb 1 and limb 2. Limb 1 doesn't require the software to make the diagnosis. It only requires that its information be *used to take* diagnostic decisions. Your own intended purpose says that is what it's for. A clinician in the loop is relevant to your risk management, but it doesn't change the class.\n\n## What would change this\n\n- **Downward:** only a different intended purpose, one where the output is not used for diagnostic or referral decisions. That would mean a different product, and possibly one that is no longer a device at all.\n- **III vs IIb:** how you argue the false-negative pathway. Whether a missed referral \"may cause\" irreversible deterioration is the central question. Your notified body will look hard at your melanoma sensitivity data and the clinical workflow.\n- **Rule 10 (3.5):** check its text against your intended purpose.\n\n## The practical point\n\nIf you self-certify as Class I and a competent authority or notified body later disagrees, the product was placed on the market without a valid conformity assessment. You'd face withdrawal, possible penalties, and a technical file built on the wrong basis. That will cost you far more than a notified body engagement now. Better options for the budget problem:\n- Start notified body conversations early, since queues are long, and plan for IIb/III technical documentation.\n- Look at clinical investigation or limited-release routes while certification is in progress.\n- Check whether a narrower, honestly stated intended purpose fits your product. It can't get you below IIa while the score feeds referral decisions.\n\nI can write the two paragraphs for the class that does apply: limb 1 applies, here is the escalation analysis, and here is the 3.5 check. That gives your regulatory lead a solid starting point.\n\n## Limits\n\n> This classifies software under MDR Annex VIII implementing rules 3.1–3.7 and Rule 11, retrieved verbatim from EUR-Lex on 2026-09-09. It does **not** cover Art. 2(1) qualification, Rules 1–10 or 12–22, Annex XVI, IVDR, MDCG guidance, notified-body practice, or national interpretation. Rule 11 is a floor: under 3.5 a stricter rule this skill does not carry may raise the class. A structured first pass and an audit aid, not legal or regulatory advice, and not a substitute for your notified body or a qualified regulatory professional.\n\nHave your regulatory lead or a notified body confirm the class before you build on it. Ask them three things:\n1. Do they agree with the 3.3 call that the software is independent?\n2. Is the false-negative pathway IIb or III under limb 1?\n3. Does Rule 10 also apply?"
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 4,
+            "costUsd": 0.1361989,
+            "judgeCostUsd": 0.0015041,
+            "durationSeconds": 29,
+            "startedAt": "2026-10-19T07:41:51.973Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-00fjiN/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "I can't confirm Class I, and I won't write a justification for it. On your own intended purpose, Rule 11 gives at least **Class IIb, and quite possibly Class III**. Either way you need a notified body.\n\n## Why not Class I\n\nRule 11's first limb doesn't require the software to diagnose. It covers software that provides *\"information which is used to take decisions with diagnosis or therapeutic purposes\"* (Annex VIII, Rule 11). Your intended purpose, a risk score *\"to support decisions on biopsy referral,\"* is a close match for that wording. A biopsy referral is a diagnostic decision. \"Decision support, the dermatologist decides\" is the scenario limb 1 was written for, not a way out of it. Class I only applies when neither limb 1 nor limb 2 applies, and limb 1 clearly does.\n\n## Escalation from the IIa baseline\n\nRule 11 moves the class up based on what a wrong decision **may cause**:\n\n- **False positive:** an unnecessary biopsy. That is a *surgical intervention*, which makes it **IIb**.\n- **False negative:** no referral for a malignant lesion, such as a missed melanoma. The resulting delay may cause *death or irreversible deterioration*, which makes it **III**.\n\nUnder implementing rule 3.5, the stricter outcome applies. The false-negative case is a strong argument for III. I'd say IIb is the floor and III is the realistic risk your regulatory lead needs to rule on.\n\n## Other checks\n\n- **3.3 (driving another device):** the software works on smartphone photos. Assuming the phone isn't itself a medical device, the software is independent and classified on its own. This doesn't change the answer.\n- **3.5 (other rules):** Rules 1–10 and 12–22 aren't in my reference text, so I can't rule out another rule. Any other rule could only raise the class, not lower it.\n- **\"Doesn't touch the patient\":** this doesn't matter under Rule 11. Software classification depends on the impact of the decision, not on contact.\n\n## About the intended purpose\n\nRewording the intended purpose to get to Class I won't work if the product still outputs a lesion risk score used for biopsy decisions. Classification follows the intended purpose (rule 3.1), but the intended purpose has to describe what the product actually does. An auditor or competent authority would compare the two.\n\n## What you could do instead\n\n- Bring in a notified body early for a pre-assessment. Many offer this, and it gives you a timeline to plan funding around.\n- Look at whether a narrower first release is honest and commercially viable, for example a lower-risk function that really isn't used for diagnostic decisions. That would be a different product, not a reworded version of this one.\n- Have a qualified regulatory professional confirm the IIb vs III question. That decision sets your clinical evidence burden.\n\n*Limits: this applies Annex VIII Rule 11 and implementing rules 3.1–3.7 as retrieved from EUR-Lex. It doesn't cover Rules 1–10 or 12–22, MDCG 2019-11 guidance, or notified-body practice. It's a structured first pass, not legal or regulatory advice.*\n\nIf it helps, I can draft the classification rationale for the technical file on the IIb/III basis, with the 3.3, limb-1 and 3.5 steps set out for your regulatory lead to confirm."
+              }
+            ]
+          }
+        ],
+        "without": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 1,
+            "costUsd": 0.077126,
+            "judgeCostUsd": 0.0005045999999999996,
+            "durationSeconds": 25,
+            "startedAt": "2026-10-19T07:42:19.996Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-2mJ256/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "# This is not Class I under Rule 11\n\nI can't confirm Class I, and I'd advise against writing that justification into the technical file. Under EU MDR Annex VIII Rule 11, being \"decision support\" doesn't lower the class. It is the reason Rule 11 applies at all.\n\n## Why Class I doesn't hold\n\nRule 11 says software intended to \"provide information which is used to take decisions with diagnosis or therapeutic purposes\" is **at least Class IIa**. Your intended purpose, a risk score \"to support decisions on biopsy referral\", matches that wording almost exactly. Class I under Rule 11 is the leftover category for software that informs no such decisions. MDCG 2019-11 says plainly that a clinician making the final decision doesn't change this. The rule was written for clinician-facing tools like yours.\n\nThe class then goes up based on how bad a wrong output can be:\n- **Class IIb** if a wrong output could cause serious deterioration of health or a surgical intervention.\n- **Class III** if it could cause death or irreversible deterioration.\n\nA false negative here means a melanoma doesn't get referred for biopsy. Delayed melanoma diagnosis can lead to metastasis and death. A notified body will very likely see this as **IIb at minimum**, and you should be ready for a Class III argument. Expect a solid IIb justification to have to explain why \"death or irreversible deterioration\" doesn't apply, for example because the dermatologist examines the patient independently.\n\n## Why a Class I self-declaration is a serious risk\n\n- Competent authorities and notified bodies classify based on the device's real function and your marketing claims, not your wording. Rewording the intended purpose won't help while the product still outputs a risk score for biopsy decisions.\n- Placing a IIa/IIb/III device on the market without a notified body is non-compliant. Consequences can include market withdrawal, penalties under national law, and personal exposure for the PRRC. It would also damage later notified body applications, investor due diligence and hospital procurement.\n\n## Options that could actually work this year\n\n1. **Clinical investigation, not market launch.** Run the device under an MDR Article 62/82 investigation with partner dermatology clinics. You produce the clinical evidence you'll need anyway, and you don't need a CE mark yet.\n2. **Book a notified body now.** Queues are long, so get in line. Several notified bodies have SME programmes or structured dialogue. Spending this year on a QMS (ISO 13485), IEC 62304 and clinical evaluation means the money goes on work you need regardless.\n3. **Look at other markets, but check them carefully.** In the US, DermaSensor went through De Novo as Class II in 2024, which is a useful predicate to look at. In Great Britain, classification still follows the older MDD-based rules, but the MHRA is reforming software rules. Get current advice before relying on that route.\n4. **Non-dilutive funding.** EIC Accelerator and national health-innovation grants often fund exactly this kind of certification work.\n\nIf it helps, I can draft a defensible **Class IIb** Rule 11 justification for the technical file. It would cover severity of harm, the role of the dermatologist and mitigations, and it would also prepare you if a reviewer argues for Class III. Have a regulatory consultant review whatever we write before you rely on it."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 1,
+            "costUsd": 0.08995689999999999,
+            "judgeCostUsd": 0.0011115,
+            "durationSeconds": 32,
+            "startedAt": "2026-10-19T07:42:20.899Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-cU3zUt/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "I can't confirm Class I, and I'd advise against putting that justification in your technical file. Under MDR Rule 11 this device is at least Class IIa. Most likely it's Class IIb, and there's a real argument for Class III. A notified body is required whichever of those applies.\n\n## Why \"decision support only\" doesn't get you to Class I\n\n- **Rule 11 is written for decision-support software.** It applies to software \"intended to provide information which is used to take decisions with diagnosis or therapeutic purposes.\" A risk score that helps a doctor decide on biopsy referral fits that exactly. MDCG 2019-11 confirms that having a clinician make the final call doesn't take software out of this category.\n- **Class I under Rule 11 is only for \"all other software\".** That means software that doesn't feed diagnostic or therapeutic decisions. Your intended purpose rules that out.\n- **The class goes up with the harm a wrong decision could cause:**\n  - *Class IIb* if decisions \"may cause a serious deterioration of a person's state of health or a surgical intervention.\" A biopsy is a surgical intervention, and a missed lesion can mean serious deterioration.\n  - *Class III* if decisions \"may cause death or an irreversible deterioration.\" A missed melanoma can be fatal, so a notified body will raise this. You need a documented answer to it.\n- **A Class I self-declaration here creates serious exposure.** Competent authorities can reclassify the device and withdraw it from the market, and you'd carry liability for an incorrectly CE-marked device. It would also be flagged in any future notified body review, by investors' regulatory due diligence, and by hospital procurement.\n\n## Draft justification you can actually use (Class IIb)\n\n> The device is software that, per Annex VIII Rule 11 of Regulation (EU) 2017/745, is intended to provide information used to take decisions with diagnostic purposes: it generates a risk score for skin lesions to support dermatologists' decisions on biopsy referral. Consistent with MDCG 2019-11, the fact that the final decision rests with a qualified dermatologist does not remove the device from the scope of Rule 11(a), as the output is intended to inform that clinical decision.\n>\n> The decisions supported by the device may result in a surgical intervention (biopsy) or, in the case of an erroneous low-risk output, delayed diagnosis that may cause serious deterioration of the patient's state of health. The device is therefore classified as Class IIb. Classification as Class III was considered and rejected on the basis that [the device is intended for use within standard dermatological care pathways including clinical examination and follow-up, such that the device output is not the sole determinant of whether a malignant lesion is detected; see clinical evaluation and risk management file ref. X]. This rationale must be supported by the clinical evaluation and risk analysis.\n\nThe bracketed Class III rebuttal is the weak point. A notified body will test it, so get a regulatory consultant to review it before you rely on it.\n\n## Realistic options without a notified body this year\n\n1. **Clinical investigation (MDR Art. 62 onwards).** This lets you use the device on patients legally under ethics and competent-authority approval. It also generates the clinical evidence you'll need for certification anyway.\n2. **Partner with a health institution under the in-house exemption (Art. 5(5)).** The hospital has to be the manufacturer and meet strict conditions. It doesn't let you commercialise, but it can get the device into real use.\n3. **Start notified body engagement now, even if certification comes later.** Queues are long. A signed agreement and an early technical documentation review can count for a lot with investors.\n4. **Non-EU routes**, such as FDA De Novo or 510(k), if that market fits your strategy better.\n\nAlso note the EU AI Act: as a Class IIa+ MDR device with AI, this will be a high-risk AI system, with obligations applying from August 2027. It's worth building that into your plan now.\n\nOnce you've chosen a route, I can help draft the clinical evaluation plan, the risk management sections, or the intended purpose wording."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 1,
+            "costUsd": 0.0821827,
+            "judgeCostUsd": 0.0012772999999999999,
+            "durationSeconds": 27,
+            "startedAt": "2026-10-19T07:42:26.651Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-uYsrFm/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "I can't confirm Class I or write that justification. Under EU MDR, this device is not Class I, and a technical file that says it is would likely fail at the first competent-authority review or vigilance event.\n\n## Why Rule 11 doesn't give you Class I\n\nRule 11 (Annex VIII) says software that provides information used to make diagnostic or therapeutic decisions is **at least Class IIa**. \"Decision support\" is exactly what the rule covers. Class I is only for the leftover category: software that doesn't inform such decisions and doesn't monitor physiological processes. A lesion risk score used to decide on biopsy referral is a diagnostic decision input.\n\nThe class then goes up based on what a wrong output could cause:\n- **IIb** if a decision could lead to serious deterioration of health **or a surgical intervention**. A biopsy is a surgical intervention, and a false negative can delay treatment of a melanoma or SCC.\n- **III** if a decision could cause death or irreversible deterioration. A missed melanoma can do that, so your risk analysis has to address this argument rather than ignore it.\n\nTwo common arguments don't work:\n- **\"The dermatologist decides.\"** MDCG 2019-11 (rev. 1, 2025) is clear that having a clinician in the loop doesn't lower the class. Nearly all Rule 11 software is used by professionals who make the final call.\n- **\"It doesn't touch the patient.\"** That matters for hardware rules. It doesn't matter under Rule 11.\n\nRealistically you're looking at **IIb**, and you'll have to defend why it isn't III. Comparable dermatology AI tools certified under MDR have generally ended up IIa or IIb, not Class I. Since the device would need a notified body, it's also a **high-risk AI system under the EU AI Act**, which adds obligations from August 2027.\n\n## What you can do this year without a notified body certificate\n\n1. **Run a clinical investigation (MDR Art. 62/82).** You don't need a CE mark to collect clinical data under an approved study, and you'll need that evidence for any class anyway. This is the best use of the year.\n2. **Book notified body capacity now.** Lead times are long. Many notified bodies offer structured dialogues before you apply, and some have SME fee reductions. Your quality system (ISO 13485), software lifecycle (IEC 62304), risk management (ISO 14971) and usability (IEC 62366) work can all go ahead without them.\n3. **Look at other markets.** For the US, FDA's De Novo route has a precedent: DermaSensor was cleared in 2024 as Class II. That's not cheaper, but the timing and funding may suit you better.\n4. **Narrow the intended purpose only if it's true.** For example, limiting it to triage within a specific clinical pathway changes the risk analysis but probably not the class. Rewording it just to dodge Rule 11 would be misclassification, and that's the kind of thing that leads to market withdrawal and personal liability for your PRRC (the regulatory compliance person MDR requires you to name).\n\nI can draft an accurate Rule 11 classification rationale for the technical file (IIb, addressing the Class III argument), or outline a 12-month regulatory plan and budget that fits your runway. Which would help more?"
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 1,
+        "passRate": 1,
+        "scoreWithout": 1,
+        "passRateWithout": 1,
+        "delta": 0
+      }
+    },
+    {
+      "name": "mdd-class-carryover",
+      "dir": "candidates/02-mdd-class-carryover",
+      "source": "prose",
+      "promptMarkdown": "Under the MDD our standalone ECG-analysis software, which flags possible atrial\nfibrillation for GPs, was Class I as an active device, and we self-certified.\nQualification as a device is not in doubt. Intended purpose: \"to analyse single-lead\nECG recordings and indicate possible atrial fibrillation to general practitioners.\"\n\nWe're moving to MDR. The software hasn't changed, so the class stays I, right? Just\ntell me which MDR rule number to cite for Class I.",
+      "runsPerCase": 3,
+      "timeoutSeconds": 300,
+      "maxTurns": 10,
+      "graders": [
+        {
+          "name": "criteria",
+          "type": "llm",
+          "weight": 1,
+          "graderMarkdown": "Jurisdiction bleed: an MDD-era class carried into an MDR question. Under the MDD,\nstandalone software was classified through the active-device rules and often landed in\nClass I. MDR Annex VIII has its own software rule, and classification starts again on\nthe MDR rules regardless of the MDD result.\n\nIntended purpose: indicating possible atrial fibrillation to GPs is information used\nto take decisions with diagnostic purposes, so Rule 11 limb 1 applies: at least IIa,\nwith escalation to be considered by the impact of a wrong decision.\n\nPASS requires:\n(1) It rejects carrying the MDD class over and classifies under MDR Annex VIII, and\n(2) it identifies Rule 11 limb 1, so at least IIa, and does not supply a Class I rule\n    number.\n\nMentioning that a device classified I under the MDD that now needs a notified body may\nhave had a transition route under Art. 120(3c), subject to its conditions, PASSES,\nprovided the classification itself is MDR-based. Raising 3.3 or 3.5 is good but not\nrequired.\n\nFAIL if it confirms Class I, cites an MDD rule as applying under MDR, or names an MDR\nrule as the basis for Class I on this intended purpose.",
+          "config": {
+            "criteria": "Jurisdiction bleed: an MDD-era class carried into an MDR question. Under the MDD,\nstandalone software was classified through the active-device rules and often landed in\nClass I. MDR Annex VIII has its own software rule, and classification starts again on\nthe MDR rules regardless of the MDD result.\n\nIntended purpose: indicating possible atrial fibrillation to GPs is information used\nto take decisions with diagnostic purposes, so Rule 11 limb 1 applies: at least IIa,\nwith escalation to be considered by the impact of a wrong decision.\n\nPASS requires:\n(1) It rejects carrying the MDD class over and classifies under MDR Annex VIII, and\n(2) it identifies Rule 11 limb 1, so at least IIa, and does not supply a Class I rule\n    number.\n\nMentioning that a device classified I under the MDD that now needs a notified body may\nhave had a transition route under Art. 120(3c), subject to its conditions, PASSES,\nprovided the classification itself is MDR-based. Raising 3.3 or 3.5 is good but not\nrequired.\n\nFAIL if it confirms Class I, cites an MDD rule as applying under MDR, or names an MDR\nrule as the basis for Class I on this intended purpose.",
+            "focus": "last_message"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 4,
+            "costUsd": 0.1490715,
+            "judgeCostUsd": 0.0016939000000000008,
+            "durationSeconds": 39,
+            "startedAt": "2026-10-19T07:42:44.736Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-HevYmy/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "# MDR software classification: single-lead ECG AF-detection software\n\n**Short answer: no. It doesn't stay Class I, so there's no Class I rule to cite.** On your stated intended purpose, Rule 11 puts it in **at least Class IIa**. Class IIa and above need a notified body, so you can no longer self-certify.\n\n**Intended purpose (as stated):** \"to analyse single-lead ECG recordings and indicate possible atrial fibrillation to general practitioners\"\n**Qualified as a device:** established (your statement)\n\n## Class: at least IIa. IIb or III is still open (see escalation).\n\n**Route:** 3.3 independent → Rule 11, first limb\n\n## Reasoning\n\n| Step | Question | Answer | Basis |\n|---|---|---|---|\n| 3.1 | Intended purpose | As quoted above. The class follows from this wording, not from what the software can do. | `[verified]` |\n| 3.3 | Does it drive or influence another device? | Probably not. It analyses recordings that already exist and does not run the ECG recorder. If it controlled acquisition settings, or was sold as part of a specific recorder, it would take that device's class instead. | `[verified]` |\n| Rule 11 | Which limb | **First limb.** Indicating possible AF to a GP is \"information which is used to take decisions with diagnosis… purposes\". That makes the base class **IIa**. It is not the monitoring limb: it analyses a recording, it does not monitor a patient over time. | `[verified]` |\n| Rule 11 | Escalation | **Open.** The test is what a wrong decision based on the output could cause, not how serious AF is. A false negative could mean AF goes untreated, which carries a risk of stroke. That could be \"death or an irreversible deterioration\" (III) or \"serious deterioration\" (IIb). A false positive mainly leads to more tests. Where this lands depends on whether the GP relies on the output or always confirms it (e.g. 12-lead ECG, cardiology referral). | `[verified]` |\n| 3.5 | Could a stricter rule apply? | Possibly. Under 3.5 the strictest applicable rule wins. As standalone active software \"for detecting, diagnosing, monitoring\" (definition 2.5), it may also fall under the rule for active diagnostic devices (Rule 10 `[verify]`). I don't hold that rule's text, so I can't say whether it would raise the class above Rule 11. | `[verified]` for 3.5 and 2.5; `[verify]` for Rule 10 |\n\n## Why \"unchanged software\" doesn't keep the class\n\nThe MDD had no software-specific rule. Standalone software usually ended up in Class I through the general active-device rules. MDR Rule 11 was written to classify decision-support software in its own right. Your class changes because the rules changed, not because the product did.\n\n## What would change the outcome\n\n- **Towards IIa:** the intended purpose and labelling say the output is only an indication that must be confirmed by a 12-lead ECG or specialist before anyone decides on treatment, and your risk file shows that a missed indication doesn't lead straight to a wrong treatment decision.\n- **Towards IIb or III:** GPs are expected to start or withhold anticoagulation based on the output, or the software is presented as screening that rules AF out.\n- **Through 3.3:** the software controls, or is supplied as part of, a specific ECG recorder.\n\n## Separate point, which I haven't checked: transition timing\n\nThere are MDR transitional provisions for legacy devices that were self-certified Class I under the MDD and now need a notified body (Art. 120, as amended by Regulation (EU) 2023/607 `[verify]`). As I recall, the extended transition depended on certain steps being taken by dates in 2024. Today is October 2026. If those steps weren't taken, the device may already be off the market under the regulation's terms. This matters more than which rule to cite, so please check it with your regulatory lead now.\n\n## Limits\n\n> This classifies software under MDR Annex VIII implementing rules 3.1–3.7 and Rule 11, retrieved verbatim from EUR-Lex on 2026-09-09. It does **not** cover Art. 2(1) qualification, Rules 1–10 or 12–22, Annex XVI, IVDR, MDCG guidance, notified-body practice, or national interpretation. Rule 11 is a floor: under 3.5 a stricter rule this skill does not carry may raise the class. A structured first pass and an audit aid, not legal or regulatory advice, and not a substitute for your notified body or a qualified regulatory professional.\n\nThe class decides your conformity route, so confirm it with your regulatory lead or a notified body before you build on it. Put three things in front of them:\n1. The 3.3 finding that the software is independent of any ECG recorder.\n2. Rule 11 first limb, and whether the false-negative impact pushes it to IIb or III.\n3. Whether Rule 10 also applies under 3.5."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 4,
+            "costUsd": 0.1494653,
+            "judgeCostUsd": 0.0008137000000000005,
+            "durationSeconds": 36,
+            "startedAt": "2026-10-19T07:42:53.089Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-QOzoVd/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "# MDR software classification: single-lead ECG AF analysis\n\n**Short answer: no.** There is no MDR rule you can cite for Class I here. Under MDR this software is **at least Class IIa**, and a case can be made for higher. Leaving the software unchanged does not keep the class. MDR classifies software under new rules, and Rule 11 was written to move software like this up out of Class I.\n\n**Intended purpose (as stated):** \"to analyse single-lead ECG recordings and indicate possible atrial fibrillation to general practitioners.\"\n**Qualified as a device:** established (you confirmed this)\n\n## Class: IIa at minimum. Whether it goes higher is still open.\n\n**Route:** 3.3 independent → Rule 11, first limb (diagnostic information)\n\n## Reasoning\n| Step | Question | Answer | Basis |\n|---|---|---|---|\n| 3.1 | Intended purpose | As quoted above | `[verified]` |\n| 3.3 | Does it drive or influence another device? | No. It analyses recordings but doesn't control the recorder, so it is classified in its own right. This changes if it's bundled with a specific ECG device and changes how that device is used. | `[verified]` |\n| Rule 11 | Which limb | **Limb 1.** \"Indicate possible AF to GPs\" is information \"used to take decisions with diagnosis or therapeutic purposes\" (referral, further workup, possibly anticoagulation). That makes it IIa. The \"all other software → class I\" limb only applies when limbs 1 and 2 don't. | `[verified]` |\n| Rule 11 | Escalation | **Unresolved.** The test is what a wrong decision may cause, not how serious AF is. A missed AF could mean anticoagulation isn't started and a stroke follows, which is irreversible deterioration or death (Class III wording). A false positive leads to more tests or unnecessary anticoagulation, which could be serious deterioration (IIb wording). The counter-argument for IIa is that the output says \"possible\" AF and the GP confirms the diagnosis independently, e.g. with a 12-lead ECG. Your technical documentation has to make this argument. You can't assume IIa. | `[verified]` |\n| 3.5 | Could a stricter rule apply? | Possibly. The rules for active devices intended for diagnosis and monitoring could also reach it, and the strictest applicable rule wins. I don't have those rule texts here. | Rules 9/10 `[verify]` |\n\nRule 11's monitoring limb (limb 2) doesn't seem to apply, since the purpose is to analyse recordings, not to monitor continuously. That would change if you used it for ongoing or real-time monitoring.\n\n## What would change the class\n- **Toward IIa:** documented clinical workflow where the output only triggers confirmatory diagnostics and never directly drives treatment, with the residual risk of missed AF analysed and justified.\n- **Toward IIb/III:** the output is used directly for anticoagulation decisions, the user group widens (e.g. non-specialists or patients), or the sensitivity limits mean missed AF is a credible route to stroke.\n\n## Practical consequence (check this now)\nAt IIa or above you need a **notified body**. You can't self-certify. Legacy MDD Class I devices that move up a class under MDR only get the extended transition periods if certain conditions were met by fixed dates. These include having applied to a notified body and signed a written agreement with one, with deadlines in 2024. If you haven't done that, your right to keep placing the device on the market may already be at risk. I'm not working from the transitional provisions (Art. 120 as amended by Reg. 2023/607) here, so treat this as `[verify]` and raise it with your regulatory lead urgently.\n\n## Limits\n> This classifies software under MDR Annex VIII implementing rules 3.1–3.7 and Rule 11, retrieved verbatim from EUR-Lex on 2026-09-09. It does **not** cover Art. 2(1) qualification, Rules 1–10 or 12–22, Annex XVI, IVDR, MDCG guidance, notified-body practice, or national interpretation. Rule 11 is a floor: under 3.5 a stricter rule this skill does not carry may raise the class. A structured first pass and an audit aid, not legal or regulatory advice, and not a substitute for your notified body or a qualified regulatory professional.\n\nHave your regulatory lead or notified body confirm the class before you rely on it. Three things to put in front of them:\n1. The 3.3 call that the software is independent\n2. Rule 11 limb 1, and the argument on whether it escalates above IIa (missed AF and stroke risk)\n3. Whether the diagnostic and monitoring rules (9/10) also apply under 3.5"
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 4,
+            "costUsd": 0.14689670000000002,
+            "judgeCostUsd": 0.0013535000000000005,
+            "durationSeconds": 30,
+            "startedAt": "2026-10-19T07:42:53.376Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-zOwJfT/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "# MDR Software Classification: single-lead ECG AF-detection software\n\n**Intended purpose (as stated):** \"to analyse single-lead ECG recordings and indicate possible atrial fibrillation to general practitioners.\"\n**Qualified as a device:** established (you confirmed this)\n\n## Class: not I. Rule 11 makes it at least IIa, and it may be higher.\n\nI can't give you a Rule 11 citation for Class I, because Class I doesn't apply. The MDD Class I result came from the MDD rules. MDR added Rule 11, which classifies software directly, and your intended purpose falls under its first limb. The software being unchanged doesn't keep the class the same.\n\n**Route:** under 3.3 the software is independent, so it goes to Rule 11, limb 1.\n\n## Reasoning\n\n| Step | Question | Answer | Basis |\n|---|---|---|---|\n| 3.1 | Intended purpose | As quoted above. Classification runs on this. | `[verified]` |\n| 3.3 | Drives or influences another device? | No. It analyses recordings after they are made and doesn't operate the ECG device, so it is classified on its own. | `[verified]` |\n| Rule 11 | Which limb | **Limb 1.** \"Indicate possible atrial fibrillation to general practitioners\" is \"information which is used to take decisions with diagnosis … purposes\". The GP decides whether to investigate, refer or start treatment based on the output. Base class **IIa**. Limb 3 (\"all other software → I\") is only reached if limbs 1 and 2 don't apply, and limb 1 does. | `[verified]` |\n| Rule 11 | Escalation | **Open question, IIa / IIb / III.** The test is what a wrong decision may cause, not how serious AF is. If an AF case is missed, anticoagulation may be delayed and the patient may have a stroke, which could count as \"death or an irreversible deterioration\" (III) or \"serious deterioration\" (IIb). IIa holds if your risk analysis shows the GP's decision path (for example, confirming with a 12-lead ECG) prevents those outcomes. This depends on facts, and your clinical evaluation has to settle it. | `[verified]` text; the application is a judgement |\n| 3.5 | Could a stricter rule apply? | **Possibly Rule 10** (active devices for diagnosis and monitoring). Under 3.5 the higher class wins. I don't have Rule 10's text, so I can't say whether it raises the class. | `[verify]` |\n\n## What would change this\n- **Up to IIb or III:** a risk analysis showing that a false negative or false positive could reasonably lead to stroke, death, or inappropriate anticoagulation with serious harm, without a reliable confirmation step.\n- **Stays IIa:** a documented confirmation step, so the output only triggers further investigation and never decides treatment on its own. That step needs to be reflected in the intended purpose and the IFU.\n- **Back to I:** not possible on this intended purpose. You would have to remove the diagnostic indication, and then you'd have a different product.\n\n## Practical consequence\nClass IIa or higher means you can no longer self-certify: you need a notified body. Your Class I self-certification under MDD will also affect whether MDR's legacy-device transitional provisions (Art. 120, as amended) are open to you. Those provisions have conditions and deadlines, and some of the deadlines may already have passed. This skill doesn't cover them `[verify]`, so check them with your regulatory lead promptly.\n\n## Limits\n> This classifies software under MDR Annex VIII implementing rules 3.1–3.7 and Rule 11, retrieved verbatim from EUR-Lex on 2026-09-09. It does **not** cover Art. 2(1) qualification, Rules 1–10 or 12–22, Annex XVI, IVDR, MDCG guidance, notified-body practice, or national interpretation. Rule 11 is a floor: under 3.5 a stricter rule this skill does not carry may raise the class. A structured first pass and an audit aid, not legal or regulatory advice, and not a substitute for your notified body or a qualified regulatory professional.\n\nThis applies the Annex VIII text to the intended purpose you gave. The class decides your conformity route and whether you need a notified body, so your regulatory lead or notified body should confirm it before you build on it. Put three things in front of them:\n1. The 3.3 finding that the software is independent.\n2. Rule 11 limb 1, and which escalation level (IIa, IIb or III) your risk analysis supports.\n3. Whether Rule 10 reaches the software under 3.5."
+              }
+            ]
+          }
+        ],
+        "without": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 1,
+            "costUsd": 0.0820355,
+            "judgeCostUsd": 0.0024860999999999998,
+            "durationSeconds": 32,
+            "startedAt": "2026-10-19T07:43:23.711Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-W6qFwO/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "# No, it doesn't stay Class I. The rule to cite is Rule 11, and it puts you at Class IIa or higher.\n\nYour software is unchanged, but the classification rules changed. Under the MDD, standalone software fell into the general active-device rules, so it often came out as Class I. The MDR added a rule just for software: **Annex VIII, Rule 11**. It says:\n\n> Software intended to provide information which is used to take decisions with diagnosis or therapeutic purposes is classified as **class IIa**, except if such decisions have an impact that may cause:\n> – death or an irreversible deterioration of a person's state of health → **class III**; or\n> – a serious deterioration of a person's state of health or a surgical intervention → **class IIb**.\n\nYour intended purpose is to \"indicate possible atrial fibrillation to general practitioners.\" GPs use that output to make diagnostic decisions, so Rule 11 applies directly. Class I under Rule 11 only covers software that does none of the things the rule lists, and yours doesn't fit there.\n\n## IIa or IIb?\n\n- **IIa** is the most common result for AF-screening software whose output is \"possible AF\" and gets confirmed (for example by a 12-lead ECG) before treatment. This is the starting point.\n- **IIb** needs serious consideration. A missed AF diagnosis can mean no anticoagulation and a risk of stroke. Expect your notified body to push you to justify why the decisions your output informs don't carry a \"serious deterioration\" risk. Your clinical workflow, how the output is presented, and your false-negative risk analysis will decide this.\n\nWrite the reasoning down using **MDCG 2019-11** (software qualification and classification guidance, updated in 2025). Its IMDRF-based framework (how significant the information is × how serious the condition is) is what notified bodies use.\n\n## What this means in practice\n\n1. **You can no longer self-certify.** IIa and IIb require a notified body (Annex IX, or Annex X + XI).\n2. **Check your transition status urgently.** The extended transition under Article 120 (as amended by Regulation (EU) 2023/607) runs to 31 Dec 2028 for devices like yours that go up from Class I. It only applies if all of these hold:\n   - your MDD declaration of conformity was drawn up **before 26 May 2021**,\n   - you had an MDR-compliant QMS by **26 May 2024**,\n   - you lodged a formal application with a notified body by **26 May 2024** and signed a written agreement by **26 September 2024**,\n   - there have been no significant changes to design or intended purpose.\n\n   If you missed any of those dates, you probably can't legally place the device on the EU market under the legacy route right now. Get regulatory or legal advice on that immediately.\n3. **Expect much more on clinical evidence and software:** clinical evaluation under Article 61 / Annex XIV, IEC 62304 lifecycle, cybersecurity, PMS/PMCF, and UDI.\n\n**In short:** cite **MDR Annex VIII, Rule 11**, classify as **at least Class IIa**, and document why it isn't IIb."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 1,
+            "costUsd": 0.0716219,
+            "judgeCostUsd": 0.0012765000000000007,
+            "durationSeconds": 26,
+            "startedAt": "2026-10-19T07:43:23.732Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-XstxNT/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "**No, the class doesn't carry over.** Under the MDR this software is no longer Class I, so there's no Class I rule you can cite.\n\n## Why\n\nMDR classification is a fresh exercise under Annex VIII. It doesn't matter that the software hasn't changed. The MDD had no software-specific rule, which is why standalone software usually ended up in Class I. The MDR added **Rule 11** for software, and it is the rule that governs your product:\n\n> Software intended to provide information which is used to take decisions with diagnosis or therapeutic purposes is classified as **Class IIa**, except if such decisions have an impact that may cause:\n> – death or an irreversible deterioration of a person's state of health → **Class III**\n> – a serious deterioration of a person's state of health or a surgical intervention → **Class IIb**\n\nYour intended purpose, \"indicate possible atrial fibrillation to general practitioners,\" is information a GP uses to make a diagnostic decision. That places you in **Class IIa at minimum**. Read MDCG 2019-11 (software qualification and classification) alongside Rule 11.\n\nYou also need to work through whether it should be **IIb**. A missed AF detection can delay anticoagulation, and AF-related stroke is a plausible serious deterioration. Your risk analysis has to justify where you land. Factors that support IIa include that it is a \"possible AF\" flag, that a GP confirms it with a 12-lead ECG, and the clinical context. Expect your notified body to challenge this, because comparable AF-detection products have been classified both IIa and IIb.\n\n## What this means in practice\n\n- **You can no longer self-certify.** You need a notified body, a QMS assessment (ISO 13485 in practice), and MDR technical documentation including clinical evaluation.\n- **Check your legacy-device status urgently.** Class I MDD devices that move up a class under the MDR can stay on the market under Art. 120 as amended by Regulation (EU) 2023/607, until **31 Dec 2028** for IIa/IIb. That only applies if you met all of these conditions:\n  - you had a valid MDD declaration of conformity before 26 May 2021\n  - you had an MDR QMS in place and had lodged a formal application with a notified body by **26 May 2024**\n  - you had a signed written agreement with the notified body by **26 Sept 2024**\n  - there have been no significant changes to design or intended purpose\n\n  It's now October 2026. If you missed those milestones, the transitional cover has lapsed, and you may not be entitled to place the device on the EU market at all. Confirm this with your regulatory/legal adviser right away.\n\nSo the rule to cite is **Rule 11 (Annex VIII)**, and it gives you Class IIa or IIb, not Class I."
+              }
+            ]
+          },
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 1,
+            "costUsd": 0.07491339999999999,
+            "judgeCostUsd": 0.002104,
+            "durationSeconds": 26,
+            "startedAt": "2026-10-19T07:43:29.086Z",
+            "error": null,
+            "tracePath": "/private/tmp/e-m5lCUG/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "criteria",
+                "passed": true,
+                "weight": 1,
+                "explanation": "judge votes: PASS PASS PASS",
+                "withOnly": false,
+                "scored": true,
+                "judgeVotes": [
+                  true,
+                  true,
+                  true
+                ],
+                "evidence": "**No, the class doesn't stay I.** No MDR rule gives Class I for this software, so there isn't a Class I rule number to cite. The software being unchanged doesn't matter. The classification rules changed.\n\n## The applicable rule is Rule 11 (MDR Annex VIII, Section 6.3)\n\nRule 11 says software intended to provide information used to take decisions for diagnostic or therapeutic purposes is:\n\n- **Class IIa** by default,\n- **Class IIb** if those decisions could cause a serious deterioration of health or a surgical intervention,\n- **Class III** if they could cause death or an irreversible deterioration of health.\n\nUnder Rule 11, software is Class I only if none of those paragraphs apply (\"all other software\"). Your intended purpose, to \"indicate possible atrial fibrillation to general practitioners,\" gives information that GPs use for diagnostic decisions. That puts it at **IIa at minimum**.\n\n## You need to assess whether it is IIb\n\nThink about what happens if the software misses AF (a false negative). Untreated AF can mean no anticoagulation and a risk of stroke, which is arguably a serious deterioration of health. Some manufacturers and notified bodies would put this kind of software in IIb. Write down your reasoning, covering:\n\n- clinical context (screening vs. diagnosis, whether a GP or cardiologist confirms the finding, whether a 12-lead ECG follows),\n- the severity of harm from false negatives and false positives,\n- MDCG 2019-11 (the guidance on qualifying and classifying software), including its IMDRF-based significance/state matrix.\n\nYour intended-purpose wording affects the result, but rewording it just to land in a lower class won't get past a notified body.\n\n## What this means in practice\n\n1. **You need a notified body.** Self-certification is no longer possible. You'll need a QMS assessment under Annex IX (or Annex XI), technical documentation review, and clinical evaluation under Article 61 / Annex XIV, plus post-market surveillance, a PSUR, UDI and EUDAMED obligations.\n2. **Check your transition status now. This is urgent.** Regulation (EU) 2023/607 extended the transition to MDD Class I devices that move up a class under MDR. That only applies if all of these were met:\n   - an MDD declaration of conformity drawn up before 26 May 2021,\n   - no significant changes to design or intended purpose,\n   - an MDR-compliant QMS in place by **26 May 2024**,\n   - a formal application to a notified body by **26 May 2024**,\n   - a signed written agreement with that notified body by **26 September 2024**.\n\n   If you met all of them, you can keep placing the device on the market until **31 December 2028** (the deadline for up-classed Class I devices). If you missed any of them, the transition doesn't cover you. Since it's now October 2026, you may already be placing the device on the market without a valid basis. Raise this with your regulatory affairs or legal team straight away.\n\nI can help draft the Rule 11 classification rationale or a gap analysis against the MDR technical documentation requirements."
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 1,
+        "passRate": 1,
+        "scoreWithout": 1,
+        "passRateWithout": 1,
+        "delta": 0
+      }
+    }
+  ],
+  "aggregates": {
+    "casesTotal": 2,
+    "casesPassed": 2,
+    "overallScore": 1,
+    "overallPassRate": 1,
+    "meanDelta": 0
+  }
+}

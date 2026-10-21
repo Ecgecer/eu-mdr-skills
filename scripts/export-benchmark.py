@@ -21,6 +21,22 @@ FORMAT_RE = re.compile(r'##\s*Limits|Ready to publish|`Breach:|Breach: line|`Cal
                        r'|`Also engaged:|SKILL\.md', re.I)
 OUT = ROOT / "benchmark"
 
+# The two things a case can measure, per CONTRIBUTING: whether the model stops where the
+# rule stops (false-positive controls, scope and refusal tests), or whether it finds what
+# is there (detection). MODELS.md found they move in opposite directions across models,
+# the reference text transfers and the discipline does not, so one pass rate per model
+# hides the finding. Derived from each case's own tags, so a new case is classified by
+# what its author said it tests rather than by a list kept somewhere else.
+BOUNDARY_TAGS = {"refusal", "boundary", "scope", "false-positive-control", "restraint",
+                 "over-application", "jurisdiction", "jurisdiction-bleed",
+                 "citation-discipline", "citation-integrity", "negation",
+                 "anti-boilerplate", "audience", "not-banned", "no-findings",
+                 "wrong-addressee", "premise-trap", "sycophancy", "threshold",
+                 "exception", "module-scope", "fabrication"}
+
+def axis_for(tags):
+    return "boundary" if BOUNDARY_TAGS & set(tags) else "detection"
+
 def baseline_scores():
     """case -> (baseline pass rate, with-skill pass rate, runs) from the newest full run."""
     latest = {}
@@ -64,6 +80,7 @@ def main():
             "id": name,
             "area": plugin,
             "tags": tags,
+            "axis": axis_for(tags),
             "prompt": body,
             "correct_answer_criteria": grader,
             # A property of the criteria, not of any measurement, so it sits on the case
@@ -72,7 +89,8 @@ def main():
             # the Breach:/Call:/Also engaged: lines -- or point at SKILL.md. No model
             # without the plugin loaded can satisfy those, so a cross-model judge must
             # score substance only. Found by judging a Gemini run against criteria that
-            # assumed the format: 12 of 30 cases, in a file calling itself model-agnostic.
+            # assumed the format, in a file calling itself model-agnostic. The count is
+            # generated into the README from this flag; it was once typed, and drifted.
             "criteria_assume_skill_format": bool(FORMAT_RE.search(grader)),
             "measured": {
                 "baseline_pass_rate": base,
@@ -110,6 +128,8 @@ def main():
                       and 0.0 < c["measured"]["baseline_pass_rate"] < 1.0],
                      key=lambda c: c["id"])
     unmeasured = [c for c in cases if not c["measured"]]
+    n_fmt = sum(c["criteria_assume_skill_format"] for c in cases)
+    n_boundary = sum(c["axis"] == "boundary" for c in cases)
 
     lines = [
         "# eu-mdr-bench", "",
@@ -142,7 +162,23 @@ def main():
         "```", "",
         "It writes `benchmark/runs/<model>-<timestamp>.json` with every response and the",
         "retrieval condition. Judge those against each case's `correct_answer_criteria`,",
-        "and do not let the model judge itself.", "",
+        "and do not let the model judge itself. `scripts/judge-benchmark.py` does that with",
+        "a second model and records a reason per verdict; `scripts/score-benchmark.py`",
+        "scores the result.", "",
+        "Already on inspect_ai? The same cases, criteria and three epochs are a task:", "",
+        "```",
+        "inspect eval benchmark/inspect/eu_mdr_bench.py --model <model> \\",
+        "    --model-role grader=<a different model>",
+        "```", "",
+        "Pin `--thinking-level` and record it. Unpinned, each model runs at its own default,",
+        "and two columns then differ by a setting nobody chose.", "",
+        "### Two axes, not one score", "",
+        f"Each case carries an `axis`: **boundary** ({n_boundary}), does the model stop where",
+        "the rule stops, or **detection** "
+        f"({len(cases) - n_boundary}), does it find what is there. It is derived from the",
+        "case's tags. Report them separately: the reference text helps a small model on",
+        "detection while the discipline to stop does not transfer (MODELS.md), so a single",
+        "pass rate averages two effects that move in opposite directions.", "",
         "### One model has been tested", "",
         "Every number here comes from Claude, run through Claude Code 2.1.266/267 with an",
         "LLM judge. **GPT, Llama, Mistral and every Gemini Pro model are untested.** One",
@@ -155,7 +191,7 @@ def main():
         "not guess. A benchmark that generalises from one model is doing the exact thing it",
         "measures.", "",
         "If you run it against another model, the results are welcome as a PR.", "",
-        "**12 of these 30 cases carry criteria that assume the skill's own output shape**",
+        f"**{n_fmt} of these {len(cases)} cases carry criteria that assume the skill's own output shape**",
         "a `## Limits` block, a `Ready to publish` line, the `Breach:` / `Call:` /",
         "`Also engaged:` fields, or refer the judge to `SKILL.md`, which is not in this",
         "directory. No model can satisfy those without the plugin loaded, so scoring a",

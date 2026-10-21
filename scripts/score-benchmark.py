@@ -25,6 +25,17 @@ BENCH = ROOT / "benchmark" / "eu-mdr-bench.json"
 JUDGMENTS = ROOT / "benchmark" / "judgments"
 
 
+def axes(run_files):
+    """case id -> boundary | detection. From the run file where it carries criteria, else
+    from the benchmark; a case with neither is left out of the per-axis means."""
+    out = {c["id"]: c.get("axis") for c in json.loads(BENCH.read_text())["cases"]}
+    for rf in run_files:
+        for cid, c in (json.loads(Path(rf).read_text()).get("criteria") or {}).items():
+            if c.get("axis"):
+                out[cid] = c["axis"]
+    return out
+
+
 def criteria():
     return {c["id"]: c["correct_answer_criteria"] for c in json.loads(BENCH.read_text())["cases"]}
 
@@ -106,6 +117,15 @@ def score(run_files):
     if deltas:
         print(f"  **mean delta {sum(deltas)/len(deltas):+.2f}** over {len(deltas)} case(s) "
               f"with both arms at three or more judged runs")
+    # Per axis: the boundary and detection halves move in opposite directions across
+    # models (MODELS.md), and a single mean averages them away.
+    ax = axes(run_files)
+    for a in sorted(arms):
+        for name in ("boundary", "detection"):
+            vals = [sum(r)/len(r) for c, r in arms[a].items()
+                    if ax.get(c) == name and len(r) >= 3]
+            if vals:
+                print(f"  {a} / {name}: mean {sum(vals)/len(vals):.2f} over {len(vals)} case(s)")
     return 0
 
 

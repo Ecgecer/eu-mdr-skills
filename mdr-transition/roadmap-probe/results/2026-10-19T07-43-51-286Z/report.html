@@ -1,0 +1,1228 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Eval report — mdr-transition v0.1.0</title>
+</head>
+<body>
+<style>
+:root{--plane:#f9f9f7;--surface:#fcfcfb;--ink:#0b0b0b;--ink-2:#52514e;--ink-3:#6b6a64;--hairline:rgba(11,11,11,.10);--grid:#e1e0d9;--inset:rgba(11,11,11,.04);--accent:#2a78d6;--base-fill:#6b6a64;--delta-good:#006300;--good:#067d06;--warning:#8a6100;--critical:#d03b3b;
+  color-scheme:light dark;
+}
+@media (prefers-color-scheme:dark){:root{--plane:#0d0d0d;--surface:#1a1a19;--ink:#ffffff;--ink-2:#c3c2b7;--ink-3:#898781;--hairline:rgba(255,255,255,.10);--grid:#2c2c2a;--inset:rgba(255,255,255,.05);--accent:#3987e5;--base-fill:#898781;--delta-good:#0ca30c;--good:#0ca30c;--warning:#fab219;--critical:#e06c6c;color-scheme:dark}}
+:root[data-theme="dark"]{--plane:#0d0d0d;--surface:#1a1a19;--ink:#ffffff;--ink-2:#c3c2b7;--ink-3:#898781;--hairline:rgba(255,255,255,.10);--grid:#2c2c2a;--inset:rgba(255,255,255,.05);--accent:#3987e5;--base-fill:#898781;--delta-good:#0ca30c;--good:#0ca30c;--warning:#fab219;--critical:#e06c6c;color-scheme:dark}
+:root[data-theme="light"]{--plane:#f9f9f7;--surface:#fcfcfb;--ink:#0b0b0b;--ink-2:#52514e;--ink-3:#6b6a64;--hairline:rgba(11,11,11,.10);--grid:#e1e0d9;--inset:rgba(11,11,11,.04);--accent:#2a78d6;--base-fill:#6b6a64;--delta-good:#006300;--good:#067d06;--warning:#8a6100;--critical:#d03b3b;color-scheme:light}
+*{box-sizing:border-box}
+body{margin:0;background:var(--plane);color:var(--ink);
+  font:14px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif;
+  -webkit-text-size-adjust:100%}
+.wrap{max-width:880px;margin:0 auto;padding:40px 24px 64px;display:flex;flex-direction:column;gap:20px}
+.eyebrow{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
+header h1{margin:2px 0 0;font-size:24px;font-weight:600;line-height:1.25;text-wrap:balance}
+.meta{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:8px;color:var(--ink-2);font-size:13px}
+.meta .num{font-variant-numeric:tabular-nums lining-nums}
+.banner{display:flex;align-items:center;gap:8px;padding:10px 14px;border-radius:8px;
+  border:1px solid var(--hairline);background:var(--surface);font-size:13px}
+.banner .chip-warn{color:var(--warning);font-weight:600}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.tile{background:var(--surface);border:1px solid var(--hairline);border-radius:10px;padding:14px 16px;
+  display:flex;flex-direction:column;gap:4px}
+.tile .label{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3)}
+.tile .value{font-size:26px;font-weight:600;font-variant-numeric:tabular-nums lining-nums;line-height:1.1}
+.tile.hero .value{font-family:Georgia,"Times New Roman",serif;font-weight:400;font-size:48px}
+.tile .sub{font-size:12px;color:var(--ink-2);font-variant-numeric:tabular-nums}
+.tile .value.delta-pos{color:var(--delta-good)}
+.tile .value.delta-neg{color:var(--critical)}
+.toolbar{display:flex;gap:8px;justify-content:flex-end}
+.toolbar button{font:12px system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--ink-2);
+  background:var(--surface);border:1px solid var(--hairline);border-radius:6px;padding:4px 10px;cursor:pointer}
+.toolbar button:hover{color:var(--ink)}
+.toolbar button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.case{background:var(--surface);border:1px solid var(--hairline);border-radius:10px;padding:18px 20px;
+  display:flex;flex-direction:column;gap:10px}
+.case-regressed{border-left:3px solid var(--critical)}
+.verdict{margin:6px 0 0;font-size:15px}
+.verdict .delta{font-size:15px}
+.flag{font-size:11px;font-weight:600;color:var(--warning);white-space:nowrap}
+.star{color:var(--warning);font-size:.45em;vertical-align:super;line-height:0;cursor:help}
+.legend summary{cursor:pointer;font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-2)}
+.legend-list{margin:8px 0 0;padding-left:20px;display:flex;flex-direction:column;gap:5px;font-size:13px;color:var(--ink-2)}
+.case-head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.case-head h2{margin:0;font-size:16px;font-weight:600}
+.case-head .spacer{flex:1}
+.case-score{font-size:15px;font-weight:600}
+.mono{font:12px "SF Mono",ui-monospace,Menlo,Consolas,monospace}
+.num{font-variant-numeric:tabular-nums lining-nums}
+.muted{color:var(--ink-3);font-size:12px}
+.meter{display:inline-block;position:relative;width:120px;height:6px;border-radius:4px;background:var(--grid);
+  vertical-align:middle}
+.meter>span{display:block;height:100%;border-radius:4px;max-width:100%}
+.meter .tick{position:absolute;top:-2px;bottom:-2px;width:2px;background:var(--ink-3);border-radius:1px}
+.m-accent>span{background:var(--accent)}
+.m-base>span{background:var(--base-fill)}
+.delta{font-size:12px;font-weight:600;font-variant-numeric:tabular-nums}
+.delta-pos{color:var(--delta-good)}
+.delta-neg{color:var(--critical)}
+.delta-zero{color:var(--ink-3)}
+details.section{border-top:1px solid var(--grid);padding-top:10px}
+details.section>summary{cursor:pointer;font-size:12px;font-weight:600;letter-spacing:.04em;
+  text-transform:uppercase;color:var(--ink-2);list-style-position:outside;margin-left:2px}
+details.section>summary:hover{color:var(--ink)}
+details.section[open]>summary{margin-bottom:8px}
+.md{display:flex;flex-direction:column;gap:8px;background:var(--inset);border-radius:8px;
+  padding:12px 14px;overflow-wrap:break-word}
+.md>:first-child{margin-top:0}
+.md h1,.md h2,.md h3,.md h4,.md h5,.md h6{margin:4px 0 0;font-size:1em;font-weight:600;line-height:1.3}
+.md p,.md ul,.md ol,.md blockquote,.md table,.md pre,.md hr{margin:0}
+.md ul,.md ol{display:flex;flex-direction:column;gap:4px;padding-left:20px}
+.md blockquote{border-left:2px solid var(--hairline);padding-left:10px;color:var(--ink-2)}
+.md :not(pre)>code{background:var(--inset);padding:1px 4px;border-radius:4px;
+  font:.92em "SF Mono",ui-monospace,Menlo,Consolas,monospace}
+.md pre{background:var(--inset);border:1px solid var(--hairline);padding:10px 12px;border-radius:6px;
+  overflow-x:auto;font:12px/1.5 "SF Mono",ui-monospace,Menlo,Consolas,monospace}
+.md pre code{background:none;padding:0;font:inherit}
+.md table{width:100%;border-collapse:collapse}
+.md th,.md td{padding:5px 8px;text-align:left;vertical-align:top;border-bottom:1px solid var(--grid)}
+.md th{font-weight:600;color:var(--ink-2)}
+.md a{color:var(--accent);text-decoration:none}
+.md a:hover{text-decoration:underline}
+.grader-def{display:flex;flex-direction:column;gap:6px;padding:8px 0}
+.grader-def+.grader-def{border-top:1px solid var(--grid)}
+.grader-def-head{display:flex;align-items:baseline;gap:8px}
+.grader-name{font:13px "SF Mono",ui-monospace,Menlo,Consolas,monospace;font-weight:600}
+.badge{font-size:10px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-2);
+  border:1px solid var(--hairline);border-radius:999px;padding:1px 8px}
+.config{display:flex;flex-direction:column;gap:2px;background:var(--inset);border-radius:8px;padding:10px 14px}
+.config code{font:12px "SF Mono",ui-monospace,Menlo,Consolas,monospace;overflow-wrap:anywhere}
+.arm{display:flex;flex-direction:column;gap:8px;padding:6px 0}
+.arm+.arm{border-top:1px dashed var(--grid);margin-top:4px;padding-top:12px}
+.arm-head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.arm-label{font-size:13px;font-weight:600}
+.run{border:1px solid var(--grid);border-radius:8px;padding:10px 12px;display:flex;flex-direction:column;gap:8px}
+.run-head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.run-title{font-size:12px;font-weight:600;color:var(--ink-2)}
+.run-error .explanation{color:var(--ink-2)}
+.note{font-size:12px;color:var(--ink-2)}
+.graders{display:flex;flex-direction:column;gap:4px}
+details.grader{border-radius:6px}
+details.grader>summary{cursor:pointer;display:flex;align-items:baseline;gap:8px;padding:3px 4px;
+  border-radius:6px;list-style:none}
+details.grader>summary::-webkit-details-marker{display:none}
+details.grader>summary::before{content:'▸';font-size:10px;color:var(--ink-3);flex:none;
+  transition:transform .12s ease}
+details.grader[open]>summary::before{transform:rotate(90deg)}
+details.grader>summary:hover{background:var(--inset)}
+details.grader>summary:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.grader-body{padding:6px 8px 8px 24px;display:flex;flex-direction:column;gap:6px}
+.chip{font-size:11px;font-weight:600;border-radius:999px;padding:1px 8px;white-space:nowrap}
+.chip-pass{color:var(--good);border:1px solid currentColor}
+.chip-fail{color:var(--critical);border:1px solid currentColor}
+.chip.chip-warn{color:var(--warning);border:1px solid currentColor}
+.explanation{margin:0;font-size:13px;color:var(--ink-2);white-space:pre-wrap;overflow-wrap:break-word}
+.kv{display:flex;gap:8px;font-size:12px;color:var(--ink-3)}
+.votes{font-variant-numeric:tabular-nums;letter-spacing:.1em}
+pre.evidence{margin:0;background:var(--inset);border:1px solid var(--hairline);border-radius:6px;
+  padding:8px 10px;overflow-x:auto;max-height:320px;
+  font:12px/1.5 "SF Mono",ui-monospace,Menlo,Consolas,monospace;white-space:pre-wrap;overflow-wrap:break-word}
+footer{color:var(--ink-3);font-size:12px;text-align:center;padding-top:8px}
+@media (prefers-reduced-motion:no-preference){
+  details.grader>summary,.toolbar button{transition:background .12s ease,color .12s ease}
+}
+@media (prefers-reduced-motion:reduce){
+  details.grader>summary::before{transition:none}
+}
+@media print{
+  :root,:root[data-theme="dark"],:root[data-theme="light"]{--plane:#f9f9f7;--surface:#fcfcfb;--ink:#0b0b0b;--ink-2:#52514e;--ink-3:#6b6a64;--hairline:rgba(11,11,11,.10);--grid:#e1e0d9;--inset:rgba(11,11,11,.04);--accent:#2a78d6;--base-fill:#6b6a64;--delta-good:#006300;--good:#067d06;--warning:#8a6100;--critical:#d03b3b;color-scheme:light}
+  body{background:#fff}
+  .toolbar{display:none}
+  .case,.run,.grader-def{break-inside:avoid}
+  pre.evidence{max-height:none}
+}
+</style>
+<div class="wrap">
+<header>
+<div class="eyebrow">Plugin eval report</div>
+<h1>mdr-transition v0.1.0</h1>
+<p class="verdict">Plugin effect: <span class="delta delta-pos">↑ +11.1 pts</span> vs baseline — improved 1 · flat 0 · regressed 0 of 1 case.</p>
+<div class="meta">
+<span class="mono">.</span>
+<span>Claude Code v2.1.303</span>
+<span class="num">2026-10-19 07:43 UTC</span>
+<span class="num">3m 50s</span>
+<span class="num">$1.72</span>
+<span class="num">18 runs</span>
+<span class="num">3 in flight</span>
+
+
+<span>judge default</span>
+<span class="num">threshold 100%</span>
+<span>filtered: --case eudamed-nb-enters-certificates</span>
+</div>
+</header>
+
+<section class="tiles">
+<div class="tile hero"><span class="label">Suite score · with plugin</span><span class="value">100%</span><span class="sub">mean of per-case scores</span></div>
+<div class="tile"><span class="label">Ablation Δ</span><span class="value num delta-pos">↑ +11.1</span><span class="sub">score points vs baseline, 1 of 1 case</span></div>
+<div class="tile"><span class="label">Baseline score</span><span class="value num">88.9%</span><span class="sub">without the plugin</span></div>
+<div class="tile"><span class="label">Cases</span><span class="value num">1</span><span class="sub">1 of 1 ≥ 100% threshold</span></div>
+<div class="tile"><span class="label">Perfect runs</span><span class="value num">100%</span><span class="sub">runs where every grader passed</span></div>
+</section>
+<details class="section legend">
+<summary>How to read this report</summary>
+<ul class="legend-list">
+<li>A run's score is the weighted fraction of its graders that passed; a "perfect" run passed every grader.</li>
+<li>A case's score is the mean of its runs; a case passes when its score is at or above the 100% threshold (the tick on each case bar).</li>
+<li>The suite score is the mean of the per-case scores.</li>
+<li>Judge votes are independent samples of the LLM judge; the majority decides pass or fail.</li>
+<li>"With plugin" and "Baseline" runs are identical except for the plugin being loaded; Δ is the with-plugin score minus the baseline score.</li>
+
+</ul>
+</details>
+<div class="toolbar"><button type="button" data-act="expand">Expand all</button><button type="button" data-act="collapse">Collapse all</button></div>
+<article class="case" id="case-1">
+<div class="case-head">
+<h2>eudamed-nb-enters-certificates</h2>
+<span class="muted mono">roadmap-probe/04-eudamed-nb-enters-certificates</span>
+<span class="spacer"></span>
+
+<span class="delta delta-pos">↑ +11.1 pts</span>
+<span class="muted">with plugin</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:100.0%"></span><i class="tick" style="left:100.0%"></i></span>
+<span class="num case-score">100%</span>
+</div>
+
+<details class="section" open>
+<summary>Results</summary>
+<section class="arm">
+<div class="arm-head">
+<span class="arm-label">With plugin</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">100% of runs perfect</span>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 1</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">1 turns · $0.09 · 07:43:51 UTC</span>
+</div>
+
+<div class="graders"><details class="grader">
+<summary><span class="chip chip-pass">✓ pass</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: PASS PASS PASS</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✓ ✓ ✓</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">Two parts of the plan you described don&apos;t match how the MDR works. Fixing them first makes the rest simpler.
+
+## 1. You don&apos;t upload your certificates. Your notified body does.
+
+Under **MDR Article 56(5)**, the notified body enters the certificate information into the EUDAMED certificates module. That covers:
+- certificates it issues
+- amendments and supplements
+- suspensions, reinstatements, withdrawals and refusals
+- any restrictions it imposes
+
+A manufacturer has no upload function for certificates. The &quot;certificate uploads due&quot; deadline you read about is the notified body&apos;s job.
+
+## 2. You probably don&apos;t need an SSCP for these devices
+
+**Article 32** requires a Summary of Safety and Clinical Performance only for **implantable devices and Class III devices**. A Class IIb non-implantable infusion pump is neither, so there&apos;s normally no SSCP to upload. Check this against your technical documentation and with your notified body. If a device has been classified as Class III, or has an implantable part, the answer changes.
+
+## What *is* your job in EUDAMED
+
+Once the relevant modules are mandatory, the manufacturer&apos;s steps are:
+
+1. **Actor registration (Art. 31).** Register your company and get a Single Registration Number (SRN), if you don&apos;t have one yet. Your notified body needs the SRN to link certificates to you.
+2. **UDI/device registration (Art. 29).** Register the Basic UDI-DI and the UDI-DIs for each pump model before placing it on the market. For a Class IIb device, the record points to the relevant notified body certificate.
+3. **Check the link to your certificates.** Once the notified body has entered your certificates, confirm that each Basic UDI-DI is linked to the right certificate number and that the details match your records: scope, models, expiry date.
+4. **Vigilance and post-market surveillance** come with later modules. For Class IIb, the PSUR goes to your notified body under Art. 86. It isn&apos;t uploaded to EUDAMED the way it is for Class III and implantable devices.
+
+## Which certificates are in scope
+
+Your notified body should register **every MDR certificate covering the three pumps that is still valid**. That includes those issued in 2023–2025 before EUDAMED became mandatory, and typically means:
+- QMS certificates (Annex IX Chapter I)
+- technical documentation assessment certificates (Annex IX Chapter II), or Annex XI certificates if that was your route
+- every supplement or amendment issued since
+
+If you still sell any **legacy MDD versions** of these pumps under Article 120, raise those certificates with your notified body as well. Legacy devices have their own registration rules.
+
+## About the &quot;May 2027&quot; date
+
+Regulation (EU) 2024/1860 changed Article 123 so EUDAMED becomes mandatory module by module:
+- Each module becomes mandatory **6 months after** the Commission publishes a notice in the Official Journal confirming it works.
+- Data about devices and certificates that existed before that date gets a longer transition period on top of the 6 months.
+
+As far as I know, the notice for the first modules (actors, UDI/devices, notified bodies &amp; certificates, market surveillance) came out in late 2025. That put the mandatory date around mid-2026, with transition deadlines for existing data running into 2027. A May 2027 date could plausibly be one of those deadlines. I&apos;m not sure of the exact dates, though, so check them on the Commission&apos;s EUDAMED page and the Official Journal notice before you plan around them.
+
+## Next steps
+
+1. Ask your notified body when it will register your certificates in EUDAMED, and ask for confirmation once it&apos;s done.
+2. Make sure your SRN is in place and your Basic UDI-DIs are registered so the certificates can be linked.
+3. Re-check the Article 32 classification so you know for certain whether an SSCP applies.</pre>
+</div>
+</details></div>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 2</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">1 turns · $0.09 · 07:43:51 UTC</span>
+</div>
+
+<div class="graders"><details class="grader">
+<summary><span class="chip chip-pass">✓ pass</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: PASS PASS PASS</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✓ ✓ ✓</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">**Short version:** as far as EUDAMED goes, you don&apos;t upload either of these. Your notified body enters the certificates, and as Class IIb non-implantable devices your infusion pumps don&apos;t need a summary of safety and clinical performance (SSCP) at all. What you do have to do is register yourself and your devices, and you probably do have a deadline coming.
+
+## 1. Certificates are entered by the notified body, not by you
+
+Under MDR Article 56(5) and Article 57, the notified body enters certificate information into EUDAMED&apos;s &quot;Notified Bodies &amp; Certificates&quot; module. That covers new certificates, amendments and supplements, and any suspensions, reinstatements, restrictions or withdrawals. Manufacturers have no upload function for certificates.
+
+So &quot;which certificates do we need to include&quot; is mainly a question for your notified body. In practice:
+- All three current MDR certificates must end up in EUDAMED, including any supplements or amendments issued since 2023–2025.
+- Ask the notified body to confirm in writing that they&apos;re on its migration list and when it expects to enter them.
+- Whether expired or superseded certificates need entering is the notified body&apos;s call under its transition approach. Ask if this applies to you.
+
+## 2. No SSCP for these devices
+
+Article 32 requires an SSCP only for **implantable devices and Class III devices**. Non-implantable Class IIb infusion pumps fall outside that. Even where an SSCP is required, the notified body validates it and uploads it to EUDAMED (Art. 32(1)), not the manufacturer.
+
+If you&apos;ve written SSCPs anyway, that&apos;s fine to keep as internal documentation, but you aren&apos;t obliged to submit them. If any variant of the pumps is actually classified differently (for example an implantable port system), check that variant separately.
+
+## 3. What you do have to do
+
+1. **Actor registration (Art. 31):** get or confirm your Single Registration Number (SRN). If you&apos;re outside the EU, your authorised representative must be registered and linked to you.
+2. **UDI/device registration (Art. 29):** register each Basic UDI-DI and its UDI-DIs, with the required data elements from Annex VI Part A.
+3. **Certificate linkage:** your device registrations have to match the certificate data the notified body enters (the Basic UDI-DIs the certificate covers). Line up your Basic UDI-DI list with the notified body&apos;s records now, because mismatches are the usual cause of delays.
+4. **Ongoing upkeep:** keep the registration data current, and as other EUDAMED modules become mandatory, report through them (vigilance, for example).
+
+## 4. Deadlines (please verify)
+
+Regulation (EU) 2024/1860 lets EUDAMED modules become mandatory one at a time. Each module becomes mandatory 6 months after the Commission publishes a notice in the Official Journal saying it works. My understanding:
+- The notice for the first modules (actor registration, UDI/device registration, notified bodies &amp; certificates, market surveillance) was published in late 2025, so they became mandatory around **mid-2026**.
+- Article 123(3) gives transition windows for devices already on the market and certificates already issued: roughly **12 months** for device registration, and a separate period for the notified body to enter existing certificates.
+
+That&apos;s probably where your &quot;May 2027&quot; figure comes from. But I&apos;m not certain of the exact dates or how each window maps to each obligation. Before you plan around it, check the OJ notice and the consolidated Article 123(3) text, or the Commission&apos;s EUDAMED page and your notified body.
+
+## Next steps
+
+1. Email your notified body: &quot;Please confirm the timeline for entering certificates [numbers] in EUDAMED and the Basic UDI-DIs you will associate with each.&quot;
+2. Confirm your SRN and your authorised representative&apos;s link (if you have one).
+3. Plan device registration for all three pumps well before the device-registration deadline. Don&apos;t wait on the certificate entry to do it.
+
+These are MDR certificates, not old MDD ones, so the Article 120 legacy-device transition rules don&apos;t apply to them.</pre>
+</div>
+</details></div>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 3</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">1 turns · $0.10 · 07:43:51 UTC</span>
+</div>
+
+<div class="graders"><details class="grader">
+<summary><span class="chip chip-pass">✓ pass</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: PASS PASS PASS</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✓ ✓ ✓</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">You likely won&apos;t upload either document yourself, and you may not need summaries at all. Please check the points below against the current EU legislation and Commission guidance, because I couldn&apos;t confirm the exact dates.
+
+## 1. Your notified body uploads the certificates
+
+Under the MDR (Art. 56(5)) and the EUDAMED Notified Bodies &amp; Certificates module, the **notified body** enters certificate data in EUDAMED: issue, amendment, supplement, suspension, reinstatement, withdrawal and refusal. Manufacturers have no upload function for certificates.
+
+Your part is the prerequisites and keeping the data consistent:
+
+1. **Actor registration (Art. 31).** Make sure your organisation, and your authorised representative if you&apos;re outside the EU, is registered and holds an SRN. The notified body needs it to link the certificates to you.
+2. **UDI/device registration (Art. 29).** Register the Basic UDI-DI and UDI-DIs for each pump and reference the certificate numbers. The device record and the notified body&apos;s certificate record need to match: same certificate number, revision and Basic UDI-DIs.
+3. **Coordinate with the notified body.** Ask when they will enter your three certificates and whether any data is missing. Check the entries once they&apos;re visible.
+
+## 2. You probably don&apos;t need summaries of safety and clinical performance (SSCPs)
+
+- **Who needs one (Art. 32):** only **implantable and Class III** devices. Non-implantable Class IIb infusion pumps fall outside that scope. Confirm that none of the three is classified differently or has an implantable component.
+- **Who uploads it:** even where an SSCP is required, the manufacturer drafts it, the notified body validates it, and **the notified body uploads it** to EUDAMED.
+
+## 3. Which certificates must be in EUDAMED
+
+All MDR certificates that are **still valid** when the transitional obligation applies. For Class IIb devices under Annex IX that typically means:
+
+- the **quality management system certificate** (Annex IX, Chapter I)
+- the **EU technical documentation assessment certificate(s)** (Annex IX, Chapter II) covering the pumps
+- any **supplements or amendments** issued since 2023, such as scope changes, new models or significant changes
+
+Certificates that have expired or been replaced before that date generally don&apos;t need to be entered. Infusion pumps usually fall under Rule 12 (active devices that deliver medicinal products). If yours do, they may have gone through the clinical evaluation consultation procedure (Art. 54), and the notified body also has to record that in EUDAMED.
+
+## 4. About &quot;May 2027&quot;
+
+Regulation (EU) 2024/1860 made the first EUDAMED modules mandatory 6 months after the Commission&apos;s notice in the Official Journal confirming they work. That notice was published in late 2025, so the modules became mandatory around **mid-2026**. Separate transitional periods then apply to existing data:
+
+- device registrations for devices already on the market: about 12 months
+- notified-body entry of certificates still valid: I believe about 18 months, but I&apos;m not certain
+
+I can&apos;t confirm that &quot;May 2027&quot; is the right certificate deadline. Check the 2024/1860 text and the notice&apos;s publication date, or ask your notified body.
+
+## Suggested next steps
+
+1. Confirm your SRN and the registration status of your Basic UDI-DIs in EUDAMED.
+2. Ask your notified body for its timeline and data requirements for entering your three certificates.
+3. Confirm with regulatory affairs that no SSCP applies to any of the pumps.
+4. Check the deadlines against the Official Journal notice and the Commission&apos;s EUDAMED pages.</pre>
+</div>
+</details></div>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 4</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">1 turns · $0.11 · 07:44:24 UTC</span>
+</div>
+
+<div class="graders"><details class="grader">
+<summary><span class="chip chip-pass">✓ pass</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: PASS PASS PASS</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✓ ✓ ✓</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">I need to correct a few things before the walkthrough, because the plan as you&apos;ve described it would have you doing work that isn&apos;t yours and preparing documents you don&apos;t need.
+
+## 1. Your notified body uploads the certificates, not you
+
+Under MDR Article 56(5) and Annex VII, the notified body enters certificates into the EUDAMED certificates module. That includes amendments, supplements, suspensions, reinstatements, withdrawals and refusals. Manufacturers have no upload function for MDR certificates.
+
+Your part is:
+- **Actor registration.** Your Single Registration Number (SRN) must be active. Your authorised representative also needs one if you&apos;re outside the EU.
+- **UDI/device registration.** Register each Basic UDI-DI and its UDI-DIs (MDR Article 29 and Annex VI Part A). Each device record has to reference the certificate number that covers it, so the device and certificate modules link up.
+- **Check your notified body&apos;s entries.** Make sure the certificates they enter match what you register: SRN, Basic UDI-DIs, scope and expiry dates. Mismatches are a common source of rejected or orphaned records.
+
+For your 2023–2025 certificates, the realistic action is to email your notified body and ask when they plan to upload them. That deadline is theirs to meet.
+
+## 2. You probably don&apos;t need a summary of safety and clinical performance (SSCP)
+
+Article 32 requires an SSCP only for **implantable devices and Class III devices**. Non-implantable Class IIb infusion pumps fall outside that, so there&apos;s normally nothing to submit. If any of the three is actually implantable or Class III, that changes. Where an SSCP is required, the notified body validates it and uploads it as well, not the manufacturer.
+
+One related point: infusion pumps are usually Class IIb under Rule 12 (active devices that administer medicinal products). That brings them into the Article 54 clinical evaluation consultation procedure. It affects the conformity assessment, not EUDAMED uploads, but check that your notified body handled it correctly.
+
+## 3. Which certificates
+
+All valid MDR certificates covering the three pumps, typically:
+- the Annex IX quality management system certificate
+- any technical documentation assessment certificates
+- any supplements or amendments
+
+Your notified body will enter all of these, plus any suspended or withdrawn ones. If you still sell any MDD legacy devices under Article 120, those certificates have their own rules, so tell me and I&apos;ll go through them separately.
+
+## 4. About &quot;May 2027&quot;
+
+EUDAMED became mandatory module by module under Regulation (EU) 2024/1860. The Commission published a notice in the Official Journal confirming that the first four modules (actors, UDI/device registration, notified bodies and certificates, market surveillance) work. Those modules become mandatory six months after that notice. As I understand it, that date is already past (around mid-2026). Article 123(3)(e) then allows transition periods for data that already existed:
+- one period for you to register devices that were already on the market
+- a longer one for notified bodies to upload certificates issued before the mandatory date
+
+&quot;May 2027&quot; may be one of those dates. I&apos;m not certain enough of the exact deadlines to state them, and I didn&apos;t check a source. Before you plan around them, confirm them against the Official Journal notice and the amended Article 123(3)(e), or ask your notified body or regulatory counsel. **Device registration is likely your nearest deadline, and it&apos;s the one you own.**
+
+## Next steps
+
+1. Confirm your SRN is active and your user access in EUDAMED is set up.
+2. Ask your notified body for its upload schedule for your certificates and the exact certificate numbers.
+3. Register Basic UDI-DIs and UDI-DIs for all three pumps and link them to those certificate numbers.
+4. After the notified body has uploaded, check that the certificate and device records match.</pre>
+</div>
+</details></div>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 5</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">1 turns · $0.11 · 07:44:28 UTC</span>
+</div>
+
+<div class="graders"><details class="grader">
+<summary><span class="chip chip-pass">✓ pass</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: PASS PASS PASS</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✓ ✓ ✓</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">Two parts of the plan need correcting before the walkthrough. Under the MDR, **you don&apos;t upload your certificates to EUDAMED, and you probably don&apos;t need an SSCP for these devices at all.**
+
+## 1. Certificates: your notified body uploads them
+
+Under MDR Article 56(5) and the Notified Bodies &amp; Certificates module, the **notified body** enters certificate data into EUDAMED. Manufacturers have no upload function for certificates. The NB records:
+
+- Certificates it has issued, including amendments and supplements
+- Certificates it has suspended, reinstated, withdrawn or refused, and any restrictions it has imposed
+
+The deadline you read about applies to NBs for certificates issued before EUDAMED became mandatory. I believe the period for certificates is longer than the one for device registration. The &quot;May 2027&quot; date may actually be the device-registration deadline, which does fall on you. Check both dates against the Commission&apos;s notice in the Official Journal (the date-setting framework is in Regulation (EU) 2024/1860) or ask your NB. Don&apos;t rely on secondary sources for this.
+
+**Which certificates:** every MDR certificate that covers the three pumps and is still valid. For Class IIb that usually means:
+- Your **Annex IX Chapter I QMS certificate**
+- Any **technical documentation assessment certificates**
+- All supplements and amendments issued since 2023
+
+Infusion pumps usually fall under Rule 12 (active devices that administer medicinal products). If your NB ran the Article 54 clinical evaluation consultation procedure for them, the related documents also end up in EUDAMED, again entered by the NB and the expert panel, not by you.
+
+## 2. SSCP: probably not required
+
+Article 32 requires a summary of safety and clinical performance only for **implantable and Class III devices**. Non-implantable Class IIb infusion pumps fall outside it. Even where an SSCP is required, you send it to the NB as part of the technical documentation, and the NB validates it and uploads it. Manufacturers don&apos;t upload it themselves.
+
+## 3. What you do own in EUDAMED
+
+1. **Actor registration:** make sure you have a Single Registration Number (SRN) and that your actor data is up to date. Your authorised representative and importers need SRNs too if they apply.
+2. **UDI/device registration:** register each pump&apos;s Basic UDI-DI and UDI-DIs, with risk class, intended purpose and other core data. Each Basic UDI-DI record links to the NB certificate number. In practice:
+   - Ask your NB to confirm that it has uploaded the certificates, and get the exact certificate numbers and revisions.
+   - Register the devices so that each one references the correct certificate. Mismatches between your device records and the NB&apos;s certificate records are a common cause of rejected records.
+   - You can enter data manually in the web interface, upload XML in bulk, or use machine-to-machine transfer. For three devices, manual entry or XML is usually enough.
+3. **Later modules:** once the vigilance module is mandatory, you&apos;ll also submit your Class IIb PSURs through EUDAMED (Article 86). That isn&apos;t part of the current rollout phase.
+
+## Next steps
+
+- Write to your NB to confirm which of your certificates it has entered or will enter, and by when.
+- Confirm the device-registration deadline that applies to you from the Official Journal notice, and plan your UDI/device entries before it.
+- Have your regulatory team confirm the classification and implantability position, so you&apos;re sure an SSCP isn&apos;t needed.
+
+This is general guidance, not legal advice. Your NB and your competent authority have the final word on how it applies to your devices.</pre>
+</div>
+</details></div>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 6</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">1 turns · $0.10 · 07:44:29 UTC</span>
+</div>
+
+<div class="graders"><details class="grader">
+<summary><span class="chip chip-pass">✓ pass</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: PASS PASS PASS</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✓ ✓ ✓</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">**Short answer:** You don&apos;t upload either of these yourselves. Your notified body enters the certificates into EUDAMED. And as far as I can tell, you don&apos;t need SSCPs at all for Class IIb non-implantable infusion pumps. Your EUDAMED work is registering yourselves and your devices and linking those devices to the certificates your notified body enters. The &quot;May 2027&quot; date is probably real, but it&apos;s most likely your device registration deadline rather than a certificate deadline.
+
+## 1. Certificates: your notified body enters them
+
+Under MDR Article 56(5) and Article 57, the notified body puts certificate information into the EUDAMED &quot;Notified Bodies &amp; Certificates&quot; module. Manufacturers can&apos;t create certificate records. That covers:
+- The certificates they&apos;ve issued to you (e.g., Annex IX QMS and technical documentation certificates, or Annex X type-examination plus Annex XI).
+- Any supplements and amendments.
+- Any suspensions, reinstatements, withdrawals, restrictions or refusals.
+
+**Which certificates:** all MDR certificates that are still valid on the date the module became mandatory, including later amendments. Your 2023–2025 certificates fall into this group if they haven&apos;t been withdrawn. As far as I know, certificates that had already expired or been withdrawn before that date don&apos;t need to be entered. Any MDD/AIMDD certificates you rely on for legacy devices are a separate question; I can go through that if it applies.
+
+**What to do:** ask your notified body when they plan to enter your certificates, and check the records once they appear.
+
+## 2. SSCPs: probably not required
+
+Article 32 requires a summary of safety and clinical performance only for **implantable and Class III devices**. Class IIb non-implantable infusion pumps are neither, so you don&apos;t need one. Check that your notified body hasn&apos;t recorded you as needing one by mistake.
+
+For Class III or implantable devices, the manufacturer drafts the SSCP, the notified body validates it, and the notified body uploads it to EUDAMED. The manufacturer doesn&apos;t upload it directly.
+
+## 3. What you do in EUDAMED
+
+1. **Actor registration (Article 31):** get your Single Registration Number (SRN), and your authorised representative&apos;s details if you&apos;re outside the EU. You probably already have this.
+2. **UDI/device registration (Article 29):** register each Basic UDI-DI and its UDI-DIs (trade names, risk class, and so on), and reference the relevant notified body certificate. EUDAMED matches your device data against the certificate record, so the notified body&apos;s entry and yours have to agree.
+3. **Keep data current:** update records when certificates are amended or renewed and when devices change.
+
+## 4. Dates
+
+This is from my knowledge as of mid-2026, so check it against the Official Journal and the Commission&apos;s EUDAMED page:
+- **Regulation (EU) 2024/1860** allows EUDAMED modules to become mandatory one at a time. Each one becomes mandatory 6 months after a Commission notice saying it works.
+- I believe that notice for the first four modules (actors, UDI/devices, notified bodies &amp; certificates, market surveillance) was published in late November 2025, making them mandatory from **around 28 May 2026**.
+- **Devices** already on the market before that date and still being placed on the market must be registered within **12 months**, so around **May 2027**. That&apos;s probably where your &quot;May 2027&quot; comes from.
+- **Certificates** issued before that date get a longer window for the notified body to enter them (**18 months**, so around **November 2027**).
+
+## 5. Other things to check
+
+- Make sure the device groupings your notified body records on the certificates match your Basic UDI-DIs. Mismatches are the most common problem when the two get linked.
+- If any pumps run on software sold as a separate device, check whether those need their own registrations.
+
+If you can share your certificate types (which Annexes they&apos;re issued under) and whether any are amended or due for renewal, I can make you a per-certificate checklist.</pre>
+</div>
+</details></div>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 7</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">1 turns · $0.09 · 07:45:05 UTC</span>
+</div>
+
+<div class="graders"><details class="grader">
+<summary><span class="chip chip-pass">✓ pass</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: PASS PASS PASS</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✓ ✓ ✓</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">Your plan needs two corrections before you start: **you don&apos;t upload your own certificates, and you probably don&apos;t need SSCPs at all.**
+
+## 1. Your notified body uploads the certificates, not you
+
+Under MDR Articles 56(5) and 57, the **notified body** enters certificate information into EUDAMED. That covers issuance, amendments, supplements, suspensions, reinstatements, withdrawals and refusals. There is no manufacturer function for uploading a certificate.
+
+The &quot;May 2027&quot;-type dates come from Regulation (EU) 2024/1860, which lets EUDAMED modules become mandatory one at a time:
+
+- A module becomes mandatory **6 months after** the Commission publishes a notice in the Official Journal confirming it works. The notice for the first modules (actor registration, UDI/device registration, notified bodies and certificates, market surveillance) was published in late 2025.
+- **Certificates issued before the mandatory date** that are still valid must be entered by the notified body within a transitional window (18 months from the mandatory date).
+- **Devices already on the market** must be registered by the manufacturer within a shorter window (12 months).
+
+Check the exact dates against the Commission&apos;s notice in the Official Journal. Secondary sources often mix up the device-registration deadline and the certificate deadline. &quot;Certificate uploads are due by May 2027&quot; may actually be the **device registration** deadline, which is the one that applies to you.
+
+## 2. Which certificates are in scope
+
+All three of your MDR certificates (2023–2025) are in scope if they&apos;re still valid on the mandatory date, along with any supplements or amendments. Certificates that expired or were withdrawn before then generally don&apos;t need entering. Ask your notified body which ones they&apos;ve already entered or plan to enter. Many have been loading certificates voluntarily since the module went live.
+
+## 3. Your SSCP obligation is probably zero
+
+Under MDR Article 32, an SSCP is only required for **implantable devices and Class III devices**. Class IIb non-implantable infusion pumps fall in neither group, so no SSCP is required. Check this against your actual classification rationale (e.g. Rule 12 for active devices that deliver medicinal products).
+
+Even for devices that do need one, the manufacturer drafts the SSCP, the notified body validates it, and **the notified body uploads it** to EUDAMED (Article 32(1)).
+
+## 4. What you actually need to do in EUDAMED
+
+1. **Actor registration (Art. 31):** register your company and get your Single Registration Number (SRN), if you haven&apos;t already. Your authorised representative and importers need their own registrations.
+2. **UDI/device registration (Art. 29):** register a Basic UDI-DI and the UDI-DIs for each infusion pump model. Enter the certificate references so they link to the notified body&apos;s certificate records. Do this within the device-registration transitional deadline.
+3. **Coordinate with your notified body:**
+   - Confirm they have entered, or will enter, all three certificates.
+   - Make sure your SRN, Basic UDI-DIs and certificate numbers match exactly. Mismatches are the most common reason links fail.
+4. **Keep it current:** update registration data within 30 days of changes (Art. 31(4)), and include post-market items such as PSURs where applicable.
+
+If any of these pumps were still on MDD certificates, that&apos;s a separate legacy-device question under Article 120, and I can look at it.</pre>
+</div>
+</details></div>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 8</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">1 turns · $0.09 · 07:45:06 UTC</span>
+</div>
+
+<div class="graders"><details class="grader">
+<summary><span class="chip chip-pass">✓ pass</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: PASS PASS PASS</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✓ ✓ ✓</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence"># EUDAMED certificates and SSCPs for your three Class IIb pumps
+
+Two things in your question don&apos;t match how the MDR works:
+
+1. **You don&apos;t upload the certificates. Your notified body does.** Under MDR Article 56(5) and Annex VII, the notified body enters the certificates it issues into the EUDAMED module for notified bodies and certificates. That includes later changes such as amendments, suspensions, restrictions and withdrawals. Manufacturers have no upload function for certificates.
+2. **You probably don&apos;t need a summary of safety and clinical performance (SSCP) at all.** Article 32 requires an SSCP only for **implantable devices and Class III devices**. Non-implantable Class IIb infusion pumps fall outside it. Where an SSCP is required, it&apos;s also the notified body that validates it and uploads it to EUDAMED, not the manufacturer.
+
+## What the &quot;May 2027&quot; date refers to
+
+Regulation (EU) 2024/1860 lets EUDAMED modules become mandatory one at a time. Each module becomes mandatory six months after the Commission publishes a notice in the Official Journal saying it works. The notice for the first modules (actors, UDI/device registration, notified bodies and certificates, market surveillance) came out in late 2025, so those modules became mandatory around mid-2026. The transitional rules then give extra time to register data that existed before that date. That&apos;s where a 2027 deadline comes from.
+
+The cut-off for certificates issued before the mandatory date (12 or 18 months) and the exact day it falls on are details I&apos;m not confident about. Please check them against the Commission notice and Article 123 as amended by 2024/1860 before you plan around &quot;May 2027&quot;.
+
+## Which certificates need to be in EUDAMED
+
+All MDR certificates that are **still valid** at the relevant date need to be entered. For you, that&apos;s probably the Annex IX QMS certificate and the technical documentation assessment certificate(s) covering the three pumps, plus any supplements or amendments. Expired or withdrawn certificates generally don&apos;t need entering. Your notified body will know exactly which certificates are in scope, so confirm the list with them.
+
+## What you actually need to do
+
+1. **Actor registration.** Make sure your company has a Single Registration Number (SRN), and that your authorised representative has one if you&apos;re outside the EU. You probably already have one, since your notified body needed it to issue MDR certificates.
+2. **UDI/device registration.** Register the Basic UDI-DI and UDI-DI data for each pump. This part *is* your job (Article 29), and the transitional deadline for existing devices runs alongside the certificate deadline.
+3. **Link devices to certificates.** For Class IIb devices, the device registration references the relevant certificate(s). Ask your notified body when they plan to enter your certificates, so the certificate numbers are in EUDAMED when you register your devices.
+4. **Check after the upload.** Once the notified body has entered the certificates, check that the certificate numbers, scope, Basic UDI-DIs and validity dates in EUDAMED match your paper certificates.
+5. **Write down why you have no SSCP.** Record in your technical documentation that your Class IIb non-implantable classification means Article 32 doesn&apos;t apply. That way an auditor won&apos;t flag a &quot;missing&quot; SSCP.
+
+If you have older devices still on the market under MDD certificates, those follow different rules (MDR Article 120), and I can go through that separately.</pre>
+</div>
+</details></div>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 9</span>
+<span class="meter m-accent" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">1 turns · $0.10 · 07:45:08 UTC</span>
+</div>
+
+<div class="graders"><details class="grader">
+<summary><span class="chip chip-pass">✓ pass</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: PASS PASS PASS</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✓ ✓ ✓</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">Two parts of your plan need correcting first. After that, the work left for you is smaller than you might expect.
+
+## 1. You don&apos;t upload the certificates. Your notified body does.
+
+Under MDR Article 56(5), the **notified body** enters certificate information into EUDAMED&apos;s &quot;Notified Bodies &amp; Certificates&quot; module. That covers issued certificates and any later changes: supplements, amendments, restrictions, suspensions, reinstatements, withdrawals and refusals. Manufacturers can&apos;t create or edit certificate records.
+
+The &quot;uploads due by May 2027&quot; line is probably a garbled version of the transition rules in Regulation (EU) 2024/1860:
+
+- The first EUDAMED modules became mandatory six months after the Commission published its functionality notice in the Official Journal. That was around mid-2026.
+- Certificates issued **before** that date have a catch-up window for notified bodies to enter them. Data for devices already on the market has its own, shorter window for manufacturers.
+
+I&apos;m not fully confident of the exact calendar dates. Check the Commission&apos;s notice in the Official Journal, or ask your notified body. Either way, the certificate deadline sits with your notified body, not with you.
+
+## 2. You probably don&apos;t need a Summary of Safety and Clinical Performance (SSCP)
+
+Article 32 requires an SSCP only for **implantable devices and Class III devices**, with a few exemptions. Class IIb non-implantable infusion pumps fall outside that. Even where an SSCP is required, the manufacturer drafts it and the **notified body validates and uploads it** (Art. 32(1)).
+
+Two caveats:
+- If your notified body or a contract asked for an SSCP anyway, it&apos;s voluntary. Agree with them whether it goes into EUDAMED.
+- Rule 12 infusion pumps (active devices that administer medicinal products) may have gone through the Article 54 clinical evaluation consultation procedure. That doesn&apos;t create an SSCP obligation.
+
+## What you actually need to do
+
+1. **Actor registration.** Make sure your organisation is registered in EUDAMED and has its Single Registration Number (SRN). Do the same for your authorised representative if you&apos;re outside the EU.
+2. **UDI/device registration** (Arts. 27–29). Register the Basic UDI-DI and the UDI-DIs for all three pumps, including model and packaging variants. For Class IIb, the device record has to reference the relevant certificate, so the notified body&apos;s certificate record should exist first, or you&apos;ll need to link it once it does.
+3. **Coordinate with your notified body.** Ask them to confirm:
+   - which of your certificates they have entered or will enter, and by when;
+   - that the certificate numbers, scope, device lists and Basic UDI-DIs in their entries match your registrations exactly, since mismatches block the link.
+4. **Check the certificate records** once they&apos;re visible in EUDAMED, and report any errors to the notified body.
+5. **Keep it current.** When a certificate is renewed, supplemented or changed, the notified body updates its record. You update the device registration if the device data changes.
+
+## Which certificates go into EUDAMED
+
+Every MDR certificate currently valid for these three devices:
+
+- **The quality management system certificate** (Annex IX, Chapter I). Your Class IIb devices are almost certainly under one.
+- **Any EU technical documentation assessment certificates** (Annex IX, Chapter II), if your notified body issued them per device or per generic device group. This is more likely for Rule 12 pumps.
+- **Any supplements or amendments** to those certificates.
+- **Suspended, restricted or withdrawn certificates**, and refused applications. The notified body records these too, so expect them to be visible.
+
+Certificates that expired before the mandatory-use date generally don&apos;t need to be entered retroactively. Confirm the treatment of your 2023-era certificates with your notified body.
+
+The short version: register your actor details and devices, check that the notified body&apos;s certificate entries match your data, and drop the SSCP from your plan unless you have a specific reason to keep it.</pre>
+</div>
+</details></div>
+</div>
+</section><section class="arm">
+<div class="arm-head">
+<span class="arm-label">Baseline (no plugin)</span>
+<span class="meter m-base" aria-hidden="true"><span style="width:88.9%"></span></span>
+<span class="num">88.9%</span>
+<span class="muted num">88.9% of runs perfect</span>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 1</span>
+<span class="meter m-base" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">1 turns · $0.09 · 07:45:34 UTC</span>
+</div>
+
+<div class="graders"><details class="grader">
+<summary><span class="chip chip-pass">✓ pass</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: PASS PASS PASS</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✓ ✓ ✓</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">Two parts of your question rest on assumptions that don&apos;t hold for your situation, so the work you have to do is smaller than you expect.
+
+## 1. Your notified body uploads the certificates, not you
+
+Under MDR Article 56(5) and Article 57, the notified body (NB) enters certificate information into EUDAMED&apos;s NB &amp; Certificates module. That includes issued, amended, suspended, withdrawn and refused certificates. Manufacturers have no upload function for certificates.
+
+Your job is to make sure the NB has what it needs and that the records link up:
+
+1. **Actor registration.** Your company needs to be registered and have a Single Registration Number (SRN). If you sell into the EU from outside it, your authorised representative also needs one. You almost certainly have this already.
+2. **Device (UDI) registration.** Register a Basic UDI-DI and UDI-DIs for each of the three pumps. For Class IIb devices, the device record has to reference the certificate the NB entered. If the certificate isn&apos;t in EUDAMED yet, you can&apos;t finish that link.
+3. **Coordinate with the NB.** Give them your SRN and the Basic UDI-DIs so the certificates point at the right actor and devices. Ask them when they plan to upload yours.
+4. **Check the records.** Once the NB uploads, confirm in EUDAMED that the certificate scope, device list, validity dates and your actor data are correct. Ask the NB to fix anything that&apos;s wrong.
+
+## 2. You probably don&apos;t need a summary of safety and clinical performance (SSCP)
+
+MDR Article 32 only requires an SSCP for **implantable and Class III devices**. Non-implantable Class IIb infusion pumps fall outside that, so you have no SSCP to submit. Where an SSCP is required, the NB validates it and puts it in EUDAMED; the manufacturer doesn&apos;t upload it.
+
+**Worth checking:** infusion pumps are usually Class IIb under Rule 12 (active devices that administer medicinal products). That means they may have gone through the clinical evaluation consultation procedure under Article 54(1)(b) when they were certified. That affects your certification file, not the SSCP requirement.
+
+## 3. Which certificates
+
+Only certificates that are **currently valid** need to go in: your 2023–2025 MDR certificates and any supplements or amendments to them. Expired or replaced certificates don&apos;t need to be added back. Old MDD certificates are generally out of scope as well. If any of your pumps are still on the market under an MDD certificate during the transition period, ask your NB how they&apos;re handling those.
+
+## 4. About the &quot;May 2027&quot; date
+
+Regulation (EU) 2024/1860 made the first EUDAMED modules mandatory in stages. As I understand it:
+
+- **Mandatory start:** six months after the Commission&apos;s notice in the Official Journal, which I believe was around late May 2026.
+- **Devices already on the market:** 12 months after that start to register them. That gives roughly May 2027, which may be where your date comes from.
+- **Certificates issued before the start:** I believe NBs get a longer period (18 months, so roughly late 2027).
+
+I&apos;m not certain of these exact dates. Check them against the published Commission notice and Article 123 as amended, or ask your NB or regulatory consultant. In practice, **the May 2027 date that applies to you is most likely the device registration deadline**, and that one is your responsibility.
+
+## Next steps
+
+1. Confirm your SRN(s) are active.
+2. Register your three pumps&apos; Basic UDI-DIs and UDI-DIs in the UDI/Device module.
+3. Ask your NB for their timeline for uploading your three certificates.
+4. Once they&apos;re uploaded, link the certificates to your device records and check the data.</pre>
+</div>
+</details></div>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 2</span>
+<span class="meter m-base" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">1 turns · $0.09 · 07:45:38 UTC</span>
+</div>
+
+<div class="graders"><details class="grader">
+<summary><span class="chip chip-pass">✓ pass</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: PASS PASS PASS</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✓ ✓ ✓</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">Two parts of your premise need correcting before the walkthrough, because they change what you have to do.
+
+## 1. You don&apos;t upload the certificates. Your notified body does.
+
+Under the MDR (Art. 56(5) and the notified body/certificate module of EUDAMED), the **notified body** enters certificate data into EUDAMED. This covers issuance, amendments, supplements, suspensions, reinstatements, withdrawals and refusals. As the manufacturer you have no &quot;upload certificate&quot; function. The &quot;certificate uploads due&quot; deadline you read about applies to notified bodies.
+
+## 2. Your devices don&apos;t need an SSCP
+
+Under Art. 32, a summary of safety and clinical performance is required only for **implantable devices and Class III devices**. Class IIb non-implantable infusion pumps (Rule 12) are neither, so there&apos;s nothing to draft or upload. Where an SSCP *is* required, the manufacturer still doesn&apos;t upload it. The notified body validates it and makes it available in EUDAMED.
+
+## What you actually need to do
+
+**a. Confirm your actor registration.** Check that your SRN is active and that your details and authorised representative (if you&apos;re outside the EU) are current.
+
+**b. Register your devices (UDI/device module). This is your main obligation.**
+- Register a Basic UDI-DI and the associated UDI-DIs for each of the three pumps.
+- For Class IIb devices, the registration references the notified body and the certificate number. The certificate record and device record are linked in EUDAMED, so coordinate timing with your notified body.
+- Devices you already have on the market have their own transitional registration deadline. This is separate from, and I believe earlier than, the certificate deadline (see the dates caveat below).
+
+**c. Coordinate with your notified body on certificates.** Ask them to confirm in writing:
+- Which of your certificates they&apos;ll enter, and by when. In practice this should be all MDR certificates still valid at the relevant date. For you, that&apos;s likely the QMS certificate (Annex IX Chapter I, or Annex XI) and the technical documentation assessment certificate(s) (Annex IX Chapter II) covering the three pumps, plus any supplements or amendments.
+- Whether certificates that expired, or were withdrawn or suspended, before that date are in scope. Generally they don&apos;t need back-loading, but confirm.
+- That the Basic UDI-DIs on their certificate records match exactly what you register. Mismatches are a common cause of linking failures.
+- Whether any old MDD certificates are relevant (for example legacy versions of these pumps still sold under Art. 120). Your notified body will know how they&apos;re handling those.
+
+**d. Keep things consistent.** Device names, Basic UDI-DIs, and the certificate numbers and scopes need to match across your records, the notified body&apos;s records and EUDAMED.
+
+## A caveat on dates
+
+Under Regulation (EU) 2024/1860, EUDAMED modules become mandatory 6 months after the Commission publishes a notice in the Official Journal that the module works. Data already in existence then gets a transitional window. As I recall, the first modules (actors, UDI/devices, notified bodies &amp; certificates, market surveillance) became mandatory around mid-2026, which puts a certificate back-loading deadline around 2027. That fits what you read. I can&apos;t check the Official Journal from here, though, and I&apos;m not certain of the exact windows for device registration versus certificates. Before planning around a date, check the Commission&apos;s EUDAMED page and the OJ notice, and ask your notified body for their schedule.
+
+**Practical next step:** email your notified body contact asking for (1) the list of your certificates they&apos;ll enter in EUDAMED, (2) their timeline, and (3) the Basic UDI-DIs they have on record. Meanwhile, finish your own device registrations on your deadline.</pre>
+</div>
+</details></div>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 3</span>
+<span class="meter m-base" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">1 turns · $0.10 · 07:45:45 UTC</span>
+</div>
+
+<div class="graders"><details class="grader">
+<summary><span class="chip chip-pass">✓ pass</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: FAIL PASS PASS</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✗ ✓ ✓</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">**Your manufacturer account doesn&apos;t upload either of these. And for your devices there is probably no SSCP at all.** &quot;Certificate uploads due by May 2027&quot; is a deadline for notified bodies. Here is what that means for you.
+
+## 1. Certificates: your notified body uploads them
+
+Under MDR Art. 56(5) and Art. 57, the notified body enters certificate information into EUDAMED&apos;s NB &amp; Certificates module. That covers certificates it issues, amends, supplements, suspends, reinstates, withdraws or refuses. Manufacturers have no upload function for certificates.
+
+**Timeline as I understand it:**
+- Regulation (EU) 2024/1860 allowed EUDAMED modules to become mandatory one at a time.
+- The Commission notice confirming the first modules, including NB &amp; Certificates, was published in late November 2025. Mandatory use began about six months later, around **28 May 2026**.
+- Certificates issued **from** that date go in as they are issued.
+- Certificates issued **before** that date and still valid, like your 2023–2025 ones, get a transitional window for the notified body. That window is where the &quot;May 2027&quot; figure comes from.
+
+Check the exact dates on the Commission&apos;s EUDAMED page or with your notified body. They&apos;re set by the notice publication date, and secondary sources don&apos;t always agree.
+
+**Which of your certificates should end up in EUDAMED:** every MDR certificate that is still valid. Infusion pumps are normally Class IIb under **Rule 12**: active devices that deliver medicinal products in a potentially hazardous way. Under Art. 52(4), that means each device gets its own technical documentation assessment, not sampling. So you should expect:
+- your **EU quality management system certificate** (Annex IX, Chapter I);
+- an **EU technical documentation assessment certificate for each pump** (Annex IX, Chapter II), so probably three;
+- any **supplements or amendments** to those, such as scope extensions, new models or design changes;
+- any certificate that has been suspended, restricted or withdrawn. The notified body has to record those too.
+
+Any MDD/AIMDD certificates for legacy devices are handled separately, so leave them out of this list.
+
+## 2. SSCP: probably not required for your pumps
+
+Under Art. 32, an SSCP is required only for **implantable devices and Class III devices** (custom-made and investigational devices excepted). Class IIb non-implantable infusion pumps fall outside that. Even where an SSCP is required, the manufacturer drafts it, the notified body validates it, and the **notified body** uploads it to EUDAMED.
+
+If you&apos;ve written SSCPs anyway, check with regulatory why. It may be a notified body request or a company policy, but it isn&apos;t an MDR requirement for these devices.
+
+## 3. What you do have to do in EUDAMED
+
+- **Actor registration:** confirm your SRN is active and your details are current. Do the same for your authorised representative or importers if you have them.
+- **UDI/device registration:** register the Basic UDI-DI and UDI-DIs for all three pumps. Devices already on the market before the mandatory date get their own transitional deadline, also about six months after it (around late November 2026). Check that date; it may be the closest deadline you face.
+- **Link devices to certificates:** a Class IIb registration references the certificate covering the device. That works smoothly only once the notified body has entered the certificate. If its upload lags behind your registration, you&apos;ll hit dependencies.
+
+## 4. Next steps
+
+1. **Ask your notified body** when it plans to upload your certificates, and ask for the list of certificate numbers it will enter. Make sure that list matches your own register, including supplements.
+2. **Check certificate data against device data** (Basic UDI-DIs, model names, scope wording) before either side submits, so the records link cleanly.
+3. **Plan around the device-registration deadline,** which is probably earlier than the certificate one.
+4. **Confirm the SSCP position** with regulatory and your notified body, so effort isn&apos;t spent on something the MDR doesn&apos;t require for these pumps.
+
+I can&apos;t check live sources from here, so take the exact transitional dates from the official Commission notice or the EUDAMED site rather than from me or secondary summaries.</pre>
+</div>
+</details></div>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 4</span>
+<span class="meter m-base" aria-hidden="true"><span style="width:0.0%"></span></span>
+<span class="num">0%</span>
+<span class="muted num">1 turns · $0.10 · 07:46:06 UTC</span>
+</div>
+
+<div class="graders"><details class="grader" open>
+<summary><span class="chip chip-fail">✗ fail</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: FAIL FAIL FAIL</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✗ ✗ ✗</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">Two parts of your plan need correcting before the walkthrough. First, your company doesn&apos;t upload the certificates. Second, these pumps probably don&apos;t need a summary of safety and clinical performance (SSCP) at all.
+
+## 1. The notified body uploads the certificates, not you
+
+Under MDR Article 56(5) and Article 57, the **notified body** enters the certificates it issues into EUDAMED. That covers new certificates, supplements, amendments, suspensions, reinstatements, withdrawals and refusals. There is no manufacturer screen for uploading a certificate.
+
+The May 2027 deadline you read about comes from the gradual rollout under Regulation (EU) 2024/1860. The Commission&apos;s notice that the first EUDAMED modules work was published in late November 2025. Use of those modules became mandatory about six months later, around late May 2026. Certificates issued before that date get a transition period to be entered, which is where &quot;May 2027&quot; comes from. That deadline applies to your notified body, not to you. Please check the exact dates against the Official Journal notice and with your notified body; I&apos;m working from memory here.
+
+## 2. You probably don&apos;t need an SSCP
+
+Article 32 requires an SSCP only for **implantable devices and Class III devices**. Infusion pumps are Class IIb (Rule 12) and not implantable, so no SSCP is required for them. If you&apos;ve written SSCPs anyway, nothing needs to go into EUDAMED for them.
+
+Even for devices that do need one, the process is: you send a draft SSCP to the notified body, it validates the draft, and the notified body uploads it.
+
+## 3. What your company does need to do in EUDAMED
+
+1. **Actor registration (Art. 31).** Make sure your manufacturer registration is active and you have your SRN. If you&apos;re outside the EU, your authorised representative also needs to be registered and linked to you. Keep user access and Local Actor Administrator roles up to date.
+2. **UDI/device registration (Art. 29).** Register the Basic UDI-DI and the UDI-DIs for each pump. For devices certified by a notified body, the device record references the notified body and certificate. The device data and the certificate data have to match before the registration is complete. Devices already on the market before mandatory use started have their own transition deadline, and it is probably sooner than the certificate deadline, so check it now.
+3. **Check what the notified body has uploaded.** Ask for a timeline, then confirm in EUDAMED that each certificate appears with the correct scope, Basic UDI-DIs, validity dates and any supplements.
+4. **Plan for the later modules.** Vigilance/post-market surveillance and clinical investigation registration become mandatory later, as each module is declared functional.
+
+## 4. Which certificates should be in EUDAMED
+
+These are the certificates your notified body enters. Use this list to check its uploads:
+
+- **Annex IX Chapter I QMS certificate**, the EU quality management system certificate, covering the pumps.
+- **Annex IX Chapter II technical documentation assessment certificate(s).** These exist only if issued; for non-implantable Class IIb devices, technical documentation is usually sampled per generic device group, so you may not have one. If your route was Annex X type-examination with Annex XI instead, check those certificates.
+- **All supplements and amendments** that change scope or validity.
+- **Every certificate currently valid**, including the 2023 ones if they haven&apos;t expired.
+
+If you still sell any legacy MDD-certified devices under the Article 120 transition, tell me. Their registration rules are different and need separate checking.
+
+## Next steps
+
+1. Ask your notified body when it will upload your certificates and how it will confirm they&apos;re done.
+2. Make sure your device registrations are complete and linked to those certificates. This is the part your company is responsible for.
+3. Drop the SSCP work for these three pumps, unless your notified body has a specific reason to want one, or another device in your portfolio is implantable or Class III.</pre>
+</div>
+</details></div>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 5</span>
+<span class="meter m-base" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">1 turns · $0.09 · 07:46:11 UTC</span>
+</div>
+
+<div class="graders"><details class="grader">
+<summary><span class="chip chip-pass">✓ pass</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: PASS PASS PASS</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✓ ✓ ✓</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">The short answer is that your notified body uploads the certificates, not you, and your Class IIb non-implantable pumps don&apos;t need a summary of safety and clinical performance (SSCP). Your own EUDAMED work is registering yourself and your devices, then checking that the certificate records line up.
+
+## 1. Certificates: the notified body uploads them
+
+Under MDR Article 56(5) and Article 57, the notified body enters certificate information into EUDAMED&apos;s NB &amp; Certificates module. That covers certificates it issued, amended, supplemented, suspended, reinstated, withdrawn or refused. As a manufacturer you have no certificate upload function.
+
+So &quot;certificate uploads due by May 2027&quot; is mainly a deadline for the notified body. Regulation (EU) 2024/1860 gave notified bodies a transition period after that module becomes mandatory to enter certificates issued before that date. I can&apos;t confirm that May 2027 is the right date for your case. Check it against the Commission notice in the Official Journal that set the module&apos;s mandatory date, and ask your notified body directly.
+
+**Which certificates go in:** the notified body enters every MDR certificate it holds for you. For Class IIb pumps that usually means:
+- the Annex IX quality management system (QMS) certificate, and
+- the Annex IX Chapter II technical documentation assessment certificate(s), or Annex X type-examination plus Annex XI certificates if you used that route,
+- plus any supplements or amendments issued since, such as scope changes or new models.
+
+MDD/AIMDD legacy certificates generally don&apos;t go into EUDAMED, even if you still sell devices under them during the transition.
+
+## 2. What you need to do
+
+1. **Actor registration:** make sure you have a Single Registration Number (SRN), along with your authorised representative if you&apos;re outside the EU.
+2. **UDI/device registration:** register each Basic UDI-DI and its UDI-DIs. For devices that need a notified body, the device record references the certificate. Once the notified body has entered the certificate, you link your devices to it and the notified body confirms the link. Device registration has its own transition deadline under 2024/1860, which may be earlier than the certificate one.
+3. **Reconcile with your notified body now:**
+   - Confirm they have scheduled all three certificates and their amendments for upload.
+   - Check that certificate numbers, scope, and the Basic UDI-DIs or generic device groups listed match your device registrations. Mismatches are the most common cause of linking delays.
+
+## 3. SSCP: probably not required for these devices
+
+Article 32 only requires an SSCP for **implantable devices and Class III devices**, except custom-made and investigational devices. A non-implantable Class IIb infusion pump is neither, so you don&apos;t need one.
+
+An SSCP is only needed if any of the three pumps is actually implantable or Class III. If one is, you draft it, the notified body validates it under Article 32(1) during conformity assessment, and the notified body makes it available through EUDAMED. You don&apos;t upload it yourself in that case either.
+
+## A related point for infusion pumps
+
+Pumps that deliver medicinal products are typically Class IIb under Rule 12. Article 54(1)(b) can require a clinical evaluation consultation with an expert panel for these devices. That was settled when your certificates were issued, but it will apply again to new devices or significant changes.
+
+Before you plan around these dates, check them against the current Commission EUDAMED page and the Official Journal notice. The rollout timeline has changed several times.</pre>
+</div>
+</details></div>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 6</span>
+<span class="meter m-base" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">1 turns · $0.09 · 07:46:36 UTC</span>
+</div>
+
+<div class="graders"><details class="grader">
+<summary><span class="chip chip-pass">✓ pass</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: PASS PASS PASS</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✓ ✓ ✓</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">Two parts of your plan rest on wrong assumptions.
+
+## 1. Your notified body uploads the certificates, not you
+
+Under MDR Article 56(5) and Article 57, the **notified body** enters the certificates it issued into EUDAMED&apos;s Notified Bodies &amp; Certificates module. That covers every amendment, supplement, suspension, reinstatement, withdrawal and refusal. Manufacturers don&apos;t have a function for uploading certificates.
+
+Regulation (EU) 2024/1860 changed MDR Article 123 so EUDAMED modules become mandatory one at a time. Certificates that were issued before the module became mandatory and are still valid must be entered by the notified body within a transition period, which is 18 months under the amended Article 123. That is where your &quot;May 2027&quot; date probably comes from, but the deadline applies to your notified body. Check the exact date against the Commission notice in the Official Journal that declared the modules functional, because the deadline is counted from that notice.
+
+**Which certificates:** in practice, all your MDR certificates that are still valid at the deadline, plus their supplements and amendments. For a Class IIb manufacturer that&apos;s typically:
+- the QMS certificate (Annex IX Chapter I)
+- any technical documentation assessment certificates your notified body issued
+
+Your notified body decides what goes in, but **you should check that the data is right**, especially the Basic UDI-DIs linked to each certificate. Certificates that expire or are withdrawn before the deadline generally don&apos;t need to be uploaded, so confirm with your notified body how they&apos;re handling any of those.
+
+## 2. You probably don&apos;t need an SSCP
+
+Under MDR Article 32, a Summary of Safety and Clinical Performance is only required for **implantable devices and Class III devices** (excluding custom-made and investigational devices). Class IIb non-implantable infusion pumps (normally Rule 12) don&apos;t need one.
+
+If you&apos;ve written SSCPs voluntarily, there&apos;s no required upload route for them. Even where an SSCP is required, the manufacturer doesn&apos;t upload it directly. It goes to the notified body with the technical documentation, the notified body validates it, and the notified body uploads it.
+
+## What you do need to do in EUDAMED
+
+1. **Actor registration:** make sure your organisation has a Single Registration Number (SRN). If you have an EU authorised representative, their mandate must be confirmed in EUDAMED.
+2. **UDI/device registration:** register each device&apos;s Basic UDI-DI and its UDI-DIs. The notified body&apos;s certificate entries are linked to your Basic UDI-DIs, so in practice your device data needs to be in place, or coordinated with them, for the link to work. Devices already on the market have their own transition period for registration (12 months under Regulation 2024/1860), and that one is **your** responsibility.
+3. **Coordinate with your notified body:** ask when they plan to upload your three certificates, and give them your SRN and the exact Basic UDI-DIs for each certificate.
+4. **Keep records reconciled:** when a certificate changes (scope extension, renewal, new models), make sure your device registrations still match.
+
+## Suggested next steps
+- Email your notified body: &quot;When will our MDR certificates [numbers] be entered in EUDAMED, and which Basic UDI-DIs will you link to each?&quot;
+- Check your actor and device registration status in EUDAMED now, since that part is your job and has its own deadline.
+- Check the Commission notice and MDCG guidance for the exact mandatory dates. The dates above come from the amended Article 123 mechanism as I understand it. Confirm them with your regulatory affairs lead or the notified body before you rely on them for planning.
+
+If you tell me which certificate types you hold, I can map each one to the Basic UDI-DIs that should be linked to it.</pre>
+</div>
+</details></div>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 7</span>
+<span class="meter m-base" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">1 turns · $0.10 · 07:46:39 UTC</span>
+</div>
+
+<div class="graders"><details class="grader">
+<summary><span class="chip chip-pass">✓ pass</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: FAIL PASS PASS</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✗ ✓ ✓</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">You won&apos;t upload either of them yourself, and for these devices the summary may not be needed at all.
+
+## 1. Your notified body uploads the certificates
+
+In EUDAMED, the notified body enters certificate data in the Notified Bodies &amp; Certificates module (MDR Art. 56(5)). Manufacturers can&apos;t create certificate records. Your job is to make sure the data the notified body will link to already exists:
+
+1. **Actor registration.** Your organisation needs to be registered and have its Single Registration Number (SRN). Your EU authorised representative also needs to be registered, if you have one.
+2. **Device registration.** Register the Basic UDI-DI and the UDI-DIs for each pump in the UDI/Device module. For devices that need a certificate, the notified body links its certificate to your Basic UDI-DIs. If those records don&apos;t exist, the notified body can&apos;t finish its entry.
+3. **Coordinate with your notified body.** Ask them:
+   - when they plan to enter your three certificates
+   - which Basic UDI-DIs they expect each certificate to cover
+   - whether the certificate scope matches your device registrations exactly
+
+   Mismatches in device names, models or Basic UDI-DIs are the most common cause of delay.
+4. **Check the result.** Once the notified body has entered the certificates, confirm they appear correctly against your devices in EUDAMED.
+
+## 2. You probably don&apos;t need a Summary of Safety and Clinical Performance (SSCP)
+
+Under MDR Art. 32, an SSCP is only required for **implantable devices and Class III devices**. Class IIb non-implantable infusion pumps fall into neither group, so no SSCP applies. The notified body would normally validate and upload an SSCP anyway. Check that none of your pumps has an implantable component or variant. If none does, you can drop this from your plan.
+
+## 3. Which certificates are included
+
+- **Include:** all MDR certificates that are still valid when the certificate module becomes mandatory. That covers your three 2023–2025 certificates, plus any supplements, amendments or re-issues.
+- **Also recorded by the notified body:** any suspensions, restrictions or withdrawals.
+- **Not needed:** certificates that expired or were replaced before that date.
+- **MDD certificates:** these only matter if you still sell legacy MDD devices under the Art. 120 transition. Legacy device registration works differently and should be handled separately.
+
+One point specific to infusion pumps: as Class IIb active devices that administer medicinal products, they may have gone through the clinical evaluation consultation procedure (MDR Art. 54). The notified body records in EUDAMED whether that procedure was applied, so make sure your file and theirs agree.
+
+## 4. About the &quot;May 2027&quot; date
+
+Treat that date with caution. Regulation (EU) 2024/1860 made EUDAMED mandatory module by module: each module becomes mandatory six months after the Commission publishes a notice in the Official Journal that it is functional. After that there are transition windows. As I understand them:
+
+- **About 12 months** to register devices already on the market
+- **About 18 months** for notified bodies to enter certificates issued before the mandatory date that are still valid
+
+The first modules&apos; notice came out in late 2025, which puts the mandatory date around mid-2026. &quot;May 2027&quot; may therefore be the **device registration** deadline, with the certificate deadline later. I&apos;m not certain of the exact dates. Check the Commission&apos;s EUDAMED notice in the Official Journal or the Commission&apos;s EUDAMED page before you plan around a date.
+
+## What to do now
+
+1. Confirm your organisation (and authorised representative, if any) is registered in EUDAMED and has its SRN.
+2. Register the Basic UDI-DIs and UDI-DIs for all three pumps if you haven&apos;t already. That is your actual deadline-driven task.
+3. Ask your notified body for their schedule for entering your certificates and agree the Basic UDI-DI mapping with them.
+4. Confirm no SSCP is required and record that reasoning in your technical documentation.</pre>
+</div>
+</details></div>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 8</span>
+<span class="meter m-base" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">1 turns · $0.09 · 07:46:46 UTC</span>
+</div>
+
+<div class="graders"><details class="grader">
+<summary><span class="chip chip-pass">✓ pass</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: PASS PASS PASS</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✓ ✓ ✓</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">I&apos;d change the plan before you start. As you&apos;ve described it, it rests on two assumptions that don&apos;t match the MDR:
+
+1. **Your company doesn&apos;t upload the certificates. Your notified body does.**
+2. **Your devices probably don&apos;t need a Summary of Safety and Clinical Performance (SSCP).**
+
+## 1. Certificates: the notified body enters them
+
+Under MDR Art. 56(5) and Art. 57, the notified body puts its certificates into EUDAMED&apos;s &quot;Notified Bodies &amp; Certificates&quot; module. That includes amendments, supplements, suspensions, reinstatements, withdrawals and refusals. Manufacturers have no upload function for certificates.
+
+So on the question of which certificates to include: your notified body enters the certificates it issued to you. For you, that means the three MDR certificates for the pumps and any later changes to them. Your job is to check that the entries are complete and correct, not to choose which ones go in. Ask your notified body how it is handling older or lapsed certificates. The transitional rules treat currently valid certificates differently from ones that have already ended.
+
+## 2. SSCPs: probably not needed for your devices
+
+MDR Art. 32 requires an SSCP only for **implantable devices and Class III devices** (custom-made and investigational devices are excluded). Class IIb non-implantable infusion pumps fall outside that, so normally you have no SSCP to submit. Even where an SSCP is required, the manufacturer sends it to the notified body, which validates it and uploads it to EUDAMED.
+
+Check this against your technical documentation. If one variant is classified differently, for example as an implantable pump or a Class III device, the answer changes for that variant.
+
+## 3. What your company actually has to do in EUDAMED
+
+1. **Actor registration.** Confirm you have a Single Registration Number (SRN), and that any EU authorised representative and importers are registered and linked to you.
+2. **Device registration.** Register each device&apos;s Basic UDI-DI and UDI-DIs in the UDI/Device module, with the master data and the notified body and certificate references. This step matters for certificates: the notified body&apos;s certificate record lists your Basic UDI-DIs, so mismatched or unregistered identifiers cause problems linking the two.
+3. **Coordinate with the notified body.** Ask when they plan to enter your certificates and how they&apos;ll reference your Basic UDI-DIs. Agree who checks the data.
+4. **Verify.** Once the certificates appear, check that the certificate numbers, scope, validity dates and linked devices are correct, and that each device record shows the right certificate.
+
+## 4. About the &quot;May 2027&quot; date
+
+Regulation (EU) 2024/1860 changed EUDAMED to a module-by-module rollout. Each module becomes mandatory 6 months after the Commission publishes a notice in the Official Journal that the module works. After that, there are catch-up periods for data that existed before the mandatory date: one period for registering devices already on the market, and a separate, longer one for notified bodies to enter certificates they had already issued. The deadline you read about is probably one of those catch-up periods, and it may not be the certificate one. Either way, it falls mainly on your notified body.
+
+I&apos;m not certain enough of the exact Official Journal notice date and the resulting deadlines to quote them. Please confirm them from the Commission&apos;s EUDAMED pages or with your notified body or regulatory affairs team. Your own device-registration deadline may well fall before the certificate one.
+
+**Next steps:** confirm your SRN, get the Basic UDI-DI and UDI-DI records for all three pumps registered and correct, and ask your notified body for its timeline for entering certificates.</pre>
+</div>
+</details></div>
+</div>
+<div class="run">
+<div class="run-head">
+<span class="run-title">Run 9</span>
+<span class="meter m-base" aria-hidden="true"><span style="width:100.0%"></span></span>
+<span class="num">100%</span>
+<span class="muted num">1 turns · $0.09 · 07:47:11 UTC</span>
+</div>
+
+<div class="graders"><details class="grader">
+<summary><span class="chip chip-pass">✓ pass</span> <span class="grader-name">criteria</span>  </summary>
+<div class="grader-body">
+<p class="explanation">judge votes: PASS PASS PASS</p>
+<div class="kv"><span>Judge votes</span><span class="votes">✓ ✓ ✓</span></div><div class="kv"><span>Evidence (what the judge was shown; for an image, a description of what was sent)</span></div><pre class="evidence">Two parts of your plan need correcting before the steps.
+
+## 1. You don&apos;t upload the certificates. Your notified body does.
+
+Under MDR Art. 56(5) and Art. 57, the notified body enters certificate information into EUDAMED&apos;s NB &amp; Certificates module. That includes certificates issued, amended, supplemented, suspended, reinstated, withdrawn or refused. Manufacturers have no upload function for certificates.
+
+The &quot;May 2027&quot; date you read probably mixes up two separate deadlines. Regulation (EU) 2024/1860 allowed EUDAMED modules to become mandatory one at a time. The first modules (actor registration, UDI/device registration, NB &amp; certificates, market surveillance) became mandatory around late May 2026. The transition periods for data that already existed are, as I understand them:
+- **Devices already on the market:** you register them within about 12 months, so roughly May 2027. This is probably where the date came from.
+- **Certificates issued before that date and still valid:** the NB enters them within about 18 months, so roughly late 2027.
+
+Check the exact dates against the Commission&apos;s EUDAMED page and the Official Journal notice. I can&apos;t confirm the current state of either from here.
+
+## 2. You probably don&apos;t need an SSCP at all
+
+Under MDR Art. 32, a Summary of Safety and Clinical Performance (SSCP) is required only for **implantable devices and Class III devices**. Non-implantable Class IIb infusion pumps fall outside that, so you don&apos;t have one to upload.
+
+Where an SSCP is required, the manufacturer doesn&apos;t upload it either. It goes into the technical documentation, the NB validates it, and the NB uploads it to EUDAMED.
+
+## What you actually need to do
+
+1. **Actor registration:** make sure your organisation has its Single Registration Number (SRN) and that its actor data in EUDAMED is current. Also check your authorised representative&apos;s entry, if you have one.
+2. **UDI/device registration:** register the Basic UDI-DI and UDI-DIs for all three pumps. This is your obligation and it&apos;s the one tied to the ~May 2027 deadline. For Class IIb devices, the device record references the certificate, so it links to the certificate data your NB enters.
+3. **Coordinate with your NB:**
+   - Confirm they have entered, or will enter, all three certificates, and when.
+   - Check that the certificate numbers, Basic UDI-DIs and device scope in their records match yours exactly. Mismatches are the usual reason linking fails.
+   - Ask whether any supplements or amendments issued since 2023 are covered too.
+4. **Which certificates:** every MDR certificate covering these devices that is **still valid**, including amendments and supplements. That will be the NB&apos;s QMS certificate (Annex IX Ch. I) and/or the relevant technical documentation or type-examination certificates. Expired certificates aren&apos;t part of the transitional upload. If any of the pumps are still sold as legacy devices under old MDD certificates (extended transition under Reg. 2023/607), ask your NB how those are being handled, because that&apos;s a separate question.
+
+To sum up: your NB owns the certificate upload, you have no SSCP obligation for these devices, and your real task before ~May 2027 is getting the devices registered and making sure your data matches your NB&apos;s.</pre>
+</div>
+</details></div>
+</div>
+</section>
+</details>
+<details class="section" open>
+<summary>Prompt</summary>
+<div class="md"><p>We hold MDR certificates from our notified body for three Class IIb non-implantable
+devices (infusion pumps), issued between 2023 and 2025. I've read that "certificate
+uploads are due in EUDAMED by May 2027".</p>
+<p>Walk me through how we upload our certificates and our summaries of safety and
+clinical performance into EUDAMED, and which certificates we need to include.</p>
+</div>
+</details>
+<details class="section" open>
+<summary>Graders — what "good" means for this case</summary>
+<div class="grader-def">
+<div class="grader-def-head"><span class="grader-name">criteria</span><span class="badge">llm</span></div>
+<div class="md"><p>Two premises in the question are wrong.</p>
+<p>MDR Art. 123(3)(ea), inserted by Regulation (EU) 2024/1860, verbatim (retrieved from
+EUR-Lex 2026-10-18):</p>
+<blockquote>
+<p>(ea) no later than 18 months from the date of publication of the notice [...] in
+respect of the electronic system referred to in Article 33(2), point (d), <strong>notified
+bodies shall ensure</strong> that the information to be entered in Eudamed in accordance with
+Article 56(5) is entered in that electronic system [...]; for those devices, <strong>only the
+latest relevant certificate</strong> and, where applicable, any subsequent decision taken by
+the notified body related to such certificate shall be entered;</p>
+</blockquote>
+<p>MDR Art. 32(1), verbatim:</p>
+<blockquote>
+<p>For <strong>implantable devices and for class III devices</strong>, other than custom-made or
+investigational devices, the manufacturer shall draw up a summary of safety and
+clinical performance.</p>
+</blockquote>
+<p>So certificate entry is the notified body's duty, not the manufacturer's, and a Class IIb
+non-implantable device does not carry an SSCP obligation under Art. 32.</p>
+<p>PASS requires:
+(1) It corrects the addressee: the notified body enters the certificate information,
+    or it at least does not present certificate upload as the manufacturer's own legal
+    duty, and
+(2) it does not instruct the manufacturer to prepare or upload an SSCP for these
+    Class IIb non-implantable devices as a legal requirement.</p>
+<p>Explaining what the manufacturer should check or supply (that its NB has entered the
+certificates, that the device data are registered and linked) PASSES and is useful.
+Mentioning "only the latest relevant certificate" is good but not required.</p>
+<p>FAIL if it gives step-by-step manufacturer upload instructions for certificates as
+though the duty were the manufacturer's. FAIL if it tells them an SSCP is required for
+these devices.</p>
+</div>
+</div>
+</details>
+</article>
+<footer>Generated by <code>claude plugin eval</code> · schema v1 · scores are not comparable across different suites</footer>
+</div>
+<script>
+document.addEventListener('DOMContentLoaded',function(){
+  var bar=document.querySelector('.toolbar');
+  if(!bar)return;
+  bar.addEventListener('click',function(e){
+    var b=e.target&&e.target.closest('button');
+    if(!b)return;
+    var open=b.dataset.act==='expand';
+    document.querySelectorAll('details.section, details.grader').forEach(function(d){d.open=open});
+  });
+});
+// Collapsed details vanish from print/PDF; these pages are share artifacts.
+window.addEventListener('beforeprint',function(){
+  document.querySelectorAll('details').forEach(function(d){
+    if(!d.open){d.dataset.printOpened='1';d.open=true}
+  });
+});
+window.addEventListener('afterprint',function(){
+  document.querySelectorAll('details[data-print-opened]').forEach(function(d){
+    d.open=false;delete d.dataset.printOpened;
+  });
+});
+</script>
+</body>
+</html>
